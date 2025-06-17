@@ -1,0 +1,119 @@
+﻿<Page x:Class="SDSM_App.Views.Pages.BirdSurveyPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SDSM_App.Views.Pages"
+      mc:Ignorable="d" 
+      xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+      xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
+      xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      xmlns:common="clr-namespace:SDSM_App.Commons"
+      xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"
+      d:DataContext="{d:DesignInstance Type={x:Type viewmodel:BirdSurveyPageViewModel}}"
+      FontFamily="{StaticResource DefaultFontFamily}"
+      FontSize="{StaticResource DefaultFontSize}"
+      Title="조류조사">
+
+    <Grid>
+        <Grid MaxWidth="{StaticResource ContentMaxWidth}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--타이틀-->
+            <StackPanel Style="{StaticResource TitleStackPanelStyle}">
+                <TextBlock Text="생물조사" Style="{StaticResource TitleTextBlockStyle}"/>
+                <telerik:RadGlyph Glyph="{StaticResource GlyphArrowChevronRight}" Style="{StaticResource TitleRadGlyphStyle}"/>
+                <TextBlock Text="조류" Style="{StaticResource TitleTextBlockStyle}"/>
+            </StackPanel>
+
+            <Border Grid.Row="1" Margin="30 30 30 30" Padding="0" BorderThickness="0" Background="Transparent" Style="{StaticResource ContentBoxStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--목록개수-->
+                    <common:WrapPanelFill x:Name="SerachLayout">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="{StaticResource DefaultHeight}" common:WrapPanelFill.UseToFill="True" Margin="0 0 0 10">
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}"/>
+                            </StackPanel.Resources>
+                            <TextBlock Text="전체" Margin="0 0 5 0"/>
+                            <TextBlock Text="{Binding Path=ModelCollection.Count, Mode=OneWay, StringFormat={}{0:N0}}" Margin="3 0 0 0"/>
+                            <TextBlock Text="건" Margin="0 0 5 0"/>
+                            <TextBlock Text="/" Margin="5 0"/>
+                            <TextBlock Text="페이지" Margin="5 0 5 0"/>
+                            <TextBlock Text="{Binding Path=Items.Count, Mode=OneWay, ElementName=DataRadGridView, StringFormat={}{0:N0}}" Margin="3 0 0 0" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                            <TextBlock Text="건"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" common:WrapPanelFill.UseToFill="True" Margin="10 0 10 10">
+                            <telerik:RadWatermarkTextBox x:Name="SearchRadWatermarkTextBox" 
+                                                         Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                         Width="260"
+                                                         WatermarkContent="페이지 검색(문자-포함, 그외-일치)"
+                                                         KeyDown="SearchRadWatermarkTextBox_KeyDown"
+                                                         TextChanged="SearchRadWatermarkTextBox_TextChanged"/>
+                            <telerik:RadButton Margin="5 0 0 0" Style="{StaticResource AccentButtonStyle}" Width="40" Click="SearchRadButton_Click">
+                                <telerik:RadGlyph Glyph="{StaticResource GlyphZoom}"/>
+                            </telerik:RadButton>
+                            <telerik:RadButton Content="새로고침" Margin="10 0 0 0" Click="ReloadRadButton_Click"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Height="{StaticResource DefaultHeight}" common:WrapPanelFill.UseToFill="True" Margin="0 0 0 10">
+                            <!--페이지 출력-->
+                            <telerik:RadButton Click="DataExportButton_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <icon:PackIconModern Kind="OfficeExcel" VerticalAlignment="Center"/>
+                                    <TextBlock Text="페이지 출력" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </telerik:RadButton>
+                        </StackPanel>
+                    </common:WrapPanelFill>
+
+                    <!--기본정보 목록-->
+                    <telerik:RadGridView x:Name="DataRadGridView"
+                                         Grid.Row="1"
+                                         ItemsSource="{Binding Path=ModelCollection}"
+                                         SelectedItem="{Binding Path=ModelSelectedItem}"
+                                         HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
+                                         BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
+                                         BusyIndicatorIsIndeterminate="False"
+                                         FrozenColumnsSplitterVisibility="Visible"
+                                         RowIndicatorVisibility="Visible"
+                                         LeftFrozenColumnCount="0">
+                        <telerik:RadGridView.ColumnGroups>
+                            <telerik:GridViewColumnGroup Name="species" Header="출현종"/>
+                            <telerik:GridViewColumnGroup Name="habitat" Header="서식지 유형"/>
+                        </telerik:RadGridView.ColumnGroups>
+                        <telerik:RadGridView.Columns>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyYearChsu}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="240" MaxWidth="240" ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="480" MaxWidth="480" ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Feature}" MinWidth="80" Width="240" MaxWidth="240" ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Category}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="habitat"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CategoryDetail}" MinWidth="80" Width="240" MaxWidth="240" ColumnGroupName="habitat"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatType}" MinWidth="80" Width="320" MaxWidth="320" ColumnGroupName="habitat"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Note}" MinWidth="80" Width="320" MaxWidth="320"/>
+                        </telerik:RadGridView.Columns>
+                    </telerik:RadGridView>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

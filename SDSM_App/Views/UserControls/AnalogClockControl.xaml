@@ -1,0 +1,190 @@
+﻿<UserControl x:Class="SDSM_App.Views.UserControls.AnalogClockControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             x:Name="_this">
+    <UserControl.Resources>
+        
+        <sys:Double x:Key="relativeY">0.03</sys:Double>
+        <telerik:GaugeMeasure x:Key="TicksOffset1">0.0*</telerik:GaugeMeasure>
+        <telerik:GaugeMeasure x:Key="TicksOffset2">0.0*</telerik:GaugeMeasure>
+
+        <DataTemplate x:Key="LabelEmpty">
+            <Grid />
+        </DataTemplate>
+
+        <ControlTemplate x:Key="ClockGaugeBackground" TargetType="{x:Type ContentControl}">
+            <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="15"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="15"/>
+                </Grid.RowDefinitions>
+
+                <Ellipse Grid.ColumnSpan="3" Grid.RowSpan="3" Stretch="Fill" Fill="Transparent">
+                    <Ellipse.BitmapEffect>
+                        <BevelBitmapEffect BevelWidth="15" EdgeProfile="BulgedUp" Relief="0.2" Smoothness="0.2"/>
+                    </Ellipse.BitmapEffect>
+                </Ellipse>
+
+                <Ellipse Grid.Row="1" Grid.Column="1" Stretch="Fill" Fill="Transparent" />
+            </Grid>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="ClockGaugeForeground" TargetType="{x:Type ContentControl}">
+            <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" RenderTransformOrigin="0.5,0.5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.15*"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.3*"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.15*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.15*"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="0.3*"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="0.15*"/>
+                </Grid.RowDefinitions>
+            </Grid>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="ClockGaugeTemplate" TargetType="{x:Type telerik:RadRadialGauge}">
+            <Border Background="{TemplateBinding Background}"    
+                    BorderBrush="{TemplateBinding BorderBrush}"    
+                    BorderThickness="{TemplateBinding BorderThickness}">
+                <Grid>
+                    <ContentControl Template="{DynamicResource ClockGaugeBackground}"/>
+                    <ItemsPresenter />
+                    <ContentControl Template="{DynamicResource ClockGaugeForeground}"/>
+                </Grid>
+            </Border>
+        </ControlTemplate>
+
+        <Style x:Key="ClockGaugeStyle" TargetType="{x:Type telerik:RadRadialGauge}">
+            <Setter Property="Template" Value="{StaticResource ClockGaugeTemplate}" />
+        </Style>
+
+        <PathGeometry x:Key="pathGeometry">M2.5,1 C1.7,1 1,1.7 1,2.5 C1,3.3 1.7,4 2.5,4 C3.3,4 4,3.3 4,2.5 C4,1.7 3,1 2.5,1 z M2.5,0 C4,0 5,1 5,2.5 C5,3.7 4.1,4.7 3,5 L3,5 L3,10 L2,10 L2,5 L2,5 C0.9,4.7 0,3.7 0,2.5 C0,1 1,0 2.5,0 z</PathGeometry>
+    </UserControl.Resources>
+    <Grid>
+        <!-- Time -->
+        <StackPanel Orientation="Horizontal">
+            <telerik:RadRadialGauge x:Name="ClockRadRadialGauge"
+                                    Width="300" 
+                                    Height="300" 
+                                    Margin="0"
+                                    OuterBorderBrush="Transparent"
+                                    OuterBorderThickness="0"
+                                    Style="{StaticResource ClockGaugeStyle}">
+                <telerik:RadialScale Min="0" 
+                                     Max="12" 
+                                     StartAngle="-90"
+                                     SweepAngle="360" 
+                                     ShowFirstLabel="False"
+                                     ShowLastLabel="True"
+                                     MajorTicks="12"
+                                     MiddleTicks="1"
+                                     MinorTicks="1"
+                                     MajorTickOffset="{StaticResource TicksOffset1}"
+                                     MiddleTickOffset="{StaticResource TicksOffset1}" 
+                                     MinorTickOffset="{StaticResource TicksOffset1}"
+                                     MajorTickRelativeWidth="0.0*" 
+                                     MajorTickRelativeHeight="0.0*"    
+                                     Foreground="{Binding Path=HoursForeground, ElementName=_this}"
+                                     LabelLocation="Inside"
+                                     LabelRotationMode="None"
+                                     LabelOffset="0.05*"
+                                     FontSize="12"
+                                     Radius="0.95">
+                    <telerik:RadialScale.Indicators>
+                        <telerik:Needle x:Name="HoursNeedle"
+                                        telerik:ScaleObject.Offset="0.3*" 
+                                        telerik:ScaleObject.RelativeWidth="0.03*"
+                                        telerik:ScaleObject.Location="Inside"
+                                        TailHeight="0.1"
+                                        Foreground="White"
+                                        Background="#AAfFFFFF"
+                                        telerik:CornerRadiusHelper.ClipRadius="3"
+                                        Value="{Binding Path=Hours, ElementName=_this}"/>
+                    </telerik:RadialScale.Indicators>
+                    <telerik:RadialScale.CustomItems>
+                        <Path Data="{StaticResource pathGeometry}" 
+                              Fill="{telerik:Windows11Resource ResourceKey=ValidationBrush}"
+                              Width="5" 
+                              Height="10" 
+                              Stretch="Fill"
+                              telerik:ScaleObject.Location="Outside"
+                              telerik:ScaleObject.Offset="0.01*"
+                              telerik:ScaleObject.Value="{Binding Path=Hours, ElementName=_this}"
+                              telerik:RadialScale.RotationMode="SurroundOut">
+                            <Path.RenderTransform>
+                                <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                            </Path.RenderTransform>
+                        </Path>
+                    </telerik:RadialScale.CustomItems>
+                </telerik:RadialScale>
+                <telerik:RadialScale Min="0"
+                                     Max="60"
+                                     StartAngle="-90" 
+                                     SweepAngle="360"
+                                     ShowFirstLabel="False"
+                                     MajorTicks="12" 
+                                     MiddleTicks="1"
+                                     MinorTicks="5"
+                                     MajorTickOffset="{StaticResource TicksOffset1}" 
+                                     MiddleTickOffset="{StaticResource TicksOffset1}"
+                                     MinorTickOffset="{StaticResource TicksOffset1}"
+                                     LabelTemplate="{StaticResource LabelEmpty}"
+                                     MajorTickRelativeWidth="0.015*" 
+                                     MajorTickRelativeHeight="0.15*"
+                                     MajorTickBackground="#FFFFFFFF"
+                                     MinorTickBackground="#33FFFFFF"
+                                     Radius="0.95">
+                    <telerik:RadialScale.Indicators>
+                        <telerik:Needle x:Name="MinutesNeedle"
+                                        telerik:ScaleObject.Offset="0.07*"
+                                        telerik:ScaleObject.RelativeWidth="0.03*"
+                                        telerik:ScaleObject.Location="Inside"
+                                        TailHeight="0.1"
+                                        Background="#88FFFFFF"
+                                        telerik:CornerRadiusHelper.ClipRadius="3"
+                                        Value="{Binding Path=Minutes, ElementName=_this}"/>
+                        <telerik:Needle x:Name="SecondsNeedle"
+                                        telerik:ScaleObject.Offset="0.0*"
+                                        telerik:ScaleObject.Location="Inside"
+                                        telerik:ScaleObject.RelativeWidth="0.02*"
+                                        TailHeight="0.15"
+                                        Background="{telerik:Windows11Resource ResourceKey=AccentBrush}"
+                                        telerik:CornerRadiusHelper.ClipRadius="2"
+                                        Value="{Binding Path=Seconds, ElementName=_this}"/>
+                    </telerik:RadialScale.Indicators>
+                </telerik:RadialScale>
+            </telerik:RadRadialGauge>
+        </StackPanel>
+
+        <TextBlock Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0 0 0 105" FontSize="14">
+            <Run Text="{Binding Source={x:Static sys:DateTime.Now}, Mode=OneWay, StringFormat={}{0:MM}.}"/>
+            <Run Text="{Binding Source={x:Static sys:DateTime.Now}, Mode=OneWay, StringFormat={}{0:dd}.}"/>
+            <Run Text="{Binding Source={x:Static sys:DateTime.Now}, Mode=OneWay, StringFormat=({0:ddd)} , ConverterCulture=ko-KR}"/>
+        </TextBlock>
+        
+        <TextBlock Text="{Binding Path=TT, ElementName=_this}" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Bottom" 
+                   Margin="0 0 0 60"
+                   Foreground="White"
+                   FontSize="14"/>
+    </Grid>
+</UserControl>

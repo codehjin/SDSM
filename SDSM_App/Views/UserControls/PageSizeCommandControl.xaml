@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="SDSM_App.Views.UserControls.PageSizeCommandControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
+             mc:Ignorable="d"
+             x:Name="_this">
+    <Border Padding="2" Height="42" Background="Transparent" BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}" BorderThickness="1" CornerRadius="{StaticResource AllCornerRadius}">
+        <StackPanel Orientation="Horizontal">
+            <StackPanel.Resources>
+                <Style TargetType="telerik:RadButton" BasedOn="{StaticResource RadButtonStyle}">
+                    <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
+                    <Setter Property="helpers:ThemeHelper.DisabledBrush" Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="Padding" Value="10 0"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <ScaleTransform ScaleX="1" ScaleY="1"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Panel.ZIndex" Value="1"/>
+                        </Trigger>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.2" Duration="0:0:0.15" />
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.2" Duration="0:0:0.15" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.15" />
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.15" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Resources>
+            <telerik:RadButton Content="최소" Command="{Binding Path=MinCommand, ElementName=_this}" />
+            <telerik:RadButton Content="기본" Command="{Binding Path=AvgCommand, ElementName=_this}" Margin="2 0"/>
+            <telerik:RadButton Content="최대" Command="{Binding Path=MaxCommand, ElementName=_this}"/>
+        </StackPanel>
+    </Border>
+</UserControl>

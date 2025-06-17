@@ -1,0 +1,95 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="OpacityBackgroundColor">#CC000000</Color>
+    <SolidColorBrush x:Key="OpacityBackgroundBrush" Color="{StaticResource OpacityBackgroundColor}"/>
+
+    <!--차트 최대값-->
+    <Color x:Key="MaxColor">#FFf25022</Color>
+    <SolidColorBrush x:Key="MaxBrush" Color="{StaticResource MaxColor}" />
+
+    <!--차트 평균값-->
+    <Color x:Key="AvgColor">#FF8EC441</Color>
+    <SolidColorBrush x:Key="AvgBrush" Color="{StaticResource AvgColor}" />
+
+    <!--차트 최소값-->
+    <Color x:Key="MinColor">#FF5B9BD5</Color>
+    <SolidColorBrush x:Key="MinBrush" Color="{StaticResource MinColor}" />
+
+    <LinearGradientBrush x:Key="GreenLinearBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#7B8A72" Offset="0"/>
+        <GradientStop Color="#68795E" Offset="0.3"/>
+        <GradientStop Color="#55684A" Offset="0.6"/>
+        <GradientStop Color="#435836" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="DarkToGreenLinearBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#435836" Offset="0"/>
+        <GradientStop Color="#55684A" Offset="0.3"/>
+        <GradientStop Color="#68795E" Offset="0.6"/>
+        <GradientStop Color="#7B8A72" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="RegionalLinearBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#00897B" Offset="0"/>
+        <GradientStop Color="#26A69A" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="SpeciesLinearBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#7BAB38" Offset="0"/>
+        <GradientStop Color="#8EC441" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="PointLinearBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#5189BD" Offset="0"/>
+        <GradientStop Color="#5B9BD5" Offset="1"/>
+    </LinearGradientBrush>
+
+    <Color x:Key="GreenColor">#6C8C57</Color>
+    <SolidColorBrush x:Key="GreenBrush" Color="{StaticResource GreenColor}" />
+    
+    <Color x:Key="LightGreenColor">#9FBF8A</Color>
+    <SolidColorBrush x:Key="LightGreenBrush" Color="{StaticResource LightGreenColor}" />
+    
+    <Color x:Key="NoThemeLightBackgroundColor">#FFF3F3F3</Color>
+    <SolidColorBrush x:Key="NoThemeLightBackgroundBrush" Color="{StaticResource NoThemeLightBackgroundColor}" />
+    <Color x:Key="NoThemeDarkBackgroundColor">#FFC3C3C3</Color>
+    <SolidColorBrush x:Key="NoThemeDarkBackgroundBrush" Color="{StaticResource NoThemeDarkBackgroundColor}" />
+
+    <Color x:Key="NoThemeForegroundColor">#E4000000</Color>
+    <SolidColorBrush x:Key="NoThemeForegroundBrush" Color="{StaticResource NoThemeForegroundColor}" />
+    <Color x:Key="NoThemeMouseOverBackgroundColor">#FFD9D9D9</Color>
+    <SolidColorBrush x:Key="NoThemeMouseOverBackgroundBrush" Color="{StaticResource NoThemeMouseOverBackgroundColor}" />
+
+    <LinearGradientBrush x:Key="Stats1LinearBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#2196F3" Offset="0"/>
+        <GradientStop Color="#64B5F6" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="Stats2LinearBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#7BAB38" Offset="0"/>
+        <GradientStop Color="#8EC441" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="Stats3LinearBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#00897B" Offset="0"/>
+        <GradientStop Color="#26A69A" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!--1등급-->
+    <Color x:Key="Grade1Color">#994C8F4C</Color>
+    <SolidColorBrush x:Key="Grade1Brush" Color="{StaticResource Grade1Color}" />
+    <!--2등급-->
+    <Color x:Key="Grade2Color">#99A2C34C</Color>
+    <SolidColorBrush x:Key="Grade2Brush" Color="{StaticResource Grade2Color}" />
+    <!--3등급-->
+    <Color x:Key="Grade3Color">#99EEEF4C</Color>
+    <SolidColorBrush x:Key="Grade3Brush" Color="{StaticResource Grade3Color}" />
+    <!--4등급-->
+    <Color x:Key="Grade4Color">#99FFB84E</Color>
+    <SolidColorBrush x:Key="Grade4Brush" Color="{StaticResource Grade4Color}" />
+    <!--5등급-->
+    <Color x:Key="Grade5Color">#99FF884C</Color>
+    <SolidColorBrush x:Key="Grade5Brush" Color="{StaticResource Grade5Color}" />
+
+</ResourceDictionary>

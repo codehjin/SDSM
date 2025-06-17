@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="SDSM_App.Views.UserControls.ToastControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:icon ="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls" 
+             FontFamily="{StaticResource DefaultFontFamily}"
+             FontSize="{StaticResource DefaultFontSize}"
+             x:Name="_this">
+
+    <UserControl.Resources>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style TargetType="icon:PackIconMaterial">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style TargetType="telerik:RadButton">
+            <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="#33FFFFFF"/>
+        </Style>
+        
+    </UserControl.Resources>
+
+    <Grid x:Name="Root" Opacity="{Binding Path=RootOpacity, Mode=TwoWay, ElementName=_this}" Visibility="{Binding Path=RootVisibility, Mode=TwoWay, ElementName=_this}">
+        <Border Style="{StaticResource EffectBorder}"
+                Width="{Binding Path=ActualWidth, ElementName=ToastBorder}"
+                Height="{Binding Path=ActualHeight, ElementName=ToastBorder}"
+                Padding="20 5 10 5"
+                CornerRadius="21">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="4" Opacity="0.5" Direction="270"/>
+            </Border.Effect>
+        </Border>
+        <Border x:Name="ToastBorder"
+                MaxWidth="460"
+                MinWidth="80"
+                MaxHeight="90" 
+                MinHeight="42" 
+                Padding="20 5 10 5" 
+                BorderThickness="0"
+                CornerRadius="21">    
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsSucess, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="False">
+                            <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Path=ToastMessage, ElementName=_this}" 
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis" 
+                           Margin="0 0 10 0" />
+                <telerik:RadButton Grid.Column="1"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="Transparent"
+                                   BorderThickness="0"
+                                   Margin="0"
+                                   Padding="10 5"
+                                   CornerRadius="20"
+                                   IsTabStop="False"
+                                   helpers:ThemeHelper.FocusVisualMargin="0"
+                                   Cursor="Hand"
+                                   helpers:ThemeHelper.PressedBackgroundBrush="Transparent"
+                                   helpers:ThemeHelper.CheckedBackgroundBrush="Transparent"
+                                   helpers:ThemeHelper.FocusBackgroundBrush="Transparent"                                   
+                                   Click="Button_Click">
+                    <icon:PackIconMaterial Kind="Close" Width="10" Height="10" VerticalAlignment="Center"/>
+                </telerik:RadButton>
+            </Grid>
+        </Border>
+    </Grid>
+
+</UserControl>

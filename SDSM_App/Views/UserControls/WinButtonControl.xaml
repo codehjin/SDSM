@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="SDSM_App.Views.UserControls.WinButtonControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             x:Name="_this">
+
+    <Button Click="Button_Click">
+        <Button.Style>
+            <Style TargetType="Button">
+                <Setter Property="Width" Value="46"/>
+                <Setter Property="Height" Value="36"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="{Binding Path=DefaultForegroundBrush, ElementName=_this}"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+                <Setter Property="Template" >
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" >
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{Binding Path=MouseOverBackgroundBrush, ElementName=_this}"/>
+                                    <Setter Property="Foreground" Value="{Binding Path=MouseOverForegroundBrush, ElementName=_this}"/>
+                                    <Setter TargetName="Border" Property="CornerRadius" Value="{Binding Path=MouseOverBorderCornerRadius, ElementName=_this}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Button.Style>
+        <icon:PackIconCodicons Kind="{Binding Path=Icon, ElementName=_this}" 
+                               Width="{Binding Path=IconWidth, ElementName=_this}"
+                               Height="{Binding Path=IconHeight, ElementName=_this}"/>
+    </Button>
+</UserControl>
