@@ -110,7 +110,7 @@ public partial class App : Application
 
     public static void SetDarkModeThemes()
     {
-        Windows11Palette.Palette.ValidationColor = (Color)ColorConverter.ConvertFromString("#FFFF5163");
+        //Windows11Palette.Palette.ValidationColor = (Color)ColorConverter.ConvertFromString("#FFFF5163");
         Windows11Palette.Palette.AccentColor = (Color)ColorConverter.ConvertFromString("#FF00AFFF");
         Windows11Palette.Palette.AccentMouseOverColor = (Color)ColorConverter.ConvertFromString("#E600AFFF");
         Windows11Palette.Palette.AccentPressedColor = (Color)ColorConverter.ConvertFromString("#CC00AFFF");

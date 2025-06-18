@@ -15,6 +15,69 @@
         <Setter Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"/>
         <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
     </Style>
+
+    <!--검색텍스트-->
+    <Style x:Key="SearhcBoxStyle" TargetType="telerik:RadAutoSuggestBox">
+        <Setter Property="Width" Value="240"/>
+        <Setter Property="MinWidth" Value="240"/>
+        <Setter Property="MinHeight" Value="{StaticResource DefaultHeight}"/>
+        <Setter Property="IsDropDownOpen" Value="False"/>
+        <Setter Property="WatermarkContent" Value="검색"/>
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+        <Setter Property="InputMethod.PreferredImeState" Value="On"/>
+        <Setter Property="InputMethod.PreferredImeConversionMode" Value="Native"/>
+    </Style>
+
+    <!--새로고침-->
+    <Style x:Key="ReloadButtonStyle" TargetType="telerik:RadButton">
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Margin" Value="5 0 0 0"/>
+        <Setter Property="Height" Value="{StaticResource DefaultHeight}"/>
+        <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}" />
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Content">
+            <Setter.Value>
+                <StackPanel Orientation="Horizontal">
+                    <telerik:RadGlyph Glyph="{StaticResource GlyphReload}" Width="14" Height="14" VerticalAlignment="Center" Foreground="{telerik:Windows11Resource ResourceKey=IconBrush}"/>
+                    <TextBlock Text="새로고침" Margin="5 0 0 0"/>
+                </StackPanel>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--초기화-->
+    <Style x:Key="ResetButtonStyle" TargetType="telerik:RadButton">
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Content" Value="초기화"/>
+        <Setter Property="Margin" Value="5 0 0 0"/>
+        <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}" />
+    </Style>
+
+    <Style x:Key="ExportButtonBaseStyle" TargetType="telerik:RadButton">
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Height" Value="{StaticResource DefaultHeight}"/>
+        <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=PrimaryBackgroundBrush}"/>
+        <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}" />
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <!--페이지 출력-->
+    <Style x:Key="ExportButtonStyle" TargetType="telerik:RadButton" BasedOn="{StaticResource ExportButtonBaseStyle}">
+        <Setter Property="Content">
+            <Setter.Value>
+                <StackPanel Orientation="Horizontal">
+                    <icon:PackIconModern Kind="OfficeExcel" VerticalAlignment="Center" Width="14" Height="14"/>
+                    <TextBlock Text="페이지 출력" Margin="5 0 0 0"/>
+                </StackPanel>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Items.Count, Mode=OneWay, ElementName=DataRadGridView}" Value="0">
+                <Setter Property="IsEnabled" Value="False"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
     
     <Style x:Key="TooltipRadCalloutStyle" TargetType="telerik:RadCallout">
         <Setter Property="CalloutType"  Value="RoundedRectangle"/>
@@ -61,7 +124,22 @@
         <Setter Property="OverlayStyle" Value="{StaticResource OverlayStyle}"/>
         <Setter Property="BusyContent" Value="{Binding Path=(main:GB.BusyContent)}"/>
     </Style>
-    
+
+    <!--Page Size-->
+    <Style x:Key="PageSizeRadNumericUpDownStyle" TargetType="telerik:RadNumericUpDown">
+        <Setter Property="Minimum" Value="{Binding Path=(main:GB.MinPageSize)}"/>
+        <Setter Property="Maximum" Value="{Binding Path=(main:GB.MaxPageSize)}"/>
+        <Setter Property="SmallChange" Value="10"/>
+        <Setter Property="LargeChange" Value="1000"/>
+        <Setter Property="ShowButtons" Value="False"/>
+        <Setter Property="IsInteger" Value="True"/>
+        <Setter Property="Width" Value="90"/>
+        <Setter Property="Height" Value="{StaticResource DefaultHeight}"/>
+        <Setter Property="Margin" Value="5 0 10 0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+
     <!--RadGridView 진행표시-->
     <DataTemplate x:Key="ExportBusyGridViewTemplate">
         <Border CornerRadius="{telerik:Windows11Resource ResourceKey=CornerRadius}" Padding="60 60 60 20" Margin="0 -60 0 0" Background="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}">
@@ -73,6 +151,18 @@
         </Border>
     </DataTemplate>
 
+    <Style x:Key="PageButtonStyle" TargetType="telerik:RadButton" BasedOn="{StaticResource RadButtonStyle}">
+        <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=IconBrush}"/>
+        <Setter Property="IsBackgroundVisible" Value="False"/>
+        <Setter Property="MinWidth" Value="40"/>
+        <Setter Property="Padding" Value="0"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
     <!--DataPagerPresenter Template-->
     <ControlTemplate x:Key="CustomDataPagerPresenterTemplate" TargetType="dataPager:DataPagerPresenter">
         <Border x:Name="BorderVisual" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">

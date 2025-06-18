@@ -8,7 +8,7 @@
       xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
       xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
       xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
-      xmlns:common="clr-namespace:SDSM_App.Commons"
+      xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
       xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"
       d:DataContext="{d:DesignInstance Type={x:Type viewmodel:BirdSurveyPageViewModel}}"
       FontFamily="{StaticResource DefaultFontFamily}"
@@ -24,6 +24,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <!--타이틀-->
@@ -33,51 +34,54 @@
                 <TextBlock Text="조류" Style="{StaticResource TitleTextBlockStyle}"/>
             </StackPanel>
 
-            <Border Grid.Row="1" Margin="30 30 30 30" Padding="0" BorderThickness="0" Background="Transparent" Style="{StaticResource ContentBoxStyle}">
+            <Border Grid.Row="1" Margin="30 30 30 0" Padding="0" BorderThickness="0" Background="Transparent" Style="{StaticResource ContentBoxStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!--목록개수-->
-                    <common:WrapPanelFill x:Name="SerachLayout">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="{StaticResource DefaultHeight}" common:WrapPanelFill.UseToFill="True" Margin="0 0 0 10">
-                            <StackPanel.Resources>
-                                <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}"/>
-                            </StackPanel.Resources>
-                            <TextBlock Text="전체" Margin="0 0 5 0"/>
-                            <TextBlock Text="{Binding Path=ModelCollection.Count, Mode=OneWay, StringFormat={}{0:N0}}" Margin="3 0 0 0"/>
-                            <TextBlock Text="건" Margin="0 0 5 0"/>
-                            <TextBlock Text="/" Margin="5 0"/>
-                            <TextBlock Text="페이지" Margin="5 0 5 0"/>
-                            <TextBlock Text="{Binding Path=Items.Count, Mode=OneWay, ElementName=DataRadGridView, StringFormat={}{0:N0}}" Margin="3 0 0 0" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
-                            <TextBlock Text="건"/>
-                        </StackPanel>
+                    <ScrollViewer x:Name="SearchLayout" Margin="0 0 0 5" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                        <Grid Height="{StaticResource DefaultHeight}" Margin="0 0 0 5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="{StaticResource DefaultHeight}">
+                                <StackPanel.Resources>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}"/>
+                                </StackPanel.Resources>
+                                <TextBlock Text="전체" Margin="0 0 5 0"/>
+                                <TextBlock Text="{Binding Path=ModelCollection.Count, Mode=OneWay, StringFormat={}{0:N0}}" Margin="3 0 0 0"/>
+                                <TextBlock Text="건" Margin="0 0 5 0"/>
+                                <TextBlock Text="/" Margin="5 0"/>
+                                <TextBlock Text="페이지" Margin="5 0 5 0"/>
+                                <TextBlock Text="{Binding Path=Items.Count, Mode=OneWay, ElementName=DataRadGridView, StringFormat={}{0:N0}}" Margin="3 0 0 0" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                                <TextBlock Text="건"/>
+                            </StackPanel>
 
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" common:WrapPanelFill.UseToFill="True" Margin="10 0 10 10">
-                            <telerik:RadWatermarkTextBox x:Name="SearchRadWatermarkTextBox" 
-                                                         Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                         Width="260"
-                                                         WatermarkContent="페이지 검색(문자-포함, 그외-일치)"
-                                                         KeyDown="SearchRadWatermarkTextBox_KeyDown"
-                                                         TextChanged="SearchRadWatermarkTextBox_TextChanged"/>
-                            <telerik:RadButton Margin="5 0 0 0" Style="{StaticResource AccentButtonStyle}" Width="40" Click="SearchRadButton_Click">
-                                <telerik:RadGlyph Glyph="{StaticResource GlyphZoom}"/>
-                            </telerik:RadButton>
-                            <telerik:RadButton Content="새로고침" Margin="10 0 0 0" Click="ReloadRadButton_Click"/>
-                        </StackPanel>
+                            <!--검색/출력-->
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10 0">
+                                <telerik:RadComboBox ItemsSource="{Binding Path=SearchModeSource}" 
+                                                     SelectedValue="{Binding Path=SearchModeSelectedValue}"
+                                                     DisplayMemberPath="DisplayName"
+                                                     SelectedValuePath="Value"
+                                                     Width="120"
+                                                     IsTabStop="False"
+                                                     Margin="0 0 5 0"
+                                                     Cursor="Hand"/>
+                                <telerik:RadAutoSuggestBox Text="{Binding Path=SearchText}" Style="{StaticResource SearhcBoxStyle}" QuerySubmitted="SearchBox_QuerySubmitted" KeyDown="SearchBox_KeyDown"/>
+                                <!--새로고침-->
+                                <telerik:RadButton Style="{StaticResource ResetButtonStyle}" Click="ResetButton_Click"/>
+                            </StackPanel>
 
-                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Height="{StaticResource DefaultHeight}" common:WrapPanelFill.UseToFill="True" Margin="0 0 0 10">
-                            <!--페이지 출력-->
-                            <telerik:RadButton Click="DataExportButton_Click">
-                                <StackPanel Orientation="Horizontal">
-                                    <icon:PackIconModern Kind="OfficeExcel" VerticalAlignment="Center"/>
-                                    <TextBlock Text="페이지 출력" Margin="5 0 0 0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </telerik:RadButton>
-                        </StackPanel>
-                    </common:WrapPanelFill>
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Height="{StaticResource DefaultHeight}">
+                                <!--페이지 출력-->
+                                <telerik:RadButton Style="{StaticResource ExportButtonStyle}" Click="DataExportButton_Click"/>
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
 
                     <!--기본정보 목록-->
                     <telerik:RadGridView x:Name="DataRadGridView"
@@ -114,6 +118,34 @@
                     </telerik:RadGridView>
                 </Grid>
             </Border>
+
+            <!--페이징-->
+            <Grid Grid.Row="2" Margin="30 10 30 30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <uc:PageSizeCommandControl MinCommand="{Binding Path=PageSizeMinExecutedCommand}" AvgCommand="{Binding Path=PageSizeAvgExecutedCommand}" MaxCommand="{Binding Path=PageSizeMaxExecutedCommand}"/>
+                    <telerik:RadNumericUpDown Value="{Binding Path=PageSize}" Style="{StaticResource PageSizeRadNumericUpDownStyle}">
+                        <telerik:EventToCommandBehavior.EventBindings>
+                            <telerik:EventBinding EventName="ValueChanged" Command="{Binding Path=PageSizeChangedExecutedCommand}" PassEventArgsToCommand="True"/>
+                        </telerik:EventToCommandBehavior.EventBindings>
+                    </telerik:RadNumericUpDown>
+                </StackPanel>
+
+                <telerik:RadDataPager x:Name="DataRadDataPager"
+                          Grid.Column="1"
+                          ItemCount="{Binding Path=ModelTotal}"
+                          PageSize="{Binding Path=PageSize}"
+                          PageIndex="{Binding Path=PageIndex, Mode=TwoWay}"
+                          Margin="0">
+                    <telerik:EventToCommandBehavior.EventBindings>
+                        <telerik:EventBinding EventName="PageIndexChanged" Command="{Binding Path=PageIndexChangedExecutedCommand}" PassEventArgsToCommand="True"/>
+                    </telerik:EventToCommandBehavior.EventBindings>
+                </telerik:RadDataPager>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

@@ -8,9 +8,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Telerik.Documents.SpreadsheetStreaming;
-using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.GridView;
-using Telerik.Windows.Controls.GridView.SearchPanel;
 using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
 
 namespace SDSM_App.Views.Pages;
@@ -20,9 +17,6 @@ namespace SDSM_App.Views.Pages;
 /// </summary>
 public partial class FishSurveyPage : Page, ITransientService
 {
-    private readonly RoutedUICommand _searchByTextCommand = (RoutedUICommand)RadGridViewCommands.SearchByText;
-    private readonly RoutedUICommand _clearSerachValueCommand = (RoutedUICommand)GridViewSearchPanelCommands.ClearSearchValue;
-
     private readonly FishSurveyPageViewModel _vm;
 
     public FishSurveyPage(FishSurveyPageViewModel vm)
@@ -39,7 +33,7 @@ public partial class FishSurveyPage : Page, ITransientService
 
     private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        var height = e.NewSize.Height - (SerachLayout.ActualHeight + 120);
+        var height = e.NewSize.Height - (SearchLayout.ActualHeight + 190);
 
         if (height > 60)
         {
@@ -57,8 +51,45 @@ public partial class FishSurveyPage : Page, ITransientService
 
     #region Control 이벤트    
 
-    //새로고침
-    private void ReloadRadButton_Click(object sender, RoutedEventArgs e)
+    private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        if (sender is ScrollViewer scrollViewer)
+        {
+            if (e.Delta > 0)
+                scrollViewer.LineLeft();
+            else
+                scrollViewer.LineRight();
+        }
+    }
+
+    //초기화
+    private void ResetButton_Click(object sender, RoutedEventArgs e)
+    {
+        _vm.SearchText = string.Empty;
+        SearchQuery();
+    }
+
+    //검색
+    private void SearchBox_QuerySubmitted(object sender, Telerik.Windows.Controls.AutoSuggestBox.QuerySubmittedEventArgs e)
+    {
+        SearchQuery();
+    }
+
+    //검색
+    private void SearchBox_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            SearchQuery();
+        }
+    }
+
+    #endregion
+
+    #region 메서드
+
+    //검색
+    private void SearchQuery()
     {
         DataRadGridView.FilterDescriptors.SuspendNotifications();
         foreach (Telerik.Windows.Controls.GridViewColumn column in DataRadGridView.Columns)
@@ -69,47 +100,7 @@ public partial class FishSurveyPage : Page, ITransientService
 
         DataRadGridView.SortDescriptors.Clear();
 
-        SearchRadWatermarkTextBox.Text = "";
-        _clearSerachValueCommand.Execute(null, DataRadGridView.ChildrenOfType<GridViewSearchPanel>().FirstOrDefault());
-    }
-
-    #endregion
-
-    #region GridView SearchText
-
-    private void SearchRadWatermarkTextBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (string.IsNullOrEmpty(SearchRadWatermarkTextBox.Text))
-        {
-            _clearSerachValueCommand.Execute(null, DataRadGridView.ChildrenOfType<GridViewSearchPanel>().FirstOrDefault());
-        }
-    }
-
-    private void SearchRadWatermarkTextBox_KeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.Key == Key.Enter)
-        {
-            if (!string.IsNullOrEmpty(SearchRadWatermarkTextBox.Text))
-            {
-                _searchByTextCommand.Execute(SearchRadWatermarkTextBox.Text, DataRadGridView);
-            }
-            else
-            {
-                _clearSerachValueCommand.Execute(null, DataRadGridView.ChildrenOfType<GridViewSearchPanel>().FirstOrDefault());
-            }
-        }
-    }
-
-    private void SearchRadButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (!string.IsNullOrEmpty(SearchRadWatermarkTextBox.Text))
-        {
-            _searchByTextCommand.Execute(SearchRadWatermarkTextBox.Text, DataRadGridView);
-        }
-        else
-        {
-            _clearSerachValueCommand.Execute(null, DataRadGridView.ChildrenOfType<GridViewSearchPanel>().FirstOrDefault());
-        }
+        _vm.SearchExecutedCommand.Execute(null);
     }
 
     #endregion
