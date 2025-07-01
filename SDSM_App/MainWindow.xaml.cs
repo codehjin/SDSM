@@ -30,8 +30,6 @@ public partial class MainWindow : Window, ISingletonService
         StateChanged += Window_StateChanged;
 
         ContentFrame.NavigationService.Navigated += NavigationService_Navigated;
-
-        MenuRootStatus(Properties.Settings.Default.IsSideShow);
     }
 
     #region window
@@ -104,85 +102,6 @@ public partial class MainWindow : Window, ISingletonService
 
     #endregion
 
-    #region Menu Overlay
-
-    private void ShowHideMenuButton_Checked(object sender, RoutedEventArgs e)
-    {
-        if (MenuRoot != null)
-        {
-            MenuRootStatus(true);
-
-            e.Handled = true;
-        }
-    }
-
-    private void ShowHideMenuButton_Unchecked(object sender, RoutedEventArgs e)
-    {
-        if (MenuRoot != null)
-        {
-            MenuRootStatus(false);
-
-            e.Handled = true;
-        }
-    }
-
-    private void SlidingMenuButton_Checked(object sender, RoutedEventArgs e)
-    {
-        if (MenuRoot != null)
-        {
-            MenuRoot.Visibility = Visibility.Visible;
-            MenuDismissOverlay.Visibility = Visibility.Visible;
-
-            GB.IsMinimal = true;
-        }
-    }
-
-    private void SlidingMenuButton_Unchecked(object sender, RoutedEventArgs e)
-    {
-        if (MenuRoot != null)
-        {
-            MenuRoot.Visibility = Visibility.Collapsed;
-            MenuDismissOverlay.Visibility = Visibility.Collapsed;
-
-            GB.IsMinimal = false;
-        }
-    }
-
-    //오버레이 Rectangle
-    private void MenuDismissOverlay_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-        MenuOverlayHide();
-    }
-
-    //메뉴 오버레이
-    private void MenuOverlayHide()
-    {
-        if (MenuRoot != null)
-        {
-            MenuRoot.Visibility = Visibility.Collapsed;
-            SlidingMenuButton.IsChecked = false;
-            MenuDismissOverlay.Visibility = Visibility.Collapsed;
-        }
-    }
-
-    //메뉴 보이기 감추기
-    private void MenuRootStatus(bool status)
-    {
-        if (status)
-        {
-            MenuRoot.Visibility = Visibility.Visible;
-            MenuRoot.SetValue(Grid.ColumnProperty, 0);
-            GB.IsMinimal = false;
-        }
-        else
-        {
-            MenuRoot.Visibility = Visibility.Collapsed;
-            MenuRoot.SetValue(Grid.ColumnProperty, 1);
-            GB.IsMinimal = true;
-        }
-    }
-
-    #endregion
 
     #region Control 이벤트
 
@@ -191,21 +110,6 @@ public partial class MainWindow : Window, ISingletonService
     {
         ContentFrame.NavigationService.RemoveBackEntry();
     }
-
-    //테마변경
-    private void ThemeToggleButton_Checked(object sender, RoutedEventArgs e)
-    {
-        Windows11Palette.LoadPreset(Windows11Palette.ColorVariation.Dark);
-        App.SetDarkModeThemes();
-    }
-
-    //테마변경
-    private void ThemeToggleButton_UnChecked(object sender, RoutedEventArgs e)
-    {
-        Windows11Palette.LoadPreset(Windows11Palette.ColorVariation.Light);
-        App.SetLightModeThemes();
-    }
-
 
     //화면잠금 패스워드
     private void ScreenLockRadPasswordBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -283,15 +187,6 @@ public partial class MainWindow : Window, ISingletonService
         if (page != null)
         {
             ContentFrame.Navigate(App.Current.Services.GetService(page));
-
-            //메뉴 오버레이인 경우
-            if (GB.IsMinimal)
-            {
-                MenuRoot.Visibility = Visibility.Collapsed;
-                MenuDismissOverlay.Visibility = Visibility.Collapsed;
-                GB.IsMinimal = false;
-                SlidingMenuButton.IsChecked = false;
-            }
         }
         else
         {

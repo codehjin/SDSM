@@ -92,4 +92,16 @@
     <Color x:Key="Grade5Color">#99FF884C</Color>
     <SolidColorBrush x:Key="Grade5Brush" Color="{StaticResource Grade5Color}" />
 
+    <Color x:Key="MainPrimaryColor">#FF1E232E</Color>
+    <SolidColorBrush x:Key="MainPrimaryBrush" Color="{StaticResource MainPrimaryColor}" />
+
+    <Color x:Key="MainMouseOverColor">#AA293140</Color>
+    <SolidColorBrush x:Key="MainMouseOverBrush" Color="{StaticResource MainMouseOverColor}" />
+
+    <Color x:Key="MainSelectedColor">#FF353e52</Color>
+    <SolidColorBrush x:Key="MainSelectedBrush" Color="{StaticResource MainSelectedColor}" />
+
+    <Color x:Key="MenuForegroundColor">#FF869DCF</Color>
+    <SolidColorBrush x:Key="MenuForegroundBrush" Color="{StaticResource MenuForegroundColor}"/>
+
 </ResourceDictionary>

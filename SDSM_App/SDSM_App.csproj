@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -8,7 +7,6 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>m.ico</ApplicationIcon>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="Assets\Fonts\high1 Wonchuri Title B.ttf" />
     <None Remove="Assets\Fonts\high1 Wonchuri Title L.ttf" />
@@ -39,11 +37,9 @@
     <None Remove="Assets\Images\samsung_white.png" />
     <None Remove="Assets\MBTiles\os_1-6.mbtiles" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="m.ico" />
   </ItemGroup>
-
   <ItemGroup>
     <Resource Include="Assets\Images\m.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -55,11 +51,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Views\Windows\" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="5.1.0" />
@@ -73,14 +67,14 @@
     <PackageReference Include="Scrutor" Version="6.0.1" />
     <PackageReference Include="System.ComponentModel.Composition" Version="9.0.5" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
-    <PackageReference Include="Telerik.UI.for.Wpf.80.Xaml" Version="2025.1.211" />
+    <PackageReference Include="Telerik.UI.for.Wpf.80.Xaml">
+      <Version>2025.2.521</Version>
+    </PackageReference>
     <PackageReference Include="WindowsAPICodePack" Version="8.0.6" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\SDSM_Models\SDSM_Models.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Resource Include="Assets\Fonts\high1 Wonchuri Title B.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -158,7 +152,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -166,12 +159,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-
 </Project>
