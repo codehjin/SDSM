@@ -13,11 +13,15 @@
     <FontFamily x:Key="High1FontFamily">application:,,,/Assets/Fonts/#하이원 제목 원추리체</FontFamily>
     <FontFamily x:Key="ROKGFontFamily">application:,,,/Assets/Fonts/#대한민국정부상징체 R</FontFamily>
     <sys:Double x:Key="DefaultFontSize">16</sys:Double>
-    <sys:Double x:Key="DefaultHeight">40</sys:Double>
 
     <!--너비-->
     <sys:Double x:Key="ContentMaxWidth">3120</sys:Double>
     <sys:Double x:Key="ContentSmallMaxWidth">1980</sys:Double>
+    <sys:Double x:Key="ContentXSmallMaxWidth">1240</sys:Double>
+
+    <!--기본높이-->
+    <sys:Double x:Key="DefaultHeight">40</sys:Double>
+    <sys:Double x:Key="TitleBarHeight">50</sys:Double>
 
     <DropShadowEffect x:Key="VisualEffect" BlurRadius="10" ShadowDepth="1" Direction="270" Opacity="0.2"/>
     <DropShadowEffect x:Key="EditorVisualEffect" BlurRadius="30" ShadowDepth="1" Direction="270" Opacity="0.5"/>
@@ -280,7 +284,7 @@
     <!--작성폼 레이아웃-->
     <Style x:Key="EditorLayoutStyle" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource OpacityBackgroundBrush}"/>
-        <Setter Property="Margin" Value="0 0 -5 0"/>
+        <Setter Property="Margin" Value="0 0 0 0"/>
     </Style>
 
     <Style x:Key="FormLayoutBorderStyle" TargetType="Border">

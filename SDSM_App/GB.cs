@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Windows;
 using System.Diagnostics;
+using SDSM_App.Enums;
 
 namespace SDSM_App;
 
@@ -178,28 +179,38 @@ public static class GB
         }
     }
 
-    //날짜 형식(yyMMdd) -> DateTime
-    public static DateTime? ParseYyMmDd(string yymmdd)
+    //날짜 형식(yyyyMMdd) -> DateTime
+    public static DateTime? ToDateFromInt(int yyyymmdd)
     {
-        if (string.IsNullOrWhiteSpace(yymmdd) || yymmdd.Length != 6)
-            return null;
-
-        // 연, 월, 일 분리
-        int year = int.Parse(yymmdd.Substring(0, 2));
-        int month = int.Parse(yymmdd.Substring(2, 2));
-        int day = int.Parse(yymmdd.Substring(4, 2));
-
-        // 2000년대 기준(00~99)
-        year += (year >= 0 && year <= 99) ? 2000 : 0;
-
-        try
+        var s = yyyymmdd.ToString();
+        if (s.Length != 8) return null;
+        if (DateTime.TryParseExact(s, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var dt))
         {
-            return new DateTime(year, month, day);
+            if (dt.Month < 1 || dt.Month > 12) return null;
+            if (dt.Day < 1 || dt.Day > 31) return null;
+            return dt;
         }
-        catch
+        return null;
+    }
+
+    //날짜 형식(yyMMdd) -> DateTime
+    public static DateTime? ToDateFrom6Int(int yymmdd)
+    {
+        var s = yymmdd.ToString("D6");
+        if (s.Length != 6) return null;
+        int yy = int.Parse(s[..2]);
+        string yyyymmdd;
+        if (yy >= 50)
+            yyyymmdd = "19" + s;
+        else
+            yyyymmdd = "20" + s;
+        if (DateTime.TryParseExact(yyyymmdd, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var dt))
         {
-            return null; // 잘못된 날짜일 경우
+            if (dt.Month < 1 || dt.Month > 12) return null;
+            if (dt.Day < 1 || dt.Day > 31) return null;
+            return dt;
         }
+        return null;
     }
 
     //백분율 구하기
@@ -298,6 +309,35 @@ public static class GB
         int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
         double num = Math.Round(bytes / Math.Pow(1024, place), 1);
         return (Math.Sign(byteCount) * num).ToString() + suf[place];
+    }
+
+    //일괄작성
+    public static string GetImportErrorText(PropertyInfo? prop, ErrorType content)
+    {
+        string fieldName = string.Empty;
+
+        if (prop != null)
+        {
+            if (prop.GetCustomAttribute<DisplayNameAttribute>() != null && prop.GetCustomAttribute<DisplayNameAttribute>() is DisplayNameAttribute displayName)
+                fieldName = displayName.DisplayName;
+            else
+                fieldName = prop.Name;
+        }
+
+        if (content == ErrorType.Unique)
+            return $"[{fieldName}]필수누락";
+        else if (content == ErrorType.ParentNull)
+            return $"[조사NO없음]";
+        else if (content == ErrorType.ListType)
+            return $"[{fieldName}]목록없음";
+        else if (content == ErrorType.Conversion)
+            return $"[{fieldName}]형변환실패";
+        else if (content == ErrorType.SpeciesDuplicate)
+            return $"[종명중복]";
+        else if (content == ErrorType.Duplicate)
+            return $"[자료중복]";
+        else
+            return $"[기본정보없음]";
     }
 
     #region MessageText

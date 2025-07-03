@@ -33,7 +33,7 @@ public partial class App : Application
         Windows11Palette.Palette.FontFamily = (FontFamily)FindResource("DefaultFontFamily");
         Windows11Palette.Palette.FontSize = (double)TryFindResource("DefaultFontSize");
         Windows11Palette.Palette.FocusVisualMargin = new Thickness(0);
-        Windows11Palette.Palette.PrimaryBorderColor = (Color)ColorConverter.ConvertFromString("#11000000");
+        Windows11Palette.Palette.PrimaryBorderColor = (Color)ColorConverter.ConvertFromString("#15000000");
         Windows11Palette.Palette.SecondaryForegroundColor = (Color)ColorConverter.ConvertFromString("#BB000000");
         Windows11Palette.Palette.PrimarySolidBorderColor = (Color)ColorConverter.ConvertFromString("#FFE5E5E5");
         Windows11Palette.Palette.SelectedColor = (Color)ColorConverter.ConvertFromString("#FFE5E5E5");

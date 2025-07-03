@@ -44,8 +44,8 @@ public partial class ARSurveyPageViewModel : ObservableObject, ITransientService
         get { return new EnumDataSource { EnumType = typeof(SearchModeType) }; }
     }
 
-    [ObservableProperty] List<ARSurvey> _modelCollection = [];
-    [ObservableProperty] ARSurvey? _modelSelectedItem;
+    [ObservableProperty] List<AmphibianReptile> _modelCollection = [];
+    [ObservableProperty] AmphibianReptile? _modelSelectedItem;
 
     #endregion
 
@@ -182,7 +182,7 @@ public partial class ARSurveyPageViewModel : ObservableObject, ITransientService
             PageIndex = index;
 
             using var context = new SDSMDbContext();
-            IQueryable<ARSurvey> query;
+            IQueryable<AmphibianReptile> query;
 
             await Task.Run(() =>
             {
@@ -192,7 +192,7 @@ public partial class ARSurveyPageViewModel : ObservableObject, ITransientService
                 }
                 else
                 {
-                    QueryableStringSearch<ARSurvey> searchQuery =
+                    QueryableStringSearch<AmphibianReptile> searchQuery =
                         context.ARSurveys.Search(m => m.SurveyYearChsu,
                                                   m => m.Site,
                                                   m => m.SurveyDate.ToString(),
@@ -219,7 +219,7 @@ public partial class ARSurveyPageViewModel : ObservableObject, ITransientService
 
                 ModelTotal = query.Count();
 
-                ModelCollection = [.. query.OrderByDescending(m => m.ARSurveyId).Skip(index * PageSize).Take(PageSize)];
+                ModelCollection = [.. query.OrderByDescending(m => m.AmphibianReptileId).Skip(index * PageSize).Take(PageSize)];
 
             }, _cts.Token);
         }

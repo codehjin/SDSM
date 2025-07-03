@@ -34,11 +34,11 @@ public class SDSMDbContext : DbContext, ITransientService
     public DbSet<FishSurveySpecies> FishSurveySpeciess { get; set; }
     public DbSet<FishSurveyView> FishSurveyViews { get; set; }
     //양서파충류
-    public DbSet<ARSurvey> ARSurveys { get; set; }
+    public DbSet<AmphibianReptile> ARSurveys { get; set; }
     //조류
     public DbSet<BirdSurvey> BirdSurveys { get; set; }
     //포유류
-    public DbSet<MammalSurvey> MammalSurveys { get; set; }
+    public DbSet<Mammal> Mammals { get; set; }
 
     public  DbSet<SelfUser> SelfUsers { get; set; }
 }

@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Color x:Key="OpacityBackgroundColor">#CC000000</Color>
+    <Color x:Key="OpacityBackgroundColor">#AA000000</Color>
     <SolidColorBrush x:Key="OpacityBackgroundBrush" Color="{StaticResource OpacityBackgroundColor}"/>
 
     <!--차트 최대값-->

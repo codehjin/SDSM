@@ -3,23 +3,26 @@ using Microsoft.Win32;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.ViewModels;
+using SDSM_Models;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Telerik.Documents.SpreadsheetStreaming;
+using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
+using Telerik.Windows.Persistence.Core;
 
 namespace SDSM_App.Views.Pages;
 
 /// <summary>
 /// 생물조사 포유류
 /// </summary>
-public partial class MammalSurveyPage : Page, ITransientService
+public partial class MammalPage : Page, ITransientService
 {
-    private readonly MammalSurveyPageViewModel _vm;
+    private readonly MammalPageViewModel _vm;
 
-    public MammalSurveyPage(MammalSurveyPageViewModel vm)
+    public MammalPage(MammalPageViewModel vm)
     {
         InitializeComponent();
 
@@ -33,7 +36,7 @@ public partial class MammalSurveyPage : Page, ITransientService
 
     private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        var height = e.NewSize.Height - (SearchLayout.ActualHeight + 190);
+        var height = e.NewSize.Height - (SearchLayout.ActualHeight + 240);
 
         if (height > 60)
         {
@@ -79,6 +82,25 @@ public partial class MammalSurveyPage : Page, ITransientService
         if (e.Key == Key.Enter)
         {
             SearchQuery();
+        }
+    }
+
+    //삭제
+    private void DeleteRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is RadButton button && button.Tag is string tag)
+        {
+            List<Mammal> deleteData = [];
+            if (tag == "single")
+            {
+                var item = DataRadGridView.SelectedItem as Mammal;
+                deleteData.Add(item ?? new());
+            }
+            else if (tag == "page")
+            {
+                deleteData = [.. DataRadGridView.Items.Cast<Mammal>()];
+            }
+            _vm.DeleteFormVisibleExecutedCommand.Execute(deleteData);
         }
     }
 

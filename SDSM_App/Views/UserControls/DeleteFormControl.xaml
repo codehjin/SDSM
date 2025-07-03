@@ -1,0 +1,126 @@
+﻿<UserControl x:Class="SDSM_App.Views.UserControls.DeleteFormControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"   
+             xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             mc:Ignorable="d">
+    
+    <Border Visibility="{Binding Path=DataContext.DeleteFormVisibility, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" Style="{StaticResource EditorLayoutStyle}">
+        <Border HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Background="{telerik:Windows11Resource ResourceKey=OverlayBrush}" 
+                Margin="20"
+                CornerRadius="{telerik:Windows11Resource ResourceKey=OverlayCornerRadius}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!--상단-->
+                <Border Background="{telerik:Windows11Resource ResourceKey=AlternativeBrush}"
+                        BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"
+                        BorderThickness="0 0 0 1"
+                        CornerRadius="8 8 0 0"
+                        Height="{StaticResource TitleBarHeight}">
+                    <Grid Margin="10 0 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="삭제" FontFamily="{StaticResource High1FontFamily}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                        <telerik:RadButton Grid.Column="2"
+                                           CornerRadius="0 8 0 0"
+                                           Command="{Binding Path=DataContext.DeleteFormCloseExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
+                                           Style="{StaticResource TitleBarCloseButtonStyle}">
+                            <telerik:RadGlyph Glyph="{StaticResource GlyphClose}"/>
+                        </telerik:RadButton>
+                    </Grid>
+                </Border>
+
+                <!--선택삭제 내용-->
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Margin="30">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource PrimaryTextBlcokStyle}" >
+                            <Run Text="선택 "/>
+                            <Run Text="{Binding Path=DataContext.DeleteCount, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" FontSize="28" FontFamily="{StaticResource DefaultFontFamily}"/>
+                            <Run Text="건"/>
+                        </TextBlock>
+                        <icon:PackIconFontAwesome Grid.Column="1" 
+                                                  Kind="QuestionSolid"
+                                                  Width="32"
+                                                  Height="32"
+                                                  HorizontalAlignment="Center" 
+                                                  VerticalAlignment="Center" 
+                                                  Margin="20 0 5 0"
+                                                  Foreground="{telerik:Windows11Resource ResourceKey=AccentBrush}"
+                                                  />
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="삭제된 자료는 복구하실 수 없습니다." Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 0 5"/>
+                            <TextBlock Text="자료를 삭제하시겠습니까?" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <GroupBox Grid.Row="1" Header="삭제 확인" Margin="30 0 30 20" Padding="10" Foreground="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}">
+                        <Grid Height="{StaticResource DefaultHeight}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 20 0" Foreground="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}">
+                                <Run Text="위의"/>
+                                <Run Text="선택 건수" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                                <Run Text="를 입력하세요."/>
+                            </TextBlock>
+                            <telerik:RadNumericUpDown Grid.Column="1"
+                                                      ShowButtons="False"
+                                                      HorizontalContentAlignment="Left"
+                                                      IsInteger="True"
+                                                      Value="{Binding Path=DataContext.CheckDeleteCount, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}, TargetNullValue={x:Null}}"
+                                                      UpdateValueEvent="PropertyChanged"
+                                                      MinWidth="120"
+                                                      MaxWidth="120"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <!--삭제-->
+                    <Border Grid.Row="2" Style="{StaticResource FormBottomBorderStyle}">
+                        <Grid Height="{StaticResource DefaultHeight}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <telerik:RadButton Grid.Column="1"
+                                               Content="삭제"   
+                                               Style="{StaticResource DeleteButtonStyle}"                                               
+                                               Command="{Binding Path=DataContext.DeleteExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"/>
+                            <telerik:RadButton Grid.Column="2"
+                                               Content="취소"
+                                               HorizontalAlignment="Right"
+                                               Command="{Binding Path=DataContext.DeleteFormCloseExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"/>
+                        </Grid>
+                    </Border>
+
+                </Grid>
+
+            </Grid>
+        </Border>
+    </Border>
+</UserControl>

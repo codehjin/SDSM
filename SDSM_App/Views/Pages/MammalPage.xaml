@@ -1,4 +1,4 @@
-﻿<Page x:Class="SDSM_App.Views.Pages.MammalSurveyPage"
+﻿<Page x:Class="SDSM_App.Views.Pages.MammalPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,7 +9,7 @@
       xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
       xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"
-      d:DataContext="{d:DesignInstance Type={x:Type viewmodel:MammalSurveyPageViewModel}}"
+      d:DataContext="{d:DesignInstance Type={x:Type viewmodel:MammalPageViewModel}}"
       FontFamily="{StaticResource DefaultFontFamily}"
       FontSize="{StaticResource DefaultFontSize}"
       Title="포유류조사">
@@ -22,6 +22,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -33,7 +34,39 @@
                 <TextBlock Text="포유류" Style="{StaticResource TitleTextBlockStyle}"/>
             </StackPanel>
 
-            <Border Grid.Row="1" Margin="30 30 30 0" Padding="0" BorderThickness="0" Background="Transparent" Style="{StaticResource ContentBoxStyle}">
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="30 30 30 20">
+                <telerik:RadButton Command="{Binding Path=AddEditorOpenExecutedCommand}" Style="{StaticResource AddButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <telerik:RadGlyph Glyph="{StaticResource GlyphPlus}" />
+                        <TextBlock Text="추가" Margin="5 0 0 0"/>
+                    </StackPanel>
+                </telerik:RadButton>
+                <telerik:RadButton Content="수정" Command="{Binding Path=EditEditorOpenExecutedCommand}" Style="{StaticResource EditButtonStyle}"/>
+                <telerik:RadButton Content="선택 삭제" Tag="single" Click="DeleteRadButton_Click">
+                    <telerik:RadButton.Style>
+                        <Style TargetType="telerik:RadButton" BasedOn="{StaticResource DeleteButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=SelectedItem, ElementName=DataRadGridView}" Value="{x:Null}">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </telerik:RadButton.Style>
+                </telerik:RadButton>
+                <telerik:RadButton Content="페이지 삭제" Tag="page" Click="DeleteRadButton_Click">
+                    <telerik:RadButton.Style>
+                        <Style TargetType="telerik:RadButton" BasedOn="{StaticResource DeleteButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Items.Count, Mode=OneWay, ElementName=DataRadGridView}" Value="0">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </telerik:RadButton.Style>
+                </telerik:RadButton>
+            </StackPanel>
+
+            <Border Grid.Row="2" Margin="30 0 30 0" Padding="0" BorderThickness="0" Background="Transparent" Style="{StaticResource ContentBoxStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -98,8 +131,8 @@
                             <telerik:GridViewColumnGroup Name="trace" Header="확인/흔적 유형"/>
                         </telerik:RadGridView.ColumnGroups>
                         <telerik:RadGridView.Columns>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyYearChsu}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="160" MaxWidth="160"/>
@@ -129,7 +162,7 @@
             </Border>
 
             <!--페이징-->
-            <Grid Grid.Row="2" Margin="30 10 30 30">
+            <Grid Grid.Row="3" Margin="30 10 30 20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -156,5 +189,13 @@
                 </telerik:RadDataPager>
             </Grid>
         </Grid>
+
+        <!--작성폼-->
+        <Border x:Name="EditorLayout" Visibility="{Binding Path=EditorVisibility, Mode=TwoWay}" Style="{StaticResource EditorLayoutStyle}">
+            <ContentControl x:Name="EditorContentControl" />
+        </Border>
+
+        <!--삭제폼-->
+        <uc:DeleteFormControl />
     </Grid>
 </Page>

@@ -269,6 +269,7 @@
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Foreground" Value="{StaticResource MenuForegroundBrush}"/>
+            <Setter Property="FontFamily" Value="{StaticResource High1FontFamily}"/>
             <Setter Property="MinHeight" Value="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"/>
             <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -737,7 +738,7 @@
                                                         </Style>
                                                     </icon:PackIconPhosphorIcons.Style>
                                                 </icon:PackIconPhosphorIcons>
-                                                <TextBlock Grid.Column="1" Text="관리자" Margin="0 0 10 0" VerticalAlignment="Center" FontSize="{StaticResource MainMenuFontSize}">
+                                                <TextBlock Grid.Column="1" Text="관리자" Margin="0 0 10 0" VerticalAlignment="Center" FontSize="{StaticResource MainMenuFontSize}" FontFamily="{StaticResource High1FontFamily}">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
                                                             <Setter Property="Foreground" Value="{StaticResource MenuForegroundBrush}"/>
@@ -840,7 +841,8 @@
                                         </Style>
                                         <Style TargetType="telerik:RadRadioButton" BasedOn="{StaticResource MainMenuRadRadioButtonStyle}">
                                             <Setter Property="Margin" Value="10 2 10 2"/>
-                                            <Setter Property="Padding" Value="15 10 15 10"/>
+                                            <Setter Property="Padding" Value="15 0"/>
+                                            <Setter Property="Height" Value="44"/>
                                         </Style>
                                     </StackPanel.Resources>
 
@@ -849,13 +851,13 @@
                                         <telerik:RadRadioButton x:Name="FirstButton" Tag="HomePage" IsChecked="{Binding Path=IsCheckedHome, Mode=TwoWay}" Click="MenuItem_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <icon:PackIconPhosphorIcons Kind="HouseLight" Style="{StaticResource PackIconPhosphorIconsStyle}"/>
-                                                <TextBlock Text="홈" Style="{StaticResource MenuContentTextBlcokStyle}" FontFamily="{StaticResource DefaultFontFamily}"/>
+                                                <TextBlock Text="홈" Style="{StaticResource MenuContentTextBlcokStyle}"/>
                                             </StackPanel>
                                         </telerik:RadRadioButton>
                                     </Border>
 
                                     <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
-                                        <Expander IsExpanded="True" BorderThickness="0">
+                                        <Expander BorderThickness="0">
                                             <Expander.Header>
                                                 <StackPanel Orientation="Horizontal">
                                                     <icon:PackIconPhosphorIcons>
@@ -866,22 +868,22 @@
                                                                     <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Expander}}" Value="True">
                                                                         <Setter Property="Kind" Value="MinusSquareLight"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedVeSurvey}" Value="True">
+                                                                    <DataTrigger Binding="{Binding Path=IsCheckedVegetation}" Value="True">
                                                                         <Setter Property="Kind" Value="CheckSquareLight"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedPlantSurvey}" Value="True">
+                                                                    <DataTrigger Binding="{Binding Path=IsCheckedPlant}" Value="True">
                                                                         <Setter Property="Kind" Value="CheckSquareLight"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedARSurvey}" Value="True">
+                                                                    <DataTrigger Binding="{Binding Path=IsCheckedAmphibianReptile}" Value="True">
                                                                         <Setter Property="Kind" Value="CheckSquareLight"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedSurveyFish}" Value="True">
+                                                                    <DataTrigger Binding="{Binding Path=IsCheckedFish}" Value="True">
                                                                         <Setter Property="Kind" Value="CheckSquareLight"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedBirdSurvey}" Value="True">
+                                                                    <DataTrigger Binding="{Binding Path=IsCheckedBird}" Value="True">
                                                                         <Setter Property="Kind" Value="CheckSquareLight"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedMammalSurvey}" Value="True">
+                                                                    <DataTrigger Binding="{Binding Path=IsCheckedMammal}" Value="True">
                                                                         <Setter Property="Kind" Value="CheckSquareLight"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
@@ -892,37 +894,37 @@
                                                 </StackPanel>
                                             </Expander.Header>
                                             <StackPanel>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedVeSurvey, Mode=TwoWay}" Tag="VeSurveyPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="식생"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedPlantSurvey, Mode=TwoWay}" Tag="PlantSurveyPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="식물"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedARSurvey, Mode=TwoWay}" Tag="ARSurveyPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedAmphibianReptile, Mode=TwoWay}" Tag="AmphibianReptilePage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="양서파충류"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSurveyFish, Mode=TwoWay}" Tag="FishSurveyPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedFish, Mode=TwoWay}" Tag="FishPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="어류"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedBirdSurvey, Mode=TwoWay}" Tag="BirdSurveyPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedBird, Mode=TwoWay}" Tag="BirdPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="조류"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedMammalSurvey, Mode=TwoWay}" Tag="MammalSurveyPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedMammal, Mode=TwoWay}" Tag="MammalPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="포유류"/>
@@ -933,18 +935,41 @@
                                     </Border>
 
                                     <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
-                                        <Expander IsExpanded="True" BorderThickness="0">
+                                        <Expander BorderThickness="0">
                                             <Expander.Header>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <icon:PackIconPhosphorIcons Style="{StaticResource ExpanderPackIconPhosphorIconsStyle}"/>
+                                                    <icon:PackIconPhosphorIcons>
+                                                        <icon:PackIconPhosphorIcons.Style>
+                                                            <Style TargetType="icon:PackIconPhosphorIcons" BasedOn="{StaticResource PackIconPhosphorIconsStyle}">
+                                                                <Setter Property="Kind" Value="PlusSquareLight"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Expander}}" Value="True">
+                                                                        <Setter Property="Kind" Value="MinusSquareLight"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Path=IsCheckedWaterQuality}" Value="True">
+                                                                        <Setter Property="Kind" Value="CheckSquareLight"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Path=IsCheckedHabitatWaterEdge}" Value="True">
+                                                                        <Setter Property="Kind" Value="CheckSquareLight"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </icon:PackIconPhosphorIcons.Style>
+                                                    </icon:PackIconPhosphorIcons>
                                                     <TextBlock Text="환경자료" Style="{StaticResource MenuContentTextBlcokStyle}"/>
                                                 </StackPanel>
                                             </Expander.Header>
                                             <StackPanel>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVault, Mode=TwoWay}" Tag="SeedVaultPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedWaterQuality, Mode=TwoWay}" Tag="WaterQualityPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="수질"/>
+                                                    </StackPanel>
+                                                </telerik:RadRadioButton>
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedHabitatWaterEdge, Mode=TwoWay}" Tag="HabitatWaterEdgePage" Click="MenuItem_Click">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
+                                                        <TextBlock Text="서식수변"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
                                             </StackPanel>
@@ -952,7 +977,7 @@
                                     </Border>
 
                                     <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
-                                        <Expander IsExpanded="True" BorderThickness="0">
+                                        <Expander x:Name="LastExpander" BorderThickness="0">
                                             <Expander.Header>
                                                 <StackPanel Orientation="Horizontal">
                                                     <icon:PackIconPhosphorIcons Style="{StaticResource ExpanderPackIconPhosphorIconsStyle}"/>
@@ -981,19 +1006,19 @@
                                                 <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVaultBatch, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="식생현황(임상도)"/>
+                                                        <TextBlock Text="식생현황"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
                                                 <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVaultBatch, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="야생생물 서식현황(에코뱅크)"/>
+                                                        <TextBlock Text="야생생물 서식현황"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
                                                 <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVaultBatch, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="수생생물 서식현황(물환경정보시스템)"/>
+                                                        <TextBlock Text="수생생물 서식현황"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
                                                 <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVaultBatch, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
@@ -1012,8 +1037,8 @@
                                         </Expander>
                                     </Border>
 
-                                    <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
-                                        <Expander x:Name="LastExpander" IsExpanded="True" BorderThickness="0">
+                                    <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0" Visibility="Collapsed">
+                                        <Expander BorderThickness="0">
                                             <Expander.Style>
                                                 <Style TargetType="Expander" BasedOn="{StaticResource MenuExpanderStyle}">
                                                     <Setter Property="Padding" Value="25 25 25 25"/>
@@ -1053,8 +1078,7 @@
                                         </Expander>
                                     </Border>
 
-                                    <!--새창-->
-                                    <Border Grid.Row="2" Margin="0" Padding="10 15" BorderBrush="{StaticResource MainSelectedBrush}" Visibility="Collapsed">
+                                    <Border Padding="0 15" BorderBrush="{StaticResource MainSelectedBrush}">
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Setter Property="BorderThickness" Value="0 1 0 0"/>
@@ -1070,33 +1094,39 @@
                                                 <Style TargetType="icon:PackIconFeatherIcons">
                                                     <Setter Property="Width" Value="10"/>
                                                     <Setter Property="Height" Value="10"/>
-                                                    <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=IconBrush}"/>
-                                                    <Setter Property="Margin" Value="0 0 0 0"/>
+                                                    <Setter Property="Foreground" Value="{StaticResource MenuForegroundBrush}"/>
+                                                    <Setter Property="Margin" Value="0 0 3 0"/>
                                                     <Setter Property="VerticalAlignment" Value="Center"/>
                                                     <Setter Property="Opacity" Value="0.8"/>
                                                 </Style>
                                                 <Style TargetType="telerik:RadButton">
                                                     <Setter Property="Height" Value="44"/>
-                                                    <Setter Property="Margin" Value="0 0 0 5"/>
-                                                    <Setter Property="Padding" Value="16 0"/>
+                                                    <Setter Property="Margin" Value="10 2 10 2"/>
+                                                    <Setter Property="Padding" Value="15 10 15 10"/>
                                                     <Setter Property="Cursor" Value="Hand"/>
                                                     <Setter Property="HorizontalAlignment" Value="Stretch"/>
                                                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                                    <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=AlternativeBrush}"/>
-                                                    <Setter Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=AlternativeBrush}"/>
-                                                    <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                    <Setter Property="Foreground" Value="{StaticResource MenuForegroundBrush}"/>
+                                                    <Setter Property="FontFamily" Value="{StaticResource High1FontFamily}"/>
+                                                    <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{StaticResource MainMouseOverBrush}"/>
+                                                    <Setter Property="helpers:ThemeHelper.PressedBackgroundBrush" Value="{StaticResource MainSelectedBrush}"/>
+                                                    <Setter Property="helpers:ThemeHelper.FocusBackgroundBrush" Value="Transparent"/>
                                                     <Setter Property="helpers:ThemeHelper.FocusBrush" Value="Transparent"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=MenuScrollViewer}" Value="Visible">
-                                                            <Setter Property="Margin" Value="0 0 -6 5"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
                                                 </Style>
                                             </StackPanel.Resources>
-                                            <telerik:RadButton Command="{Binding Path=FloatingWindowOpenExecutedCommand}" CommandParameter="ManualPane">
+                                            <telerik:RadRadioButton Tag="BulkRegisterPage" IsChecked="{Binding Path=IsCheckedBulkRegister, Mode=TwoWay}" Click="MenuItem_Click">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <icon:PackIconPhosphorIcons Kind="ListPlusLight" Style="{StaticResource PackIconPhosphorIconsStyle}"/>
+                                                    <TextBlock Text="일괄등록" Style="{StaticResource MenuContentTextBlcokStyle}"/>
+                                                </StackPanel>
+                                            </telerik:RadRadioButton>
+                                            <telerik:RadButton Command="{Binding Path=FloatingWindowOpenExecutedCommand}" CommandParameter="ManualPane" Visibility="Collapsed">
                                                 <DockPanel>
-                                                    <icon:PackIconVaadinIcons Kind="InfoCircleOutline" Style="{StaticResource InfoIconStyle}" />
-                                                    <TextBlock Text="사용설명서" VerticalAlignment="Center"/>
+                                                    <icon:PackIconVaadinIcons Kind="InfoCircleOutline" Style="{StaticResource InfoIconStyle}" Foreground="{StaticResource MenuForegroundBrush}"/>
+                                                    <TextBlock Text="사용설명서" VerticalAlignment="Center" Foreground="{StaticResource MenuForegroundBrush}"/>
                                                     <icon:PackIconFeatherIcons Kind="ArrowUpRight" HorizontalAlignment="Right"/>
                                                 </DockPanel>
                                             </telerik:RadButton>
@@ -1187,13 +1217,13 @@
                 </Style>
             </Border.Style>
             <telerik:RadBusyIndicator Foreground="{telerik:Windows11Resource ResourceKey=AccentBrush}"
-                              FontSize="14"
-                              Padding="10"
-                              BusyContent="{Binding Path=(main:GB.BusyContent)}" 
-                              IsIndeterminate="{Binding Path=(main:GB.IsIndeterminate)}"
-                              ProgressValue="{Binding Path=(main:GB.ProgressValue)}"
-                              Visibility="{Binding Path=(main:GB.BusyIndicatorVisibility)}"
-                              Style="{StaticResource CustomRadBusyIndicatorStyle}">
+                                      FontSize="14"
+                                      Padding="10"
+                                      BusyContent="{Binding Path=(main:GB.BusyContent)}" 
+                                      IsIndeterminate="{Binding Path=(main:GB.IsIndeterminate)}"
+                                      ProgressValue="{Binding Path=(main:GB.ProgressValue)}"
+                                      Visibility="{Binding Path=(main:GB.BusyIndicatorVisibility)}"
+                                      Style="{StaticResource CustomRadBusyIndicatorStyle}">
             </telerik:RadBusyIndicator>
         </Border>
 

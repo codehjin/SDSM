@@ -1,0 +1,192 @@
+﻿<Page x:Class="SDSM_App.Views.Pages.BulkRegisterPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+      xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
+      xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
+      xmlns:common="clr-namespace:SDSM_App.Commons"
+      xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"
+      d:DataContext="{d:DesignInstance Type={x:Type viewmodel:BulkRegisterPageViewModel}}"
+      FontFamily="{StaticResource DefaultFontFamily}"
+      FontSize="{StaticResource DefaultFontSize}"
+      Title="일괄등록">
+    <Page.Resources>
+        <ControlTemplate x:Key="BulkRadButtonTemplate" TargetType="telerik:RadButton">
+            <Grid>
+                <Border x:Name="FocusVisual" Style="{StaticResource FocusVisualBorderStyle}" CornerRadius="{TemplateBinding CornerRadius}"/>
+                <Grid Margin="{TemplateBinding helpers:ThemeHelper.FocusVisualMargin}">
+                    <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" MinHeight="{TemplateBinding MinHeight}" MinWidth="{TemplateBinding MinWidth}">
+                        <Border x:Name="BorderVisual"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <ContentPresenter x:Name="Content"
+                                          TextBlock.Foreground="{TemplateBinding Foreground}"
+                                          Margin="{TemplateBinding Padding}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                          ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                          RecognizesAccessKey="True">
+                            <ContentPresenter.RenderTransform>
+                                <ScaleTransform x:Name="ContentScale" ScaleX="1" ScaleY="1"/>
+                            </ContentPresenter.RenderTransform>
+                            <ContentPresenter.RenderTransformOrigin>0.5,0.5</ContentPresenter.RenderTransformOrigin>
+                        </ContentPresenter>
+                        <Border x:Name="LinkBorder" HorizontalAlignment="Center" VerticalAlignment="Bottom" Background="#99000000" Height="36" Padding="30 0" CornerRadius="18" Margin="0 0 0 20" Opacity="0">
+                            <Border.RenderTransform>
+                                <TranslateTransform x:Name="LinkBorderTranslate" Y="20"/>
+                            </Border.RenderTransform>
+                            <TextBlock Text="등록창 열기" FontSize="16" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <ControlTemplate.Triggers>
+
+                <!-- background is hidden -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsBackgroundVisible" Value="False"/>
+                        <Condition Property="IsEnabled" Value="True"/>
+                        <Condition Property="IsMouseOver" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                </MultiTrigger>
+
+                <!-- General IsKeyboardFocused setters -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsKeyboardFocused" Value="True"/>
+                        <Condition Property="IsEnabled" Value="True"/>
+                        <Condition Property="IsMouseOver" Value="False"/>
+                        <Condition Property="IsPressed" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter TargetName="FocusVisual" Property="Opacity" Value="1"/>
+                </MultiTrigger>
+
+                <!-- general setters for IsMouseOver -->
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush)}"/>
+                    <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBrush)}"/>
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="ContentScale" Storyboard.TargetProperty="ScaleX" To="1.2" Duration="0:0:0.3" />
+                                <DoubleAnimation Storyboard.TargetName="ContentScale" Storyboard.TargetProperty="ScaleY" To="1.2" Duration="0:0:0.3" />
+                                <DoubleAnimation Storyboard.TargetName="LinkBorderTranslate" Storyboard.TargetProperty="Y" To="0" Duration="0:0:0.4" />
+                                <DoubleAnimation Storyboard.TargetName="LinkBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.4" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="ContentScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.2" />
+                                <DoubleAnimation Storyboard.TargetName="ContentScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.2" />
+                                <DoubleAnimation Storyboard.TargetName="LinkBorderTranslate" Storyboard.TargetProperty="Y" To="20" Duration="0:0:0.2" />
+                                <DoubleAnimation Storyboard.TargetName="LinkBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+
+                <!-- general setters for IsPressed -->
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"/>
+                    <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.PressedBackgroundBrush)}"/>
+                    <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.PressedBrush)}"/>
+                </Trigger>
+
+                <!-- disabled -->
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="Content" Property="Opacity" Value="{telerik:Windows11Resource ResourceKey=DisabledOpacity}"/>
+                    <Setter TargetName="Content" Property="TextBlock.Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledForegroundBrush)}"/>
+                    <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledBackgroundBrush)}"/>
+                    <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledBrush)}"/>
+                </Trigger>
+
+                <!-- disabled & background is hidden -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsEnabled" Value="False"/>
+                        <Condition Property="IsBackgroundVisible" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter TargetName="Content" Property="TextBlock.Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledForegroundBrush)}"/>
+                    <Setter Property="helpers:ThemeHelper.DisabledBackgroundBrush" Value="Transparent"/>
+                    <Setter Property="helpers:ThemeHelper.DisabledBrush" Value="Transparent"/>
+                </MultiTrigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Page.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--타이틀-->
+            <StackPanel Style="{StaticResource TitleStackPanelStyle}"  MaxWidth="{StaticResource ContentXSmallMaxWidth}">
+                <TextBlock Text="일괄등록" Style="{StaticResource TitleTextBlockStyle}"/>
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly" Margin="0 0 5 0">
+                <Border Grid.Row="1" Margin="30"  MaxWidth="{StaticResource ContentXSmallMaxWidth}">
+                    <Border.Resources>
+                        <Style TargetType="telerik:RadButton">
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="Margin" Value="3"/>
+                            <Setter Property="MinWidth" Value="320"/>
+                            <Setter Property="MinHeight" Value="220"/>
+                            <Setter Property="FontFamily" Value="{StaticResource High1FontFamily}"/>
+                            <Setter Property="FontSize" Value="24"/>
+                            <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
+                            <Setter Property="helpers:ThemeHelper.FocusBrush" Value="Transparent"/>
+                            <Setter Property="Template" Value="{StaticResource BulkRadButtonTemplate}"/>
+                        </Style>
+                    </Border.Resources>
+                    <common:WrapPanelFill>
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="양서파충류" Tag="BulkMammalControl" Click="OpenRadButton_Click"/>
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="어류"/>
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="조류"/>
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="포유류"/>
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="수질"/>
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="서식수변"/>
+                    </common:WrapPanelFill>
+                </Border>
+            </ScrollViewer>
+        </Grid>
+
+        <Border x:Name="ContentLayout" Background="{telerik:Windows11Resource ResourceKey=OverlayBrush}" Visibility="Collapsed">
+            <Grid MaxWidth="{StaticResource ContentMaxWidth}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!--타이틀-->
+                <StackPanel Style="{StaticResource TitleStackPanelStyle}">
+                    <TextBlock Text="일괄등록" Style="{StaticResource TitleTextBlockStyle}"/>
+                    <telerik:RadGlyph Glyph="{StaticResource GlyphArrowChevronRight}" Style="{StaticResource TitleRadGlyphStyle}"/>
+                    <TextBlock x:Name="CaptionTextBlock" Text="" Style="{StaticResource TitleTextBlockStyle}"/>
+                    <telerik:RadButton Height="36" Margin="10 0 0 0" VerticalAlignment="Center" Click="CloseRadButton_Click">
+                        <telerik:RadGlyph Glyph="{StaticResource GlyphClose}"/>
+                    </telerik:RadButton>
+                </StackPanel>
+                
+                <ContentControl x:Name="ContentControl" Grid.Row="1" Margin="30"/>
+            </Grid>
+        </Border>
+
+    </Grid>
+</Page>

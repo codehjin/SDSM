@@ -1,0 +1,748 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Data.Sqlite;
+using Microsoft.Win32;
+using SDSM_App.Enums;
+using SDSM_App.InjectableServices;
+using SDSM_App.Messengers;
+using SDSM_Models;
+using System.Data.SQLite;
+using System.IO;
+using System.Media;
+using System.Reflection;
+using System.Text;
+using System.Windows;
+using Telerik.Windows.Controls;
+using Telerik.Windows.Data;
+using Telerik.Windows.Documents.Spreadsheet.FormatProviders;
+using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
+using Telerik.Windows.Documents.Spreadsheet.Model;
+namespace SDSM_App.ViewModels;
+
+/// <summary>
+/// 조류 조사
+/// </summary>
+public partial class BulkMammalControlViewModel : ObservableObject, ITransientService
+{
+    #region 필드
+
+    private readonly (int, string)[] _weathers = [(1, "맑음"), (2, "흐림"), (3, "비(눈)")];
+
+    #endregion
+
+    #region 생성자
+
+    public BulkMammalControlViewModel()
+    {
+
+    }
+
+    #endregion
+
+    #region 속성
+
+    public RadSpreadsheet DataSpreadsheet { get; set; } = new();
+
+    [ObservableProperty] private RadObservableCollection<ImportMammal> _modelCollection = [];
+    [ObservableProperty] private RadObservableCollection<Mammal> _convertedCollection = [];
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(DataImportExecutedCommand))]
+    private string _sheetName = "포유류";
+
+    [ObservableProperty] private int _firstRowNumber = 5;
+    [ObservableProperty] private int _firstColumnNumber = 2;
+
+    //에러 개수
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))]
+    private int _errorCount;
+
+    //변환된 자료 개수
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))]
+    private int _convertedCount;
+
+    #endregion
+
+    #region ICommand 구현
+
+    [RelayCommand]
+    private void SheetNameResetExecuted()
+    {
+        SheetName = "포유류";
+    }
+
+    private bool CanDataImport()
+    {
+        return !string.IsNullOrWhiteSpace(SheetName);
+    }
+
+    //자료 가져오기
+    [RelayCommand(CanExecute = nameof(CanDataImport))]
+    private async Task DataImportExecuted()
+    {
+        OpenFileDialog openFileDialog = new()
+        {
+            Filter = "Excel파일(*.xlsx)|*.xlsx"
+        };
+
+        if (openFileDialog.ShowDialog() == false) return;
+
+        string fileName = openFileDialog.FileName;
+
+        if (!File.Exists(fileName))
+        {
+            return;
+        }
+
+        GB.IsBusy = true;
+        GB.BusyContent = "자료 가져오는 중...";
+
+        Workbook? workbook = null;
+        Worksheet? worksheet = null;
+        IWorkbookFormatProvider formatProvider = new XlsxFormatProvider();
+
+        try
+        {
+            using Stream input = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+
+            workbook = await Task.Run(() => formatProvider.Import(input, null));
+            bool isExist = false;
+
+            ModelCollection.Clear();
+            ConvertedCollection.Clear();
+
+            ConvertedCount = 0;
+            ErrorCount = 0;
+
+            var names = new string[1];
+            names[0] = SheetName.ToLower();
+
+            foreach (Worksheet sheet in workbook.Sheets)
+            {
+                if (sheet.Name.Replace(" ", "").Equals(SheetName, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    worksheet = sheet;
+                    isExist = true;
+                }
+            }
+
+            if (isExist == false)
+            {
+                string success = "성공";
+                string fail = "실패";
+
+                var message = $"엑셀 시트명{Environment.NewLine}" +
+                              $"조사자료 : {(isExist ? success : fail)}{Environment.NewLine}";
+
+                MessageBox.Show(message, "엑셀 시트명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                GB.IsBusy = false;
+                GB.BusyContent = string.Empty;
+
+                return;
+            }
+
+            //엑셀 -> 모델
+            if (worksheet != null && worksheet.Rows.Count > 0)
+            {
+                var models = await Task.Run(() => DataTableToModels(worksheet));
+                if (models.Count != 0)
+                {
+                    if (GB.IsBusy == false)
+                        GB.IsBusy = true;
+
+                    GB.BusyContent = "자료 검수 중...";
+
+                    var data = await Task.Run(() => DataValidation(models));
+                    ModelCollection.AddRange(data.Item1);
+                    ConvertedCollection.AddRange(data.Item2);
+
+                    ConvertedCount = ConvertedCollection.Count;
+                    ErrorCount = ConvertedCollection.Count(m => m.ErrorContent.Length > 0);
+                }
+            }
+
+            GB.IsBusy = false;
+            GB.BusyContent = string.Empty;
+        }
+        catch (IOException)
+        {
+            MessageBox.Show("파일이 실행중인지 확인하세요", "가져오기 오류", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            GB.IsBusy = false;
+            GB.BusyContent = string.Empty;
+        }
+        catch (Exception)
+        {
+            MessageBox.Show("파일 변환 오류", "가져오기 오류", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            GB.IsBusy = false;
+            GB.BusyContent = string.Empty;
+        }
+    }
+
+    private bool CanSave()
+    {
+        return ErrorCount == 0 && ConvertedCount > 0;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanSave))]
+    private async Task SaveExecuted()
+    {
+        if (ErrorCount != 0 || ConvertedCount == 0)
+            return;
+
+        string message = $"자료 : {ConvertedCount:N0}건을{Environment.NewLine}저장하시겠습니까?";
+
+        SystemSounds.Beep.Play();
+        if (MessageBox.Show(message, "자료 일괄 저장", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            return;
+
+        //저장
+        bool isSeccess = await Task.Run(() => AddSave());
+
+        if (isSeccess)
+        {
+            var toast = (GB.SaveMessage, true);
+            WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
+        }
+        else
+        {
+            MessageBox.Show("저장 중 오류가 발생하였습니다.", "저장 오류", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    #endregion
+
+    #region 메서드
+
+    //엑셀->모델
+    private List<ImportMammal> DataTableToModels(Worksheet worksheet)
+    {
+        var importModels = new List<ImportMammal>();
+        try
+        {
+            CellRange usedCellRange = worksheet.UsedCellRange;
+            for (int rowIndex = FirstRowNumber - 1; rowIndex <= usedCellRange.ToIndex.RowIndex; rowIndex++)
+            {
+                var firstValue = worksheet.Cells[rowIndex, FirstColumnNumber - 1].GetValue().Value.RawValue;
+                if (!string.IsNullOrWhiteSpace(firstValue))
+                {
+                    var model = new ImportMammal
+                    {
+                        YearChsu = firstValue,
+                        SurveyDate = worksheet.Cells[rowIndex, 2].GetValue().Value.RawValue,
+                        Weather = worksheet.Cells[rowIndex, 3].GetValue().Value.RawValue,
+                        River = worksheet.Cells[rowIndex, 4].GetValue().Value.RawValue,
+                        Site = worksheet.Cells[rowIndex, 5].GetValue().Value.RawValue,
+                        SpeciesKo = worksheet.Cells[rowIndex, 6].GetValue().Value.RawValue,
+                        SpeciesEn = worksheet.Cells[rowIndex, 7].GetValue().Value.RawValue,
+                        Feature = worksheet.Cells[rowIndex, 8].GetValue().Value.RawValue,
+                        Lat_Do = worksheet.Cells[rowIndex, 9].GetValue().Value.RawValue,
+                        Lat_Bun = worksheet.Cells[rowIndex, 10].GetValue().Value.RawValue,
+                        Lat_Cho = worksheet.Cells[rowIndex, 11].GetValue().Value.RawValue,
+                        Lng_Do = worksheet.Cells[rowIndex, 12].GetValue().Value.RawValue,
+                        Lng_Bun = worksheet.Cells[rowIndex, 13].GetValue().Value.RawValue,
+                        Lng_Cho = worksheet.Cells[rowIndex, 14].GetValue().Value.RawValue,
+                        Lat = worksheet.Cells[rowIndex, 15].GetValue().Value.RawValue,
+                        Lng = worksheet.Cells[rowIndex, 16].GetValue().Value.RawValue,
+                        ObservationSite = worksheet.Cells[rowIndex, 17].GetValue().Value.RawValue,
+                        Trace1 = worksheet.Cells[rowIndex, 19].GetValue().Value.RawValue,
+                        Trace2 = worksheet.Cells[rowIndex, 20].GetValue().Value.RawValue,
+                        Trace3 = worksheet.Cells[rowIndex, 21].GetValue().Value.RawValue,
+                        Trace4 = worksheet.Cells[rowIndex, 22].GetValue().Value.RawValue,
+                        Trace5 = worksheet.Cells[rowIndex, 23].GetValue().Value.RawValue,
+                        Trace6 = worksheet.Cells[rowIndex, 24].GetValue().Value.RawValue,
+                        Trace7 = worksheet.Cells[rowIndex, 25].GetValue().Value.RawValue,
+                        Trace8 = worksheet.Cells[rowIndex, 26].GetValue().Value.RawValue,
+                        Trace9 = worksheet.Cells[rowIndex, 27].GetValue().Value.RawValue,
+                        Trace10 = worksheet.Cells[rowIndex, 28].GetValue().Value.RawValue,
+                        Trace11 = worksheet.Cells[rowIndex, 29].GetValue().Value.RawValue,
+                        Trace12 = worksheet.Cells[rowIndex, 30].GetValue().Value.RawValue,
+                        Surveyor = worksheet.Cells[rowIndex, 31].GetValue().Value.RawValue,
+                        Note = worksheet.Cells[rowIndex, 32].GetValue().Value.RawValue,
+                    };
+
+                    importModels.Add(model);
+                }
+            }
+            return importModels;
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(DataTableToModels), ex.Message);
+
+            return importModels;
+        }
+    }
+
+    //검수하기
+    private (List<ImportMammal>, List<Mammal>) DataValidation(List<ImportMammal> importModels)
+    {
+        StringBuilder sb = new();
+        var converteds = new List<Mammal>();
+
+        try
+        {
+            foreach (ImportMammal model in importModels)
+            {
+                sb.Clear();
+
+                var insertModel = new Mammal();
+
+                //다시 검수 때문에 초기화
+                model.ErrorContent = string.Empty;
+
+                //import model
+                PropertyInfo[] props = model.GetType().GetProperties();
+
+                foreach (var prop in props)
+                {
+                    if (prop.Name == "ErrorContent") continue;
+
+                    var value = prop.GetValue(model);
+
+                    if (prop.Name == "YearChsu" || prop.Name == "River" || prop.Name == "SpeciesKo")
+                    {
+                        //필수 문자
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (((string)value).Replace(" ", "").Length > 0)
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                        }
+                    }
+                    else if (prop.Name == "SurveyDate")
+                    {
+                        //형식은 Null - DB입력은 필수 날짜
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (DateTime.TryParse(value.ToString(), out DateTime dt))
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, dt);
+                            }
+                            else if (int.TryParse(value.ToString(), out int i))
+                            {
+                                if (i.ToString().Length == 8)
+                                {
+                                    var yyyymmdd = GB.ToDateFromInt(i);
+                                    if (yyyymmdd != null)
+                                    {
+                                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                        insertPropertyInfo?.SetValue(insertModel, yyyymmdd);
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                    }
+                                }
+                                else if (i.ToString().Length == 6)
+                                {
+                                    var yymmdd = GB.ToDateFrom6Int(i);
+                                    if (yymmdd != null)
+                                    {
+                                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                        insertPropertyInfo?.SetValue(insertModel, yymmdd);
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                        }
+
+                    }
+                    else if (prop.Name == "Weather")
+                    {
+                        //날씨
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (int.TryParse(value.ToString(), out int i))
+                            {
+                                var weather = _weathers.Where(w => w.Item1 == i).Select(w => w.Item2).FirstOrDefault();
+                                if (weather != null)
+                                {
+                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                    insertPropertyInfo?.SetValue(insertModel, weather);
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                }
+                            }
+                            else
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                            }
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
+                    else if (prop.Name == "Lat_Do")
+                    {
+                        //정수
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (int.TryParse(value.ToString(), out int i))
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, i);
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                            }
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
+                    else if (prop.Name == "Lat_Bun")
+                    {
+                        //정수
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (int.TryParse(value.ToString(), out int i))
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, i);
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                            }
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
+                    else if (prop.Name == "Lat_Cho")
+                    {
+                        //실수
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (double.TryParse(value.ToString(), out double d))
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, d);
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                            }
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
+                    else if (prop.Name == "Lng_Do")
+                    {
+                        //정수
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (int.TryParse(value.ToString(), out int i))
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, i);
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                            }
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
+                    else if (prop.Name == "Lng_Bun")
+                    {
+                        //정수
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (int.TryParse(value.ToString(), out int i))
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, i);
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                            }
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
+                    else if (prop.Name == "Lng_Cho")
+                    {
+                        //실수
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (double.TryParse(value.ToString(), out double d))
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, d);
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                            }
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
+                    else if (prop.Name == "Lat")
+                    {
+                        //실수
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (double.TryParse(value.ToString(), out double d))
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 6, MidpointRounding.AwayFromZero));
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                            }
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
+                    else if (prop.Name == "Lng")
+                    {
+                        //실수
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (double.TryParse(value.ToString(), out double d))
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 6, MidpointRounding.AwayFromZero));
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                            }
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
+                    else if (prop.Name == "Trace1" || prop.Name == "Trace2" || prop.Name == "Trace3" || prop.Name == "Trace4" || prop.Name == "Trace5"
+                          || prop.Name == "Trace6" || prop.Name == "Trace7" || prop.Name == "Trace8" || prop.Name == "Trace9" || prop.Name == "Trace10"
+                          || prop.Name == "Trace11" || prop.Name == "Trace12")
+                    {
+                        //정수
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (int.TryParse(value.ToString(), out int i))
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, i);
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                            }
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
+                    else
+                    {
+                        //문자
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
+                }
+
+                //위도
+                if (insertModel.Lat == null)
+                {
+                    if (insertModel.Lat_Do != null && insertModel.Lat_Bun != null && insertModel.Lat_Cho != null)
+                    {
+                        insertModel.Lat = GB.DmsToDegress(insertModel.Lat_Do ?? 0, insertModel.Lat_Bun ?? 0, insertModel.Lat_Cho ?? 0);
+                    }
+                }
+
+                //경도
+                if (insertModel.Lng == null)
+                {
+                    if (insertModel.Lng_Do != null && insertModel.Lng_Bun != null && insertModel.Lng_Cho != null)
+                    {
+                        insertModel.Lng = GB.DmsToDegress(insertModel.Lng_Do ?? 0, insertModel.Lng_Bun ?? 0, insertModel.Lng_Cho ?? 0);
+                    }
+                }
+
+                if (sb.Length > 0)
+                {
+                    model.ErrorContent = sb.ToString();
+                    insertModel.ErrorContent = sb.ToString();
+                }
+
+                converteds.Add(insertModel);
+            }
+            return (importModels, converteds);
+        }
+        catch (SqliteException ex)
+        {
+            MessageBox.Show("데이터베이스 또는 테이블을 찾을수 없습니다.", "데이터베이스 오류", MessageBoxButton.OK, MessageBoxImage.Error);
+            GB.LogWrite(GetType().Name, nameof(DataValidation), ex.Message);
+            return (importModels, converteds);
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(DataValidation), ex.Message);
+            return (importModels, converteds);
+        }
+    }
+
+    private bool AddSave()
+    {
+        try
+        {
+            GB.IsBusy = true;
+            GB.ProgressValue = 0;
+            GB.BusyContent = "자료 저장 중...";
+            GB.IsIndeterminate = false;
+
+            double progressTotal = ConvertedCount;
+            double progressCount = 0;
+
+            string strConn = GB.SqliteDataSource;
+
+            using (var conn = new SQLiteConnection(strConn))
+            {
+                conn.Open();
+
+                using var transaction = conn.BeginTransaction();
+
+                foreach (var model in ConvertedCollection)
+                {
+                    progressCount++;
+                    GB.ProgressValue = (progressCount / progressCount) * 100;
+
+                    string strSql = $"INSERT INTO Mammal" +
+                                     $"(YearChsu, SurveyDate, Weather, River, Site, " +
+                                     $"SpeciesKo, SpeciesEn, Feature, Lat, Lng, " +
+                                     $"ObservationSite, Trace1, Trace2, Trace3, Trace4, " +
+                                     $"Trace5, Trace6, Trace7, Trace8, Trace9, " +
+                                     $"Trace10, Trace11, Trace12, Surveyor, Note) " +
+                                     $"VALUES " +
+                                     $"(@YearChsu, @SurveyDate, @Weather, @River, @Site, " +
+                                     $"@SpeciesKo, @SpeciesEn, @Feature, @Lat, @Lng, " +
+                                     $"@ObservationSite, @Trace1, @Trace2, @Trace3, @Trace4, " +
+                                     $"@Trace5, @Trace6, @Trace7, @Trace8, @Trace9, " +
+                                     $"@Trace10, @Trace11, @Trace12, @Surveyor, @Note)";
+
+                    using var command = new SQLiteCommand(strSql, conn);
+
+                    command.Parameters.AddWithValue("@YearChsu", model.YearChsu);
+                    command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
+                    command.Parameters.AddWithValue("@Weather", model.Weather ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@River", model.River);
+                    command.Parameters.AddWithValue("@Site", model.Site ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@SpeciesKo", model.SpeciesKo);
+                    command.Parameters.AddWithValue("@SpeciesEn", model.SpeciesEn ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Feature", model.Feature ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Lat", model.Lat ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Lng", model.Lng ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@ObservationSite", model.ObservationSite ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Trace1", model.Trace1 ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Trace2", model.Trace2 ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Trace3", model.Trace3 ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Trace4", model.Trace4 ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Trace5", model.Trace5 ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Trace6", model.Trace6 ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Trace7", model.Trace7?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Trace8", model.Trace8 ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Trace9", model.Trace9 ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Trace10", model.Trace10 ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Trace11", model.Trace11 ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Trace12", model.Trace12 ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Surveyor", model.Surveyor ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Note", model.Note ?? (object)DBNull.Value);
+
+                    command.ExecuteNonQuery();
+                }
+
+                transaction.Commit();
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(AddSave), ex.Message);
+            return false;
+        }
+        finally
+        {
+            GB.IsBusy = false;
+            GB.IsIndeterminate = true;
+            GB.BusyContent = string.Empty;
+            GB.ProgressValue = 0;
+        }
+    }
+
+    #endregion
+}

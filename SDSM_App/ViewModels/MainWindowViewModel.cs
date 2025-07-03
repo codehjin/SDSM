@@ -25,12 +25,15 @@ public partial class MainWindowViewModel : ObservableObject, ISingletonService
 
     //주메뉴
     [ObservableProperty] private bool _isCheckedHome;
-    [ObservableProperty] private bool _isCheckedVeSurvey;
-    [ObservableProperty] private bool _isCheckedPlantSurvey;
-    [ObservableProperty] private bool _isCheckedARSurvey;
-    [ObservableProperty] private bool _isCheckedSurveyFish;
-    [ObservableProperty] private bool _isCheckedBirdSurvey;
-    [ObservableProperty] private bool _isCheckedMammalSurvey;
+    [ObservableProperty] private bool _isCheckedVegetation;
+    [ObservableProperty] private bool _isCheckedPlant;
+    [ObservableProperty] private bool _isCheckedAmphibianReptile;
+    [ObservableProperty] private bool _isCheckedFish;
+    [ObservableProperty] private bool _isCheckedBird;
+    [ObservableProperty] private bool _isCheckedMammal;
+    [ObservableProperty] private bool _isCheckedWaterQuality;
+    [ObservableProperty] private bool _isCheckedHabitatWaterEdge;
+    [ObservableProperty] private bool _IsCheckedBulkRegister;
 
     public static bool FloatingWindowOpend { get; set; }
 
