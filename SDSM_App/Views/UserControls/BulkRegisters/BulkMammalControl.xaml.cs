@@ -10,7 +10,7 @@ using Telerik.Documents.SpreadsheetStreaming;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
 
-namespace SDSM_App.Views.UserControls.BulkRegisters;
+namespace SDSM_App.Views.UserControls;
 
 /// <summary>
 /// 일괄등록-포유류

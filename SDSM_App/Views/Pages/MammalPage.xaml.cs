@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.ViewModels;
+using SDSM_App.Views.UserControls;
 using SDSM_Models;
 using System.ComponentModel;
 using System.Windows;
@@ -11,7 +12,6 @@ using System.Windows.Input;
 using Telerik.Documents.SpreadsheetStreaming;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
-using Telerik.Windows.Persistence.Core;
 
 namespace SDSM_App.Views.Pages;
 
@@ -29,10 +29,23 @@ public partial class MammalPage : Page, ITransientService
         _vm = vm;
         DataContext = _vm;
 
+        Loaded += Page_Loaded;
         SizeChanged += Page_SizeChanged;
     }
 
     #region This 이벤트
+
+    private void Page_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (App.Current.Services.GetService(typeof(MammalEditorControl)) is MammalEditorControl editor)
+        {
+            editor.CloseClick += (s, e) =>
+            {
+                EditorLayout.Visibility = Visibility.Collapsed;
+            };
+            EditorContentControl.Content = editor;
+        }
+    }
 
     private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
     {

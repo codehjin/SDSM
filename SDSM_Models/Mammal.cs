@@ -18,7 +18,7 @@ public class Mammal
     [DisplayName("연도차수")][Required] public string YearChsu { get; set; } = string.Empty;
     [DisplayName("조사일")] public DateTime? SurveyDate { get; set; }  //필수
     [DisplayName("날씨")] public string? Weather { get; set; }
-    [DisplayName("하천명")][Required] public string? River { get; set; }
+    [DisplayName("하천명")][Required] public string River { get; set; } = string.Empty;
     [DisplayName("지점명")] public string? Site { get; set; }
     [DisplayName("일반명")][Required] public string SpeciesKo { get; set; } = string.Empty;
     [DisplayName("학명")] public string? SpeciesEn { get; set; }

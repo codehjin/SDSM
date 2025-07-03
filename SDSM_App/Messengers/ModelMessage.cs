@@ -1,6 +1,4 @@
-﻿using SDSM_App.Enums;
-
-namespace SDSM_App.Messengers;
+﻿namespace SDSM_App.Messengers;
 
 public class ModelMessage<T>
 {

@@ -33,6 +33,12 @@ public partial class MammalPageViewModel : ObservableObject, ITransientService
 
     public MammalPageViewModel()
     {
+        //작성폼 결과
+        WeakReferenceMessenger.Default.Register<EditorMessage<Mammal>>(this, (r, m) =>
+        {
+            EditorRecevice(m);
+        });
+
         InitialLoad();
     }
 
@@ -53,7 +59,10 @@ public partial class MammalPageViewModel : ObservableObject, ITransientService
     }
 
     [ObservableProperty] private List<Mammal> _modelCollection = [];
-    [ObservableProperty] private Mammal? _modelSelectedItem;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(EditEditorOpenExecutedCommand))]
+    private Mammal? _modelSelectedItem;
 
     [ObservableProperty] private Visibility _editorVisibility = Visibility.Collapsed;
 
@@ -159,6 +168,45 @@ public partial class MammalPageViewModel : ObservableObject, ITransientService
 
     #endregion
 
+    #region ICommand 구현
+
+    //검색
+    [RelayCommand]
+    private void SearchExecuted(object? obj)
+    {
+        QueryText = SearchText;
+        GetModels();
+    }
+
+    //신규
+    [RelayCommand]
+    private void AddEditorOpenExecuted()
+    {
+        WeakReferenceMessenger.Default.Send(new ModelMessage<Mammal>(new Mammal()));
+        EditorVisibility = Visibility.Visible;
+    }
+
+    private bool CanEditEditorOpen() => ModelSelectedItem != null;
+
+    //수정
+    [RelayCommand(CanExecute = nameof(CanEditEditorOpen))]
+    private void EditEditorOpenExecuted()
+    {
+        if (ModelSelectedItem != null)
+        {
+            using var context = new SDSMDbContext();
+            var selectedModel = context.Mammals.Where(m => m.MammalId == ModelSelectedItem.MammalId).FirstOrDefault();
+
+            if (selectedModel != null)
+            {
+                WeakReferenceMessenger.Default.Send(new ModelMessage<Mammal>(selectedModel));
+                EditorVisibility = Visibility.Visible;
+            }
+        }
+    }
+
+    #endregion
+
     #region 삭제
 
     [ObservableProperty] private Visibility _deleteFormVisibility = Visibility.Collapsed;
@@ -233,18 +281,6 @@ public partial class MammalPageViewModel : ObservableObject, ITransientService
             GB.IsBusy = false;
             GB.BusyContent = "";
         }
-    }
-
-    #endregion
-
-    #region ICommand 구현
-
-    //검색
-    [RelayCommand]
-    private void SearchExecuted(object? obj)
-    {
-        QueryText = SearchText;
-        GetModels();
     }
 
     #endregion
@@ -398,6 +434,21 @@ public partial class MammalPageViewModel : ObservableObject, ITransientService
             if (conn.State == ConnectionState.Open)
                 await conn.CloseAsync();
         }
+    }
+
+    #endregion
+
+    #region Messages
+
+    //현재모델 작성폼: 수정상태인 경우 작성폼 닫은 후 다시 불러오기
+    private void EditorRecevice(EditorMessage<Mammal> message)
+    {
+        if (message.EditStatus == EditStatusType.Edit)
+        {
+            EditorVisibility = Visibility.Collapsed;
+        }
+
+        GetModels();
     }
 
     #endregion
