@@ -76,6 +76,7 @@ public partial class MammalPage : Page, ITransientService
         }
     }
 
+
     //초기화
     private void ResetButton_Click(object sender, RoutedEventArgs e)
     {

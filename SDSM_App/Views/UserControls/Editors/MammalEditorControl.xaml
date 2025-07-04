@@ -75,7 +75,7 @@
                                                                InputMode="DatePicker"
                                                                AllowParsingWithoutSeparator="True"
                                                                IsInputRestrictedToSelectableDates="True"
-                                                               SelectableDateStart="1990-01-01"
+                                                               SelectableDateStart="2020-01-01"
                                                                SelectableDateEnd ="{Binding Source={x:Static sys:DateTime.Today}}"
                                                                Width="{StaticResource FormControlWidth}"
                                                                Height="{StaticResource FormControlHeight}"
@@ -147,6 +147,18 @@
                             <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                 <StackPanel Orientation="Horizontal">
                                     <Border Style="{StaticResource FormLabelBorderStyle}">
+                                        <TextBlock Text="특징" Style="{StaticResource FormLabelStyle}" />
+                                    </Border>
+                                    <telerik:RadWatermarkTextBox Text="{Binding Path=Feature}"
+                                                                 Width="{StaticResource FormControlLargeWidth}"
+                                                                 Height="{StaticResource FormControlHeight}"
+                                                                 Style="{StaticResource FormWatermark255TextBoxStyle}"
+                                                                 LostFocus="Trim_LostFocus"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Style="{StaticResource FormLabelBorderStyle}">
                                         <TextBlock Text="위도" Style="{StaticResource FormLabelStyle}" />
                                     </Border>
                                     <telerik:RadNumericUpDown Value="{Binding Path=Lat, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
@@ -181,7 +193,7 @@
                                                                  Width="650"
                                                                  Height="{StaticResource FormControlHeight}"
                                                                  Style="{StaticResource FormWatermark255TextBoxStyle}"
-                                                                 LostFocus="EmptyClear_LostFocus"/>
+                                                                 LostFocus="Trim_LostFocus"/>
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Style="{StaticResource FormStackPanelStyle}">

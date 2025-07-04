@@ -5,11 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
-using SDSM_App.Models;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
-using System.Windows;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SDSM_App.ViewModels;
 

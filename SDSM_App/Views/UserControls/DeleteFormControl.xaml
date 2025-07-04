@@ -56,23 +56,22 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Style="{StaticResource PrimaryTextBlcokStyle}" >
+                        <TextBlock Grid.Column="0" Style="{StaticResource PrimaryTextBlcokStyle}">
                             <Run Text="선택 "/>
                             <Run Text="{Binding Path=DataContext.DeleteCount, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" FontSize="28" FontFamily="{StaticResource DefaultFontFamily}"/>
                             <Run Text="건"/>
                         </TextBlock>
-                        <icon:PackIconFontAwesome Grid.Column="1" 
-                                                  Kind="QuestionSolid"
-                                                  Width="32"
-                                                  Height="32"
-                                                  HorizontalAlignment="Center" 
-                                                  VerticalAlignment="Center" 
-                                                  Margin="20 0 5 0"
-                                                  Foreground="{telerik:Windows11Resource ResourceKey=AccentBrush}"
-                                                  />
+                        <icon:PackIconPhosphorIcons Grid.Column="1" 
+                                                    Kind="QuestionMarkFill"
+                                                    Width="38"
+                                                    Height="38"
+                                                    HorizontalAlignment="Center" 
+                                                    VerticalAlignment="Center" 
+                                                    Margin="30 0 5 0"
+                                                    Foreground="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
                         <StackPanel Grid.Column="2">
-                            <TextBlock Text="삭제된 자료는 복구하실 수 없습니다." Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 0 5"/>
-                            <TextBlock Text="자료를 삭제하시겠습니까?" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                            <TextBlock Text="삭제된 자료는 복구하실 수 없습니다." Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 0 5" FontFamily="{StaticResource High1FontFamily}"/>
+                            <TextBlock Text="자료를 삭제하시겠습니까?" Style="{StaticResource PrimaryTextBlcokStyle}" FontFamily="{StaticResource High1FontFamily}"/>
                         </StackPanel>
                     </Grid>
 
@@ -93,8 +92,8 @@
                                                       IsInteger="True"
                                                       Value="{Binding Path=DataContext.CheckDeleteCount, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}, TargetNullValue={x:Null}}"
                                                       UpdateValueEvent="PropertyChanged"
-                                                      MinWidth="120"
-                                                      MaxWidth="120"/>
+                                                      MinWidth="140"
+                                                      MaxWidth="140"/>
                         </Grid>
                     </GroupBox>
 
@@ -108,6 +107,7 @@
                             </Grid.ColumnDefinitions>
                             <telerik:RadButton Grid.Column="1"
                                                Content="삭제"   
+                                               Width="120"
                                                Style="{StaticResource DeleteButtonStyle}"                                               
                                                Command="{Binding Path=DataContext.DeleteExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"/>
                             <telerik:RadButton Grid.Column="2"

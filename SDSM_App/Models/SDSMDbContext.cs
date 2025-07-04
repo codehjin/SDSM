@@ -28,6 +28,11 @@ public class SDSMDbContext : DbContext, ITransientService
         //modelBuilder.Entity<VeSurveyH>().Navigation(e => e.VeSurvey).AutoInclude();
     }
 
+    //포유류
+    public DbSet<Mammal> Mammals { get; set; }
+    //조류
+    public DbSet<Bird> Birds { get; set; }
+
     //어류
     public  DbSet<FishSurvey> FishSurveys { get; set; }
     public  DbSet<FishSpecies> FishSpeciess { get; set; }
@@ -35,10 +40,6 @@ public class SDSMDbContext : DbContext, ITransientService
     public DbSet<FishSurveyView> FishSurveyViews { get; set; }
     //양서파충류
     public DbSet<AmphibianReptile> ARSurveys { get; set; }
-    //조류
-    public DbSet<BirdSurvey> BirdSurveys { get; set; }
-    //포유류
-    public DbSet<Mammal> Mammals { get; set; }
 
     public  DbSet<SelfUser> SelfUsers { get; set; }
 }

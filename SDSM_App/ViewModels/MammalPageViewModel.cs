@@ -10,11 +10,9 @@ using SDSM_App.Messengers;
 using SDSM_App.Models;
 using SDSM_Models;
 using System.Data;
-using System.Data.SQLite;
 using System.Windows;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
-using Telerik.Windows.Persistence.Core;
 
 namespace SDSM_App.ViewModels;
 
@@ -251,7 +249,7 @@ public partial class MammalPageViewModel : ObservableObject, ITransientService
         return DeleteCount == CheckDeleteCount;
     }
 
-    //선택삭제
+    //삭제
     [RelayCommand(CanExecute = nameof(CanDelete))]
     private async Task DeleteExecuted()
     {
@@ -273,7 +271,7 @@ public partial class MammalPageViewModel : ObservableObject, ITransientService
                 DeleteData = null;
 
                 //자동생성 번호 초기화
-                await SqliteSequenceResetAsync();
+                await SqliteSequenceResetRun();
 
                 GetModels();
             }
@@ -391,48 +389,22 @@ public partial class MammalPageViewModel : ObservableObject, ITransientService
 
     #region 삭제후 sqlite_sequence 초기화
 
-    private async Task SqliteSequenceResetAsync()
+    private async Task SqliteSequenceResetRun()
     {
-        string strConn = GB.SqliteDataSource;
-        using var conn = new SQLiteConnection(strConn);
-
         try
         {
             using var context = new SDSMDbContext();
-
             int count = await context.Mammals.CountAsync();
 
             if (count != 0) return;
 
             string tableName = nameof(Mammal);
 
-            await conn.OpenAsync();
-
-            using var transaction = conn.BeginTransaction();
-            using var cmd = new SQLiteCommand();
-            cmd.Transaction = transaction;
-
-            string strSql = $"DELETE FROM 'sqlite_sequence' WHERE name='{tableName}'";
-
-            cmd.CommandText = strSql;
-            cmd.CommandType = CommandType.Text;
-            cmd.Connection = conn;
-            cmd.Parameters.Clear();
-
-            await cmd.ExecuteNonQueryAsync();
-
-            await transaction.CommitAsync();
-
-            await conn.CloseAsync();
+            await SqliteSequenceReset.SqliteSequenceResetAsync(tableName);
         }
         catch (Exception ex)
         {
-            GB.LogWrite(GetType().Name, nameof(SqliteSequenceResetAsync), ex.Message);
-        }
-        finally
-        {
-            if (conn.State == ConnectionState.Open)
-                await conn.CloseAsync();
+            GB.LogWrite(GetType().Name, nameof(SqliteSequenceResetRun), ex.Message);
         }
     }
 

@@ -297,6 +297,46 @@ public static class GB
         return Math.Round(degress, 6, MidpointRounding.AwayFromZero);
     }
 
+    /// <summary>
+    /// DMS 문자열(예: "36°47’00.5464“", "36_47_00.5464", "36N_47_00.5464E")을 도, 분, 초로 분리 (N/E/공백 제거, 대소문자 무시)
+    /// </summary>
+    public static (int? Do, int? Bun, double? Cho) ParseDmsString(string? dms)
+    {
+        if (string.IsNullOrWhiteSpace(dms)) return (null, null, null);
+
+        // N, E, 공백 제거 (대소문자 구분 없이)
+        var cleaned = dms.Replace(" ", "")
+                         .Replace("N", "", StringComparison.OrdinalIgnoreCase)
+                         .Replace("E", "", StringComparison.OrdinalIgnoreCase);
+
+        // 1. 언더스코어 구분 ("36_47_00.5464")
+        var parts = cleaned.Split('_');
+        if (parts.Length == 3)
+        {
+            if (int.TryParse(parts[0], out int _do) &&
+                int.TryParse(parts[1], out int _bun) &&
+                double.TryParse(parts[2], out double _cho))
+            {
+                return (_do, _bun, _cho);
+            }
+        }
+
+        // 2. 특수문자 구분 ("36°47’00.5464“" 또는 "36°47'00.5464\"")
+        var dmsPattern = @"(\d+)[°](\d+)[’'](\d+(?:\.\d+)?)[“""]";
+        var match = System.Text.RegularExpressions.Regex.Match(cleaned, dmsPattern);
+        if (match.Success)
+        {
+            if (int.TryParse(match.Groups[1].Value, out int _do) &&
+                int.TryParse(match.Groups[2].Value, out int _bun) &&
+                double.TryParse(match.Groups[3].Value, out double _cho))
+            {
+                return (_do, _bun, _cho);
+            }
+        }
+
+        return (null, null, null);
+    }
+
     //파일크기 
     public static string BytesToString(long byteCount)
     {

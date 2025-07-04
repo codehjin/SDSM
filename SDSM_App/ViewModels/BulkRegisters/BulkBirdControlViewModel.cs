@@ -21,9 +21,9 @@ using Telerik.Windows.Documents.Spreadsheet.Model;
 namespace SDSM_App.ViewModels;
 
 /// <summary>
-/// 조류 조사
+/// 조류 일괄등록
 /// </summary>
-public partial class BulkMammalControlViewModel : ObservableObject, ITransientService
+public partial class BulkBirdControlViewModel : ObservableObject, ITransientService
 {
     #region 필드
 
@@ -33,7 +33,7 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
 
     #region 생성자
 
-    public BulkMammalControlViewModel()
+    public BulkBirdControlViewModel()
     {
 
     }
@@ -44,12 +44,12 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
 
     public RadSpreadsheet DataSpreadsheet { get; set; } = new();
 
-    [ObservableProperty] private RadObservableCollection<ImportMammal> _modelCollection = [];
-    [ObservableProperty] private RadObservableCollection<Mammal> _convertedCollection = [];
+    [ObservableProperty] private RadObservableCollection<ImportBird> _modelCollection = [];
+    [ObservableProperty] private RadObservableCollection<Bird> _convertedCollection = [];
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DataImportExecutedCommand))]
-    private string _sheetName = "포유류";
+    private string _sheetName = "조류";
 
     [ObservableProperty] private int _firstRowNumber = 5;
     [ObservableProperty] private int _firstColumnNumber = 2;
@@ -71,7 +71,7 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
     [RelayCommand]
     private void SheetNameResetExecuted()
     {
-        SheetName = "포유류";
+        SheetName = "조류";
     }
 
     private bool CanDataImport()
@@ -111,11 +111,8 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
             workbook = await Task.Run(() => formatProvider.Import(input, null));
             bool isExist = false;
 
-            ModelCollection.Clear();
-            ConvertedCollection.Clear();
-
-            ConvertedCount = 0;
-            ErrorCount = 0;
+            //초기화
+            Reset();
 
             var names = new string[1];
             names[0] = SheetName.ToLower();
@@ -208,6 +205,8 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
         {
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
+
+            Reset();
         }
         else
         {
@@ -220,9 +219,9 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
     #region 메서드
 
     //엑셀->모델
-    private List<ImportMammal> DataTableToModels(Worksheet worksheet)
+    private List<ImportBird> DataTableToModels(Worksheet worksheet)
     {
-        var importModels = new List<ImportMammal>();
+        var importModels = new List<ImportBird>();
         try
         {
             CellRange usedCellRange = worksheet.UsedCellRange;
@@ -231,7 +230,7 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                 var firstValue = worksheet.Cells[rowIndex, FirstColumnNumber - 1].GetValue().Value.RawValue;
                 if (!string.IsNullOrWhiteSpace(firstValue))
                 {
-                    var model = new ImportMammal
+                    var model = new ImportBird
                     {
                         YearChsu = firstValue,
                         SurveyDate = worksheet.Cells[rowIndex, 2].GetValue().Value.RawValue,
@@ -249,21 +248,13 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                         Lng_Cho = worksheet.Cells[rowIndex, 14].GetValue().Value.RawValue,
                         Lat = worksheet.Cells[rowIndex, 15].GetValue().Value.RawValue,
                         Lng = worksheet.Cells[rowIndex, 16].GetValue().Value.RawValue,
-                        ObservationSite = worksheet.Cells[rowIndex, 17].GetValue().Value.RawValue,
-                        Trace1 = worksheet.Cells[rowIndex, 19].GetValue().Value.RawValue,
-                        Trace2 = worksheet.Cells[rowIndex, 20].GetValue().Value.RawValue,
-                        Trace3 = worksheet.Cells[rowIndex, 21].GetValue().Value.RawValue,
-                        Trace4 = worksheet.Cells[rowIndex, 22].GetValue().Value.RawValue,
-                        Trace5 = worksheet.Cells[rowIndex, 23].GetValue().Value.RawValue,
-                        Trace6 = worksheet.Cells[rowIndex, 24].GetValue().Value.RawValue,
-                        Trace7 = worksheet.Cells[rowIndex, 25].GetValue().Value.RawValue,
-                        Trace8 = worksheet.Cells[rowIndex, 26].GetValue().Value.RawValue,
-                        Trace9 = worksheet.Cells[rowIndex, 27].GetValue().Value.RawValue,
-                        Trace10 = worksheet.Cells[rowIndex, 28].GetValue().Value.RawValue,
-                        Trace11 = worksheet.Cells[rowIndex, 29].GetValue().Value.RawValue,
-                        Trace12 = worksheet.Cells[rowIndex, 30].GetValue().Value.RawValue,
-                        Surveyor = worksheet.Cells[rowIndex, 31].GetValue().Value.RawValue,
-                        Note = worksheet.Cells[rowIndex, 32].GetValue().Value.RawValue,
+                        IndividualCount = worksheet.Cells[rowIndex, 17].GetValue().Value.RawValue,
+                        MigratoryType = worksheet.Cells[rowIndex, 18].GetValue().Value.RawValue,
+                        Category = worksheet.Cells[rowIndex, 19].GetValue().Value.RawValue,
+                        CategoryDetail = worksheet.Cells[rowIndex, 20].GetValue().Value.RawValue,
+                        HabitatType = worksheet.Cells[rowIndex, 21].GetValue().Value.RawValue,
+                        Surveyor = worksheet.Cells[rowIndex, 22].GetValue().Value.RawValue,
+                        Note = worksheet.Cells[rowIndex, 23].GetValue().Value.RawValue,
                     };
 
                     importModels.Add(model);
@@ -280,18 +271,18 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
     }
 
     //검수하기
-    private (List<ImportMammal>, List<Mammal>) DataValidation(List<ImportMammal> importModels)
+    private (List<ImportBird>, List<Bird>) DataValidation(List<ImportBird> importModels)
     {
         StringBuilder sb = new();
-        var converteds = new List<Mammal>();
+        var converteds = new List<Bird>();
 
         try
         {
-            foreach (ImportMammal model in importModels)
+            foreach (ImportBird model in importModels)
             {
                 sb.Clear();
 
-                var insertModel = new Mammal();
+                var insertModel = new Bird();
 
                 //다시 검수 때문에 초기화
                 model.ErrorContent = string.Empty;
@@ -547,7 +538,18 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                             }
                             else
                             {
-                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                //문자
+                                var (latDo, latBun, latCho) = GB.ParseDmsString(value.ToString());
+                                if(latDo != null && latBun != null && latCho != null)
+                                {
+                                    var lat = GB.DmsToDegress(latDo.Value, latBun.Value, latCho.Value);
+                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                    insertPropertyInfo?.SetValue(insertModel, Math.Round(lat, 6, MidpointRounding.AwayFromZero));
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                }
                             }
                         }
                         else
@@ -568,7 +570,18 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                             }
                             else
                             {
-                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                //문자
+                                var (lngDo, lngBun, lngCho) = GB.ParseDmsString(value.ToString());
+                                if (lngDo != null && lngBun != null && lngCho != null)
+                                {
+                                    var lng = GB.DmsToDegress(lngDo.Value, lngBun.Value, lngCho.Value);
+                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                    insertPropertyInfo?.SetValue(insertModel, Math.Round(lng, 6, MidpointRounding.AwayFromZero));
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                }
                             }
                         }
                         else
@@ -577,9 +590,7 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                             insertPropertyInfo?.SetValue(insertModel, null);
                         }
                     }
-                    else if (prop.Name == "Trace1" || prop.Name == "Trace2" || prop.Name == "Trace3" || prop.Name == "Trace4" || prop.Name == "Trace5"
-                          || prop.Name == "Trace6" || prop.Name == "Trace7" || prop.Name == "Trace8" || prop.Name == "Trace9" || prop.Name == "Trace10"
-                          || prop.Name == "Trace11" || prop.Name == "Trace12")
+                    else if (prop.Name == "IndividualCount")
                     {
                         //정수
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -682,18 +693,16 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                     progressCount++;
                     GB.ProgressValue = (progressCount / progressCount) * 100;
 
-                    string strSql = $"INSERT INTO Mammal" +
+                    string strSql = $"INSERT INTO Bird" +
                                      $"(YearChsu, SurveyDate, Weather, River, Site, " +
                                      $"SpeciesKo, SpeciesEn, Feature, Lat, Lng, " +
-                                     $"ObservationSite, Trace1, Trace2, Trace3, Trace4, " +
-                                     $"Trace5, Trace6, Trace7, Trace8, Trace9, " +
-                                     $"Trace10, Trace11, Trace12, Surveyor, Note) " +
+                                     $"IndividualCount, MigratoryType, Category, CategoryDetail, HabitatType, " +
+                                     $"Surveyor, Note) " +
                                      $"VALUES " +
                                      $"(@YearChsu, @SurveyDate, @Weather, @River, @Site, " +
                                      $"@SpeciesKo, @SpeciesEn, @Feature, @Lat, @Lng, " +
-                                     $"@ObservationSite, @Trace1, @Trace2, @Trace3, @Trace4, " +
-                                     $"@Trace5, @Trace6, @Trace7, @Trace8, @Trace9, " +
-                                     $"@Trace10, @Trace11, @Trace12, @Surveyor, @Note)";
+                                     $"@IndividualCount, @MigratoryType, @Category, @CategoryDetail, @HabitatType, " +
+                                     $"@Surveyor, @Note)";
 
                     using var command = new SQLiteCommand(strSql, conn);
 
@@ -707,19 +716,11 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                     command.Parameters.AddWithValue("@Feature", model.Feature ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Lat", model.Lat ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Lng", model.Lng ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@ObservationSite", model.ObservationSite ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace1", model.Trace1 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace2", model.Trace2 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace3", model.Trace3 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace4", model.Trace4 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace5", model.Trace5 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace6", model.Trace6 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace7", model.Trace7?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace8", model.Trace8 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace9", model.Trace9 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace10", model.Trace10 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace11", model.Trace11 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace12", model.Trace12 ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@IndividualCount", model.IndividualCount ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@MigratoryType", model.MigratoryType ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Category", model.Category ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@CategoryDetail", model.CategoryDetail ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@HabitatType", model.HabitatType ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Surveyor", model.Surveyor ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Note", model.Note ?? (object)DBNull.Value);
 
@@ -742,6 +743,16 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
             GB.BusyContent = string.Empty;
             GB.ProgressValue = 0;
         }
+    }
+
+    //초기화
+    private void Reset()
+    {
+        ModelCollection.Clear();
+        ConvertedCollection.Clear();
+
+        ConvertedCount = 0;
+        ErrorCount = 0;
     }
 
     #endregion

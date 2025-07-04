@@ -13,7 +13,7 @@ using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
 namespace SDSM_App.Views.UserControls;
 
 /// <summary>
-/// 일괄등록-포유류
+/// 포유류 일괄드록
 /// </summary>
 public partial class BulkMammalControl : UserControl, ITransientService
 {

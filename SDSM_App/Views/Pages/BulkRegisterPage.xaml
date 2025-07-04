@@ -156,10 +156,10 @@
                         </Style>
                     </Border.Resources>
                     <common:WrapPanelFill>
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="양서파충류" Tag="BulkMammalControl" Click="OpenRadButton_Click"/>
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="양서파충류"/>
                         <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="어류"/>
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="조류"/>
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="포유류"/>
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="조류" Tag="BulkBirdControl" Click="OpenRadButton_Click"/>
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="포유류"  Tag="BulkMammalControl" Click="OpenRadButton_Click"/>
                         <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="수질"/>
                         <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="서식수변"/>
                     </common:WrapPanelFill>
