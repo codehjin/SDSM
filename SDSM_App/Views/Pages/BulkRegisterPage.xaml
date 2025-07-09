@@ -40,9 +40,9 @@
                             </ContentPresenter.RenderTransform>
                             <ContentPresenter.RenderTransformOrigin>0.5,0.5</ContentPresenter.RenderTransformOrigin>
                         </ContentPresenter>
-                        <Border x:Name="LinkBorder" HorizontalAlignment="Center" VerticalAlignment="Bottom" Background="#99000000" Height="36" Padding="30 0" CornerRadius="18" Margin="0 0 0 20" Opacity="0">
+                        <Border x:Name="LinkBorder" HorizontalAlignment="Center" VerticalAlignment="Bottom" Background="#99000000" Height="36" Padding="30 0" CornerRadius="18" Margin="0 0 0 10" Opacity="0">
                             <Border.RenderTransform>
-                                <TranslateTransform x:Name="LinkBorderTranslate" Y="20"/>
+                                <TranslateTransform x:Name="LinkBorderTranslate" Y="10"/>
                             </Border.RenderTransform>
                             <TextBlock Text="등록창 열기" FontSize="16" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -141,29 +141,33 @@
             </StackPanel>
 
             <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly" Margin="0 0 5 0">
-                <Border Grid.Row="1" Margin="30"  MaxWidth="{StaticResource ContentXSmallMaxWidth}">
-                    <Border.Resources>
+                <StackPanel  Grid.Row="1" Margin="30"  MaxWidth="{StaticResource ContentXSmallMaxWidth}">
+                    <StackPanel.Resources>
                         <Style TargetType="telerik:RadButton">
                             <Setter Property="Cursor" Value="Hand"/>
                             <Setter Property="Margin" Value="3"/>
-                            <Setter Property="MinWidth" Value="320"/>
-                            <Setter Property="MinHeight" Value="220"/>
+                            <Setter Property="MinWidth" Value="180"/>
+                            <Setter Property="MinHeight" Value="180"/>
                             <Setter Property="FontFamily" Value="{StaticResource High1FontFamily}"/>
                             <Setter Property="FontSize" Value="24"/>
                             <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
                             <Setter Property="helpers:ThemeHelper.FocusBrush" Value="Transparent"/>
                             <Setter Property="Template" Value="{StaticResource BulkRadButtonTemplate}"/>
                         </Style>
-                    </Border.Resources>
-                    <common:WrapPanelFill>
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="양서파충류"/>
+                    </StackPanel.Resources>
+                    <TextBlock Text="생물조사" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="5 0 0 10"/>
+                    <UniformGrid Columns="4">
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="저서동물" Tag="BulkBenthosControl" Click="OpenRadButton_Click"/>
                         <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="어류"/>
                         <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="조류" Tag="BulkBirdControl" Click="OpenRadButton_Click"/>
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="포유류"  Tag="BulkMammalControl" Click="OpenRadButton_Click"/>
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="수질"/>
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="서식수변"/>
-                    </common:WrapPanelFill>
-                </Border>
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="포유류" Tag="BulkMammalControl" Click="OpenRadButton_Click"/>                        
+                    </UniformGrid>
+                    <TextBlock Text="환경자료" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="5 40 0 10"/>
+                    <UniformGrid>
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="수질" Tag="BulkWaterQualityControl" Click="OpenRadButton_Click"/>
+                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="서식수변" Tag="BulkHabitatWaterEdgeControl" Click="OpenRadButton_Click"/>
+                    </UniformGrid>
+                </StackPanel>
             </ScrollViewer>
         </Grid>
 

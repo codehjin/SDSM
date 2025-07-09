@@ -29,10 +29,11 @@ public partial class MainWindowViewModel : ObservableObject, ISingletonService
     [ObservableProperty] private bool _isCheckedPlant;
     [ObservableProperty] private bool _isCheckedAmphibianReptile;
     [ObservableProperty] private bool _isCheckedFish;
+    [ObservableProperty] private bool _isCheckedBenthos;
     [ObservableProperty] private bool _isCheckedBird;
     [ObservableProperty] private bool _isCheckedMammal;
-    [ObservableProperty] private bool _isCheckedWaterQuality;
     [ObservableProperty] private bool _isCheckedHabitatWaterEdge;
+    [ObservableProperty] private bool _isCheckedWaterQuality;
     [ObservableProperty] private bool _IsCheckedBulkRegister;
 
     public static bool FloatingWindowOpend { get; set; }

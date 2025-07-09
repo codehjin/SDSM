@@ -15,7 +15,7 @@ public class AmphibianReptile
     [Description("ID")]
     public int AmphibianReptileId { get; set; }
 
-    [DisplayName("연도/차수")][Required] public string SurveyYearChsu { get; set; } = string.Empty;
+    [DisplayName("연도차수")][Required] public string SurveyYearChsu { get; set; } = string.Empty;
     [DisplayName("조사일")][Required] public DateTime SurveyDate { get; set; }
     [DisplayName("날씨")] public string? Weather { get; set; }
     [DisplayName("하천명")] public string? River { get; set; }

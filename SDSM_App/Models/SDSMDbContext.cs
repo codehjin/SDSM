@@ -32,6 +32,13 @@ public class SDSMDbContext : DbContext, ITransientService
     public DbSet<Mammal> Mammals { get; set; }
     //조류
     public DbSet<Bird> Birds { get; set; }
+    //서식수변
+    public DbSet<HabitatWaterEdge> HabitatWaterEdges { get; set; }
+    //수질
+    public DbSet<WaterQuality> WaterQualitys { get; set; }
+    //저서동물
+    public DbSet<Benthos> Benthoss { get; set; }
+    public DbSet<BenthosSpecies> BenthosSpeciess { get; set; }
 
     //어류
     public  DbSet<FishSurvey> FishSurveys { get; set; }

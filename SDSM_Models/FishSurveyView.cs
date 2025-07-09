@@ -11,7 +11,7 @@ namespace SDSM_Models;
 public class FishSurveyView
 {
     [DisplayName("ID")] public int FishSurveyId { get; set; }
-    [DisplayName("연도/차수")] public string SurveyYearChsu { get; set; } = string.Empty;
+    [DisplayName("연도차수")] public string SurveyYearChsu { get; set; } = string.Empty;
     [DisplayName("지점명")] public string Site { get; set; } = string.Empty;
     [DisplayName("조사일")] public DateTime SurveyDate { get; set; }
     [DisplayName("대권역명")] public string? BigZone { get; set; }

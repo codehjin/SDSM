@@ -6,6 +6,7 @@ using Microsoft.Win32;
 using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
+using SDSM_App.Models;
 using SDSM_Models;
 using System.Data.SQLite;
 using System.IO;
@@ -15,13 +16,12 @@ using System.Text;
 using System.Windows;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
-using Telerik.Windows.Documents.Spreadsheet.FormatProviders;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
 using Telerik.Windows.Documents.Spreadsheet.Model;
 namespace SDSM_App.ViewModels;
 
 /// <summary>
-/// 조류 일괄등록
+/// 일괄등록 조류
 /// </summary>
 public partial class BulkBirdControlViewModel : ObservableObject, ITransientService
 {
@@ -35,12 +35,15 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
 
     public BulkBirdControlViewModel()
     {
-
+        GetColumnNumbers();
     }
 
     #endregion
 
     #region 속성
+
+    //항목 열 번호 목록
+    public List<ColumnNumber> ColumnNumbers { get; set; } = [];
 
     public RadSpreadsheet DataSpreadsheet { get; set; } = new();
 
@@ -102,13 +105,12 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
 
         Workbook? workbook = null;
         Worksheet? worksheet = null;
-        IWorkbookFormatProvider formatProvider = new XlsxFormatProvider();
 
         try
         {
             using Stream input = new FileStream(fileName, FileMode.Open, FileAccess.Read);
 
-            workbook = await Task.Run(() => formatProvider.Import(input, null));
+            workbook = await Task.Run(() => new XlsxFormatProvider().Import(input, null));
             bool isExist = false;
 
             //초기화
@@ -119,7 +121,7 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
 
             foreach (Worksheet sheet in workbook.Sheets)
             {
-                if (sheet.Name.Replace(" ", "").Equals(SheetName, StringComparison.CurrentCultureIgnoreCase))
+                if (sheet.Name.Replace(" ", "").ToLower() == SheetName.Replace(" ", "").ToLower())
                 {
                     worksheet = sheet;
                     isExist = true;
@@ -248,13 +250,13 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                         Lng_Cho = worksheet.Cells[rowIndex, 14].GetValue().Value.RawValue,
                         Lat = worksheet.Cells[rowIndex, 15].GetValue().Value.RawValue,
                         Lng = worksheet.Cells[rowIndex, 16].GetValue().Value.RawValue,
-                        IndividualCount = worksheet.Cells[rowIndex, 17].GetValue().Value.RawValue,
-                        MigratoryType = worksheet.Cells[rowIndex, 18].GetValue().Value.RawValue,
-                        Category = worksheet.Cells[rowIndex, 19].GetValue().Value.RawValue,
-                        CategoryDetail = worksheet.Cells[rowIndex, 20].GetValue().Value.RawValue,
-                        HabitatType = worksheet.Cells[rowIndex, 21].GetValue().Value.RawValue,
-                        Surveyor = worksheet.Cells[rowIndex, 22].GetValue().Value.RawValue,
-                        Note = worksheet.Cells[rowIndex, 23].GetValue().Value.RawValue,
+                        IndividualCount = worksheet.Cells[rowIndex, 18].GetValue().Value.RawValue,
+                        MigratoryType = worksheet.Cells[rowIndex, 19].GetValue().Value.RawValue,
+                        Category = worksheet.Cells[rowIndex, 20].GetValue().Value.RawValue,
+                        CategoryDetail = worksheet.Cells[rowIndex, 21].GetValue().Value.RawValue,
+                        HabitatType = worksheet.Cells[rowIndex, 22].GetValue().Value.RawValue,
+                        Surveyor = worksheet.Cells[rowIndex, 23].GetValue().Value.RawValue,
+                        Note = worksheet.Cells[rowIndex, 24].GetValue().Value.RawValue,
                     };
 
                     importModels.Add(model);
@@ -753,6 +755,33 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
 
         ConvertedCount = 0;
         ErrorCount = 0;
+    }
+
+    private void GetColumnNumbers()
+    {
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "연도차수", Value = 2 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사일", Value = 3 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "날씨", Value = 4 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천명", Value = 5 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "지점명", Value = 6 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "일반명", Value = 7 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "학명", Value = 8 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특징", Value = 9 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_도", Value = 10 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_분", Value = 11 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_초", Value = 12 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_도", Value = 13 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_분", Value = 14 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_초", Value = 15 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도", Value = 16 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도", Value = 17 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "개체수", Value = 19 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "도래유형", Value = 20 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "대항목", Value = 21 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "세부항목", Value = 22 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "서식유형", Value = 23 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", Value = 24 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특이사항", Value = 25 });
     }
 
     #endregion

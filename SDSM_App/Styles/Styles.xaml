@@ -321,6 +321,30 @@
         <Setter Property="VerticalAlignment" Value="Top"/>
     </Style>
 
+    <!--작성항목 좌 그룹-->
+    <Style x:Key="FormGroupStackPanelStyle" TargetType="StackPanel">
+        <Setter Property="Width" Value="60"/>
+        <Setter Property="Margin" Value="20 0 0 0"/>
+    </Style>
+    
+    <!--작성항목 좌 그룹 설명 제목-->
+    <Style x:Key="FormGroupBorderStyle" TargetType="Border">
+        <Setter Property="Background"  Value="{telerik:Windows11Resource ResourceKey=AlternativeBrush}"/>
+        <Setter Property="BorderBrush"  Value="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1 1 0 1"/>
+        <Setter Property="CornerRadius" Value="8 0 0 8"/>
+        <Setter Property="Padding" Value="5 2"/>
+    </Style>
+
+    <!--작성항목 좌 그룹 설명 내용-->
+    <Style x:Key="FormGroupTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource High1FontFamily}"/>
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+
     <Style x:Key="FormLabelBorderStyle" TargetType="Border">
         <Setter Property="Width" Value="160"/>
         <Setter Property="Height" Value="{StaticResource DefaultHeight}"/>
@@ -335,6 +359,8 @@
     <Style x:Key="FormLabelStyle" TargetType="TextBlock">
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Margin"  Value="5 0 0 0"/>
+        <Setter Property="TextWrapping"  Value="Wrap"/>
+        <Setter Property="FontSize"  Value="15"/>
         <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"/>
     </Style>
 
@@ -386,7 +412,7 @@
 
     <Style x:Key="FormDoubleNumericUpDownStyle" TargetType="telerik:RadNumericUpDown" BasedOn="{StaticResource FormIntNumericUpDownStyle}">
         <Setter Property="IsInteger" Value="False"/>
-        <Setter Property="NumberDecimalDigits" Value="2"/>
+        <Setter Property="NumberDecimalDigits" Value="1"/>
     </Style>
 
     <Style x:Key="FormRadComboBoxStyle" TargetType="telerik:RadComboBox" BasedOn="{StaticResource RadComboBoxStyle}">

@@ -857,7 +857,7 @@
                                     </Border>
 
                                     <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
-                                        <Expander BorderThickness="0">
+                                        <Expander BorderThickness="0" IsExpanded="True">
                                             <Expander.Header>
                                                 <StackPanel Orientation="Horizontal">
                                                     <icon:PackIconPhosphorIcons>
@@ -918,6 +918,12 @@
                                                         <TextBlock Text="어류"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedBenthos, Mode=TwoWay}" Tag="BenthosPage" Click="MenuItem_Click">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
+                                                        <TextBlock Text="저서동물"/>
+                                                    </StackPanel>
+                                                </telerik:RadRadioButton>
                                                 <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedBird, Mode=TwoWay}" Tag="BirdPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
@@ -935,7 +941,7 @@
                                     </Border>
 
                                     <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
-                                        <Expander BorderThickness="0">
+                                        <Expander BorderThickness="0" IsExpanded="True">
                                             <Expander.Header>
                                                 <StackPanel Orientation="Horizontal">
                                                     <icon:PackIconPhosphorIcons>
@@ -960,16 +966,16 @@
                                                 </StackPanel>
                                             </Expander.Header>
                                             <StackPanel>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedWaterQuality, Mode=TwoWay}" Tag="WaterQualityPage" Click="MenuItem_Click">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="수질"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
                                                 <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedHabitatWaterEdge, Mode=TwoWay}" Tag="HabitatWaterEdgePage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="서식수변"/>
+                                                    </StackPanel>
+                                                </telerik:RadRadioButton>
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedWaterQuality, Mode=TwoWay}" Tag="WaterQualityPage" Click="MenuItem_Click">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
+                                                        <TextBlock Text="수질"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
                                             </StackPanel>

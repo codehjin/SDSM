@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.ViewModels;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Telerik.Documents.SpreadsheetStreaming;
@@ -13,7 +15,7 @@ using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
 namespace SDSM_App.Views.UserControls.BulkRegisters;
 
 /// <summary>
-/// 조류 일괄등록
+/// 일괄등록 조류
 /// </summary>
 public partial class BulkBirdControl : UserControl, ITransientService
 {
@@ -107,6 +109,49 @@ public partial class BulkBirdControl : UserControl, ITransientService
         if (sorts.Count != 0)
         {
             DataRadGridView.SortDescriptors.AddRange(sorts);
+        }
+    }
+
+    //표준양식 출력
+    private void FormExportRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            CommonOpenFileDialog dialog = new()
+            {
+                IsFolderPicker = true,
+                Title = "다운로드 - 폴더선택"
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                if (string.IsNullOrWhiteSpace(dialog.FileName))
+                    return;
+
+                var sri = Application.GetResourceStream(new Uri("pack://application:,,,/SDSM_App;component/Assets/Excels/조류_표준양식.xlsx")).Stream;
+
+                if (sri != null)
+                {
+                    string path = Path.Combine(dialog.FileName, $"조류_표준양식_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+
+                    using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+                    sri.CopyTo(fileStream);
+
+                    var toast = (GB.SaveMessage, true);
+                    WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
+                }
+                else
+                {
+                    MessageBox.Show("파일을 찾을 수 없습니다.", "파일 오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(FormExportRadButton_Click), ex.Message);
+
+            var toast = (ex.Message, false);
+            WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
         }
     }
 
