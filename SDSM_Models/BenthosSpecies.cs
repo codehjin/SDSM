@@ -16,6 +16,8 @@ public class BenthosSpecies
     [Description("ID")]
     public int BenthosSpeciesId { get; set; }
 
+    [DisplayName("오탁치(s)")] public double? SaprobicValue { get; set; }
+    [DisplayName("지표가중치(g)")] public int? IndicatorWeight { get; set; }
     [DisplayName("문")] public string? PhylumKo { get; set; }
     [DisplayName("강")] public string? ClassKo { get; set; }
     [DisplayName("목")] public string? OrderKo { get; set; }
@@ -31,4 +33,7 @@ public class BenthosSpecies
     public virtual Benthos Benthos { get; set; } = null!;
 
     [NotMapped][DisplayName("오류내용")] public string ErrorContent { get; set; } = string.Empty;
+
+    //일괄입력시 종목록과 매치
+    [NotMapped][DisplayName("번호")] public int MacthNumber { get; set; }
 }

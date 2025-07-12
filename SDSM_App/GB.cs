@@ -24,7 +24,7 @@ public static class GB
     public static string DBName { get; set; } = "SDSMDB.sqlite";
 
     //Sqlite Data Source
-    public static string SqliteDataSource { get; set; } = @$"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DBName)}";
+    public static string SqliteDataSource { get; set; } = @$"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DBName)};foreign keys=true;";
 
     //Cts
     public static CancellationTokenSource? GBCts { get; set; }

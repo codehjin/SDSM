@@ -412,13 +412,21 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
         try
         {
             using var context = new SDSMDbContext();
-            int count = await context.Mammals.CountAsync();
+            
+            int count = await context.Benthoss.CountAsync();            
+            if (count == 0) 
+            { 
+                string tableName = nameof(Benthos);
+                await SqliteSequenceReset.SqliteSequenceResetAsync(tableName);
+            }
 
-            if (count != 0) return;
+            int speciesCount = await context.BenthosSpeciess.CountAsync();
+            if (speciesCount == 0)
+            {
+                string tableName = nameof(BenthosSpecies);
+                await SqliteSequenceReset.SqliteSequenceResetAsync(tableName);
+            }
 
-            string tableName = nameof(Benthos);
-
-            await SqliteSequenceReset.SqliteSequenceResetAsync(tableName);
         }
         catch (Exception ex)
         {

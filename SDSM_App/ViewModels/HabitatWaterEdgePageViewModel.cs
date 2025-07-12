@@ -391,7 +391,7 @@ public partial class HabitatWaterEdgePageViewModel : ObservableObject, ITransien
         try
         {
             using var context = new SDSMDbContext();
-            int count = await context.Mammals.CountAsync();
+            int count = await context.HabitatWaterEdges.CountAsync();
 
             if (count != 0) return;
 

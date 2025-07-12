@@ -190,11 +190,12 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Smell}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="habitat2"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Note}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="habitat2"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyUnavailableReason}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" ColumnGroupName="etc"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexDI}" DataFormatString="{}{0:F2}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="index"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexH}" DataFormatString="{}{0:F2}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="index"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexR1}" DataFormatString="{}{0:F2}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="index"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexJ}" DataFormatString="{}{0:F2}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="index"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIScore}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIGrade}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="grade"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexDI}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="index"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexH}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="index"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexR1}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="index"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexJ}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="index"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>

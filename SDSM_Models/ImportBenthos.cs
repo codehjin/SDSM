@@ -49,11 +49,20 @@ public class ImportBenthos
     [DisplayName("냄새")] public string? Smell { get; set; }
     [DisplayName("특이사항")] public string? Note { get; set; }
     [DisplayName("채집불가 내용")] public string? SurveyUnavailableReason { get; set; }
+    //자동계산
+    [DisplayName("우점도(DI)")] public double? IndexDI { get; set; }
+    //자동계산
+    [DisplayName("다양도(H')")] public double? IndexH { get; set; }
+    //자동계산
+    [DisplayName("종풍부도(R1)")] public double? IndexR1 { get; set; }
+    //자동계산
+    [DisplayName("균등도(J')")] public double? IndexJ { get; set; }
+    //자동계산
+    [DisplayName("BMI 점수")] public double? BMIScore { get; set; }
+    //자동계산
     [DisplayName("BMI 등급")] public string? BMIGrade { get; set; }
-    [DisplayName("우점도(DI)")] public string? IndexDI { get; set; }
-    [DisplayName("다양도(H')")] public string? IndexH { get; set; }
-    [DisplayName("종풍부도(R1)")] public string? IndexR1 { get; set; }
-    [DisplayName("균등도(J')")] public string? IndexJ { get; set; }
+    [DisplayName("종수")] public int SpeciesCount { get; set; }
+    [DisplayName("개체수")] public double IndividualCount { get; set; }
 
     //일괄입력시 종목록과 매치
     [DisplayName("번호")] public int MacthNumber { get; set; }

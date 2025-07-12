@@ -2,15 +2,16 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
+using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.IO;
 using System.Media;
 using System.Reflection;
@@ -216,7 +217,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveExecuted()
     {
-        if (ErrorCount != 0 || ConvertedCount == 0 || ErrorSpeciesCount == 0)
+        if (ErrorCount != 0 || ConvertedCount == 0 || ErrorSpeciesCount != 0)
             return;
 
         string message = $"자료 : {ConvertedCount:N0}건을{Environment.NewLine}저장하시겠습니까?";
@@ -263,6 +264,33 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                 {
                     matchNumber++;
 
+                    //종목록
+                    var speciesData = GetSpeciesData(worksheet, columnIndex, matchNumber);
+
+                    // 1. IndividualCount 값만 추출 (null은 0으로 처리)
+                    int[] individualCounts = [.. speciesData.Select(x => x.IndividualCount.HasValue ? (int)x.IndividualCount.Value : 0)];
+
+                    // 2. 각 개체별로 점수 계산
+                    foreach (var species in speciesData)
+                    {
+                        int value = species.IndividualCount.HasValue ? (int)species.IndividualCount.Value : 0;
+                        int rankScorer = RankScorer.GetScore(individualCounts, value);
+
+                        // 점수 RankScorer 프로퍼티에 할당
+                        species.RankScorer = rankScorer;
+                    }
+
+                    var surveyUnavailableReason = worksheet.Cells[43, columnIndex].GetValue().Value.RawValue;
+
+                    var indexDI = GetDI(speciesData);
+                    var indexH = GetH(speciesData);
+                    var indexR1 = GetR1(speciesData);
+                    var indexJ = GetJ(speciesData);
+                    var (score, grade) = GetBMI(speciesData, surveyUnavailableReason);
+
+                    var speciesCount = speciesData.GroupBy(m => m.SpeciesKo).Count();
+                    var individualCountSum = speciesData.Sum(m => m.IndividualCount);
+
                     var model = new ImportBenthos
                     {
                         MacthNumber = matchNumber,
@@ -307,18 +335,20 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                         Transparency = worksheet.Cells[40, columnIndex].GetValue().Value.RawValue,
                         Smell = worksheet.Cells[41, columnIndex].GetValue().Value.RawValue,
                         Note = worksheet.Cells[42, columnIndex].GetValue().Value.RawValue,
-                        SurveyUnavailableReason = worksheet.Cells[43, columnIndex].GetValue().Value.RawValue,
-                        //BMIGrade = worksheet.Cells[44, columnIndex].GetValue().Value.RawValue,
-                        //IndexDI = worksheet.Cells[45, columnIndex].GetValue().Value.RawValue,
-                        //IndexH = worksheet.Cells[46, columnIndex].GetValue().Value.RawValue,
-                        //IndexR1 = worksheet.Cells[47, columnIndex].GetValue().Value.RawValue,
-                        //IndexJ = worksheet.Cells[48, columnIndex].GetValue().Value.RawValue,
+                        SurveyUnavailableReason = surveyUnavailableReason,
+                        IndexDI = indexDI,
+                        IndexH = indexH,
+                        IndexR1 = indexR1,
+                        IndexJ = indexJ,
+                        BMIScore = score,
+                        BMIGrade = grade,
+                        SpeciesCount = speciesCount,
+                        IndividualCount = individualCountSum ?? 0,
                     };
 
                     importModels.Add(model);
 
-                    //종목록
-                    importSpeciesModels.AddRange(GetSpeciesData(worksheet, columnIndex, matchNumber));
+                    importSpeciesModels.AddRange(speciesData);
                 }
             }
             return (importModels, importSpeciesModels);
@@ -353,11 +383,18 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
                 foreach (var prop in props)
                 {
-                    if (prop.Name == "ErrorContent") continue;
+                    if (prop.Name == "ErrorContent" || prop.Name == "MacthNumber" ) continue;
 
                     var value = prop.GetValue(model);
 
-                    if (prop.Name == "YearChsu" || prop.Name == "Side")
+                    if (prop.Name == "IndexDI" || prop.Name == "IndexH" || prop.Name == "IndexR1" || prop.Name == "IndexJ"
+                       || prop.Name == "BMIScore" || prop.Name == "BMIGrade"
+                       || prop.Name == "SpeciesCount" || prop.Name == "IndividualCount")
+                    {
+                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                        insertPropertyInfo?.SetValue(insertModel, value);
+                    }
+                    else if (prop.Name == "YearChsu" || prop.Name == "Side")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -737,11 +774,11 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
                 foreach (var prop in props)
                 {
-                    if (prop.Name == "ErrorContent") continue;
+                    if (prop.Name == "ErrorContent" || prop.Name == "MacthNumber" || prop.Name == "RankScorer") continue;
 
                     var value = prop.GetValue(model);
 
-                    if (prop.Name == "IndividualCount")
+                    if (prop.Name == "IndividualCount" || prop.Name == "SaprobicValue")
                     {
                         //실수
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -750,6 +787,27 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                                 insertPropertyInfo?.SetValue(insertModel, d);
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                            }
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
+                    else if(prop.Name == "IndicatorWeight")
+                    {
+                        //정수
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (int.TryParse(value.ToString(), out int i))
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, i);
                             }
                             else
                             {
@@ -801,7 +859,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         }
     }
 
-    private bool AddSave()
+    private async Task<bool> AddSave()
     {
         try
         {
@@ -813,96 +871,23 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
             double progressTotal = ConvertedCount;
             double progressCount = 0;
 
-            string strConn = GB.SqliteDataSource;
+            var repository = App.Current.Services.GetRequiredService<IBenthosRepository>();
 
-            using (var conn = new SQLiteConnection(strConn))
+            foreach (var model in ConvertedCollection)
             {
-                conn.Open();
+                progressCount++;
+                GB.ProgressValue = (int)((progressCount / progressTotal) * 100);
+                GB.BusyContent = $"자료 저장 중...{GB.ProgressValue}%";
 
-                using var transaction = conn.BeginTransaction();
+                var macthNumber = model.MacthNumber;
 
-                foreach (var model in ConvertedCollection)
+                var addModel = await repository.InsertAsync(model);
+                if (addModel != null)
                 {
-                    progressCount++;
-                    GB.ProgressValue = (progressCount / progressCount) * 100;
-
-                    string strSql = $"INSERT INTO Benthos" +
-                                     $"(YearChsu, Site, SurveyDate, MajorRegion, MiddleRegion, " +
-                                     $"River, RiverType, Lat, Lng, Weather, " +
-                                     $"SurveyAgency, Surveyor, Surbernet30, Surbernet50, Dredge, " +
-                                     $"Ekman, Watershed, PollutionSource, CamopyCover, Floodplain, " +
-                                     $"LeveeLeft, LeveeRight, Bedrock, Concrete, Mud, Sand, " +
-                                     $"FineGravel, Gravel, SmallStone, BigStone, HabitatRiverType, " +
-                                     $"RiverWidth, WaterWidth, AverageDepth, AverageVelocity, Temperature, " +
-                                     $"WaterTemperature, FlowState, Transparency, Smell, Note, " +
-                                     $"SurveyUnavailableReason, BMIGrade, IndexDI, IndexH, IndexR1, IndexJ) " +
-                                     $"VALUES " +
-                                     $"(@YearChsu, @Site, @SurveyDate, @MajorRegion, @MiddleRegion, " +
-                                     $"@River, @RiverType, @Lat, @Lng, @Weather, " +
-                                     $"@SurveyAgency, @Surveyor, @Surbernet30, @Surbernet50, @Dredge, " +
-                                     $"@Ekman, @Watershed, @PollutionSource, @CamopyCover, @Floodplain, " +
-                                     $"@LeveeLeft, @LeveeRight, @Bedrock, @Concrete, @Mud, @Sand, " +
-                                     $"@FineGravel, @Gravel, @SmallStone, @BigStone, @HabitatRiverType, " +
-                                     $"@RiverWidth, @WaterWidth, @AverageDepth, @AverageVelocity, @Temperature, " +
-                                     $"@WaterTemperature, @FlowState, @Transparency, @Smell, @Note, " +
-                                     $"@SurveyUnavailableReason, @BMIGrade, @IndexDI, @IndexH, @IndexR1, @IndexJ)";
-
-                    using var command = new SQLiteCommand(strSql, conn);
-
-                    command.Parameters.AddWithValue("@YearChsu", model.YearChsu);
-                    command.Parameters.AddWithValue("@Site", model.Site);
-                    command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
-                    command.Parameters.AddWithValue("@MajorRegion", model.MajorRegion ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@MiddleRegion", model.MiddleRegion ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@River", model.River ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@RiverType", model.RiverType ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Lat", model.Lat ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Lng", model.Lng ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Weather", model.Weather ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SurveyAgency", model.SurveyAgency ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Surveyor", model.Surveyor ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Surbernet30", model.Surbernet30 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Surbernet50", model.Surbernet50 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Dredge", model.Dredge ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Ekman", model.Ekman ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Watershed", model.Watershed ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@PollutionSource", model.PollutionSource ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@CamopyCover", model.CamopyCover ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Floodplain", model.Floodplain ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@LeveeLeft", model.LeveeLeft ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@LeveeRight", model.LeveeRight ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Bedrock", model.Bedrock ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Concrete", model.Concrete ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Mud", model.Mud ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Sand", model.Sand ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@FineGravel", model.FineGravel ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@WaterTemperature", model.WaterTemperature ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Gravel", model.Gravel ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SmallStone", model.SmallStone ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@BigStone", model.BigStone ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@HabitatRiverType", model.HabitatRiverType ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@RiverWidth", model.RiverWidth ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@WaterWidth", model.WaterWidth ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@AverageDepth", model.AverageDepth ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@AverageVelocity", model.AverageVelocity ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Temperature", model.Temperature ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@WaterTemperature", model.WaterTemperature ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@FlowState", model.FlowState ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Transparency", model.Transparency ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Smell", model.Smell ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Note", model.Note ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SurveyUnavailableReason", model.SurveyUnavailableReason ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@BMIGrade", model.BMIGrade ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@IndexDI", model.IndexDI ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@IndexH", model.IndexH ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@IndexR1", model.IndexR1 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@IndexJ", model.IndexJ ?? (object)DBNull.Value);
-
-                    command.ExecuteNonQuery();
+                    await Task.Run(() => SubBatchSave(addModel.BenthosId, macthNumber));
                 }
-
-                transaction.Commit();
             }
+
             return true;
         }
         catch (Exception ex)
@@ -916,6 +901,51 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
             GB.IsIndeterminate = true;
             GB.BusyContent = string.Empty;
             GB.ProgressValue = 0;
+        }
+    }
+
+    private void SubBatchSave(int parentId, int macthNumber)
+    {
+        try
+        {
+            var addModels = ConvertedSpeciesCollection.Where(w => w.MacthNumber == macthNumber).ToList();
+
+            if (addModels.Count == 0) return;
+
+            string strConn = GB.SqliteDataSource;
+
+            using var conn = new SQLiteConnection(strConn);
+            conn.Open();
+
+            using var transaction = conn.BeginTransaction();
+
+            foreach (var model in addModels)
+            {
+                string strSql = $"INSERT INTO BenthosSpecies" +
+                                 $"(PhylumKo, ClassKo, OrderKo, FamilyKo, SpeciesKo, SpeciesEn, IndividualCount, BenthosId)  " +
+                                 $"VALUES " +
+                                 $"(@PhylumKo, @ClassKo, @OrderKo, @FamilyKo, @SpeciesKo, @SpeciesEn, @IndividualCount, @BenthosId)";
+
+                using var command = new SQLiteCommand(strSql, conn);
+
+                command.Parameters.AddWithValue("@PhylumKo", model.PhylumKo ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@ClassKo", model.ClassKo ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@OrderKo", model.OrderKo ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@FamilyKo", model.FamilyKo ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@SpeciesKo", model.SpeciesKo ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@SpeciesEn", model.SpeciesEn ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@IndividualCount", model.IndividualCount ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@BenthosId", parentId);
+
+                command.ExecuteNonQuery();
+            }
+
+            transaction.Commit();
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(SubBatchSave), ex.Message);
+            throw;
         }
     }
 
@@ -1002,6 +1032,8 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                 var species = new ImportBenthosSpecies
                 {
                     MacthNumber = matchNumber,
+                    SaprobicValue = worksheet.Cells[rowIndex, 0].GetValue().Value.RawValue,
+                    IndicatorWeight = worksheet.Cells[rowIndex, 1].GetValue().Value.RawValue,
                     PhylumKo = worksheet.Cells[rowIndex, 5].GetValue().Value.RawValue,
                     ClassKo = worksheet.Cells[rowIndex, 6].GetValue().Value.RawValue,
                     OrderKo = worksheet.Cells[rowIndex, 7].GetValue().Value.RawValue,
@@ -1015,6 +1047,206 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
             }
         }
         return speciess;
+    }
+
+    /// <summary>
+    /// 개체수 기준 우점도(DI) 계산
+    /// (가장 큰 값 + 두 번째로 큰 값) / 전체 합계, 오류 시 1 반환
+    /// </summary>
+    public static double GetDI(IEnumerable<ImportBenthosSpecies> speciesData)
+    {
+        if (speciesData == null)
+            return 1;
+
+        // 0보다 큰 개체수만 추출
+        var counts = speciesData.Select(x => x.IndividualCount ?? 0)
+                                  .Where(x => x > 0)
+                                  .OrderByDescending(x => x)
+                                  .ToList();
+
+        if (counts.Count == 0)
+            return 1;
+
+        double largest = counts.ElementAtOrDefault(0);
+        double secondLargest = counts.ElementAtOrDefault(1);
+        double sum = counts.Sum();
+
+        if (sum == 0)
+            return 1;
+
+        return (largest + secondLargest) / sum;
+    }
+
+    /// <summary>
+    /// Shannon-Wiener 다양도(H') 계산
+    /// (엑셀: IFERROR(-SUMPRODUCT(개체수,LOG(개체수+(개체수=0),2))/SUM(개체수)+LOG(SUM(개체수),2),0))
+    /// </summary>
+    public static double GetH(IEnumerable<ImportBenthosSpecies> speciesData)
+    {
+        if (speciesData == null)
+            return 0;
+
+        // 개체수 배열 (null은 0으로 처리)
+        var counts = speciesData.Select(x => x.IndividualCount ?? 0)
+                                  .Where(x => x >= 0)
+                                  .ToArray();
+
+        double sum = counts.Sum();
+        if (sum == 0)
+            return 0;
+
+        // -SUMPRODUCT(개체수, LOG(개체수 + (개체수=0), 2))
+        double sumProduct = counts
+            .Select(x => x * Math.Log(x == 0 ? 1 : x, 2))
+            .Sum();
+
+        double result = -sumProduct / sum + Math.Log(sum, 2);
+
+        // NaN, Infinity 등 예외 처리
+        if (double.IsNaN(result) || double.IsInfinity(result))
+            return 0;
+
+        return result;
+    }
+
+    /// <summary>
+    /// 종풍부도(R1) 계산
+    /// (엑셀: IFERROR((COUNTIF(개체수,">0")-1)/LN(SUM(개체수)),0))
+    /// </summary>
+    public static double GetR1(IEnumerable<ImportBenthosSpecies> speciesData)
+    {
+        if (speciesData == null)
+            return 0;
+
+        // 0보다 큰 개체수만 추출
+        var counts = speciesData.Select(x => x.IndividualCount ?? 0)
+                                  .Where(x => x > 0)
+                                  .ToList();
+
+        int S = counts.Count; // 출현 종수
+        double N = counts.Sum(); // 전체 개체수
+
+        if (N <= 0)
+            return 0;
+
+        double result = (S - 1) / Math.Log(N);
+
+        // NaN, Infinity 등 예외 처리
+        if (double.IsNaN(result) || double.IsInfinity(result))
+            return 0;
+
+        return result;
+    }
+
+    /// <summary>
+    /// 균등도(J') 계산
+    /// (엑셀: IFERROR(H'/LOG(출현종수,2),0))
+    /// </summary>
+    public static double GetJ(IEnumerable<ImportBenthosSpecies> speciesData)
+    {
+        if (speciesData == null)
+            return 0;
+
+        // 다양도(H') 계산
+        double h = GetH(speciesData);
+
+        // 출현 종수(S)
+        int S = speciesData.Select(x => x.IndividualCount ?? 0)
+                            .Count(x => x > 0);
+
+        if (S <= 1)
+            return 0;
+
+        double denominator = Math.Log(S, 2);
+        if (denominator == 0)
+            return 0;
+
+        double result = h / denominator;
+
+        // NaN, Infinity 등 예외 처리
+        if (double.IsNaN(result) || double.IsInfinity(result))
+            return 0;
+
+        return result;
+    }
+
+    /// <summary>
+    /// BMI 점수 및 등급 계산 (조사불가 사유 반영)
+    /// (엑셀: IFERROR(ROUND((4-SUMPRODUCT(RankScorer,RankScorer,RankScorer)/SUMPRODUCT(RankScorer,RankScorer))*25,1),0))
+    /// </summary>
+    public static (double?, string?) GetBMI(IEnumerable<ImportBenthosSpecies> speciesData, string? surveyUnavailableReason)
+    {
+        // 조사불가 사유가 있으면 등급은 "-"
+        if (!string.IsNullOrWhiteSpace(surveyUnavailableReason))
+        {
+            var reason = surveyUnavailableReason.Replace(" ", "");
+            if (reason == "접근불가" || reason == "건천화" || reason == "준설" || reason == "공사중")
+                return (null, "-");
+        }
+
+        if (speciesData == null)
+            return (null, null);
+
+        var aArr = speciesData.Select(x => double.TryParse(x.SaprobicValue, out var v) ? v : 0.0).ToArray();
+        var bArr = speciesData.Select(x => int.TryParse(x.IndicatorWeight, out var v) ? v : 0).ToArray();
+        var cArr = speciesData.Select(x => x.RankScorer).ToArray();
+
+        int len = Math.Min(aArr.Length, Math.Min(bArr.Length, cArr.Length));
+        if (len == 0)
+            return (null, null);
+
+        double sumProduct3 = 0;
+        double sumProduct2 = 0;
+        for (int i = 0; i < len; i++)
+        {
+            sumProduct3 += aArr[i] * bArr[i] * cArr[i];
+            sumProduct2 += bArr[i] * cArr[i];
+        }
+
+        if (sumProduct2 == 0)
+            return (null, null);
+
+        double value = (4 - (sumProduct3 / sumProduct2)) * 25;
+        double rounded = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+
+        if (double.IsNaN(rounded) || double.IsInfinity(rounded))
+            return (null, null);
+
+        // 등급 산정
+        string grade;
+        if (rounded >= 80) grade = "A";
+        else if (rounded >= 65) grade = "B";
+        else if (rounded >= 50) grade = "C";
+        else if (rounded >= 35) grade = "D";
+        else if (rounded >= 0) grade = "E";
+        else grade = "Check";
+
+        return (rounded, grade);
+    }
+
+    public static class RankScorer
+    {
+        // range : 개체수 목록, value : 종 개체수
+        public static int GetScore(int[] range, int value)
+        {
+            if (value == 0)
+                return 0;
+
+            // 0보다 큰 값만 카운트
+            var valid = range.Where(x => x > 0).ToArray();
+            if (valid.Length == 0)
+                return 0;
+
+            // 내림차순 순위 (엑셀 RANK와 동일)
+            int rank = valid.Count(x => x > value) + 1;
+            double percentile = (double)rank / valid.Length;
+
+            if (percentile <= 0.2) return 5;
+            if (percentile <= 0.4) return 4;
+            if (percentile <= 0.6) return 3;
+            if (percentile <= 0.8) return 2;
+            return 1;
+        }
     }
 
     #endregion

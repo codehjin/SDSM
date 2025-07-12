@@ -385,7 +385,7 @@ public partial class BirdPageViewModel : ObservableObject, ITransientService
         try
         {
             using var context = new SDSMDbContext();
-            int count = await context.Mammals.CountAsync();
+            int count = await context.Birds.CountAsync();
 
             if (count != 0) return;
 

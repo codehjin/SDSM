@@ -31,6 +31,9 @@ public class ImportHabitatWaterEdge
     [DisplayName("횡구조물")] public string? EvaluationItem8 { get; set; }
     [DisplayName("제외지 토지 이용")] public string? EvaluationItem9 { get; set; }
     [DisplayName("제내지 토지 이용")] public string? EvaluationItem10 { get; set; }
-    [DisplayName("평가점수")] public string? EvaluationScore { get; set; }   
+
+    //자동계산
+    [DisplayName("평가점수")] public double? EvaluationScore { get; set; }
+    //자동계산
     [DisplayName("평가등급")] public string? EvaluationGrade { get; set; }   
 }

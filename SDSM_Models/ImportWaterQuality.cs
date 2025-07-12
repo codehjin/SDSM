@@ -40,13 +40,21 @@ public class ImportWaterQuality
     [DisplayName("온도")] public string? Temperature { get; set; }
     [DisplayName("Chl-a")] public string? Chla { get; set; }
     [DisplayName("전기전도도")] public string? ElectricalConductivity { get; set; }   
-    [DisplayName("탁도")] public string? Turbidity { get; set; }   
-    [DisplayName("pH 등급")] public string? PHGrade { get; set; }   
-    [DisplayName("BOD 등급")] public string? BODGrade { get; set; }   
-    [DisplayName("COD 등급")] public string? CODGrade { get; set; }   
-    [DisplayName("TOC 등급")] public string? TOCGrade { get; set; }   
-    [DisplayName("SS 등급")] public string? SSGrade { get; set; }   
-    [DisplayName("DO 등급")] public string? DOGrade { get; set; }   
-    [DisplayName("T-P 등급")] public string? TPGrade { get; set; }   
+    [DisplayName("탁도")] public string? Turbidity { get; set; }
+    //자동계산
+    [DisplayName("pH 등급")] public int? PHGrade { get; set; }
+    //자동계산
+    [DisplayName("BOD 등급")] public string? BODGrade { get; set; }
+    //자동계산
+    [DisplayName("COD 등급")] public string? CODGrade { get; set; }
+    //자동계산
+    [DisplayName("TOC 등급")] public string? TOCGrade { get; set; }
+    //자동계산
+    [DisplayName("SS 등급")] public int? SSGrade { get; set; }
+    //자동계산
+    [DisplayName("DO 등급")] public string? DOGrade { get; set; }
+    //자동계산
+    [DisplayName("T-P 등급")] public string? TPGrade { get; set; }
+    //자동계산
     [DisplayName("대장균군 등급")] public string? EColiGrade { get; set; }
 }

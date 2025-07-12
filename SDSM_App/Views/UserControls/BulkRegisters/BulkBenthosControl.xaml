@@ -80,8 +80,23 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" >
-                <telerik:RadToggleButton x:Name="ImportRadToggleButton" Content="가져온 자료" IsChecked="True"  Width="150" Height="44" Margin="0 0 5 0" Cursor="Hand"/>
+                <telerik:RadToggleButton x:Name="ImportRadToggleButton" Content="가져온 자료" IsChecked="True"  Width="150" Height="44" Margin="0 0 5 0" Cursor="Hand"/>                
                 <telerik:RadToggleButton x:Name="ConvertedRadToggleButton" Content="변환된 자료" IsChecked="True" Width="150" Height="44" Cursor="Hand"/>
+
+                <Rectangle Style="{StaticResource VerticalRectangleStyle}" Margin="10 0" Height="42"/>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}"/>
+                    </StackPanel.Resources>
+                    <TextBlock Text="종 목록" FontFamily="{StaticResource High1FontFamily}"/>
+                    <TextBlock Text="총" Margin="20 0 5 0"/>
+                    <TextBlock Text="{Binding Path=SpeciesCollection.Count, Mode=OneWay, StringFormat={}{0:N0}건}"/>
+                    <TextBlock Text="오류" Margin="10 0 5 0"/>
+                    <TextBlock Text="{Binding Path=ErrorSpeciesCount, StringFormat={}{0:N0}}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                    <TextBlock Text="건"/>
+                </StackPanel>
+
                 <telerik:RadButton Height="44" Margin="10 0 0 0" Click="SpeciesVisibleRadButton_Click">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="종 목록 보기"/>
@@ -229,11 +244,14 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Smell}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Note}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyUnavailableReason}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIGrade}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexDI}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexH}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexR1}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexJ}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIScore}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIGrade}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesCount}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndividualCount}" MinWidth="80" Width="160" MaxWidth="160"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>
@@ -345,11 +363,14 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Smell}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Note}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyUnavailableReason}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexDI}" DataFormatString="{}{0:F2}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexH}" DataFormatString="{}{0:F2}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexR1}" DataFormatString="{}{0:F2}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexJ}" DataFormatString="{}{0:F2}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIScore}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIGrade}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexDI}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexH}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexR1}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexJ}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesCount}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndividualCount}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>
@@ -436,6 +457,8 @@
                                              IsFilteringAllowed="False">
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
+                                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SaprobicValue}" MinWidth="80" Width="160" MaxWidth="160"/>
+                                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndicatorWeight}" MinWidth="80" Width="160" MaxWidth="160"/>
                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=PhylumKo}" MinWidth="80" Width="160" MaxWidth="160"/>
                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=ClassKo}" MinWidth="80" Width="160" MaxWidth="160"/>
                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=OrderKo}" MinWidth="80" Width="160" MaxWidth="160"/>
@@ -443,6 +466,7 @@
                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="320" MaxWidth="320" TextWrapping="Wrap"/>
                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndividualCount}" MinWidth="80" Width="120" MaxWidth="120"/>
+                                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RankScorer}" MinWidth="80" Width="120" MaxWidth="120"/>
                             </telerik:RadGridView.Columns>
                         </telerik:RadGridView>
                     </Grid>
@@ -501,6 +525,8 @@
                                              IsFilteringAllowed="False">
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
+                                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SaprobicValue}" MinWidth="80" Width="160" MaxWidth="160"/>
+                                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndicatorWeight}" MinWidth="80" Width="160" MaxWidth="160"/>
                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=PhylumKo}" MinWidth="80" Width="160" MaxWidth="160"/>
                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=ClassKo}" MinWidth="80" Width="160" MaxWidth="160"/>
                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=OrderKo}" MinWidth="80" Width="160" MaxWidth="160"/>

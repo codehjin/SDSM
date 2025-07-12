@@ -750,12 +750,12 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         return null;
     }
 
-    private static string GetPhGrade(Worksheet worksheet, int columnIndex)
+    private static int? GetPhGrade(Worksheet worksheet, int columnIndex)
     {
         var value = worksheet.Cells[13, columnIndex].GetValue().Value.RawValue;
         if (double.TryParse(value, out double d))
-            return (d >= 6.5 && d <= 8.5) ? "1" : "4";
-        return "4";
+            return (d >= 6.5 && d <= 8.5) ? 1 : 4;
+        return 4;
     }
 
     private static string GetBodGrade(Worksheet worksheet, int columnIndex)
@@ -800,14 +800,14 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         return "6";
     }
 
-    private static string GetSsGrade(Worksheet worksheet, int columnIndex)
+    private static int GetSsGrade(Worksheet worksheet, int columnIndex)
     {
         var value = worksheet.Cells[17, columnIndex].GetValue().Value.RawValue;
         if (!double.TryParse(value, out double d))
-            return "5";
-        if (d <= 25) return "1";
-        if (d <= 100) return "4";
-        return "5";
+            return 5;
+        if (d <= 25) return 1;
+        if (d <= 100) return 4;
+        return 5;
     }
 
     private static string GetDoGrade(Worksheet worksheet, int columnIndex)

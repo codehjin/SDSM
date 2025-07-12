@@ -493,6 +493,28 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                             insertPropertyInfo?.SetValue(insertModel, null);
                         }
                     }
+                    else if ( prop.Name == "EvaluationScore")
+                    {
+                        //실수
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            if (double.TryParse(value.ToString(), out double d))
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, d);
+                            }
+                            else
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, null);
+                            }
+                        }
+                        else
+                        {
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, null);
+                        }
+                    }
                     else
                     {
                         //문자
@@ -663,10 +685,9 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
     #region 등급계산
 
     //평가등급
-    private static (string , string) GetGrade(Worksheet worksheet, int columnIndex)
+    private static (double? , string?) GetGrade(Worksheet worksheet, int columnIndex)
     {
-        string grade = "-";
-        double score = 0;
+        string? grade = null;
         double total = 0;
 
         for (int row = 16; row <= 25; row++)
@@ -676,7 +697,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                 total += v;
         }
 
-        score = total != 0 ? Math.Round(total / 2, 1, MidpointRounding.AwayFromZero) : 0;
+        double? score = total != 0 ? Math.Round(total / 2, 1, MidpointRounding.AwayFromZero) : null;
 
         // "접근불가"가 아니면 등급 산정
         var unavailable = worksheet.Cells[13, columnIndex].GetValue().Value.RawValue.Replace(" ", "");
@@ -688,8 +709,12 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
             else if (score >= 20) grade = "D";
             else if (score >= 0) grade = "E";
         }
+        else
+        {
+            grade = "-";
+        }
 
-        return (score.ToString(), grade);
+        return (score, grade);
     }
 
     #endregion
