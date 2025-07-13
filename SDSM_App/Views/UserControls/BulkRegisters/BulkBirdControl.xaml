@@ -20,13 +20,15 @@
         <!--엑셀 설정값-->
         <Border x:Name="SettingLayout" Style="{StaticResource ContentBoxStyle}" HorizontalAlignment="Left">
             <StackPanel Orientation="Horizontal" Height="{StaticResource DefaultHeight}">
+                <telerik:RadGlyph Style="{StaticResource CaptionPointStyle}"/>
                 <TextBlock Text="시트명 :" Style="{StaticResource PrimaryTextBlcokStyle}"/>
                 <TextBlock Text="{Binding Path=SheetName}" Margin="10 0 20 0" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                <telerik:RadGlyph Style="{StaticResource CaptionPointStyle}"/>
                 <TextBlock Text="입력자료 시작 위치 :" Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 10 0"/>
                 <TextBlock Text="{Binding Path=FirstRowNumber}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
                 <TextBlock Text="행" Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 5 0"/>
                 <TextBlock Text="{Binding Path=FirstColumnNumber}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
-                <TextBlock Text="열" Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 20 0"/>
+                <TextBlock Text="열," Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 10 0"/>
                 <telerik:RadDropDownButton Content="항목 열 번호" Cursor="Hand">
                     <telerik:RadDropDownButton.DropDownContent>
                         <StackPanel>

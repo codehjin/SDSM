@@ -786,7 +786,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                             if (double.TryParse(value.ToString(), out double d))
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, d);
+                                insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 1, MidpointRounding.AwayFromZero));
                             }
                             else
                             {
@@ -1007,7 +1007,6 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "냄새", Value = 42 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "특이사항", Value = 43 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "채집불가 내용", Value = 44 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "생물종(부터~)", Value = 47 });
     }
 
     #endregion

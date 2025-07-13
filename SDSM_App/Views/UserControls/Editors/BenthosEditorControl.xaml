@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
+             xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:culture="clr-namespace:System.Globalization;assembly=mscorlib"
              xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
@@ -42,7 +43,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Style="{StaticResource FormGroupStackPanelStyle}">
-                            <Border Height="304" Margin="0 22 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                            <Border Height="172" Margin="0 22 0 0" Style="{StaticResource FormGroupBorderStyle}">
                                 <TextBlock Style="{StaticResource FormGroupTextBlockStyle}">
                                     <Run Text="조사"/>
                                     <LineBreak/>
@@ -56,12 +57,12 @@
                                     <Run Text="방법"/>
                                 </TextBlock>
                             </Border>
-                            <Border Height="128" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                            <Border Height="84" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
                                 <TextBlock Style="{StaticResource FormGroupTextBlockStyle}">
                                     <Run Text="서식처"/>
                                 </TextBlock>
                             </Border>
-                            <Border Height="172" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                            <Border Height="128" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
                                 <TextBlock Style="{StaticResource FormGroupTextBlockStyle}">
                                     <Run Text="서식처"/>
                                     <LineBreak/>
@@ -70,7 +71,7 @@
                                     <Run Text="구성"/>
                                 </TextBlock>
                             </Border>
-                            <Border Height="260" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                            <Border Height="172" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
                                 <TextBlock Style="{StaticResource FormGroupTextBlockStyle}">
                                     <Run Text="서식처"/>
                                 </TextBlock>
@@ -80,6 +81,11 @@
                                     <Run Text="채집"/>
                                     <LineBreak/>
                                     <Run Text="불가시"/>
+                                </TextBlock>
+                            </Border>
+                            <Border Height="694" Margin="0 12 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                                <TextBlock Style="{StaticResource FormGroupTextBlockStyle}" FontSize="15">
+                                    <Run Text="생물종"/>
                                 </TextBlock>
                             </Border>
                         </StackPanel>
@@ -99,8 +105,6 @@
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <StackPanel Orientation="Horizontal">
@@ -153,8 +157,6 @@
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="하천명" Style="{StaticResource FormLabelStyle}" />
@@ -165,6 +167,8 @@
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="하천유명" Style="{StaticResource FormLabelStyle}" />
@@ -175,8 +179,6 @@
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="위도" Style="{StaticResource FormLabelStyle}" />
@@ -215,8 +217,6 @@
                                                                           Style="{StaticResource FormWatermarkTextBoxStyle}"
                                                                           LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="조사기관" Style="{StaticResource FormLabelStyle}" />
@@ -240,7 +240,7 @@
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
-                                
+                              
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -312,8 +312,6 @@
                                                                          LostFocus="EmptyClear_LostFocus"/>
                                         </StackPanel>
                                     </StackPanel>
-                                </StackPanel>                               
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="식생 수피도" Style="{StaticResource FormLabelStyle}" />
@@ -324,6 +322,8 @@
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                         <StackPanel Orientation="Horizontal">
                                             <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -336,8 +336,6 @@
                                                                          LostFocus="EmptyClear_LostFocus"/>
                                         </StackPanel>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="제방(좌안)" Style="{StaticResource FormLabelStyle}" />
@@ -384,8 +382,6 @@
                                                                   Height="{StaticResource FormControlHeight}"
                                                                   Style="{StaticResource FormIntNumericUpDownStyle}"/>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="진흙이하(&lt;0.063mm)" Style="{StaticResource FormLabelStyle}" />
@@ -397,6 +393,8 @@
                                                                   Height="{StaticResource FormControlHeight}"
                                                                   Style="{StaticResource FormIntNumericUpDownStyle}"/>
                                     </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="모래(0.063-2mm)" Style="{StaticResource FormLabelStyle}" />
@@ -408,8 +406,6 @@
                                                                   Height="{StaticResource FormControlHeight}"
                                                                   Style="{StaticResource FormIntNumericUpDownStyle}"/>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="잔자갈(2-16mm)" Style="{StaticResource FormLabelStyle}" />
@@ -468,8 +464,6 @@
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="하폭, 제방과 제방사이 거리(m)" Style="{StaticResource FormLabelStyle}" />
@@ -481,6 +475,8 @@
                                                                   Height="{StaticResource FormControlHeight}"
                                                                   Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="수폭, 물이 흐르는 하도의 거리(m)" Style="{StaticResource FormLabelStyle}" />
@@ -492,8 +488,6 @@
                                                                   Height="{StaticResource FormControlHeight}"
                                                                   Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="평균수심, 샘플링 지점 평균(cm)" Style="{StaticResource FormLabelStyle}" />
@@ -540,8 +534,6 @@
                                                                   Height="{StaticResource FormControlHeight}"
                                                                   Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="흐름상태" Style="{StaticResource FormLabelStyle}" />
@@ -552,6 +544,8 @@
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="투명도" Style="{StaticResource FormLabelStyle}" />
@@ -564,8 +558,6 @@
                                                                   Height="{StaticResource FormControlHeight}"
                                                                   Style="{StaticResource FormIntNumericUpDownStyle}"/>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="냄새" Style="{StaticResource FormLabelStyle}" />
@@ -601,6 +593,96 @@
                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
                                 </StackPanel>
+
+                                <Border Background="{telerik:Windows11Resource ResourceKey=AlternativeBrush}"
+                                        BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="{telerik:Windows11Resource ResourceKey=CornerRadius}"
+                                        Margin="5 10 0 2"
+                                        Padding="20">
+                                    <Grid>
+                                        <telerik:RadGridView x:Name="SpeciesRadGridView"
+                                                             ItemsSource="{Binding Path=AddSpeciesColleciton}"
+                                                             SelectedItem="{Binding Path=AddSpeciesSelectedItem, Mode=TwoWay}"
+                                                             HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
+                                                             BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
+                                                             BusyIndicatorIsIndeterminate="False"
+                                                             FrozenColumnsSplitterVisibility="Collapsed"
+                                                             RowIndicatorVisibility="Visible"
+                                                             LeftFrozenColumnCount="0"
+                                                             ShowColumnFooters="True"
+                                                             ShowSearchPanel="True"
+                                                             IsReadOnly="False"
+                                                             Height="652">
+                                            <telerik:RadGridView.Columns>
+                                                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=OrderKo}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap" IsFilterable="False" IsReadOnly="True"/>
+                                                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FamilyKo}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap" IsFilterable="False" IsReadOnly="True"/>
+                                                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="220" MaxWidth="220" TextWrapping="Wrap" IsFilterable="False" IsReadOnly="True"/>
+                                                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="320" MaxWidth="320" TextWrapping="Wrap" CellStyle="{StaticResource GridViewCellLeftStyle}"
+                                                                            FooterTextAlignment="Center" IsFilterable="False" IsReadOnly="True">
+                                                    <telerik:GridViewDataColumn.AggregateFunctions>
+                                                        <telerik:CountFunction ResultFormatString="{}{0:N0}"/>
+                                                    </telerik:GridViewDataColumn.AggregateFunctions>
+                                                </telerik:GridViewDataColumn>
+                                                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndividualCount}" 
+                                                                            MinWidth="80"
+                                                                            Width="219" 
+                                                                            MaxWidth="219" 
+                                                                            FooterTextAlignment="Center"
+                                                                            IsSortable="False"
+                                                                            HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}"
+                                                                            CellStyle="{StaticResource GridViewCellStretchCenterStyle}">
+                                                    <telerik:GridViewDataColumn.Header>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                                <telerik:RadGlyph Glyph="{StaticResource GlyphEdit}" Foreground="{telerik:Windows11Resource ResourceKey=IconBrush}" />
+                                                                <TextBlock Text="개체수" Style="{StaticResource FormLabelStyle}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </telerik:GridViewDataColumn.Header>
+                                                    <telerik:GridViewDataColumn.CellEditTemplate>
+                                                        <DataTemplate>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <telerik:RadNumericUpDown Value="{Binding Path=IndividualCount, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                                          UpdateValueEvent="PropertyChanged"
+                                                                                          Minimum="0"
+                                                                                          Width="156"
+                                                                                          Height="{StaticResource FormControlHeight}"
+                                                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                                                          LostFocus="DoubleValueToRound_LostFocus">
+                                                                    <telerik:EventToCommandBehavior.EventBindings>
+                                                                        <telerik:EventBinding EventName="ValueChanged" Command="{Binding Path=DataContext.IndividualCountValueChangedExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
+                                                                    </telerik:EventToCommandBehavior.EventBindings>
+                                                                </telerik:RadNumericUpDown>
+                                                                <telerik:RadButton Grid.Column="1" Content="NULL" Margin="5 0 0 0" Padding="7 0" FontSize="14" Height="{StaticResource DefaultHeight}" IsTabStop="False"
+                                                                                   helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=ValidationBrush}"
+                                                                                   Click="NullValueRadButton_Click">
+
+                                                                </telerik:RadButton>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </telerik:GridViewDataColumn.CellEditTemplate>
+                                                    <telerik:GridViewDataColumn.AggregateFunctions>
+                                                        <telerik:SumFunction ResultFormatString="{}{0:F1}"/>
+                                                    </telerik:GridViewDataColumn.AggregateFunctions>
+                                                </telerik:GridViewDataColumn>
+                                            </telerik:RadGridView.Columns>
+                                        </telerik:RadGridView>
+
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 13 20 0">
+                                            <telerik:RadGlyph Glyph="{StaticResource GlyphEdit}" Margin="0 0 5 0" Foreground="{telerik:Windows11Resource ResourceKey=IconBrush}" />
+                                            <TextBlock Text="{Binding Path=AddSpeciesCount}" Margin="10 0 0 0" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                                            <TextBlock Text="종" Foreground="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
+                                            <TextBlock Text="{Binding Path=AddIndividualCountSum}" Margin="10 0 0 0" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                                            <TextBlock Text="개체수" Foreground="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
+                                        </StackPanel>
+
+                                    </Grid>
+                                </Border>
 
                             </StackPanel>
                         </Border>

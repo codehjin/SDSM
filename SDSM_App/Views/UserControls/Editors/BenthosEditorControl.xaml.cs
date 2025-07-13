@@ -1,5 +1,6 @@
 ﻿using SDSM_App.InjectableServices;
 using SDSM_App.ViewModels;
+using SDSM_Models;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -40,6 +41,11 @@ public partial class BenthosEditorControl : UserControl, ITransientService
     public static readonly RoutedEvent CloseClickEvent = EventManager.RegisterRoutedEvent("CloseClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(BenthosEditorControl));
 
     private void CloseButton_Click(object sender, RoutedEventArgs e) => RaiseEvent(new RoutedEventArgs(CloseClickEvent));
+
+    #region Control 이벤트
+
+
+    #endregion
 
     #region TextBox Event
 
@@ -97,6 +103,18 @@ public partial class BenthosEditorControl : UserControl, ITransientService
         }
     }
 
+    //실수값 소수점 두자리
+    private void DoubleValueToRound_LostFocus(object sender, RoutedEventArgs e)
+    {
+        if (sender is RadNumericUpDown upDown && upDown.Value != null)
+        {
+            if (double.TryParse(upDown.Value.ToString(), out double value))
+            {
+                upDown.Value = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+            }
+        }
+    }
+
     #endregion
 
     #region Drag
@@ -149,4 +167,13 @@ public partial class BenthosEditorControl : UserControl, ITransientService
     }
 
     #endregion
+
+    private void NullValueRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        if(sender is RadButton button && button.DataContext is BenthosSpeciesList speciesList)
+        {
+            speciesList.IndividualCount = null;
+            SpeciesRadGridView.Rebind();
+        }
+    }
 }

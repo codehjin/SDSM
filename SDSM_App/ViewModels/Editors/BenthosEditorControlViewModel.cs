@@ -1,12 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using MediaFoundation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
+using SDSM_App.Models;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
+using Telerik.Windows.Controls.AutoSuggestBox;
+using Telerik.Windows.Data;
 
 namespace SDSM_App.ViewModels;
 
@@ -25,6 +30,8 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         {
             ModelRecevice(m);
         });
+
+        InitLoad();
     }
 
     #endregion
@@ -86,6 +93,23 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
 
     #endregion
 
+    #region 생물종 속성, ICommand
+    
+    [ObservableProperty] private RadObservableCollection<BenthosSpeciesList> _addSpeciesColleciton = [];
+    [ObservableProperty] private BenthosSpeciesList? _addSpeciesSelectedItem;
+
+    [ObservableProperty] private int _addSpeciesCount;
+    [ObservableProperty] private double _addIndividualCountSum;
+
+    [RelayCommand]
+    private void IndividualCountValueChangedExecuted()
+    {
+        AddSpeciesCount = AddSpeciesColleciton.Count(m => m.IndividualCount > 0);
+        AddIndividualCountSum = AddSpeciesColleciton.Sum(m=>m.IndividualCount) ?? 0;
+    }
+
+    #endregion
+
     #region ICommand 구현
 
     private bool CanSave()
@@ -112,6 +136,21 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     #endregion
 
     #region 매서드
+
+    private async void InitLoad()
+    {
+        try
+        {
+            using var context = new SDSMDbContext();
+
+            //종목록
+            AddSpeciesColleciton.AddRange( await context.BenthosSpeciesLists.ToListAsync());
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(InitLoad), ex.Message);
+        }
+    }
 
     //신규저장
     private async void AddSave()

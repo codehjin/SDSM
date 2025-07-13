@@ -26,6 +26,13 @@
     <DropShadowEffect x:Key="VisualEffect" BlurRadius="10" ShadowDepth="1" Direction="270" Opacity="0.2"/>
     <DropShadowEffect x:Key="EditorVisualEffect" BlurRadius="30" ShadowDepth="1" Direction="270" Opacity="0.5"/>
 
+    <Style x:Key="CaptionPointStyle" TargetType="telerik:RadGlyph">
+        <Setter Property="Glyph" Value="{StaticResource GlyphRoundCorners}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Margin" Value="0 2 5 0"/>
+        <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=IconBrush}"/>
+    </Style>
+    
     <!--가로선-->
     <Style x:Key="HorizontalRectangleStyle" TargetType="Rectangle">
         <Setter Property="Stroke" Value="{telerik:Windows11Resource ResourceKey=SecondaryBorderBrush}"/>

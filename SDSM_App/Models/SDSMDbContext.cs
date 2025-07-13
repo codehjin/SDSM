@@ -39,6 +39,7 @@ public class SDSMDbContext : DbContext, ITransientService
     //저서동물
     public DbSet<Benthos> Benthoss { get; set; }
     public DbSet<BenthosSpecies> BenthosSpeciess { get; set; }
+    public DbSet<BenthosSpeciesList> BenthosSpeciesLists { get; set; }
 
     //어류
     public  DbSet<FishSurvey> FishSurveys { get; set; }

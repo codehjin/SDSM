@@ -83,7 +83,7 @@ public class CustomLocalizationManaber : LocalizationManager
             case "GridViewGroupPanelTopTextGrouped":
                 return "그룹";
             case "GridViewSearchPanelTopText":
-                return "페이지 검색";
+                return "검색";
             case "GridViewColumnsSelectionButtonTooltip":
                 return "열 선택";
             case "GridViewFilterDistinctValueSearch":

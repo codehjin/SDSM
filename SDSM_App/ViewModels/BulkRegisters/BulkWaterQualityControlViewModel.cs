@@ -721,7 +721,6 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "T-P", Value = 20 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "생태독성", Value = 21 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "대장균군", Value = 22 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "추가항목(부터~)", Value = 23 });
     }
 
     #endregion
