@@ -44,6 +44,14 @@ public partial class BenthosEditorControl : UserControl, ITransientService
 
     #region Control 이벤트
 
+    private void NullValueRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        if(sender is RadButton button && button.DataContext is BenthosSpeciesList speciesList)
+        {
+            speciesList.IndividualCount = null;
+            SpeciesRadGridView.Rebind();
+        }
+    }
 
     #endregion
 
@@ -167,13 +175,4 @@ public partial class BenthosEditorControl : UserControl, ITransientService
     }
 
     #endregion
-
-    private void NullValueRadButton_Click(object sender, RoutedEventArgs e)
-    {
-        if(sender is RadButton button && button.DataContext is BenthosSpeciesList speciesList)
-        {
-            speciesList.IndividualCount = null;
-            SpeciesRadGridView.Rebind();
-        }
-    }
 }

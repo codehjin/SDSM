@@ -163,12 +163,12 @@ public partial class BulkHabitatWaterEdgeControl : UserControl, ITransientServic
             if (tag == "import")
             {
                 _exportRadGridView = DataRadGridView;
-                ExcelExportAsync("가져온자료");
+                ExcelExportAsync("서식수변_가져온자료");
             }
             else
             {
                 _exportRadGridView = ConvertedDataRadGridView;
-                ExcelExportAsync("변환된자료");
+                ExcelExportAsync("서식수변_변환된자료");
             }
         }
     }

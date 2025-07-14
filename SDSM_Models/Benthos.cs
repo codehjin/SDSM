@@ -56,7 +56,7 @@ public class Benthos
     [DisplayName("투명도")] public int? Transparency { get; set; }
     [DisplayName("냄새")] public int? Smell { get; set; }
     [DisplayName("특이사항")] public string? Note { get; set; }
-    [DisplayName("채집불가 내용")] public string? SurveyUnavailableReason { get; set; }
+    [DisplayName("채집불가시")] public string? SurveyUnavailableReason { get; set; }
     [DisplayName("우점도(DI)")] public double? IndexDI { get; set; }
     [DisplayName("다양도(H')")] public double? IndexH { get; set; }
     [DisplayName("종풍부도(R1)")] public double? IndexR1 { get; set; }
@@ -66,6 +66,7 @@ public class Benthos
     [NotMapped][DisplayName("종수")] public int SpeciesCount { get; set; }
     [NotMapped][DisplayName("개체수")] public double IndividualCount { get; set; }
 
+    public ICollection<BenthosSpecies> Subs { get; set; } = [];
 
     [NotMapped][DisplayName("오류내용")] public string ErrorContent { get; set; } = string.Empty;
 

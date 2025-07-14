@@ -27,7 +27,7 @@ public class HabitatWaterEdge
     [DisplayName("날씨")] public string? Weather { get; set; }
     [DisplayName("조사기관")] public string? SurveyAgency { get; set; }
     [DisplayName("조사자")] public string? Surveyor { get; set; }
-    [DisplayName("조사불가 내용")] public string? SurveyUnavailableReason { get; set; }
+    [DisplayName("조사불가시")] public string? SurveyUnavailableReason { get; set; }
     [DisplayName("특이사항")] public string? Note { get; set; }
     [DisplayName("자연적 종횡사주")] public double? EvaluationItem1 { get; set; }
     [DisplayName("하도정비/하도 자연성")] public double? EvaluationItem2 { get; set; }

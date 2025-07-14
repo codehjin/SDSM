@@ -47,7 +47,6 @@ public partial class BenthosPage : Page, ITransientService
         }
     }
 
-
     private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
     {
         var height = e.NewSize.Height - (SearchLayout.ActualHeight + 240);
@@ -105,15 +104,15 @@ public partial class BenthosPage : Page, ITransientService
     {
         if (sender is RadButton button && button.Tag is string tag)
         {
-            List<Benthos> deleteData = [];
+            List<BenthosView> deleteData = [];
             if (tag == "single")
             {
-                var item = DataRadGridView.SelectedItem as Benthos;
+                var item = DataRadGridView.SelectedItem as BenthosView;
                 deleteData.Add(item ?? new());
             }
             else if (tag == "page")
             {
-                deleteData = [.. DataRadGridView.Items.Cast<Benthos>()];
+                deleteData = [.. DataRadGridView.Items.Cast<BenthosView>()];
             }
             _vm.DeleteFormVisibleExecutedCommand.Execute(deleteData);
         }

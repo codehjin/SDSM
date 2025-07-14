@@ -163,12 +163,12 @@ public partial class BulkBirdControl : UserControl, ITransientService
             if (tag == "import")
             {
                 _exportRadGridView = DataRadGridView;
-                ExcelExportAsync("가져온자료");
+                ExcelExportAsync("조류_가져온자료");
             }
             else
             {
                 _exportRadGridView = ConvertedDataRadGridView;
-                ExcelExportAsync("변환된자료");
+                ExcelExportAsync("조류_변환된자료");
             }
         }
     }

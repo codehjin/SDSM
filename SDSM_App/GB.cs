@@ -1,10 +1,13 @@
-﻿using System.IO;
-using System.Reflection;
+﻿using SDSM_App.Enums;
+using SDSM_Models;
 using System.ComponentModel;
 using System.Data;
-using System.Windows;
 using System.Diagnostics;
-using SDSM_App.Enums;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
+using Telerik.Windows.Documents.Spreadsheet.Model;
 
 namespace SDSM_App;
 
@@ -379,6 +382,208 @@ public static class GB
         else
             return $"[기본정보없음]";
     }
+
+    #region 저서동물 등급계산
+
+    /// <summary>
+    /// 개체수 기준 우점도(DI) 계산
+    /// (가장 큰 값 + 두 번째로 큰 값) / 전체 합계, 오류 시 1 반환
+    /// </summary>
+    public static double GetDI(IEnumerable<ImportBenthosSpecies> speciesData)
+    {
+        if (speciesData == null)
+            return 1;
+
+        // 0보다 큰 개체수만 추출
+        var counts = speciesData.Select(x => x.IndividualCount ?? 0)
+                                  .Where(x => x > 0)
+                                  .OrderByDescending(x => x)
+                                  .ToList();
+
+        if (counts.Count == 0)
+            return 1;
+
+        double largest = counts.ElementAtOrDefault(0);
+        double secondLargest = counts.ElementAtOrDefault(1);
+        double sum = counts.Sum();
+
+        if (sum == 0)
+            return 1;
+
+        return (largest + secondLargest) / sum;
+    }
+
+    /// <summary>
+    /// Shannon-Wiener 다양도(H') 계산
+    /// (엑셀: IFERROR(-SUMPRODUCT(개체수,LOG(개체수+(개체수=0),2))/SUM(개체수)+LOG(SUM(개체수),2),0))
+    /// </summary>
+    public static double GetH(IEnumerable<ImportBenthosSpecies> speciesData)
+    {
+        if (speciesData == null)
+            return 0;
+
+        // 개체수 배열 (null은 0으로 처리)
+        var counts = speciesData.Select(x => x.IndividualCount ?? 0)
+                                  .Where(x => x >= 0)
+                                  .ToArray();
+
+        double sum = counts.Sum();
+        if (sum == 0)
+            return 0;
+
+        // -SUMPRODUCT(개체수, LOG(개체수 + (개체수=0), 2))
+        double sumProduct = counts
+            .Select(x => x * Math.Log(x == 0 ? 1 : x, 2))
+            .Sum();
+
+        double result = -sumProduct / sum + Math.Log(sum, 2);
+
+        // NaN, Infinity 등 예외 처리
+        if (double.IsNaN(result) || double.IsInfinity(result))
+            return 0;
+
+        return result;
+    }
+
+    /// <summary>
+    /// 종풍부도(R1) 계산
+    /// (엑셀: IFERROR((COUNTIF(개체수,">0")-1)/LN(SUM(개체수)),0))
+    /// </summary>
+    public static double GetR1(IEnumerable<ImportBenthosSpecies> speciesData)
+    {
+        if (speciesData == null)
+            return 0;
+
+        // 0보다 큰 개체수만 추출
+        var counts = speciesData.Select(x => x.IndividualCount ?? 0)
+                                  .Where(x => x > 0)
+                                  .ToList();
+
+        int S = counts.Count; // 출현 종수
+        double N = counts.Sum(); // 전체 개체수
+
+        if (N <= 0)
+            return 0;
+
+        double result = (S - 1) / Math.Log(N);
+
+        // NaN, Infinity 등 예외 처리
+        if (double.IsNaN(result) || double.IsInfinity(result))
+            return 0;
+
+        return result;
+    }
+
+    /// <summary>
+    /// 균등도(J') 계산
+    /// (엑셀: IFERROR(H'/LOG(출현종수,2),0))
+    /// </summary>
+    public static double GetJ(IEnumerable<ImportBenthosSpecies> speciesData)
+    {
+        if (speciesData == null)
+            return 0;
+
+        // 다양도(H') 계산
+        double h = GetH(speciesData);
+
+        // 출현 종수(S)
+        int S = speciesData.Select(x => x.IndividualCount ?? 0)
+                            .Count(x => x > 0);
+
+        if (S <= 1)
+            return 0;
+
+        double denominator = Math.Log(S, 2);
+        if (denominator == 0)
+            return 0;
+
+        double result = h / denominator;
+
+        // NaN, Infinity 등 예외 처리
+        if (double.IsNaN(result) || double.IsInfinity(result))
+            return 0;
+
+        return result;
+    }
+
+    /// <summary>
+    /// BMI 점수 및 등급 계산 (조사불가 사유 반영)
+    /// (엑셀: IFERROR(ROUND((4-SUMPRODUCT(RankScorer,RankScorer,RankScorer)/SUMPRODUCT(RankScorer,RankScorer))*25,1),0))
+    /// </summary>
+    public static (double?, string?) GetBMI(IEnumerable<ImportBenthosSpecies> speciesData, string? surveyUnavailableReason)
+    {
+        // 조사불가 사유가 있으면 등급은 "-"
+        if (!string.IsNullOrWhiteSpace(surveyUnavailableReason))
+        {
+            var reason = surveyUnavailableReason.Replace(" ", "");
+            if (reason == "접근불가" || reason == "건천화" || reason == "준설" || reason == "공사중")
+                return (null, "-");
+        }
+
+        if (speciesData == null)
+            return (null, null);
+
+        var aArr = speciesData.Select(x => double.TryParse(x.SaprobicValue, out var v) ? v : 0.0).ToArray();
+        var bArr = speciesData.Select(x => int.TryParse(x.IndicatorWeight, out var v) ? v : 0).ToArray();
+        var cArr = speciesData.Select(x => x.RankScorer).ToArray();
+
+        int len = Math.Min(aArr.Length, Math.Min(bArr.Length, cArr.Length));
+        if (len == 0)
+            return (null, null);
+
+        double sumProduct3 = 0;
+        double sumProduct2 = 0;
+        for (int i = 0; i < len; i++)
+        {
+            sumProduct3 += aArr[i] * bArr[i] * cArr[i];
+            sumProduct2 += bArr[i] * cArr[i];
+        }
+
+        if (sumProduct2 == 0)
+            return (null, null);
+
+        double value = (4 - (sumProduct3 / sumProduct2)) * 25;
+        double rounded = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+
+        if (double.IsNaN(rounded) || double.IsInfinity(rounded))
+            return (null, null);
+
+        // 등급 산정
+        string grade;
+        if (rounded >= 80) grade = "A";
+        else if (rounded >= 65) grade = "B";
+        else if (rounded >= 50) grade = "C";
+        else if (rounded >= 35) grade = "D";
+        else if (rounded >= 0) grade = "E";
+        else grade = "Check";
+
+        return (rounded, grade);
+    }
+  
+    // range : 개체수 목록, value : 종 개체수
+    public static int GetRankScorer(int[] range, int value)
+    {
+        if (value == 0)
+            return 0;
+
+        // 0보다 큰 값만 카운트
+        var valid = range.Where(x => x > 0).ToArray();
+        if (valid.Length == 0)
+            return 0;
+
+        // 내림차순 순위 (엑셀 RANK와 동일)
+        int rank = valid.Count(x => x > value) + 1;
+        double percentile = (double)rank / valid.Length;
+
+        if (percentile <= 0.2) return 5;
+        if (percentile <= 0.4) return 4;
+        if (percentile <= 0.6) return 3;
+        if (percentile <= 0.8) return 2;
+        return 1;
+    }
+   
+
+    #endregion
 
     #region MessageText
 

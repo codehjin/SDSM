@@ -6,16 +6,15 @@ using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_Models;
-using System.Windows;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
 
 namespace SDSM_App.ViewModels;
 
 /// <summary>
-/// 어류조사
+/// 서식수변
 /// </summary>
-public partial class FishSurveyPageViewModel : ObservableObject, ITransientService
+public partial class BenthosSpeciesControlViewModel : ObservableObject, ITransientService
 {
     #region 필드
 
@@ -25,7 +24,7 @@ public partial class FishSurveyPageViewModel : ObservableObject, ITransientServi
 
     #region 생성자
 
-    public FishSurveyPageViewModel()
+    public BenthosSpeciesControlViewModel()
     {
         InitialLoad();
     }
@@ -46,25 +45,7 @@ public partial class FishSurveyPageViewModel : ObservableObject, ITransientServi
         get { return new EnumDataSource { EnumType = typeof(SearchModeType) }; }
     }
 
-    [ObservableProperty] List<FishSurveyView> _modelCollection = [];
-    [ObservableProperty] FishSurveyView? _modelSelectedItem;
-
-    [ObservableProperty] private FishSurvey _subData = new();
-
-    private Visibility _subViewVisibility = Visibility.Collapsed;
-    public Visibility SubViewVisibility
-    {
-        get { return _subViewVisibility; }
-        set
-        {
-            SetProperty(ref _subViewVisibility, value);
-
-            if (value == Visibility.Visible)
-            {
-                GridViewSelectionChangedExecutedCommand.Execute(null);
-            }
-        }
-    }
+    [ObservableProperty] List<BenthosSpeciesView> _modelCollection = [];
 
     #endregion
 
@@ -178,48 +159,6 @@ public partial class FishSurveyPageViewModel : ObservableObject, ITransientServi
         GetModels();
     }
 
-    [RelayCommand]
-    private void GridViewSelectionChangedExecuted()
-    {
-        if (SubViewVisibility == Visibility.Visible && ModelSelectedItem != null)
-        {
-            using var context = new SDSMDbContext();
-
-            var subData = context.FishSurveys.Where(m => m.FishSurveyId == ModelSelectedItem.FishSurveyId)
-                                               .Include(m => m.Subs)
-                                               .FirstOrDefault();
-
-            SubData = subData ?? new();
-        }
-        else
-        {
-            if (SubData.FishSurveyId > 0)
-                SubData = new();
-        }
-    }
-
-    private bool CanSubViewOpen()
-    {
-        return ModelSelectedItem != null;
-    }
-
-    //종목록 열기
-    [RelayCommand(CanExecute = nameof(CanSubViewOpen))]
-    private void SubViewOpenExecuted()
-    {
-        if (ModelSelectedItem != null)
-        {
-            SubViewVisibility = Visibility.Visible;
-        }
-    }
-
-    //종목록 닫기
-    [RelayCommand]
-    private void SubViewCloseExecuted()
-    {
-        SubViewVisibility = Visibility.Collapsed;
-    }
-
     #endregion
 
     #region 매서드
@@ -243,25 +182,75 @@ public partial class FishSurveyPageViewModel : ObservableObject, ITransientServi
             PageIndex = index;
 
             using var context = new SDSMDbContext();
-            IQueryable<FishSurveyView> query;
+            IQueryable<BenthosSpeciesView> query;
 
             await Task.Run(() =>
             {
                 if (string.IsNullOrEmpty(QueryText))
                 {
-                    query = context.FishSurveyViews;
+                    query = context.BenthosSpeciesViews;
                 }
                 else
                 {
-                    QueryableStringSearch<FishSurveyView> searchQuery =
-                        context.FishSurveyViews.Search(m => m.SurveyYearChsu,
-                                                         m => m.Site,
-                                                         m => m.SurveyDate.ToString(),
-                                                         m => m.BigZone,
-                                                         m => m.MiddleZone,
-                                                         m => m.River,
-                                                         m => m.RiverType                                                       
-                                                         );
+                    QueryableStringSearch<BenthosSpeciesView> searchQuery =
+                         context.BenthosSpeciesViews.Search(m => m.YearChsu,
+                                                            m => m.Site,
+                                                            m => m.SurveyDate.ToString(),
+                                                            m => m.MajorRegion,
+                                                            m => m.MiddleRegion,
+                                                            m => m.River,
+                                                            m => m.RiverType,
+                                                            m => m.Weather,
+                                                            m => m.SurveyAgency,
+                                                            m => m.Surveyor,
+                                                            m => m.Surbernet30.ToString(),
+                                                            m => m.Surbernet50.ToString(),
+                                                            m => m.Dredge.ToString(),
+                                                            m => m.Ekman.ToString(),
+                                                            m => m.Watershed,
+                                                            m => m.PollutionSource,
+                                                            m => m.CamopyCover,
+                                                            m => m.Floodplain,
+                                                            m => m.LeveeLeft,
+                                                            m => m.LeveeRight,
+                                                            m => m.Bedrock.ToString(),
+                                                            m => m.Concrete.ToString(),
+                                                            m => m.Mud.ToString(),
+                                                            m => m.Sand.ToString(),
+                                                            m => m.FineGravel.ToString(),
+                                                            m => m.Gravel.ToString(),
+                                                            m => m.SmallStone.ToString(),
+                                                            m => m.BigStone.ToString(),
+                                                            m => m.HabitatRiverType,
+                                                            m => m.RiverWidth.ToString(),
+                                                            m => m.WaterWidth.ToString(),
+                                                            m => m.AverageDepth.ToString(),
+                                                            m => m.AverageVelocity.ToString(),
+                                                            m => m.Temperature.ToString(),
+                                                            m => m.WaterTemperature.ToString(),
+                                                            m => m.FlowState,
+                                                            m => m.Transparency.ToString(),
+                                                            m => m.Smell.ToString(),
+                                                            m => m.Note,
+                                                            m => m.SurveyUnavailableReason,
+                                                            m => m.BMIGrade,
+                                                            m => m.IndexDI.ToString(),
+                                                            m => m.IndexH.ToString(),
+                                                            m => m.IndexR1.ToString(),
+                                                            m => m.IndexJ.ToString(),
+                                                            m => m.SaprobicValue.ToString(),
+                                                            m => m.IndicatorWeight.ToString(),
+                                                            m => m.Endangered1,
+                                                            m => m.Endangered2,
+                                                            m => m.Endemic,
+                                                            m => m.PhylumKo,
+                                                            m => m.ClassKo,
+                                                            m => m.OrderKo,
+                                                            m => m.FamilyKo,
+                                                            m => m.SpeciesKo,
+                                                            m => m.SpeciesEn,
+                                                            m => m.IndividualCount.ToString()
+                                                           );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)
                     {
@@ -283,7 +272,7 @@ public partial class FishSurveyPageViewModel : ObservableObject, ITransientServi
 
                 ModelTotal = query.Count();
 
-                ModelCollection = [.. query.OrderByDescending(m => m.FishSurveyId).Skip(index * PageSize).Take(PageSize)];
+                ModelCollection = [.. query.OrderByDescending(m => m.BenthosId).Skip(index * PageSize).Take(PageSize)];
 
             }, _cts.Token);
         }
@@ -293,13 +282,13 @@ public partial class FishSurveyPageViewModel : ObservableObject, ITransientServi
         }
         finally
         {
-            if(_cts != null)
+            if (_cts != null)
             {
                 _cts.Cancel();
                 _cts.Dispose();
                 _cts = null;
             }
-           
+
             if (GB.IsBusy == true)
                 GB.IsBusy = false;
         }

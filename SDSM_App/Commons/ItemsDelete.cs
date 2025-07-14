@@ -13,9 +13,9 @@ public class ItemsDelete<T> where T : class
 
         try
         {
-            string id = $"{typeof(T).Name}Id";
+            string idName = $"{typeof(T).Name}Id";
             PropertyInfo[] props = typeof(T).GetProperties();
-            var prop = props.Where(m => m.Name.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            var prop = props.Where(m => m.Name.Equals(idName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
             if (prop != null)
             {
@@ -28,14 +28,15 @@ public class ItemsDelete<T> where T : class
 
                 foreach (var item in items)
                 {
-                    var value = prop?.GetValue(item);
-                    string strSql = $"DELETE FROM {typeof(T).Name} WHERE {id}=@{id};";
+                    //Id값 반환
+                    var idValue = prop?.GetValue(item);
+                    string strSql = $"DELETE FROM {typeof(T).Name} WHERE {idName}=@{idName};";
 
                     cmd.CommandText = strSql;
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.Clear();
 
-                    cmd.Parameters.AddWithValue($"@{id}", value);
+                    cmd.Parameters.AddWithValue($"@{idName}", idValue);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -64,16 +65,59 @@ public class ItemsDelete<T> where T : class
         }
     }
 
-    public bool Delete(T item)
+    //자식 삭제
+    public bool DeleteChild(string parentIdName, int parentIdValue)
     {
-        string strConn = GB.SqliteDataSource;        
+        string strConn = GB.SqliteDataSource;
         using var conn = new SQLiteConnection(strConn);
-        
+
         try
         {
-            string id = $"{typeof(T).Name}Id";
+            conn.Open();
+
+            using var transaction = conn.BeginTransaction();
+
+            using var cmd = new SQLiteCommand(conn);
+            cmd.Transaction = transaction;
+
+            string strSql = $"DELETE FROM {typeof(T).Name} WHERE {parentIdName}=@{parentIdName};";
+
+            cmd.CommandText = strSql;
+            cmd.CommandType = CommandType.Text;
+            cmd.Parameters.Clear();
+
+            cmd.Parameters.AddWithValue($"@{parentIdName}", parentIdValue);
+
+            cmd.ExecuteNonQuery();
+
+            transaction.Commit();
+
+            conn.Close();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, $"{nameof(Delete)} items", ex.Message);
+            return false;
+        }
+        finally
+        {
+            if (conn.State == ConnectionState.Open)
+                conn.Close();
+        }
+    }
+
+    public bool Delete(T item)
+    {
+        string strConn = GB.SqliteDataSource;
+        using var conn = new SQLiteConnection(strConn);
+
+        try
+        {
+            string idName = $"{typeof(T).Name}Id";
             PropertyInfo[] props = typeof(T).GetProperties();
-            var prop = props.Where(m => m.Name.Equals(id, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+            var prop = props.Where(m => m.Name.Equals(idName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
 
             if (prop != null)
             {
@@ -81,17 +125,18 @@ public class ItemsDelete<T> where T : class
 
                 using var cmd = new SQLiteCommand(conn);
 
-                var value = prop?.GetValue(item);
-                string strSql = $"DELETE FROM {typeof(T).Name} WHERE {id}=@{id};";
+                //Id값 반환
+                var idValue = prop?.GetValue(item);
+                string strSql = $"DELETE FROM {typeof(T).Name} WHERE {idName}=@{idName};";
 
                 cmd.CommandText = strSql;
                 cmd.CommandType = CommandType.Text;
                 cmd.Parameters.Clear();
 
-                cmd.Parameters.AddWithValue($"@{id}", value);
+                cmd.Parameters.AddWithValue($"@{idName}", idValue);
 
                 cmd.ExecuteNonQuery();
-                
+
                 conn.Close();
 
                 return true;
@@ -109,8 +154,10 @@ public class ItemsDelete<T> where T : class
         }
         finally
         {
-            if(conn.State == ConnectionState.Open)
+            if (conn.State == ConnectionState.Open)
                 conn.Close();
         }
     }
+
+
 }

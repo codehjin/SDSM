@@ -2,12 +2,14 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NinjaNye.SearchExtensions;
 using SDSM_App.Commons;
 using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
+using SDSM_App.Views.UserControls;
 using SDSM_Models;
 using System.Windows;
 using Telerik.Windows.Controls;
@@ -55,13 +57,16 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
         get { return new EnumDataSource { EnumType = typeof(SearchModeType) }; }
     }
 
-    [ObservableProperty] List<Benthos> _modelCollection = [];
+    [ObservableProperty] List<BenthosView> _modelCollection = [];
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(EditEditorOpenExecutedCommand))]
-    Benthos? _modelSelectedItem;
+    BenthosView? _modelSelectedItem;
 
     [ObservableProperty] private Visibility _editorVisibility = Visibility.Collapsed;
+    
+    [ObservableProperty] private Visibility _speciesLayoutVisibility = Visibility.Collapsed;
+    [ObservableProperty] private BenthosSpeciesControl? _speciesContent;
 
     #endregion
 
@@ -167,6 +172,22 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
 
     #region ICommand 구현
 
+    //출현종
+    [RelayCommand]
+    private void SpeceisOpenExecuted()
+    {
+        SpeciesContent = App.Current.Services.GetRequiredService<BenthosSpeciesControl>();
+        SpeciesLayoutVisibility = Visibility.Visible;
+    }
+
+    //출현종
+    [RelayCommand]
+    private void SpeceisCloseExecuted()
+    {
+        SpeciesLayoutVisibility = Visibility.Collapsed;
+        SpeciesContent = null;
+    }
+
     //검색
     [RelayCommand]
     private void SearchExecuted(object? obj)
@@ -192,7 +213,7 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
         if (ModelSelectedItem != null)
         {
             using var context = new SDSMDbContext();
-            var selectedModel = context.Benthoss.Where(m => m.BenthosId == ModelSelectedItem.BenthosId).FirstOrDefault();
+            var selectedModel = context.Benthoss.Where(m => m.BenthosId == ModelSelectedItem.BenthosId).Include(m => m.Subs).FirstOrDefault();
 
             if (selectedModel != null)
             {
@@ -208,7 +229,7 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
 
     [ObservableProperty] private Visibility _deleteFormVisibility = Visibility.Collapsed;
 
-    [ObservableProperty] List<Benthos>? _deleteData;
+    [ObservableProperty] List<BenthosView>? _deleteData;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DeleteExecutedCommand))]
@@ -222,7 +243,7 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
     [RelayCommand]
     private void DeleteFormVisibleExecuted(object obj)
     {
-        if (obj != null && obj is List<Benthos> deleteData && deleteData.Count > 0)
+        if (obj != null && obj is List<BenthosView> deleteData && deleteData.Count > 0)
         {
             DeleteData = deleteData;
             DeleteCount = deleteData.Count;
@@ -257,9 +278,20 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
             GB.IsBusy = true;
             GB.BusyContent = "자료 삭제 중...";
 
+            using var context = new SDSMDbContext();
+
+            var delteItems = new List<Benthos>();
+
+            //뷰 => 원본자료
+            await Task.Run(() =>
+            {
+                var ids = context.Benthoss.Select(m => new Benthos { BenthosId = m.BenthosId }).ToList();
+                delteItems = [.. ids.Where(m => DeleteData.Any(i => i.BenthosId == i.BenthosId))];
+            });
+
             //삭제 파일
             var itemsDelete = new ItemsDelete<Benthos>();
-            bool isSuccess = await Task.Run(() => itemsDelete.Delete(DeleteData));
+            bool isSuccess = await Task.Run(() => itemsDelete.Delete(delteItems));
 
             if (isSuccess)
             {
@@ -303,18 +335,18 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
             PageIndex = index;
 
             using var context = new SDSMDbContext();
-            IQueryable<Benthos> query;
+            IQueryable<BenthosView> query;
 
             await Task.Run(() =>
             {
                 if (string.IsNullOrEmpty(QueryText))
                 {
-                    query = context.Benthoss;
+                    query = context.BenthosViews;
                 }
                 else
                 {
-                    QueryableStringSearch<Benthos> searchQuery =
-                         context.Benthoss.Search(m => m.YearChsu,
+                    QueryableStringSearch<BenthosView> searchQuery =
+                         context.BenthosViews.Search(m => m.YearChsu,
                                                             m => m.Site,
                                                             m => m.SurveyDate.ToString(),
                                                             m => m.MajorRegion,
@@ -358,7 +390,9 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
                                                             m => m.IndexDI.ToString(),
                                                             m => m.IndexH.ToString(),
                                                             m => m.IndexR1.ToString(),
-                                                            m => m.IndexJ.ToString()                                                            
+                                                            m => m.IndexJ.ToString(),
+                                                            m => m.SpeciesCount.ToString(),
+                                                            m => m.IndividualCount.ToString()
                                                            );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)
@@ -412,10 +446,10 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
         try
         {
             using var context = new SDSMDbContext();
-            
-            int count = await context.Benthoss.CountAsync();            
-            if (count == 0) 
-            { 
+
+            int count = await context.Benthoss.CountAsync();
+            if (count == 0)
+            {
                 string tableName = nameof(Benthos);
                 await SqliteSequenceReset.SqliteSequenceResetAsync(tableName);
             }

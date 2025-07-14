@@ -157,15 +157,15 @@
                     </StackPanel.Resources>
                     <TextBlock Text="생물조사" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="5 0 0 10"/>
                     <UniformGrid Columns="4">
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="저서동물" Tag="BulkBenthosControl" Click="OpenRadButton_Click"/>
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="어류"/>
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="조류" Tag="BulkBirdControl" Click="OpenRadButton_Click"/>
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="포유류" Tag="BulkMammalControl" Click="OpenRadButton_Click"/>                        
+                        <telerik:RadButton Content="어류" Tag="BulkFishControl" Click="OpenRadButton_Click"/>
+                        <telerik:RadButton Content="저서동물" Tag="BulkBenthosControl" Click="OpenRadButton_Click"/>
+                        <telerik:RadButton Content="조류" Tag="BulkBirdControl" Click="OpenRadButton_Click"/>
+                        <telerik:RadButton Content="포유류" Tag="BulkMammalControl" Click="OpenRadButton_Click"/>                        
                     </UniformGrid>
                     <TextBlock Text="환경자료" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="5 40 0 10"/>
                     <UniformGrid>
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="수질" Tag="BulkWaterQualityControl" Click="OpenRadButton_Click"/>
-                        <telerik:RadButton common:WrapPanelFill.UseToFill="True" Content="서식수변" Tag="BulkHabitatWaterEdgeControl" Click="OpenRadButton_Click"/>
+                        <telerik:RadButton Content="수질" Tag="BulkWaterQualityControl" Click="OpenRadButton_Click"/>
+                        <telerik:RadButton Content="서식수변" Tag="BulkHabitatWaterEdgeControl" Click="OpenRadButton_Click"/>
                     </UniformGrid>
                 </StackPanel>
             </ScrollViewer>

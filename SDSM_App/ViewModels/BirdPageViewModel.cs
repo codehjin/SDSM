@@ -257,7 +257,7 @@ public partial class BirdPageViewModel : ObservableObject, ITransientService
             GB.IsBusy = true;
             GB.BusyContent = "자료 삭제 중...";
 
-            //삭제 파일
+            //파일삭제
             var itemsDelete = new ItemsDelete<Bird>();
             bool isSuccess = await Task.Run(() => itemsDelete.Delete(DeleteData));
 

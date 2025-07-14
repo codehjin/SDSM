@@ -16,10 +16,6 @@
 
     <Grid>
         <Grid MaxWidth="{StaticResource ContentMaxWidth}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -34,48 +30,60 @@
                 <TextBlock Text="저서동물" Style="{StaticResource TitleTextBlockStyle}"/>
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="30 30 30 20">
-                <telerik:RadButton Command="{Binding Path=AddEditorOpenExecutedCommand}" Style="{StaticResource AddButtonStyle}">
+            <Grid Grid.Row="1" Margin="30 30 30 20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <telerik:RadButton Command="{Binding Path=AddEditorOpenExecutedCommand}" Style="{StaticResource AddButtonStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <telerik:RadGlyph Glyph="{StaticResource GlyphPlus}" />
+                            <TextBlock Text="추가" Margin="5 0 0 0"/>
+                        </StackPanel>
+                    </telerik:RadButton>
+                    <telerik:RadButton Content="수정" Command="{Binding Path=EditEditorOpenExecutedCommand}" Style="{StaticResource EditButtonStyle}"/>
+                    <telerik:RadDropDownButton Content="삭제"
+                                               Cursor="Hand"
+                                               Margin="10 0 0 0"
+                                               CloseOnPopupMouseLeftButtonUp="True"
+                                               helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=ValidationBrush}">
+                        <telerik:RadDropDownButton.Style>
+                            <Style TargetType="telerik:RadDropDownButton">
+                                <Setter Property="IsEnabled" Value="True"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DataContext.ModelSelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" Value="{x:Null}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </telerik:RadDropDownButton.Style>
+                        <telerik:RadDropDownButton.DropDownContent>
+                            <StackPanel Margin="10">
+                                <telerik:RadButton Content="선택 자료 삭제" 
+                                                   Height="{StaticResource DefaultHeight}"
+                                                   Margin="0 0 0 5"
+                                                   IsTabStop="False"
+                                                   HorizontalContentAlignment="Left"
+                                                   Tag="single"
+                                                   Click="DeleteRadButton_Click"/>
+                                <telerik:RadButton Content="페이지 자료 삭제" 
+                                                   Height="{StaticResource DefaultHeight}"
+                                                   IsTabStop="False"
+                                                   HorizontalContentAlignment="Left"
+                                                   Tag="page"
+                                                   Click="DeleteRadButton_Click"/>
+                            </StackPanel>
+                        </telerik:RadDropDownButton.DropDownContent>
+                    </telerik:RadDropDownButton>
+                </StackPanel>
+                <telerik:RadButton Grid.Column="1" Command="{Binding Path=SpeceisOpenExecutedCommand}">
                     <StackPanel Orientation="Horizontal">
-                        <telerik:RadGlyph Glyph="{StaticResource GlyphPlus}" />
-                        <TextBlock Text="추가" Margin="5 0 0 0"/>
+                        <TextBlock Text="출현종 보기"/>
+                        <icon:PackIconPhosphorIcons Kind="ArrowUpRightThin" Margin="5 2 0 0" VerticalAlignment="Center" Width="14" Height="14"/>
                     </StackPanel>
                 </telerik:RadButton>
-                <telerik:RadButton Content="수정" Command="{Binding Path=EditEditorOpenExecutedCommand}" Style="{StaticResource EditButtonStyle}"/>
-                <telerik:RadDropDownButton Content="삭제"
-                                           Cursor="Hand"
-                                           Margin="10 0 0 0"
-                                           CloseOnPopupMouseLeftButtonUp="True"
-                                           helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=ValidationBrush}">
-                    <telerik:RadDropDownButton.Style>
-                        <Style TargetType="telerik:RadDropDownButton">
-                            <Setter Property="IsEnabled" Value="True"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=DataContext.ModelSelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" Value="{x:Null}">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </telerik:RadDropDownButton.Style>
-                    <telerik:RadDropDownButton.DropDownContent>
-                        <StackPanel Margin="10">
-                            <telerik:RadButton Content="선택 자료 삭제" 
-                                               Height="{StaticResource DefaultHeight}"
-                                               Margin="0 0 0 5"
-                                               IsTabStop="False"
-                                               HorizontalContentAlignment="Left"
-                                               Tag="single"
-                                               Click="DeleteRadButton_Click"/>
-                            <telerik:RadButton Content="페이지 자료 삭제" 
-                                               Height="{StaticResource DefaultHeight}"
-                                               IsTabStop="False"
-                                               HorizontalContentAlignment="Left"
-                                               Tag="page"
-                                               Click="DeleteRadButton_Click"/>
-                        </StackPanel>
-                    </telerik:RadDropDownButton.DropDownContent>
-                </telerik:RadDropDownButton>
-            </StackPanel>
+            </Grid>
 
             <Border Grid.Row="2" Margin="30 0 30 0" Padding="0" BorderThickness="0" Background="Transparent" Style="{StaticResource ContentBoxStyle}">
                 <Grid>
@@ -146,6 +154,7 @@
                             <telerik:GridViewColumnGroup Name="etc" Header="기타"/>
                             <telerik:GridViewColumnGroup Name="grade" Header="건강성"/>
                             <telerik:GridViewColumnGroup Name="index" Header="군집지수"/>
+                            <telerik:GridViewColumnGroup Name="species" Header="출현종"/>
                         </telerik:RadGridView.ColumnGroups>
                         <telerik:RadGridView.Columns>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
@@ -194,8 +203,10 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexH}" DataFormatString="{}{0:F2}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="index"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexR1}" DataFormatString="{}{0:F2}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="index"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndexJ}" DataFormatString="{}{0:F2}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="index"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIScore}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIGrade}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="grade"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIScore}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="grade"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIGrade}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="grade"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesCount}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndividualCount}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>
@@ -237,5 +248,30 @@
 
         <!--삭제폼-->
         <uc:DeleteFormControl />
+
+        <!--출현종-->
+        <Border Visibility="{Binding Path=SpeciesLayoutVisibility, Mode=TwoWay}" Style="{StaticResource EditorLayoutStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <telerik:RadButton HorizontalAlignment="Center"
+                                   CornerRadius="20"
+                                   Height="44"
+                                   Margin="0 10 0 10"
+                                   Padding="20 0"
+                                   Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}"
+                                   BorderThickness="0"
+                                   Command="{Binding Path=SpeceisCloseExecutedCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="저서동물 출현종" FontFamily="{StaticResource High1FontFamily}" Margin="0 0 20 0" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                        <telerik:RadGlyph Glyph="{StaticResource GlyphClose}" VerticalAlignment="Center" Foreground="{telerik:Windows11Resource ResourceKey=IconBrush}"/>
+                    </StackPanel>
+                </telerik:RadButton>
+                <ContentControl Grid.Row="1" Content ="{Binding Path=SpeciesContent}" />
+            </Grid>
+        </Border>
+
     </Grid>
 </Page>

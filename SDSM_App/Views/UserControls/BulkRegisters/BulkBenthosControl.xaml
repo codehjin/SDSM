@@ -105,7 +105,7 @@
                 <telerik:RadButton Height="44" Margin="10 0 0 0" Click="SpeciesVisibleRadButton_Click">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="종 목록 보기"/>
-                        <icon:PackIconPhosphorIcons Kind="ArrowUpRightThin" Margin="10 2 0 0" VerticalAlignment="Center" Width="14" Height="14"/>
+                        <icon:PackIconPhosphorIcons Kind="ArrowUpRightThin" Margin="5 2 0 0" VerticalAlignment="Center" Width="14" Height="14"/>
                     </StackPanel>
                 </telerik:RadButton>
             </StackPanel>

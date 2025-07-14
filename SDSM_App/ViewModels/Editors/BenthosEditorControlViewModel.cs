@@ -1,16 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using MediaFoundation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SDSM_App.Commons;
 using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
-using Telerik.Windows.Controls.AutoSuggestBox;
+using System.Data.SQLite;
+using System.Windows;
 using Telerik.Windows.Data;
 
 namespace SDSM_App.ViewModels;
@@ -30,8 +31,6 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         {
             ModelRecevice(m);
         });
-
-        InitLoad();
     }
 
     #endregion
@@ -59,7 +58,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     [ObservableProperty] private int? _surbernet50;
     [ObservableProperty] private int? _dredge;
     [ObservableProperty] private int? _ekman;
-    [ObservableProperty] private string?_watershed;
+    [ObservableProperty] private string? _watershed;
     [ObservableProperty] private string? _pollutionSource;
     [ObservableProperty] private string? _camopyCover;
     [ObservableProperty] private string? _floodplain;
@@ -85,6 +84,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     [ObservableProperty] private int? _smell;
     [ObservableProperty] private string? _note;
     [ObservableProperty] private string? _surveyUnavailableReason;
+    [ObservableProperty] private double? _bMIScore;
     [ObservableProperty] private string? _bMIGrade;
     [ObservableProperty] private double? _indexDI;
     [ObservableProperty] private double? _indexH;
@@ -94,7 +94,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     #endregion
 
     #region 생물종 속성, ICommand
-    
+
     [ObservableProperty] private RadObservableCollection<BenthosSpeciesList> _addSpeciesColleciton = [];
     [ObservableProperty] private BenthosSpeciesList? _addSpeciesSelectedItem;
 
@@ -105,7 +105,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     private void IndividualCountValueChangedExecuted()
     {
         AddSpeciesCount = AddSpeciesColleciton.Count(m => m.IndividualCount > 0);
-        AddIndividualCountSum = AddSpeciesColleciton.Sum(m=>m.IndividualCount) ?? 0;
+        AddIndividualCountSum = AddSpeciesColleciton.Sum(m => m.IndividualCount) ?? 0;
     }
 
     #endregion
@@ -136,21 +136,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     #endregion
 
     #region 매서드
-
-    private async void InitLoad()
-    {
-        try
-        {
-            using var context = new SDSMDbContext();
-
-            //종목록
-            AddSpeciesColleciton.AddRange( await context.BenthosSpeciesLists.ToListAsync());
-        }
-        catch (Exception ex)
-        {
-            GB.LogWrite(GetType().Name, nameof(InitLoad), ex.Message);
-        }
-    }
+    
 
     //신규저장
     private async void AddSave()
@@ -162,6 +148,12 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
             var addModel = await repository.InsertAsync(model);
             if (addModel != null)
             {
+                var speciess = AddSpeciesColleciton.Where(m => m.IndividualCount > 0).ToList();
+                if (speciess.Count != 0)
+                {
+                    await Task.Run(() => SubBatchSave(addModel.BenthosId, speciess, true));
+                }
+
                 var toast = (GB.SaveMessage, true);
                 WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
                 ClearProperty();
@@ -180,6 +172,10 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
             var isEdit = await repository.UpdateAsync(EditModel);
             if (isEdit)
             {
+                var speciess = AddSpeciesColleciton.Where(m => m.IndividualCount > 0).ToList();
+
+                await Task.Run(() => SubBatchSave(EditModel.BenthosId, speciess, false));
+
                 var toast = (GB.EditMessage, true);
                 WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
 
@@ -188,11 +184,71 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         }
     }
 
+    //종목록 일괄저장
+    private async void SubBatchSave(int parentId, List<BenthosSpeciesList> speciess, bool isAdd)
+    {
+        try
+        {
+            if (isAdd == false)
+            {
+                //종목록 삭제 후 다시 추가
+                var itemsDelete = new ItemsDelete<BenthosSpecies>();
+                bool isSuccess = await Task.Run(() => itemsDelete.DeleteChild($"{nameof(Benthos)}Id", parentId));
+
+                if (!isSuccess)
+                {
+                    GB.LogWrite(GetType().Name, nameof(SubBatchSave), "종목록 저장 실패");
+                    MessageBox.Show("종목목록 저장에 실패했습니다.", "저장 실패", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+
+            string strConn = GB.SqliteDataSource;
+
+            using var conn = new SQLiteConnection(strConn);
+            conn.Open();
+
+            using var transaction = conn.BeginTransaction();
+
+            foreach (var model in speciess)
+            {
+                string strSql = $"INSERT INTO BenthosSpecies" +
+                                 $"(SaprobicValue, IndicatorWeight, PhylumKo, ClassKo, OrderKo, FamilyKo, SpeciesKo, SpeciesEn, IndividualCount, BenthosId)  " +
+                                 $"VALUES " +
+                                 $"(@SaprobicValue, @IndicatorWeight, @PhylumKo, @ClassKo, @OrderKo, @FamilyKo, @SpeciesKo, @SpeciesEn, @IndividualCount, @BenthosId)";
+
+                using var command = new SQLiteCommand(strSql, conn);
+
+                command.Parameters.AddWithValue("@SaprobicValue", model.SaprobicValue ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@IndicatorWeight", model.IndicatorWeight ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@PhylumKo", model.PhylumKo ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@ClassKo", model.ClassKo ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@OrderKo", model.OrderKo ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@FamilyKo", model.FamilyKo ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@SpeciesKo", model.SpeciesKo ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@SpeciesEn", model.SpeciesEn ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@IndividualCount", model.IndividualCount ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@BenthosId", parentId);
+
+                command.ExecuteNonQuery();
+            }
+
+            transaction.Commit();
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(SubBatchSave), ex.Message);
+            throw;
+        }
+    }
+
     //신규 항목값
     private Benthos? AddItemToModel()
     {
         try
         {
+            var (indexDI, indexH, indexR1, indexJ, bMIScore, bMIGrade) = GetIndexAndGrade();
+
             var model = new Benthos
             {
                 YearChsu = YearChsu,
@@ -237,11 +293,12 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
                 Smell = Smell,
                 Note = Note,
                 SurveyUnavailableReason = SurveyUnavailableReason,
-                BMIGrade = BMIGrade,
-                IndexDI = IndexDI,
-                IndexH = IndexH,
-                IndexR1 = IndexR1,
-                IndexJ = IndexJ,
+                IndexDI = indexDI,
+                IndexH = indexH,
+                IndexR1 = indexR1,
+                IndexJ = indexJ,
+                BMIScore = bMIScore,
+                BMIGrade = bMIGrade,
             };
             return model;
 
@@ -254,6 +311,8 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     {
         try
         {
+            var (indexDI, indexH, indexR1, indexJ, bMIScore, bMIGrade) = GetIndexAndGrade();
+
             EditModel.YearChsu = YearChsu;
             EditModel.Site = Site;
             EditModel.SurveyDate = SurveyDate;
@@ -296,11 +355,12 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
             EditModel.Smell = Smell;
             EditModel.Note = Note;
             EditModel.SurveyUnavailableReason = SurveyUnavailableReason;
-            EditModel.BMIGrade = BMIGrade;
-            EditModel.IndexDI = IndexDI;
-            EditModel.IndexH = IndexH;
-            EditModel.IndexR1 = IndexR1;
-            EditModel.IndexJ = IndexJ;
+            EditModel.IndexDI = indexDI;
+            EditModel.IndexH = indexH;
+            EditModel.IndexR1 = indexR1;
+            EditModel.IndexJ = indexJ;
+            EditModel.BMIScore = bMIScore;
+            EditModel.BMIGrade = bMIGrade;
 
             return true;
         }
@@ -312,6 +372,8 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     {
         if (model.BenthosId > 0)
         {
+            GetSpeciesData();
+
             EditModelToProperty(model);
         }
         else
@@ -370,11 +432,29 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         Smell = EditModel.Smell;
         Note = EditModel.Note;
         SurveyUnavailableReason = EditModel.SurveyUnavailableReason;
-        BMIGrade = EditModel.BMIGrade;
         IndexDI = EditModel.IndexDI;
         IndexH = EditModel.IndexH;
         IndexR1 = EditModel.IndexR1;
         IndexJ = EditModel.IndexJ;
+        BMIScore = EditModel.BMIScore;
+        BMIGrade = EditModel.BMIGrade;
+
+        foreach (var sub in EditModel.Subs.ToList())
+        {
+            var speciesKoEn = $"{sub.SpeciesKo} {sub.SpeciesEn}";
+            foreach (var item in AddSpeciesColleciton)
+            {
+                if (item.SearchText == speciesKoEn)
+                {
+                    item.IndividualCount = sub.IndividualCount;
+                    break;
+                }
+            }
+        }
+
+        AddSpeciesSelectedItem = null;
+        AddSpeciesCount = AddSpeciesColleciton.Count(m => m.IndividualCount > 0);
+        AddIndividualCountSum = AddSpeciesColleciton.Sum(m => m.IndividualCount) ?? 0;
     }
 
     //항목초기화
@@ -426,11 +506,85 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         Smell = null;
         Note = null;
         SurveyUnavailableReason = null;
-        BMIGrade = null;
         IndexDI = null;
         IndexH = null;
         IndexR1 = null;
         IndexJ = null;
+        BMIScore = null;
+        BMIGrade = null;
+
+        GetSpeciesData();
+
+        AddSpeciesSelectedItem = null;
+        AddSpeciesCount = 0;
+        AddIndividualCountSum = 0;
+    }
+
+    //종목록
+    private async void GetSpeciesData()
+    {
+        try
+        {
+            using var context = new SDSMDbContext();
+
+            AddSpeciesColleciton.Clear();
+
+            //종목록
+            AddSpeciesColleciton.AddRange(await context.BenthosSpeciesLists.ToListAsync());
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(GetSpeciesData), ex.Message);
+        }
+    }
+
+    //군집지수 및 등급
+    private (double, double, double, double, double?, string? ) GetIndexAndGrade()
+    {
+        try
+        {
+            //종목록
+            var speciesData = AddSpeciesColleciton.Where(m => m.IndividualCount > 0).Select(m => new ImportBenthosSpecies
+            {
+                SaprobicValue = m.SaprobicValue.ToString(),
+                IndicatorWeight = m.IndicatorWeight.ToString(),
+                PhylumKo = m.PhylumKo,
+                ClassKo = m.ClassKo,
+                OrderKo = m.OrderKo,
+                FamilyKo = m.FamilyKo,
+                SpeciesKo = m.SpeciesKo,
+                SpeciesEn = m.SpeciesEn,
+                IndividualCount = m.IndividualCount,
+            }).ToList();
+
+            // 1. IndividualCount 값만 추출 (null은 0으로 처리)
+            int[] individualCounts = [.. speciesData.Select(x => x.IndividualCount.HasValue ? (int)x.IndividualCount.Value : 0)];
+
+            // 2. 각 개체별로 점수 계산
+            foreach (var species in speciesData)
+            {
+                int value = species.IndividualCount.HasValue ? (int)species.IndividualCount.Value : 0;
+                int rankScorer = GB.GetRankScorer(individualCounts, value);
+
+                // 점수 RankScorer 프로퍼티에 할당
+                species.RankScorer = rankScorer;
+            }
+
+            var surveyUnavailableReason = SurveyUnavailableReason;
+
+            var indexDI = GB.GetDI(speciesData);
+            var indexH = GB.GetH(speciesData);
+            var indexR1 = GB.GetR1(speciesData);
+            var indexJ = GB.GetJ(speciesData);
+            var (score, grade) = GB.GetBMI(speciesData, surveyUnavailableReason);
+
+            return (indexDI, indexH, indexR1, indexJ, score, grade);
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(GetIndexAndGrade), ex.Message);
+            return (0, 0, 0, 0, null, null);
+        }
     }
 
     #endregion 
@@ -446,6 +600,6 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
 
     #region 등급 및 군집지수
 
-   
+
     #endregion
 }

@@ -3,11 +3,14 @@ using Microsoft.Win32;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.ViewModels;
+using SDSM_App.Views.UserControls;
+using SDSM_Models;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Telerik.Documents.SpreadsheetStreaming;
+using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
 
 namespace SDSM_App.Views.Pages;
@@ -15,35 +18,46 @@ namespace SDSM_App.Views.Pages;
 /// <summary>
 /// 생물조사 어류
 /// </summary>
-public partial class FishSurveyPage : Page, ITransientService
+public partial class FishPage : Page, ITransientService
 {
-    private readonly FishSurveyPageViewModel _vm;
+    private readonly FishPageViewModel _vm;
 
-    public FishSurveyPage(FishSurveyPageViewModel vm)
+    public FishPage(FishPageViewModel vm)
     {
         InitializeComponent();
 
         _vm = vm;
         DataContext = _vm;
 
+        Loaded += Page_Loaded;
         SizeChanged += Page_SizeChanged;
     }
 
     #region This 이벤트
 
+    private void Page_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (App.Current.Services.GetService(typeof(BenthosEditorControl)) is BenthosEditorControl editor)
+        {
+            editor.CloseClick += (s, e) =>
+            {
+                EditorLayout.Visibility = Visibility.Collapsed;
+            };
+            EditorContentControl.Content = editor;
+        }
+    }
+
     private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        var height = e.NewSize.Height - (SearchLayout.ActualHeight + 190);
+        var height = e.NewSize.Height - (SearchLayout.ActualHeight + 240);
 
         if (height > 60)
         {
             DataRadGridView.Height = height;
-            SubDataRadGridView.Height = e.NewSize.Height - 105;
         }
         else
         {
             DataRadGridView.Height = 60;
-            SubDataRadGridView.Height = 60;
         }
     }
 
@@ -81,6 +95,25 @@ public partial class FishSurveyPage : Page, ITransientService
         if (e.Key == Key.Enter)
         {
             SearchQuery();
+        }
+    }
+
+    //삭제
+    private void DeleteRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is RadButton button && button.Tag is string tag)
+        {
+            List<FishView> deleteData = [];
+            if (tag == "single")
+            {
+                var item = DataRadGridView.SelectedItem as FishView;
+                deleteData.Add(item ?? new());
+            }
+            else if (tag == "page")
+            {
+                deleteData = [.. DataRadGridView.Items.Cast<FishView>()];
+            }
+            _vm.DeleteFormVisibleExecutedCommand.Execute(deleteData);
         }
     }
 

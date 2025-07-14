@@ -1,4 +1,4 @@
-﻿<Page x:Class="SDSM_App.Views.Pages.FishSurveyPage"
+﻿<Page x:Class="SDSM_App.Views.Pages.FishPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,18 +9,15 @@
       xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
       xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"
-      d:DataContext="{d:DesignInstance Type={x:Type viewmodel:FishSurveyPageViewModel}}"
+      d:DataContext="{d:DesignInstance Type={x:Type viewmodel:FishPageViewModel}}"
       FontFamily="{StaticResource DefaultFontFamily}"
       FontSize="{StaticResource DefaultFontSize}"
-      Title="어류조사">
+      Title="어류">
 
     <Grid>
         <Grid MaxWidth="{StaticResource ContentMaxWidth}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
@@ -33,7 +30,62 @@
                 <TextBlock Text="어류" Style="{StaticResource TitleTextBlockStyle}"/>
             </StackPanel>
 
-            <Border Grid.Row="1" Margin="30 30 30 0" Padding="0" BorderThickness="0" Background="Transparent" Style="{StaticResource ContentBoxStyle}">
+            <Grid Grid.Row="1" Margin="30 30 30 20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <telerik:RadButton Command="{Binding Path=AddEditorOpenExecutedCommand}" Style="{StaticResource AddButtonStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <telerik:RadGlyph Glyph="{StaticResource GlyphPlus}" />
+                            <TextBlock Text="추가" Margin="5 0 0 0"/>
+                        </StackPanel>
+                    </telerik:RadButton>
+                    <telerik:RadButton Content="수정" Command="{Binding Path=EditEditorOpenExecutedCommand}" Style="{StaticResource EditButtonStyle}"/>
+                    <telerik:RadDropDownButton Content="삭제"
+                                               Cursor="Hand"
+                                               Margin="10 0 0 0"
+                                               CloseOnPopupMouseLeftButtonUp="True"
+                                               helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=ValidationBrush}">
+                        <telerik:RadDropDownButton.Style>
+                            <Style TargetType="telerik:RadDropDownButton">
+                                <Setter Property="IsEnabled" Value="True"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DataContext.ModelSelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" Value="{x:Null}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </telerik:RadDropDownButton.Style>
+                        <telerik:RadDropDownButton.DropDownContent>
+                            <StackPanel Margin="10">
+                                <telerik:RadButton Content="선택 자료 삭제" 
+                                                   Height="{StaticResource DefaultHeight}"
+                                                   Margin="0 0 0 5"
+                                                   IsTabStop="False"
+                                                   HorizontalContentAlignment="Left"
+                                                   Tag="single"
+                                                   Click="DeleteRadButton_Click"/>
+                                <telerik:RadButton Content="페이지 자료 삭제" 
+                                                   Height="{StaticResource DefaultHeight}"
+                                                   IsTabStop="False"
+                                                   HorizontalContentAlignment="Left"
+                                                   Tag="page"
+                                                   Click="DeleteRadButton_Click"/>
+                            </StackPanel>
+                        </telerik:RadDropDownButton.DropDownContent>
+                    </telerik:RadDropDownButton>
+                </StackPanel>
+                <telerik:RadButton Grid.Column="1" Command="{Binding Path=SpeceisOpenExecutedCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="출현종 보기"/>
+                        <icon:PackIconPhosphorIcons Kind="ArrowUpRightThin" Margin="5 2 0 0" VerticalAlignment="Center" Width="14" Height="14"/>
+                    </StackPanel>
+                </telerik:RadButton>
+            </Grid>
+
+            <Border Grid.Row="2" Margin="30 0 30 0" Padding="0" BorderThickness="0" Background="Transparent" Style="{StaticResource ContentBoxStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -76,14 +128,8 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Height="{StaticResource DefaultHeight}">
-                                <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
-                                    <!--종목록 포함-->
-                                    <CheckBox x:Name="SubContainCheckBox" Content="출현종 포함" Cursor="Hand" Margin="0 0 10 0"/>
-                                    <!--페이지 출력-->
-                                    <telerik:RadButton Style="{StaticResource ExportButtonStyle}" Click="DataExportButton_Click"/>
-                                </StackPanel>
-                                <!--종목록-->
-                                <CheckBox IsChecked="{Binding Path=SubViewVisibility, Converter={StaticResource VisibilityToBooleanConverter}, Mode=TwoWay}" Style="{StaticResource SideCheckBoxStyle}"/>
+                                <!--페이지 출력-->
+                                <telerik:RadButton Style="{StaticResource ExportButtonStyle}" Click="DataExportButton_Click"/>
                             </StackPanel>
                         </Grid>
                     </ScrollViewer>
@@ -198,7 +244,7 @@
             </Border>
 
             <!--페이징-->
-            <Grid Grid.Row="2" Margin="30 10 30 30">
+            <Grid Grid.Row="3" Margin="30 10 30 20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -223,51 +269,39 @@
                         <telerik:EventBinding EventName="PageIndexChanged" Command="{Binding Path=PageIndexChangedExecutedCommand}" PassEventArgsToCommand="True"/>
                     </telerik:EventToCommandBehavior.EventBindings>
                 </telerik:RadDataPager>
-            </Grid>
-            
-            <!--출현종목록-->
-            <Border Grid.Column="1" Grid.RowSpan="3" Visibility="{Binding Path=SubViewVisibility}" Style="{StaticResource SubViewContentBorderStyle}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <DockPanel Margin="0 0 0 20">
-                        <TextBlock Text="출현종 목록" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="0 0 20 0"/>
-                        <telerik:RadButton Command="{Binding Path=SubViewCloseExecutedCommand}" Width="36" Height="36" CornerRadius="18" HorizontalAlignment="Right">
-                            <telerik:RadGlyph Glyph="{StaticResource GlyphClose}" Foreground="{telerik:Windows11Resource ResourceKey=IconBrush}"/>
-                        </telerik:RadButton>
-                    </DockPanel>
-
-                    <telerik:RadGridView x:Name="SubDataRadGridView"
-                                         Grid.Row="1"
-                                         ItemsSource="{Binding Path=SubData.Subs}"
-                                         HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
-                                         BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
-                                         BusyIndicatorIsIndeterminate="False"
-                                         FrozenColumnsSplitterVisibility="Collapsed"
-                                         RowIndicatorVisibility="Collapsed"
-                                         LeftFrozenColumnCount="0"
-                                         ShowColumnFooters="True">
-                        <telerik:RadGridView.Columns>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=OrderKo}" MinWidth="80" Width="140" MaxWidth="140"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FamilyKo}" MinWidth="80" Width="140" MaxWidth="140"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="160" MaxWidth="160" TextWrapping="Wrap"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="220" MaxWidth="220" TextWrapping="Wrap">
-                                <telerik:GridViewDataColumn.AggregateFunctions>
-                                    <telerik:CountFunction ResultFormatString="{}{0:N0}종"/>
-                                </telerik:GridViewDataColumn.AggregateFunctions>
-                            </telerik:GridViewDataColumn>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=NoU}" DataFormatString="N0" MinWidth="80" Width="120" MaxWidth="120">
-                                <telerik:GridViewDataColumn.AggregateFunctions>
-                                    <telerik:SumFunction ResultFormatString="{}{0:N0}개체수"/>
-                                </telerik:GridViewDataColumn.AggregateFunctions>
-                            </telerik:GridViewDataColumn>
-                        </telerik:RadGridView.Columns>
-                    </telerik:RadGridView>
-                </Grid>
-            </Border>
+            </Grid>          
         </Grid>
+
+        <!--작성폼-->
+        <Border x:Name="EditorLayout" Visibility="{Binding Path=EditorVisibility, Mode=TwoWay}" Style="{StaticResource EditorLayoutStyle}">
+            <ContentControl x:Name="EditorContentControl" />
+        </Border>
+
+        <!--삭제폼-->
+        <uc:DeleteFormControl />
+
+        <!--출현종-->
+        <Border Visibility="{Binding Path=SpeciesLayoutVisibility, Mode=TwoWay}" Style="{StaticResource EditorLayoutStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <telerik:RadButton HorizontalAlignment="Center"
+                                   CornerRadius="20"
+                                   Height="44"
+                                   Margin="0 10 0 10"
+                                   Padding="20 0"
+                                   Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}"
+                                   BorderThickness="0"
+                                   Command="{Binding Path=SpeceisCloseExecutedCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="어류 출현종" FontFamily="{StaticResource High1FontFamily}" Margin="0 0 20 0" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                        <telerik:RadGlyph Glyph="{StaticResource GlyphClose}" VerticalAlignment="Center" Foreground="{telerik:Windows11Resource ResourceKey=IconBrush}"/>
+                    </StackPanel>
+                </telerik:RadButton>
+                <ContentControl Grid.Row="1" Content ="{Binding Path=SpeciesContent}" />
+            </Grid>
+        </Border>
     </Grid>
 </Page>

@@ -28,6 +28,10 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding Path=FormTitle}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 30 0">
+                            <TextBlock Text="*" Style="{StaticResource FormLabelRequiredStyle}" Margin="0 8 0 0"/>
+                            <TextBlock Text="필수 항목" Style="{StaticResource FormLabelStyle}" FontFamily="{StaticResource High1FontFamily}"/>
+                        </StackPanel>
                         <telerik:RadButton Grid.Column="2" Style="{StaticResource TitleBarCloseButtonStyle}" Click="CloseButton_Click">
                             <telerik:RadGlyph Glyph="{StaticResource GlyphClose}"/>
                         </telerik:RadButton>

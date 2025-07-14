@@ -204,22 +204,22 @@ public partial class BulkBenthosControl : UserControl, ITransientService
             if (tag == "import")
             {
                 _exportRadGridView = DataRadGridView;
-                ExcelExportAsync("가져온자료");
+                ExcelExportAsync("저서동물_가져온자료");
             }
             else if (tag == "converted")
             {
                 _exportRadGridView = ConvertedDataRadGridView;
-                ExcelExportAsync("변환된자료");
+                ExcelExportAsync("저서동물_변환된자료");
             }
             else if (tag == "importspecies")
             {
                 _exportRadGridView = SpeciesDataRadGridView;
-                ExcelExportAsync("가져온자료_종목록");
+                ExcelExportAsync("저서동물_가져온자료_종목록");
             }
             else if (tag == "convertedspecies")
             {
                 _exportRadGridView = ConvertedSpeciesDataRadGridView;
-                ExcelExportAsync("변환된자료_종목록");
+                ExcelExportAsync("저서동물_변환된자료_종목록");
             }
         }
     }
