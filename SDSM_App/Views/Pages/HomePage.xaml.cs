@@ -1,23 +1,12 @@
 ﻿using SDSM_App.InjectableServices;
+using SDSM_App.Models;
 using SDSM_App.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Resources;
-using System.Windows.Threading;
-using Telerik.Charting;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.Map;
 
@@ -31,6 +20,9 @@ public partial class HomePage : Page, ITransientService
     private readonly HomePageViewModel _vm;
 
     private DirectoryInfo _mbDirectory = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mbtiles"));
+    private RadCallout _clickCallout = new();
+    private readonly CalloutPopupSettings _popupSettings;
+    private FrameworkElement? _pointTarget;
 
     public HomePage(HomePageViewModel vm)
     {
@@ -42,6 +34,26 @@ public partial class HomePage : Page, ITransientService
         Loaded += Page_Loaded;
         Unloaded += Page_Unloaded;
         radMap.Loaded += RadMap_Loaded;
+        radMap.ZoomChanged += RadMap_ZoomChanged;
+        radMap.CenterChanged += RadMap_CenterChanged;
+
+        _popupSettings = new CalloutPopupSettings()
+        {
+            AutoClose = false,
+            ShowAnimationDuration = 0.25d,
+            CloseAnimationDuration = 0.25d,
+            ShowAnimationType = CalloutAnimation.FadeAndMove,
+            CloseAnimationType = CalloutAnimation.FadeAndMove,
+            Placement = System.Windows.Controls.Primitives.PlacementMode.Top,
+            CanPopupExceedScreen = true,
+        };
+
+        //위치클릭 팝업
+        if (TryFindResource("MapPinCalloutStyle") is Style clickStyle)
+        {
+            _clickCallout = new RadCallout() { Style = clickStyle };
+            _clickCallout.SetBinding(ContentProperty, new Binding());
+        }
     }
 
     #region This 이벤트
@@ -80,6 +92,7 @@ public partial class HomePage : Page, ITransientService
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
+        CalloutPopupService.CloseAll();
         radMap.Dispose();
     }
 
@@ -109,6 +122,34 @@ public partial class HomePage : Page, ITransientService
             }
             AddMbTilesProvider(tag);
         }
+    }
+
+    private void Point_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is Border border && border.DataContext is MapModel item)
+        {
+            if (_clickCallout != null && _clickCallout.DataContext is MapModel openPoint)
+            {
+                if (item.Location.ToString() != openPoint.Location.ToString())
+                {
+                    MapPinCalloutPopupOpen(border, item);
+                }
+                else
+                {
+                    MapPinCalloutPopupClose();
+                }
+            }
+            else
+            {
+                MapPinCalloutPopupOpen(border, item);
+            }
+        }
+    }
+
+    //콜팝업 닫기
+    private void MapPinCalloutCloseRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        MapPinCalloutPopupClose();
     }
 
     #endregion
@@ -163,6 +204,7 @@ public partial class HomePage : Page, ITransientService
 
     private void RadMap_ZoomChanged(object sender, EventArgs e)
     {
+        MapPinCalloutPopupClose();
         //if (_vm != null && _vm.IsCheckedLabelVisible)
         //{
         //    if (_vm.Zoom < 16)
@@ -180,6 +222,11 @@ public partial class HomePage : Page, ITransientService
         //        }
         //    }
         //}
+    }
+
+    private void RadMap_CenterChanged(object? sender, EventArgs e)
+    {
+        MapPinCalloutPopupClose();
     }
 
     //클릭 좌표
@@ -305,5 +352,30 @@ public partial class HomePage : Page, ITransientService
         return true;
     }
 
-    #endregion   
+    #endregion
+
+    #region 메서드
+
+    //팝업 열기
+    private void MapPinCalloutPopupOpen(FrameworkElement placementTarget, object item)
+    {
+        if (_clickCallout != null)
+        {
+            _clickCallout.DataContext = item;
+            _pointTarget = placementTarget;
+
+            _vm.AddSelectedPointsExecutedCommand.Execute(item);
+
+            CalloutPopupService.Show(_clickCallout, _pointTarget, _popupSettings);
+        }
+    }
+
+    //팝업 닫기
+    private void MapPinCalloutPopupClose()
+    {
+        CalloutPopupService.CloseAll();
+        _clickCallout.DataContext = null;
+    }
+
+    #endregion
 }

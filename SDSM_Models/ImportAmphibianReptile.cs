@@ -36,5 +36,5 @@ public class ImportAmphibianReptile
     [DisplayName("조사자")] public string? Surveyor { get; set; }
     [DisplayName("특이사항")] public string? Note { get; set; }
 
-    [DisplayName("조사일\n(2010-01-01~오늘)")] public DateTime? SurveyDate { get; set; }
+    [DisplayName("조사일")] public DateTime? SurveyDate { get; set; }
 }

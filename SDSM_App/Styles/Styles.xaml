@@ -282,17 +282,16 @@
                             <Setter Property="Background" TargetName="Border" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush)}"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=AccentControlForegroundBrush}"/>
-                            <Setter TargetName="Border" Property="Background" Value="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
-                            <Setter TargetName="Border" Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBrush)}"/>
+                            <Setter Property="Background" TargetName="Border" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBackgroundBrush)}"/>
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" Value="True"/>
                                 <Condition Property="IsChecked" Value="True"/>
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="Border" Property="Background" Value="{telerik:Windows11Resource ResourceKey=AccentMouseOverBrush}"/>
-                            <Setter TargetName="Border" Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=AccentMouseOverBrush}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBrush)}"/>
+                            <Setter Property="Background" TargetName="Border" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush)}"/>
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledBackgroundBrush)}"/>

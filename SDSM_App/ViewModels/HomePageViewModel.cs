@@ -1,13 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore;
 using SDSM_App.InjectableServices;
 using SDSM_App.Models;
-using SDSM_Models;
 using System.Windows;
 using System.Windows.Media;
 using Telerik.Windows.Controls.Map;
 using Telerik.Windows.Data;
-using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 
 namespace SDSM_App.ViewModels;
 
@@ -38,6 +37,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
 
     [ObservableProperty] private RadObservableCollection<MapModel> _surveyDataCollection = [];
     [ObservableProperty] private RadObservableCollection<MapModel> _pointCollection = [];
+    [ObservableProperty] private RadObservableCollection<MapModel> _selectedCollection = [];
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(AllClearPointExecutedCommand))]
@@ -80,16 +80,15 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                 var models = new List<MapModel>();
 
                 string caption = selectedModel.Caption;
-                string speciesType = selectedModel.SpeciesType;
                 bool isChecked = selectedModel.IsSelected;
 
-                switch (speciesType)
+                switch (caption)
                 {
-                    case "조류":
+                    case "어류":
                         {
                             if (isChecked == true)
                             {
-                                models = await GetBirdPoints();
+                                models = await GetPoints(caption);
                             }
                             else
                             {
@@ -98,9 +97,91 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                                 if (points.Any())
                                 {
                                     PointCollection.RemoveRange(points);
-                                    //BirdModelCollection.Clear();
+                                }
+                            }
+                        }
+                        break;
+                    case "저서동물":
+                        {
+                            if (isChecked == true)
+                            {
+                                models = await GetPoints(caption);
+                            }
+                            else
+                            {
+                                var points = PointCollection.Where(m => m.Caption == caption);
 
-                                    SelectedRemovePointExecutedCommand.Execute([.. points]);
+                                if (points.Any())
+                                {
+                                    PointCollection.RemoveRange(points);
+                                }
+                            }
+                        }
+                        break;
+                    case "조류":
+                        {
+                            if (isChecked == true)
+                            {
+                                models = await GetPoints(caption);
+                            }
+                            else
+                            {
+                                var points = PointCollection.Where(m => m.Caption == caption);
+
+                                if (points.Any())
+                                {
+                                    PointCollection.RemoveRange(points);
+                                }
+                            }
+                        }
+                        break;
+                    case "포유류":
+                        {
+                            if (isChecked == true)
+                            {
+                                models = await GetPoints(caption);
+                            }
+                            else
+                            {
+                                var points = PointCollection.Where(m => m.Caption == caption);
+
+                                if (points.Any())
+                                {
+                                    PointCollection.RemoveRange(points);
+                                }
+                            }
+                        }
+                        break;
+                    case "서식수변":
+                        {
+                            if (isChecked == true)
+                            {
+                                models = await GetPoints(caption);
+                            }
+                            else
+                            {
+                                var points = PointCollection.Where(m => m.Caption == caption);
+
+                                if (points.Any())
+                                {
+                                    PointCollection.RemoveRange(points);
+                                }
+                            }
+                        }
+                        break;
+                    case "수질":
+                        {
+                            if (isChecked == true)
+                            {
+                                models = await GetPoints(caption);
+                            }
+                            else
+                            {
+                                var points = PointCollection.Where(m => m.Caption == caption);
+
+                                if (points.Any())
+                                {
+                                    PointCollection.RemoveRange(points);
                                 }
                             }
                         }
@@ -123,62 +204,14 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
         }
     }
 
-    //선택 제거 포인트
     [RelayCommand]
-    private void SelectedRemovePointExecuted(List<MapModel> removeModels)
+    private void AddSelectedPointsExecuted(MapModel model)
     {
-        if (removeModels != null && removeModels.Count > 0)
-        {
-            //var plants = new List<Plant>();
-            //var birds = new List<Bird>();
-            //var anrs = new List<AnR>();
-            //var mammals = new List<Mammal>();
-            //var insects = new List<Insect>();
-            //var fishs = new List<Fish>();
-            //var bms = new List<BM>();
-            //var endangereds = new List<Endangered>();
-            //var nurseTrees = new List<NurseTree>();
+        if (SelectedCollection.Count != 0)
+            SelectedCollection.Clear();
 
-            //foreach (var removeModel in removeModels)
-            //{
-            //    plants.AddRange(PlantModelCollection.Where(m => m.Lat == removeModel.Location.Latitude && m.Lng == removeModel.Location.Longitude));
-            //    birds.AddRange(BirdModelCollection.Where(m => m.Lat == removeModel.Location.Latitude && m.Lng == removeModel.Location.Longitude));
-            //    anrs.AddRange(AnRModelCollection.Where(m => m.Lat == removeModel.Location.Latitude && m.Lng == removeModel.Location.Longitude));
-            //    mammals.AddRange(MammalModelCollection.Where(m => m.Lat == removeModel.Location.Latitude && m.Lng == removeModel.Location.Longitude));
-            //    insects.AddRange(InsectModelCollection.Where(m => m.Lat == removeModel.Location.Latitude && m.Lng == removeModel.Location.Longitude));
-            //    fishs.AddRange(FishModelCollection.Where(m => m.Lat == removeModel.Location.Latitude && m.Lng == removeModel.Location.Longitude));
-            //    bms.AddRange(BMModelCollection.Where(m => m.Lat == removeModel.Location.Latitude && m.Lng == removeModel.Location.Longitude));
-            //    endangereds.AddRange(EndangeredModelCollection.Where(m => m.Lat == removeModel.Location.Latitude && m.Lng == removeModel.Location.Longitude));
-            //    nurseTrees.AddRange(NurseTreeModelCollection.Where(m => m.Lat == removeModel.Location.Latitude && m.Lng == removeModel.Location.Longitude));
-            //}
-
-            //if (plants.Count > 0)
-            //    PlantModelCollection.RemoveRange(plants);
-
-            //if (birds.Count > 0)
-            //    BirdModelCollection.RemoveRange(birds);
-
-            //if (anrs.Count > 0)
-            //    AnRModelCollection.RemoveRange(anrs);
-
-            //if (mammals.Count > 0)
-            //    MammalModelCollection.RemoveRange(mammals);
-
-            //if (insects.Count > 0)
-            //    InsectModelCollection.RemoveRange(insects);
-
-            //if (fishs.Count > 0)
-            //    FishModelCollection.RemoveRange(fishs);
-
-            //if (bms.Count > 0)
-            //    BMModelCollection.RemoveRange(bms);
-
-            //if (endangereds.Count > 0)
-            //    EndangeredModelCollection.RemoveRange(endangereds);
-
-            //if (nurseTrees.Count > 0)
-            //    NurseTreeModelCollection.RemoveRange(nurseTrees);
-        }
+        var seledtedModels = PointCollection.Where(m => m.Lat == model.Lat && m.Lng == model.Lng).ToList();
+        SelectedCollection.AddRange(seledtedModels);
     }
 
     #endregion
@@ -209,15 +242,15 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
         {
             using var context = new SDSMDbContext();
 
-            SurveyDataCollection.Add(new MapModel { Caption = "식생", SpeciesType = "식생", MarkerFill = Application.Current.FindResource("VegetationBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "식물", SpeciesType = "식물", MarkerFill = Application.Current.FindResource("PlantBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "양서파충류", SpeciesType = "양서파충류", MarkerFill = Application.Current.FindResource("AmphibianReptileBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "어류", SpeciesType = "어류", MarkerFill = Application.Current.FindResource("FishBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "저서동물", SpeciesType = "저서동물", MarkerFill = Application.Current.FindResource("BenthosBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "조류", SpeciesType = "조류", MarkerFill = Application.Current.FindResource("BirdBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "포유류", SpeciesType = "포유류", MarkerFill = Application.Current.FindResource("MammalBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "서식수변", SpeciesType = "서식수변", MarkerFill = Application.Current.FindResource("HabitatWaterEdgeBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "수질", SpeciesType = "수질", MarkerFill = Application.Current.FindResource("WaterQualityBrush") as Brush });
+            SurveyDataCollection.Add(new MapModel { Caption = "식생", MarkerFill = Application.Current.FindResource("VegetationBrush") as Brush });
+            SurveyDataCollection.Add(new MapModel { Caption = "식물", MarkerFill = Application.Current.FindResource("PlantBrush") as Brush });
+            SurveyDataCollection.Add(new MapModel { Caption = "양서파충류", MarkerFill = Application.Current.FindResource("AmphibianReptileBrush") as Brush });
+            SurveyDataCollection.Add(new MapModel { Caption = "어류", MarkerFill = Application.Current.FindResource("FishBrush") as Brush });
+            SurveyDataCollection.Add(new MapModel { Caption = "저서동물", MarkerFill = Application.Current.FindResource("BenthosBrush") as Brush });
+            SurveyDataCollection.Add(new MapModel { Caption = "조류", MarkerFill = Application.Current.FindResource("BirdBrush") as Brush });
+            SurveyDataCollection.Add(new MapModel { Caption = "포유류", MarkerFill = Application.Current.FindResource("MammalBrush") as Brush });
+            SurveyDataCollection.Add(new MapModel { Caption = "서식수변", MarkerFill = Application.Current.FindResource("HabitatWaterEdgeBrush") as Brush });
+            SurveyDataCollection.Add(new MapModel { Caption = "수질", MarkerFill = Application.Current.FindResource("WaterQualityBrush") as Brush });
         }
         catch (Exception ex)
         {
@@ -227,49 +260,232 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
     }
 
     //조류
-    private async Task<List<MapModel>> GetBirdPoints()
+    private async Task<List<MapModel>> GetPoints(string caption)
     {
         using var context = new SDSMDbContext();
         var models = new List<MapModel>();
 
         try
         {
-            await Task.Run(() =>
+            switch (caption)
             {
-                var groupeds = context.Birds.Where(m => m.Lat != null && m.Lng != null).GroupBy(m => new { m.Lat, m.Lng }).ToList();
-
-                foreach (var grouped in groupeds)
-                {
-                    foreach (var item in grouped)
+                case "어류":
+                    await Task.Run(() =>
                     {
-                        var model = new MapModel
+                        var groupeds = context.Fishs.Where(m => m.Lat != null && m.Lng != null)
+                                                      .Include(m => m.Subs)
+                                                      .GroupBy(m => new { m.Lat, m.Lng })
+                                                      .ToList();
+
+                        foreach (var grouped in groupeds)
                         {
-                            Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
-                            Caption = $"조류_{item.SurveyDate?.Year}년",
-                            Label = $"조{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
-                            MarkerFill = Application.Current.FindResource("BirdBrush") as Brush,
-                        };
-                        models.Add(model);
-                    }
-                }
+                            foreach (var item in grouped)
+                            {
+                                var model = new MapModel
+                                {
+                                    Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
+                                    Caption = caption,
+                                    Label = $"어{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
+                                    MarkerFill = Application.Current.FindResource("FishBrush") as Brush,
+                                    YearChsu = item.YearChsu,
+                                    SurveyDate = item.SurveyDate,
+                                    River = item.River,
+                                    Site = item.Site,
+                                    Lat = item.Lat,
+                                    Lng = item.Lng,
+                                    Surveyor = item.Surveyor,
+                                    FAIScore = item.FAIScore,
+                                    FAIGrade = item.FAIGrade,
+                                    SpeciesCount = item.Subs.Count,
+                                    IndividualCount = item.Subs.Sum(m => m.IndividualCount),
+                                    IsFAI = true,
+                                    IsSpeciesCount = true,
+                                    IsIndividualCount = true,
+                                };
+                                models.Add(model);
+                            }
+                        }
+                    });
+                    break;
+                case "저서동물":
+                    await Task.Run(() =>
+                    {
+                        var groupeds = context.Benthoss.Where(m => m.Lat != null && m.Lng != null)
+                                                         .Include(m=> m.Subs)
+                                                         .GroupBy(m => new { m.Lat, m.Lng })
+                                                         .ToList();
 
-                //if (query.Count == 0)
-                //    return models;
+                        foreach (var grouped in groupeds)
+                        {
+                            foreach (var item in grouped)
+                            {
+                                var model = new MapModel
+                                {
+                                    Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
+                                    Caption = caption,
+                                    Label = $"저{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
+                                    MarkerFill = Application.Current.FindResource("BenthosBrush") as Brush,
+                                    YearChsu = item.YearChsu,
+                                    SurveyDate = item.SurveyDate,
+                                    River = item.River,
+                                    Site = item.Site,
+                                    Lat = item.Lat,
+                                    Lng = item.Lng,
+                                    Surveyor = item.Surveyor,
+                                    BMIScore = item.BMIScore,
+                                    BMIGrade = item.BMIGrade,
+                                    SpeciesCount = item.Subs.Count,
+                                    IndividualCount = item.Subs.Sum(m => m.IndividualCount),
+                                    IsBMI = true,
+                                    IsSpeciesCount = true,
+                                    IsIndividualCount = true,
+                                };
+                                models.Add(model);
+                            }
+                        }
+                    });
+                    break;
+                case "조류":
+                    await Task.Run(() =>
+                    {
+                        var groupeds = context.Birds.Where(m => m.Lat != null && m.Lng != null).GroupBy(m => new { m.Lat, m.Lng }).ToList();
 
-                //models = context.Birds.Where( query.Any(m=> query)(m => new { m.Lat, m.Lng }).Select(m => new MapModel
-                //{
-                //    Location = new Location(m.Key.Lat ?? 0, m.Key.Lng ?? 0),
-                //    Caption = $"조류_{m.}년",
-                //    Label = $"조{year.ToString().Substring(2, 2)}",
-                //    MarkerFill = Application.Current.FindResource("BirdBrush") as Brush,
-                //});
-            });
+                        foreach (var grouped in groupeds)
+                        {
+                            foreach (var item in grouped)
+                            {
+                                var model = new MapModel
+                                {
+                                    Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
+                                    Caption = caption,
+                                    Label = $"조{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
+                                    MarkerFill = Application.Current.FindResource("BirdBrush") as Brush,
+                                    YearChsu = item.YearChsu,
+                                    SurveyDate = item.SurveyDate,
+                                    River = item.River,
+                                    Site = item.Site,
+                                    Lat = item.Lat,
+                                    Lng = item.Lng,
+                                    Surveyor = item.Surveyor,
+                                    SpeciesKo= item.SpeciesKo,
+                                    SpeciesEn =item.SpeciesEn,
+                                    IndividualCount =item.IndividualCount,
+                                    IsSpecies =true,
+                                    IsIndividualCount = true,
+                                };
+                                models.Add(model);
+                            }
+                        }
+                    });
+                    break;
+                case "포유류":
+                    await Task.Run(() =>
+                    {
+                        var groupeds = context.Mammals.Where(m => m.Lat != null && m.Lng != null).GroupBy(m => new { m.Lat, m.Lng }).ToList();
+
+                        foreach (var grouped in groupeds)
+                        {
+                            foreach (var item in grouped)
+                            {
+                                var model = new MapModel
+                                {
+                                    Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
+                                    Caption = caption,
+                                    Label = $"포{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
+                                    MarkerFill = Application.Current.FindResource("MammalBrush") as Brush,
+                                    YearChsu = item.YearChsu,
+                                    SurveyDate = item.SurveyDate,
+                                    River = item.River,
+                                    Site = item.Site,
+                                    Lat = item.Lat,
+                                    Lng = item.Lng,
+                                    Surveyor = item.Surveyor,
+                                    SpeciesKo = item.SpeciesKo,
+                                    SpeciesEn = item.SpeciesEn,
+                                    IsSpecies = true,
+                                };
+                                models.Add(model);
+                            }
+                        }
+                    });
+                    break;
+                case "서식수변":
+                    await Task.Run(() =>
+                    {
+                        var groupeds = context.HabitatWaterEdges.Where(m => m.Lat != null && m.Lng != null).GroupBy(m => new { m.Lat, m.Lng }).ToList();
+
+                        foreach (var grouped in groupeds)
+                        {
+                            foreach (var item in grouped)
+                            {
+                                var model = new MapModel
+                                {
+                                    Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
+                                    Caption = caption,
+                                    Label = $"서{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
+                                    MarkerFill = Application.Current.FindResource("HabitatWaterEdgeBrush") as Brush,
+                                    YearChsu = item.YearChsu,
+                                    SurveyDate = item.SurveyDate,
+                                    River = item.River,
+                                    Site = item.Site,
+                                    Lat = item.Lat,
+                                    Lng = item.Lng,
+                                    Surveyor = item.Surveyor,
+                                    EvaluationScore = item.EvaluationScore,
+                                    EvaluationGrade = item.EvaluationGrade,
+                                    IsHabitatWaterEdge = true,
+                                };
+                                models.Add(model);
+                            }
+                        }
+                    });
+                    break;
+                case "수질":
+                    await Task.Run(() =>
+                    {
+                        var groupeds = context.WaterQualitys.Where(m => m.Lat != null && m.Lng != null).GroupBy(m => new { m.Lat, m.Lng }).ToList();
+
+                        foreach (var grouped in groupeds)
+                        {
+                            foreach (var item in grouped)
+                            {
+                                var model = new MapModel
+                                {
+                                    Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
+                                    Caption = caption,
+                                    Label = $"수{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
+                                    MarkerFill = Application.Current.FindResource("WaterQualityBrush") as Brush,
+                                    YearChsu = item.YearChsu,
+                                    SurveyDate = item.SurveyDate,
+                                    River = item.River,
+                                    Site = item.Site,
+                                    Lat = item.Lat,
+                                    Lng = item.Lng,
+                                    Surveyor = item.Surveyor,
+                                    PHGrade = item.PHGrade,
+                                    BODGrade = item.BODGrade,
+                                    CODGrade = item.CODGrade,
+                                    TOCGrade = item.TOCGrade,
+                                    SSGrade = item.SSGrade,
+                                    DOGrade = item.DOGrade,
+                                    TPGrade = item.TPGrade,
+                                    EColiGrade = item.EColiGrade,
+                                    IsWaterQuality = true,
+                                };
+                                models.Add(model);
+                            }
+                        }
+                    });
+                    break;
+                default:
+                    break;
+            }
 
             return models;
         }
         catch (Exception ex)
         {
-            GB.LogWrite(GetType().Name, nameof(GetBirdPoints), ex.Message);
+            GB.LogWrite(GetType().Name, nameof(GetPoints), ex.Message);
             return models;
         }
     }

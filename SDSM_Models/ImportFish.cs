@@ -9,7 +9,7 @@ public class ImportFish
 
     [DisplayName("연도차수")] public string YearChsu { get; set; } = string.Empty;
     [DisplayName("지점명")] public string Site { get; set; } = string.Empty;
-    [DisplayName("조사일\n(2010-01-01~오늘)")] public string? SurveyDate { get; set; }  
+    [DisplayName("조사일")] public string? SurveyDate { get; set; }  
     [DisplayName("대권역명")] public string? MajorRegion { get; set; }
     [DisplayName("중권역명")] public string? MiddleRegion { get; set; }
     [DisplayName("하천명")] public string? River { get; set; }

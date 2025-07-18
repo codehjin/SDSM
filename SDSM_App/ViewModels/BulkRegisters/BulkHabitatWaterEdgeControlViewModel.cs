@@ -237,7 +237,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                     {
                         YearChsu = firstValue,
                         Site = worksheet.Cells[2, columnIndex].GetValue().Value.RawValue,
-                        SurveyDate = worksheet.Cells[3, columnIndex].GetValue().Value.RawValue,
+                        SurveyDate = ((ICellValue)(worksheet.Cells[3, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[3, columnIndex].GetFormat().Value),
                         MajorRegion = worksheet.Cells[4, columnIndex].GetValue().Value.RawValue,
                         MiddleRegion = worksheet.Cells[5, columnIndex].GetValue().Value.RawValue,
                         River = worksheet.Cells[6, columnIndex].GetValue().Value.RawValue,

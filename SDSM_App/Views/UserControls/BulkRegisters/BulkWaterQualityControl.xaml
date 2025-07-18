@@ -195,7 +195,7 @@
                             <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn Header="조사일&#13;(2000-01-01~오늘)" DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MajorRegion}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MiddleRegion}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="160" MaxWidth="160"/>
@@ -306,7 +306,7 @@
                             <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn Header="조사일&#13;(2000-01-01~오늘)" DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MajorRegion}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MiddleRegion}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="160" MaxWidth="160"/>

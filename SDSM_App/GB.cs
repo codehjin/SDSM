@@ -45,7 +45,7 @@ public static class GB
     public static string DoublePattern { get; set; } = "^[0-9]*(?:\\.[0-9]*)?$";
 
     //최소날짜
-    public static DateTime MinDate { get; set; } = new DateTime(2010, 1, 1);
+    public static DateTime MinDate { get; set; } = new DateTime(2000, 1, 1);
 
     //로그작성
     public static void LogWrite(string model, string method, string error)

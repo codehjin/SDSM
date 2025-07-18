@@ -235,7 +235,7 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                     var model = new ImportBird
                     {
                         YearChsu = firstValue,
-                        SurveyDate = worksheet.Cells[rowIndex, 2].GetValue().Value.RawValue,
+                        SurveyDate = ((ICellValue)(worksheet.Cells[rowIndex, 2].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 2].GetFormat().Value),
                         Weather = worksheet.Cells[rowIndex, 3].GetValue().Value.RawValue,
                         River = worksheet.Cells[rowIndex, 4].GetValue().Value.RawValue,
                         Site = worksheet.Cells[rowIndex, 5].GetValue().Value.RawValue,

@@ -8,7 +8,6 @@ using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
 using SDSM_Models;
-using SharpDX.Direct2D1.Effects;
 using System.Data.SQLite;
 using System.IO;
 using System.Media;
@@ -16,7 +15,6 @@ using System.Reflection;
 using System.Text;
 using System.Windows;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.FieldList;
 using Telerik.Windows.Data;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
 using Telerik.Windows.Documents.Spreadsheet.Model;
@@ -100,7 +98,7 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
         if (!File.Exists(fileName))
         {
             return;
-        }
+        }        
 
         GB.IsBusy = true;
         GB.BusyContent = "자료 가져오는 중...";
@@ -239,7 +237,6 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                     {
                         YearChsu = firstValue,
                         YearValue = worksheet.Cells[rowIndex, 2].GetValue().Value.RawValue,
-                        MonthValue = worksheet.Cells[rowIndex, 3].GetValue().Value.RawValue,
                         DayValue = worksheet.Cells[rowIndex, 4].GetValue().Value.RawValue,
                         Weather = worksheet.Cells[rowIndex, 5].GetValue().Value.RawValue,
                         River = worksheet.Cells[rowIndex, 6].GetValue().Value.RawValue,

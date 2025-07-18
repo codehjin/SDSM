@@ -27,15 +27,15 @@
         <DataTemplate x:Key="ClusterTemplate">
             <Grid x:Name="ParentRoot" Width="40" Height="30" Cursor="Hand" telerik:MapLayer.HotSpot="0.5, 0.5" MouseLeftButtonDown="ClusterMouseLeftButtonDown" MouseRightButtonDown="ClusterMouseRightButtonDown">
                 <Path Width="{Binding Width,ElementName=ParentRoot}" 
-	          Height="{Binding Height,ElementName=ParentRoot}" 
-	          Stretch="Fill"
-              Data="M978.6509,491.334L958.6109,491.334L954.4549,500.874L949.9999,491.334L930.6259,491.334C928.4169,491.334,926.6259,489.543,926.6259,487.334L926.6259,433.272C926.6259,431.063,928.4169,429.272,930.6259,429.272L978.6509,429.272C980.8599,429.272,982.6509,431.063,982.6509,433.272L982.6509,487.334C982.6509,489.543,980.8599,491.334,978.6509,491.334z" 
-	          StrokeStartLineCap="Flat"
-              StrokeEndLineCap="Flat"
-              Stroke="White"
-              StrokeThickness="1"
-              StrokeMiterLimit="10"
-              StrokeLineJoin="Miter">
+	                  Height="{Binding Height,ElementName=ParentRoot}" 
+	                  Stretch="Fill"
+                      Data="M978.6509,491.334L958.6109,491.334L954.4549,500.874L949.9999,491.334L930.6259,491.334C928.4169,491.334,926.6259,489.543,926.6259,487.334L926.6259,433.272C926.6259,431.063,928.4169,429.272,930.6259,429.272L978.6509,429.272C980.8599,429.272,982.6509,431.063,982.6509,433.272L982.6509,487.334C982.6509,489.543,980.8599,491.334,978.6509,491.334z" 
+	                  StrokeStartLineCap="Flat"
+                      StrokeEndLineCap="Flat"
+                      Stroke="White"
+                      StrokeThickness="1"
+                      StrokeMiterLimit="10"
+                      StrokeLineJoin="Miter">
                     <Path.Style>
                         <Style TargetType="Path">
                             <Setter Property="Fill" Value="#99000000"/>
@@ -48,8 +48,7 @@
                     </Path.Style>
                 </Path>
                 <StackPanel Margin="5,2,5,5">
-                    <TextBlock Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path=Count}" 
-                       TextTrimming="CharacterEllipsis" FontSize="12"/>
+                    <TextBlock Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path=Count}" TextTrimming="CharacterEllipsis" FontSize="12"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -62,7 +61,10 @@
             <Setter Property="CornerRadius" Value="{telerik:Windows11Resource ResourceKey=CornerRadius}"/>
         </Style>
         <Style x:Key="ExpanderCheckBoxStyle" TargetType="CheckBox" BasedOn="{StaticResource CustomCheckBoxStyle}">
-            <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=FocusInnerBrush}"/>
+            <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}"/>
+            <Setter Property="helpers:ThemeHelper.CheckedBackgroundBrush" Value="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}"/>
+            <Setter Property="helpers:ThemeHelper.CheckedBrush" Value="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"/>
+            <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}"/>
             <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
             <Setter Property="Tag" Value="expander"/>
             <Setter Property="IsChecked" Value="True"/>
@@ -107,7 +109,8 @@
                     Padding="2 3 2 2"
                     CornerRadius="3"
                     BorderBrush="{Binding Path=MarkerFill}"
-                    BorderThickness="2">
+                    BorderThickness="2"
+                    MouseLeftButtonDown="Point_MouseLeftButtonDown">
                 <telerik:MapLayer.HotSpot>
                     <telerik:HotSpot X="0.5" Y="0.5"/>
                 </telerik:MapLayer.HotSpot>
@@ -135,22 +138,117 @@
                 </TextBlock>
             </Border>
         </DataTemplate>
+
+        <Style x:Key="MapPinCalloutStyle" TargetType="telerik:RadCallout">
+            <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=OverlayBrush}"/>
+            <Setter Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=SecondaryBorderBrush}"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="CalloutType" Value="RoundedRectangle"/>
+            <Setter Property="ArrowType" Value="Triangle"/>
+            <Setter Property="ArrowAnchorPoint" Value="0.5,1.05"/>
+            <Setter Property="ArrowBasePoint1" Value="0.35,0.5"/>
+            <Setter Property="ArrowBasePoint2" Value="0.65,0.5"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="UseLayoutRounding" Value="True"/>
+            <Setter Property="MinWidth" Value="860"/>
+            <Setter Property="Width" Value="860"/>
+            <Setter Property="MaxWidth" Value="860"/>
+            <Setter Property="Margin" Value="0 0 0 0"/>
+            <Setter Property="Stretch" Value="None"/>
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <StackPanel UseLayoutRounding="True">
+                            <Grid Height="40">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="전체" Margin="0 0 5 0" FontFamily="{StaticResource High1FontFamily}"/>
+                                    <TextBlock Text="{Binding Path=Items.Count, Mode=OneWay, ElementName=DataRadGridView, StringFormat={}{0:N0}}" Margin="3 0 0 0" FontFamily="{StaticResource High1FontFamily}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                                    <TextBlock Text="건" Margin="0 0 5 0" FontFamily="{StaticResource High1FontFamily}"/>
+                                </StackPanel>
+                                <telerik:RadButton Grid.Column="1"
+                                                   DockPanel.Dock="Right"
+                                                   Cursor="Hand"
+                                                   IsBackgroundVisible="False"
+                                                   Padding="7 0"
+                                                   Height="32"
+                                                   Margin="0 -10 0 0"
+                                                   VerticalAlignment="Center" 
+                                                   HorizontalAlignment="Right"
+                                                   helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
+                                                   helpers:ThemeHelper.PressedBrush="Transparent"
+                                                   helpers:ThemeHelper.FocusBrush="Transparent"
+                                                   Click="MapPinCalloutCloseRadButton_Click">
+                                    <telerik:RadGlyph Glyph="&#xe11b;"/>
+                                </telerik:RadButton>
+                            </Grid>
+                            <Grid Margin="0 0 0 0">
+                                <telerik:RadGridView x:Name="DataRadGridView"
+                                                     ItemsSource="{Binding Path=DataContext.SelectedCollection, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
+                                                     BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
+                                                     BusyIndicatorIsIndeterminate="False"
+                                                     FrozenColumnsSplitterVisibility="Collapsed"
+                                                     RowIndicatorVisibility="Collapsed"
+                                                     LeftFrozenColumnCount="0"
+                                                     IsFilteringAllowed="False"
+                                                     IsSynchronizedWithCurrentItem="{x:Null}"
+                                                     MinHeight="100"
+                                                     MaxHeight="560">
+                                    <telerik:RadGridView.Columns>
+                                        <telerik:GridViewDataColumn Header="구분" DataMemberBinding="{Binding Path=Caption}" MinWidth="80" Width="140" MaxWidth="140"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="160" MaxWidth="160"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="160" MaxWidth="160"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="160" MaxWidth="160"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" IsVisible="{Binding Path=IsSpecies}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="480" MaxWidth="480" TextWrapping="Wrap" IsVisible="{Binding Path=IsSpecies}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EvaluationScore}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsHabitatWaterEdge}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EvaluationGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsHabitatWaterEdge}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIScore}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsBMI}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsBMI}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIScore}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsFAI}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsFAI}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesCount}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsSpeciesCount}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndividualCount}" DataFormatString="{}{0:N1}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsIndividualCount}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=PHGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsWaterQuality}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BODGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsWaterQuality}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CODGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsWaterQuality}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TOCGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsWaterQuality}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SSGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsWaterQuality}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=DOGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsWaterQuality}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TPGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsWaterQuality}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EColiGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsWaterQuality}"/>
+                                    </telerik:RadGridView.Columns>
+                                </telerik:RadGridView>
+                            </Grid>
+                        </StackPanel>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
 
     <Grid>
         <telerik:RadMap x:Name="radMap"
-                Language="ko-KR"
-                UseDefaultLayout="False"
-                UseSpringAnimations="False"
-                MinZoomLevel="6"
-                MaxZoomLevel="18"
-                ZoomLevel="12"
-                ZoomStep="1"
-                Zoom="{Binding Path=Zoom, Mode=TwoWay}"
-                Center="{Binding Path=Center, Mode=TwoWay}"
-                MouseClickMode="SelectItem" 
-                ZoomChanged="RadMap_ZoomChanged"
-                MouseRightButtonDown="RadMap_MouseRightButtonDown">
+                        Language="ko-KR"
+                        UseDefaultLayout="False"
+                        UseSpringAnimations="False"
+                        MinZoomLevel="6"
+                        MaxZoomLevel="20"
+                        ZoomLevel="12"
+                        ZoomStep="1"
+                        Zoom="{Binding Path=Zoom, Mode=TwoWay}"
+                        Center="{Binding Path=Center, Mode=TwoWay}"
+                        MouseClickMode="SelectItem" 
+                        ZoomChanged="RadMap_ZoomChanged"
+                        MouseRightButtonDown="RadMap_MouseRightButtonDown">
             <telerik:RadContextMenu.ContextMenu>
                 <telerik:RadContextMenu IconColumnWidth="0">
                     <telerik:RadMenuItem x:Name="CopyRadMenuItem" Cursor="Hand" Click="CopyRadMenuItem_Click">
@@ -169,48 +267,48 @@
 
             <!--조사위치포인트-->
             <telerik:VisualizationLayer x:Name="PointVisualizationLayer"
-                            ItemsSource="{Binding Path=PointCollection}"
-                            ClusteringEnabled="True"
-                            AutoCalculateClusteringThreshold="False"
-                            ClusteringEnabledThreshold ="14"
-                            ClusterItemTemplate="{StaticResource ClusterTemplate}"
-                            ItemTemplate="{StaticResource PointDataTemplate}"/>
+                                        ItemsSource="{Binding Path=PointCollection}"
+                                        ClusteringEnabled="True"
+                                        AutoCalculateClusteringThreshold="False"
+                                        ClusteringEnabledThreshold ="13"
+                                        ClusterItemTemplate="{StaticResource ClusterTemplate}"
+                                        ItemTemplate="{StaticResource PointDataTemplate}"/>
         </telerik:RadMap>
 
         <Grid>
-            
+
             <!--상단-->
             <WrapPanel>
                 <!--조사자료-->
-                <Border Style="{StaticResource ContentBorderStyle}" Margin="10">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <CheckBox x:Name="SurveyDataVisibleCheckBox" HorizontalContentAlignment="Stretch" Style="{StaticResource ExpanderCheckBoxStyle}">
-                            <Grid Height="32">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="조사자료" Margin="5 8 0 0" FontFamily="{StaticResource High1FontFamily}"/>
-                                <telerik:RadGlyph Grid.Column="1">
-                                    <telerik:RadGlyph.Style>
-                                        <Style TargetType="telerik:RadGlyph">
-                                            <Setter Property="Glyph" Value="{StaticResource GlyphArrowChevronDown}"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=CheckBox}}" Value="True">
-                                                    <Setter Property="Glyph" Value="{StaticResource GlyphArrowChevronUp}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </telerik:RadGlyph.Style>
-                                </telerik:RadGlyph>
-                            </Grid>
-                        </CheckBox>
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox x:Name="SurveyDataVisibleCheckBox" HorizontalContentAlignment="Stretch" Style="{StaticResource ExpanderCheckBoxStyle}" Width="220">
+                        <Grid Height="32">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="조사자료" Margin="5 8 0 0" FontFamily="{StaticResource High1FontFamily}"/>
+                            <telerik:RadGlyph Grid.Column="1">
+                                <telerik:RadGlyph.Style>
+                                    <Style TargetType="telerik:RadGlyph">
+                                        <Setter Property="Glyph" Value="{StaticResource GlyphArrowChevronDown}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=CheckBox}}" Value="True">
+                                                <Setter Property="Glyph" Value="{StaticResource GlyphArrowChevronUp}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </telerik:RadGlyph.Style>
+                            </telerik:RadGlyph>
+                        </Grid>
+                    </CheckBox>
 
-                        <StackPanel x:Name="SurveyDataLayout" Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=SurveyDataVisibleCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border x:Name="SurveyDataLayout" Grid.Row="1" Style="{StaticResource ContentBorderStyle}" Margin="0 5 0 0" Width="220" Visibility="{Binding Path=IsChecked, ElementName=SurveyDataVisibleCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel>
                             <StackPanel.Resources>
                                 <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}">
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -219,7 +317,7 @@
                                 </Style>
                             </StackPanel.Resources>
 
-                            <telerik:RadButton Content="전체 선택해제" Margin="0 10 0 10" Height="{StaticResource DefaultHeight}" HorizontalAlignment="Right" Command="{Binding Path=AllClearPointExecutedCommand}"/>
+                            <telerik:RadButton Content="전체 선택해제" Margin="0 0 0 10" Height="{StaticResource DefaultHeight}" HorizontalAlignment="Right" Command="{Binding Path=AllClearPointExecutedCommand}"/>
 
                             <ItemsControl ItemsSource="{Binding Path=SurveyDataCollection}">
                                 <ItemsControl.ItemTemplate>
@@ -235,7 +333,7 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <TextBlock Text="{Binding Path=Caption}"/>
-                                                <Rectangle Grid.Column="1" Fill="{Binding Path=MarkerFill}" Width="20" Height="18" Margin="40 0 0 0" RadiusX="3" RadiusY="3"/>
+                                                <Rectangle Grid.Column="1" Fill="{Binding Path=MarkerFill}" Width="20" Height="18" Margin="10 0 0 0" RadiusX="3" RadiusY="3"/>
                                             </Grid>
                                         </CheckBox>
 
@@ -243,10 +341,10 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </StackPanel>
-                    </Grid>
-                </Border>
+                    </Border>
+                </Grid>
             </WrapPanel>
-            
+
             <!--우측-->
             <Grid HorizontalAlignment="Right" Margin="0 10 0 10">
                 <Grid.RowDefinitions>
@@ -260,7 +358,7 @@
                 <Grid Grid.Row="2" HorizontalAlignment="Right" Margin="0 0 10 6">
                     <Border Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}" BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}" BorderThickness="1" CornerRadius="3" Padding="1" Width="53">
                         <StackPanel>
-                            <telerik:RadRadioButton FontSize="14" Cursor="Hand" FontFamily="{StaticResource High1FontFamily}" CornerRadius="3 3 0 0" Tag="vworld_road" Checked="MapLayerRadRadioButton_Checked">
+                            <telerik:RadRadioButton IsChecked="True" FontSize="14" Cursor="Hand" FontFamily="{StaticResource High1FontFamily}" CornerRadius="3 3 0 0" Tag="vworld_road" Checked="MapLayerRadRadioButton_Checked">
                                 <StackPanel>
                                     <TextBlock Text="일반"/>
                                     <TextBlock Text="지도"/>
@@ -275,7 +373,7 @@
                         </StackPanel>
                     </Border>
                 </Grid>
-                
+
                 <!--확대/축소/다운로드-->
                 <Grid Grid.Row="3" HorizontalAlignment="Right" Margin="0 0 10 6">
                     <Border Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}" BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}" BorderThickness="1" CornerRadius="3">
@@ -299,7 +397,7 @@
                                     <Style TargetType="telerik:RadButton">
                                         <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=radMap, Path=Zoom }" Value="18">
+                                            <DataTrigger Binding="{Binding ElementName=radMap, Path=Zoom }" Value="20">
                                                 <Setter Property="IsEnabled" Value="False"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -391,6 +489,6 @@
                 </telerik:MapScale>
             </Grid>
         </Grid>
-        
+
     </Grid>
 </Page>

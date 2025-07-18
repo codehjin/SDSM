@@ -20,6 +20,7 @@
         <!--엑셀 설정값-->
         <Border x:Name="SettingLayout" Style="{StaticResource ContentBoxStyle}" HorizontalAlignment="Left" Padding="20 20 20 15">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" PanningMode="HorizontalOnly" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+
                 <StackPanel Margin="0 0 0 5" Orientation="Horizontal" Height="{StaticResource DefaultHeight}">
                     <telerik:RadButton BorderBrush="Transparent" Command="{Binding Path=SheetNameResetExecutedCommand}">
                         <StackPanel Orientation="Horizontal">
@@ -194,7 +195,7 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearValue}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MonthValue}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=DayValue}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn Header="조사일&#13;(2000-01-01~오늘)" DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="160" MaxWidth="160"/>
@@ -292,7 +293,7 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearValue}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MonthValue}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=DayValue}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn Header="조사일&#13;(2000-01-01~오늘)" DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="160" MaxWidth="160"/>
