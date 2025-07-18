@@ -37,7 +37,7 @@ public partial class FishPage : Page, ITransientService
 
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
-        if (App.Current.Services.GetService(typeof(BenthosEditorControl)) is BenthosEditorControl editor)
+        if (App.Current.Services.GetService(typeof(FishEditorControl)) is FishEditorControl editor)
         {
             editor.CloseClick += (s, e) =>
             {

@@ -991,49 +991,49 @@
                                                 </StackPanel>
                                             </Expander.Header>
                                             <StackPanel>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVault, Mode=TwoWay}" Tag="SeedVaultPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedProtectedArea, Mode=TwoWay}" Tag="SeedVaultPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="보호구역"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVaultBatch, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedProtectedArea, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="토지피복도"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVaultBatch, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedProtectedArea, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="산사태위험"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVaultBatch, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedProtectedArea, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="식생현황"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVaultBatch, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedProtectedArea, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="야생생물 서식현황"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVaultBatch, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedProtectedArea, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="수생생물 서식현황"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVaultBatch, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedProtectedArea, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="생태자연도"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSeedVaultBatch, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedProtectedArea, Mode=TwoWay}" Tag="SeedVaultBatchPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="생태현황도"/>
@@ -1062,22 +1062,10 @@
                                                 </StackPanel>
                                             </Expander.Header>
                                             <StackPanel>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSettingInstt, Mode=TwoWay}" Tag="SettingInsttPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedProtectedArea, Mode=TwoWay}" Tag="SettingInsttPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="설정1"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSettingInstt, Mode=TwoWay}" Tag="SettingInsttPage" Click="MenuItem_Click">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="설정2"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedSettingInstt, Mode=TwoWay}" Tag="SettingInsttPage" Click="MenuItem_Click">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="설정3"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
                                             </StackPanel>
@@ -1145,7 +1133,7 @@
                     </Border>
 
                     <Border Grid.Column="1" Background="{StaticResource MainPrimaryBrush}">
-                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{telerik:Windows11Resource ResourceKey=OverlayBrush}" CornerRadius="0 0 0 8">
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{telerik:Windows11Resource ResourceKey=OverlayBrush}">
                             <Frame x:Name="ContentFrame" NavigationUIVisibility="Hidden" KeyboardNavigation.IsTabStop="False"/>
                         </Border>
                     </Border>

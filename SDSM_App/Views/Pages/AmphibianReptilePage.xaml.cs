@@ -3,11 +3,14 @@ using Microsoft.Win32;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.ViewModels;
+using SDSM_App.Views.UserControls;
+using SDSM_Models;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Telerik.Documents.SpreadsheetStreaming;
+using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
 
 namespace SDSM_App.Views.Pages;
@@ -15,25 +18,39 @@ namespace SDSM_App.Views.Pages;
 /// <summary>
 /// 생물조사 양서파충류
 /// </summary>
-public partial class ARSurveyPage : Page, ITransientService
+public partial class AmphibianReptilePage : Page, ITransientService
 {
-    private readonly ARSurveyPageViewModel _vm;
+    private readonly AmphibianReptilePageViewModel _vm;
 
-    public ARSurveyPage(ARSurveyPageViewModel vm)
+    public AmphibianReptilePage(AmphibianReptilePageViewModel vm)
     {
         InitializeComponent();
 
         _vm = vm;
         DataContext = _vm;
 
+        Loaded += Page_Loaded;
         SizeChanged += Page_SizeChanged;
     }
 
     #region This 이벤트
 
+    private void Page_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (App.Current.Services.GetService(typeof(AmphibianReptileEditorControl)) is AmphibianReptileEditorControl editor)
+        {
+            editor.CloseClick += (s, e) =>
+            {
+                EditorLayout.Visibility = Visibility.Collapsed;
+            };
+            EditorContentControl.Content = editor;
+        }
+    }
+
+
     private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        var height = e.NewSize.Height - (SearchLayout.ActualHeight + 190);
+        var height = e.NewSize.Height - (SearchLayout.ActualHeight + 240);
 
         if (height > 60)
         {
@@ -82,6 +99,25 @@ public partial class ARSurveyPage : Page, ITransientService
         }
     }
 
+    //삭제
+    private void DeleteRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is RadButton button && button.Tag is string tag)
+        {
+            List<AmphibianReptile> deleteData = [];
+            if (tag == "single")
+            {
+                var item = DataRadGridView.SelectedItem as AmphibianReptile;
+                deleteData.Add(item ?? new());
+            }
+            else if (tag == "page")
+            {
+                deleteData = [.. DataRadGridView.Items.Cast<AmphibianReptile>()];
+            }
+            _vm.DeleteFormVisibleExecutedCommand.Execute(deleteData);
+        }
+
+    }
     #endregion
 
     #region 메서드

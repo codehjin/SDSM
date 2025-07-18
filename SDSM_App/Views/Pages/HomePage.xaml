@@ -6,6 +6,7 @@
       mc:Ignorable="d" 
       xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
       xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
+      xmlns:maps="clr-namespace:Telerik.Windows.Controls.Map;assembly=Telerik.Windows.Controls.DataVisualization"
       xmlns:ani="clr-namespace:SDSM_App.Animations"
       xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
@@ -16,18 +17,380 @@
       d:DataContext="{d:DesignInstance Type={x:Type viewmodel:HomePageViewModel}}"
       FontFamily="{StaticResource DefaultFontFamily}"
       FontSize="{StaticResource DefaultFontSize}"
-      Title="홈"
-      x:Name="_this">
+      Title="홈">
+    <Page.Resources>
+        <!--클러스터-->
+        <converter:ClusterChildrenToBoolConverter x:Key="ClusterChildrenToBoolConverter" />
+        <telerik:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-    <Grid Margin="30" MaxWidth="{StaticResource ContentMaxWidth}">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <StackPanel Orientation="Horizontal">                
-                <TextBlock Text="첫 화면" Style="{StaticResource TitleTextBlockStyle}" FontSize="102" Margin="0 0 0 40" Foreground="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
-                <TextBlock Text=" 페이지" Style="{StaticResource TitleTextBlockStyle}" FontSize="102" Margin="0 0 0 40"/>
-            </StackPanel>
+        <!--클러스터-->
+        <DataTemplate x:Key="ClusterTemplate">
+            <Grid x:Name="ParentRoot" Width="40" Height="30" Cursor="Hand" telerik:MapLayer.HotSpot="0.5, 0.5" MouseLeftButtonDown="ClusterMouseLeftButtonDown" MouseRightButtonDown="ClusterMouseRightButtonDown">
+                <Path Width="{Binding Width,ElementName=ParentRoot}" 
+	          Height="{Binding Height,ElementName=ParentRoot}" 
+	          Stretch="Fill"
+              Data="M978.6509,491.334L958.6109,491.334L954.4549,500.874L949.9999,491.334L930.6259,491.334C928.4169,491.334,926.6259,489.543,926.6259,487.334L926.6259,433.272C926.6259,431.063,928.4169,429.272,930.6259,429.272L978.6509,429.272C980.8599,429.272,982.6509,431.063,982.6509,433.272L982.6509,487.334C982.6509,489.543,980.8599,491.334,978.6509,491.334z" 
+	          StrokeStartLineCap="Flat"
+              StrokeEndLineCap="Flat"
+              Stroke="White"
+              StrokeThickness="1"
+              StrokeMiterLimit="10"
+              StrokeLineJoin="Miter">
+                    <Path.Style>
+                        <Style TargetType="Path">
+                            <Setter Property="Fill" Value="#99000000"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Children, Converter={StaticResource ClusterChildrenToBoolConverter}}" Value="True">
+                                    <Setter Property="Fill" Value="#990078D4"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Path.Style>
+                </Path>
+                <StackPanel Margin="5,2,5,5">
+                    <TextBlock Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path=Count}" 
+                       TextTrimming="CharacterEllipsis" FontSize="12"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+        <Style x:Key="ContentBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=TertiaryBackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="10 10 10 0"/>
+            <Setter Property="Padding" Value="14 14 14 14"/>
+            <Setter Property="CornerRadius" Value="{telerik:Windows11Resource ResourceKey=CornerRadius}"/>
+        </Style>
+        <Style x:Key="ExpanderCheckBoxStyle" TargetType="CheckBox" BasedOn="{StaticResource CustomCheckBoxStyle}">
+            <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=FocusInnerBrush}"/>
+            <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
+            <Setter Property="Tag" Value="expander"/>
+            <Setter Property="IsChecked" Value="True"/>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="False">
+                    <Setter Property="Padding" Value="5 5"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Padding" Value="5 5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="CaptionBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=FocusInnerBrush}"/>
+            <Setter Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=ButtonBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0 0 0 10"/>
+            <Setter Property="Padding" Value="10 13 10 11"/>
+            <Setter Property="CornerRadius" Value="{telerik:Windows11Resource ResourceKey=CornerRadius}"/>
+        </Style>
+        <Style x:Key="CaptionTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}">
+            <Setter Property="FontFamily" Value="{StaticResource High1FontFamily}"/>
+        </Style>
+        <Style x:Key="PointBorderStyle" TargetType="Border">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="Padding" Value="5 3"/>
+        </Style>
+
+        <Style x:Key="PointTextBlcokStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource High1FontFamily}"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <!--조사위치포인트-->
+        <DataTemplate x:Key="PointDataTemplate">
+            <Border telerik:MapLayer.Location ="{Binding Path=Location}"
+                    Cursor="Hand"
+                    Padding="2 3 2 2"
+                    CornerRadius="3"
+                    BorderBrush="{Binding Path=MarkerFill}"
+                    BorderThickness="2">
+                <telerik:MapLayer.HotSpot>
+                    <telerik:HotSpot X="0.5" Y="0.5"/>
+                </telerik:MapLayer.HotSpot>
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="{Binding Path=MarkerFill}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                                <Setter Property="Background" Value="#AA000000"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <TextBlock Text="{Binding Path=Label}" FontFamily="{StaticResource High1FontFamily}" FontSize="13">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="#FFFFFF"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                                    <Setter Property="Foreground" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Border>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid>
+        <telerik:RadMap x:Name="radMap"
+                Language="ko-KR"
+                UseDefaultLayout="False"
+                UseSpringAnimations="False"
+                MinZoomLevel="6"
+                MaxZoomLevel="18"
+                ZoomLevel="12"
+                ZoomStep="1"
+                Zoom="{Binding Path=Zoom, Mode=TwoWay}"
+                Center="{Binding Path=Center, Mode=TwoWay}"
+                MouseClickMode="SelectItem" 
+                ZoomChanged="RadMap_ZoomChanged"
+                MouseRightButtonDown="RadMap_MouseRightButtonDown">
+            <telerik:RadContextMenu.ContextMenu>
+                <telerik:RadContextMenu IconColumnWidth="0">
+                    <telerik:RadMenuItem x:Name="CopyRadMenuItem" Cursor="Hand" Click="CopyRadMenuItem_Click">
+                        <telerik:RadMenuItem.Header>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Path=Degress}" FontSize="15"/>
+                                <TextBlock x:Name="CopyTextBlock" Text="복사" FontSize="15"/>
+                            </StackPanel>
+                        </telerik:RadMenuItem.Header>
+                    </telerik:RadMenuItem>
+                </telerik:RadContextMenu>
+            </telerik:RadContextMenu.ContextMenu>
+            <telerik:RadMap.Providers>
+                <telerik:EmptyProvider/>
+            </telerik:RadMap.Providers>
+
+            <!--조사위치포인트-->
+            <telerik:VisualizationLayer x:Name="PointVisualizationLayer"
+                            ItemsSource="{Binding Path=PointCollection}"
+                            ClusteringEnabled="True"
+                            AutoCalculateClusteringThreshold="False"
+                            ClusteringEnabledThreshold ="14"
+                            ClusterItemTemplate="{StaticResource ClusterTemplate}"
+                            ItemTemplate="{StaticResource PointDataTemplate}"/>
+        </telerik:RadMap>
+
+        <Grid>
+            
+            <!--상단-->
+            <WrapPanel>
+                <!--조사자료-->
+                <Border Style="{StaticResource ContentBorderStyle}" Margin="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <CheckBox x:Name="SurveyDataVisibleCheckBox" HorizontalContentAlignment="Stretch" Style="{StaticResource ExpanderCheckBoxStyle}">
+                            <Grid Height="32">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="조사자료" Margin="5 8 0 0" FontFamily="{StaticResource High1FontFamily}"/>
+                                <telerik:RadGlyph Grid.Column="1">
+                                    <telerik:RadGlyph.Style>
+                                        <Style TargetType="telerik:RadGlyph">
+                                            <Setter Property="Glyph" Value="{StaticResource GlyphArrowChevronDown}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=CheckBox}}" Value="True">
+                                                    <Setter Property="Glyph" Value="{StaticResource GlyphArrowChevronUp}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </telerik:RadGlyph.Style>
+                                </telerik:RadGlyph>
+                            </Grid>
+                        </CheckBox>
+
+                        <StackPanel x:Name="SurveyDataLayout" Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=SurveyDataVisibleCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel.Resources>
+                                <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Height" Value="{StaticResource DefaultHeight}"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                </Style>
+                            </StackPanel.Resources>
+
+                            <telerik:RadButton Content="전체 선택해제" Margin="0 10 0 10" Height="{StaticResource DefaultHeight}" HorizontalAlignment="Right" Command="{Binding Path=AllClearPointExecutedCommand}"/>
+
+                            <ItemsControl ItemsSource="{Binding Path=SurveyDataCollection}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"
+                                                  Margin="0 0 0 5"
+                                                  Command="{Binding Path=DataContext.AddAndRemovePointExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" 
+                                                  CommandParameter="{Binding}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Text="{Binding Path=Caption}"/>
+                                                <Rectangle Grid.Column="1" Fill="{Binding Path=MarkerFill}" Width="20" Height="18" Margin="40 0 0 0" RadiusX="3" RadiusY="3"/>
+                                            </Grid>
+                                        </CheckBox>
+
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </WrapPanel>
+            
+            <!--우측-->
+            <Grid HorizontalAlignment="Right" Margin="0 10 0 10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="2" HorizontalAlignment="Right" Margin="0 0 10 6">
+                    <Border Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}" BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}" BorderThickness="1" CornerRadius="3" Padding="1" Width="53">
+                        <StackPanel>
+                            <telerik:RadRadioButton FontSize="14" Cursor="Hand" FontFamily="{StaticResource High1FontFamily}" CornerRadius="3 3 0 0" Tag="vworld_road" Checked="MapLayerRadRadioButton_Checked">
+                                <StackPanel>
+                                    <TextBlock Text="일반"/>
+                                    <TextBlock Text="지도"/>
+                                </StackPanel>
+                            </telerik:RadRadioButton>
+                            <telerik:RadRadioButton FontSize="14" Cursor="Hand" FontFamily="{StaticResource High1FontFamily}" CornerRadius="0 0 3 3" Tag="vworld_hybrid" Checked="MapLayerRadRadioButton_Checked">
+                                <StackPanel>
+                                    <TextBlock Text="영상"/>
+                                    <TextBlock Text="지도"/>
+                                </StackPanel>
+                            </telerik:RadRadioButton>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                
+                <!--확대/축소/다운로드-->
+                <Grid Grid.Row="3" HorizontalAlignment="Right" Margin="0 0 10 6">
+                    <Border Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}" BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}" BorderThickness="1" CornerRadius="3">
+                        <StackPanel>
+                            <telerik:RadButton CornerRadius="3 3 0 0"
+                                               Width="50"
+                                               Height="44"
+                                               Cursor="Hand"
+                                               Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}"
+                                               BorderBrush="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}"
+                                               BorderThickness="0"
+                                               helpers:ThemeHelper.FocusBrush="Transparent"
+                                               telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
+                                               telerik:RadToolTipService.Placement ="Left"
+                                               telerik:RadToolTipService.HorizontalOffset ="5"
+                                               telerik:RadToolTipService.VerticalOffset ="-8"
+                                               telerik:RadToolTipService.InitialShowDelay ="0"
+                                               telerik:RadToolTipService.ShowDuration ="30000"
+                                               Click="ZoomInButton_Click">
+                                <telerik:RadButton.Style>
+                                    <Style TargetType="telerik:RadButton">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=radMap, Path=Zoom }" Value="18">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </telerik:RadButton.Style>
+                                <telerik:RadGlyph Glyph="{StaticResource GlyphPlus}"/>
+                                <telerik:RadToolTipService.ToolTipContent>
+                                    <telerik:RadCallout Content="확대" Style="{StaticResource TooltipRadCalloutStyle}"/>
+                                </telerik:RadToolTipService.ToolTipContent>
+                            </telerik:RadButton>
+
+                            <Border>
+                                <telerik:RadSlider Value="{Binding ElementName=radMap, Path=Zoom}"
+                                                   Maximum="18"
+                                                   Minimum="6" 
+                                                   IsDirectionReversed="False"
+                                                   Orientation="Vertical" 
+                                                   TickFrequency="1"
+                                                   SmallChange="1"
+                                                   LargeChange="1"
+                                                   IsMoveToPointEnabled="True"
+                                                   MinHeight="80"
+                                                   Margin="0 0 0 0"
+                                                   HorizontalAlignment="Center"
+                                                   BorderThickness="0"
+                                                   AutoToolTipPlacement="TopLeft">
+                                    <telerik:RadSlider.ThumbToolTipStyle>
+                                        <Style TargetType="ToolTip">
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                        </Style>
+                                    </telerik:RadSlider.ThumbToolTipStyle>
+                                    <telerik:RadSlider.AutoToolTipContentTemplate>
+                                        <DataTemplate>
+                                            <telerik:RadCallout ArrowAnchorPoint="1.05, 0.5" ArrowBasePoint1="0.8, 0.2" ArrowBasePoint2="0.6, 1" CalloutType="RoundedRectangle" MinHeight="40" MinWidth="60"
+                                                    Background="{telerik:Windows11Resource ResourceKey=FocusInnerBrush}">
+                                                <TextBlock Text="{Binding .,  StringFormat=N0}" />
+                                            </telerik:RadCallout>
+                                        </DataTemplate>
+                                    </telerik:RadSlider.AutoToolTipContentTemplate>
+                                </telerik:RadSlider>
+                            </Border>
+                            <telerik:RadButton CornerRadius="0 0 3 3"
+                                               Width="50"
+                                               Height="44"
+                                               BorderThickness="0"
+                                               Cursor="Hand"
+                                               Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}"
+                                               BorderBrush="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}"
+                                               helpers:ThemeHelper.FocusBrush="Transparent"
+                                               telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
+                                               telerik:RadToolTipService.Placement ="Left"
+                                               telerik:RadToolTipService.HorizontalOffset ="5"
+                                               telerik:RadToolTipService.VerticalOffset ="-8"
+                                               telerik:RadToolTipService.InitialShowDelay ="0"
+                                               telerik:RadToolTipService.ShowDuration ="30000"
+                                               Click="ZoomOutButton_Click">
+                                <telerik:RadButton.Style>
+                                    <Style TargetType="telerik:RadButton">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=radMap, Path=Zoom }" Value="6">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </telerik:RadButton.Style>
+                                <telerik:RadGlyph Glyph="{StaticResource GlyphMinus}"/>
+                                <telerik:RadToolTipService.ToolTipContent>
+                                    <telerik:RadCallout Content="축소" Style="{StaticResource TooltipRadCalloutStyle}"/>
+                                </telerik:RadToolTipService.ToolTipContent>
+                            </telerik:RadButton>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!--거리-->
+                <telerik:MapScale Grid.Row="4"
+                                  MapControl="{Binding ElementName=radMap}" 
+                                  telerik:StyleManager.Theme="Office_Black"
+                                  HorizontalAlignment="Right" 
+                                  FontSize="14"
+                                  Margin="0 0 10 0"
+                                  Padding="5 3"
+                                  DistanceUnit="Kilometer">
+                    <telerik:MapScale.Style>
+                        <Style TargetType="maps:MapScale"/>
+                    </telerik:MapScale.Style>
+                </telerik:MapScale>
+            </Grid>
+        </Grid>
         
-            <!-- 흐르는 텍스트 예시 -->
-            <TextBlock Text="준비중입니다." FontSize="56" Margin="0,40,0,0" Style="{StaticResource TitleTextBlockStyle}"/>
-        </StackPanel>
     </Grid>
 </Page>

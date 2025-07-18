@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SDSM_Models;
 
 /// <summary>
-/// 저서동물 출현종
+/// 저서동물 출현종(개체수 => 실수)
 /// </summary>
 
 [Table("BenthosSpecies")]

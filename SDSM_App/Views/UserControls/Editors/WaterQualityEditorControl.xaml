@@ -8,6 +8,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:culture="clr-namespace:System.Globalization;assembly=mscorlib"
              xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
+             xmlns:main="clr-namespace:SDSM_App"
              xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"             
              d:DataContext="{d:DesignInstance Type={x:Type viewmodel:WaterQualityEditorControlViewModel}}">
     <Grid>
@@ -103,7 +104,7 @@
                                                                    InputMode="DatePicker"
                                                                    AllowParsingWithoutSeparator="True"
                                                                    IsInputRestrictedToSelectableDates="True"
-                                                                   SelectableDateStart="2020-01-01"
+                                                                   SelectableDateStart="{Binding Path=(main:GB.MinDate)}"
                                                                    SelectableDateEnd ="{Binding Source={x:Static sys:DateTime.Today}}"
                                                                    Width="{StaticResource FormControlWidth}"
                                                                    Height="{StaticResource FormControlHeight}"

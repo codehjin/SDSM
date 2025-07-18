@@ -13,7 +13,6 @@ using SDSM_Models;
 using System.Data.SQLite;
 using System.Windows;
 using Telerik.Windows.Data;
-using Telerik.Windows.Documents.Spreadsheet.Model;
 
 namespace SDSM_App.ViewModels;
 
@@ -58,6 +57,29 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     [ObservableProperty] private int? _collectionTime;
     [ObservableProperty] private string? _collectionTool;
     [ObservableProperty] private string? _collectionFlowState;
+    [ObservableProperty] private int? _autoRiverChasu;
+    [ObservableProperty] private string? _WatershedType;
+    [ObservableProperty] private string? _drainageSystemType;
+    [ObservableProperty] private string? _riverWidth;
+    [ObservableProperty] private string? _yuWidth;
+    [ObservableProperty] private string? _depth;
+    [ObservableProperty] private string? _submerged;
+    [ObservableProperty] private string? _floating;
+    [ObservableProperty] private string? _emergent;
+    [ObservableProperty] private int? _leftVacantLand;
+    [ObservableProperty] private int? _leftH;
+    [ObservableProperty] private int? _leftS;
+    [ObservableProperty] private int? _leftT1;
+    [ObservableProperty] private int? _rightVacantLand;
+    [ObservableProperty] private int? _rightH;
+    [ObservableProperty] private int? _rightS;
+    [ObservableProperty] private int? _rightT1;
+    [ObservableProperty] private string? _leveeLeft;
+    [ObservableProperty] private string? _leveeRight;
+    [ObservableProperty] private string? _confounder;
+    [ObservableProperty] private string? _structure;
+    [ObservableProperty] private string? _fishway;
+    [ObservableProperty] private string? _etcNote;
     [ObservableProperty] private int? _bedrock;
     [ObservableProperty] private int? _concrete;
     [ObservableProperty] private int? _mud;
@@ -74,6 +96,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     [ObservableProperty] private int? _eFCount;
     [ObservableProperty] private int? _lECount;
     [ObservableProperty] private int? _tUCount;
+    [ObservableProperty] private double? _fAIScore;
     [ObservableProperty] private string? _fAIGrade;
 
     #endregion
@@ -101,7 +124,8 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     {
         return !string.IsNullOrWhiteSpace(YearChsu)
             && !string.IsNullOrWhiteSpace(Site)
-            && SurveyDate != null;
+            && SurveyDate != null
+            && AutoRiverChasu != null;
     }
 
     //수정
@@ -121,7 +145,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     #endregion
 
     #region 매서드
-    
+
 
     //신규저장
     private async void AddSave()
@@ -241,7 +265,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     {
         try
         {
-            var (indexDI, indexH, indexR1, indexJ, bMIScore, bMIGrade) = GetIndexAndGrade();
+            var (score, grade) = GetIndexAndGrade();
 
             var model = new Fish
             {
@@ -260,6 +284,29 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
                 CollectionTime = CollectionTime,
                 CollectionTool = CollectionTool,
                 CollectionFlowState = CollectionFlowState,
+                AutoRiverChasu = AutoRiverChasu,
+                WatershedType = WatershedType,
+                DrainageSystemType = DrainageSystemType,
+                RiverWidth = RiverWidth,
+                YuWidth = YuWidth,
+                Depth = Depth,
+                Submerged = Submerged,
+                Floating = Floating,
+                Emergent = Emergent,
+                LeftVacantLand = LeftVacantLand,
+                LeftH = LeftH,
+                LeftS = LeftS,
+                LeftT1 = LeftT1,
+                RightVacantLand = RightVacantLand,
+                RightH = RightH,
+                RightS = RightS,
+                RightT1 = RightT1,
+                LeveeLeft = LeveeLeft,
+                LeveeRight = LeveeRight,
+                Confounder = Confounder,
+                Structure = Structure,
+                Fishway = Fishway,
+                EtcNote = EtcNote,
                 Bedrock = Bedrock,
                 Concrete = Concrete,
                 Mud = Mud,
@@ -276,7 +323,8 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
                 EFCount = EFCount,
                 LECount = LECount,
                 TUCount = TUCount,
-                FAIGrade = FAIGrade,
+                FAIScore = score,
+                FAIGrade = grade,
             };
             return model;
 
@@ -289,7 +337,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     {
         try
         {
-            var (indexDI, indexH, indexR1, indexJ, bMIScore, bMIGrade) = GetIndexAndGrade();
+            var (score, grade) = GetIndexAndGrade();
 
             EditModel.YearChsu = YearChsu;
             EditModel.Site = Site;
@@ -306,6 +354,29 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
             EditModel.CollectionTime = CollectionTime;
             EditModel.CollectionTool = CollectionTool;
             EditModel.CollectionFlowState = CollectionFlowState;
+            EditModel.AutoRiverChasu = AutoRiverChasu;
+            EditModel.WatershedType = WatershedType;
+            EditModel.DrainageSystemType = DrainageSystemType;
+            EditModel.RiverWidth = RiverWidth;
+            EditModel.YuWidth = YuWidth;
+            EditModel.Depth = Depth;
+            EditModel.Submerged = Submerged;
+            EditModel.Floating = Floating;
+            EditModel.Emergent = Emergent;
+            EditModel.LeftVacantLand = LeftVacantLand;
+            EditModel.LeftH = LeftH;
+            EditModel.LeftS = LeftS;
+            EditModel.LeftT1 = LeftT1;
+            EditModel.RightVacantLand = RightVacantLand;
+            EditModel.RightH = RightH;
+            EditModel.RightS = RightS;
+            EditModel.RightT1 = RightT1;
+            EditModel.LeveeLeft = LeveeLeft;
+            EditModel.LeveeRight = LeveeRight;
+            EditModel.Confounder = Confounder;
+            EditModel.Structure = Structure;
+            EditModel.Fishway = Fishway;
+            EditModel.EtcNote = EtcNote;
             EditModel.Bedrock = Bedrock;
             EditModel.Concrete = Concrete;
             EditModel.Mud = Mud;
@@ -322,7 +393,8 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
             EditModel.EFCount = EFCount;
             EditModel.LECount = LECount;
             EditModel.TUCount = TUCount;
-            EditModel.FAIGrade = FAIGrade;
+            EditModel.FAIScore = score;
+            EditModel.FAIGrade = grade;
 
             return true;
         }
@@ -367,6 +439,29 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
         CollectionTime = EditModel.CollectionTime;
         CollectionTool = EditModel.CollectionTool;
         CollectionFlowState = EditModel.CollectionFlowState;
+        AutoRiverChasu = EditModel.AutoRiverChasu;
+        WatershedType = EditModel.WatershedType;
+        DrainageSystemType = EditModel.DrainageSystemType;
+        RiverWidth = EditModel.RiverWidth;
+        YuWidth = EditModel.YuWidth;
+        Depth = EditModel.Depth;
+        Submerged = EditModel.Submerged;
+        Floating = EditModel.Floating;
+        Emergent = EditModel.Emergent;
+        LeftVacantLand = EditModel.LeftVacantLand;
+        LeftH = EditModel.LeftH;
+        LeftS = EditModel.LeftS;
+        LeftT1 = EditModel.LeftT1;
+        RightVacantLand = EditModel.RightVacantLand;
+        RightH = EditModel.RightH;
+        RightS = EditModel.RightS;
+        RightT1 = EditModel.RightT1;
+        LeveeLeft = EditModel.LeveeLeft;
+        LeveeRight = EditModel.LeveeRight;
+        Confounder = EditModel.Confounder;
+        Structure = EditModel.Structure;
+        Fishway = EditModel.Fishway;
+        EtcNote = EditModel.EtcNote;
         Bedrock = EditModel.Bedrock;
         Concrete = EditModel.Concrete;
         Mud = EditModel.Mud;
@@ -383,6 +478,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
         EFCount = EditModel.EFCount;
         LECount = EditModel.LECount;
         TUCount = EditModel.TUCount;
+        FAIScore = EditModel.FAIScore;
         FAIGrade = EditModel.FAIGrade;
 
         foreach (var sub in EditModel.Subs.ToList())
@@ -425,9 +521,32 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
         CollectionTime = null;
         CollectionTool = null;
         CollectionFlowState = null;
+        AutoRiverChasu = null;
+        WatershedType = null;
+        DrainageSystemType = null;
+        RiverWidth = null;
+        YuWidth = null;
+        Depth = null;
+        Submerged = null;
+        Floating = null;
+        Emergent = null;
+        LeftVacantLand = null;
+        LeftH = null;
+        LeftS = null;
+        LeftT1 = null;
+        RightVacantLand = null;
+        RightH = null;
+        RightS = null;
+        RightT1 = null;
+        LeveeLeft = null;
+        LeveeRight = null;
+        Confounder = null;
+        Structure = null;
+        Fishway = null;
+        EtcNote = null;
         Bedrock = null;
         Concrete = null;
-        Mud = null;       
+        Mud = null;
         Sand = null;
         FineGravel = null;
         Gravel = null;
@@ -441,6 +560,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
         EFCount = null;
         LECount = null;
         TUCount = null;
+        FAIScore = null;
         FAIGrade = null;
 
         GetSpeciesData();
@@ -468,56 +588,6 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
         }
     }
 
-    //군집지수 및 등급
-    private (double, double, double, double, double?, string? ) GetIndexAndGrade()
-    {
-        //try
-        //{
-        //    //종목록
-        //    var speciesData = AddSpeciesColleciton.Where(m => m.IndividualCount > 0).Select(m => new ImportFishSpecies
-        //    {
-        //        SaprobicValue = m.SaprobicValue.ToString(),
-        //        IndicatorWeight = m.IndicatorWeight.ToString(),
-        //        PhylumKo = m.PhylumKo,
-        //        ClassKo = m.ClassKo,
-        //        OrderKo = m.OrderKo,
-        //        FamilyKo = m.FamilyKo,
-        //        SpeciesKo = m.SpeciesKo,
-        //        SpeciesEn = m.SpeciesEn,
-        //        IndividualCount = m.IndividualCount,
-        //    }).ToList();
-
-        //    // 1. IndividualCount 값만 추출 (null은 0으로 처리)
-        //    int[] individualCounts = [.. speciesData.Select(x => x.IndividualCount.HasValue ? (int)x.IndividualCount.Value : 0)];
-
-        //    // 2. 각 개체별로 점수 계산
-        //    foreach (var species in speciesData)
-        //    {
-        //        int value = species.IndividualCount.HasValue ? (int)species.IndividualCount.Value : 0;
-        //        int rankScorer = GB.GetRankScorer(individualCounts, value);
-
-        //        // 점수 RankScorer 프로퍼티에 할당
-        //        species.RankScorer = rankScorer;
-        //    }
-
-        //    var surveyUnavailableReason = SurveyUnavailableReason;
-
-        //    var indexDI = GB.GetDI(speciesData);
-        //    var indexH = GB.GetH(speciesData);
-        //    var indexR1 = GB.GetR1(speciesData);
-        //    var indexJ = GB.GetJ(speciesData);
-        //    var (score, grade) = GB.GetBMI(speciesData, surveyUnavailableReason);
-
-        //    return (indexDI, indexH, indexR1, indexJ, score, grade);
-        //}
-        //catch (Exception ex)
-        //{
-        //    GB.LogWrite(GetType().Name, nameof(GetFishIndexAndGrade), ex.Message);
-        //    return (0, 0, 0, 0, null, null);
-        //}
-        return (0, 0, 0, 0, null, null);
-    }
-
     #endregion 
 
     #region Messages
@@ -529,8 +599,52 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
 
     #endregion
 
-    #region 등급 및 군집지수
+    #region 점수 및 등급
 
+    private (double?, string?) GetIndexAndGrade()
+    {
+        try
+        {
+            //종목록
+            var speciesData = AddSpeciesColleciton.Where(m => m.IndividualCount > 0).Select(m => new ImportFishSpecies
+            {
+                FishTrait = m.FishTrait,
+                ToleranceGuild = m.ToleranceGuild,
+                FeedingGuild = m.FeedingGuild,
+                HabitatGuild = m.HabitatGuild,
+                Exotic = m.Exotic,
+                Endemic = m.Endemic,
+                Endangered1 = m.Endangered1,
+                Endangered2 = m.Endangered2,
+                NaturalMonument = m.NaturalMonument,
+                LineageOrder = m.LineageOrder.ToString(),
+                ClassKo = m.ClassKo,
+                OrderKo = m.OrderKo,
+                FamilyKo = m.FamilyKo,
+                SpeciesKo = m.SpeciesKo,
+                SpeciesEn = m.SpeciesEn,
+                IndividualCount = m.IndividualCount,
+            }).ToList();
+
+
+            var surveyUnavailableReason = SurveyUnavailableReason;
+            int chasu = int.TryParse(AutoRiverChasu.ToString(), out int cs) ? cs : 0;
+
+            int abnormalCount = (int.TryParse(DECount.ToString(), out int de) ? de : 0)
+                + (int.TryParse(EFCount.ToString(), out int ef) ? ef : 0)
+                + (int.TryParse(LECount.ToString(), out int le) ? le : 0)
+                + (int.TryParse(TUCount.ToString(), out int tu) ? tu : 0);
+
+            var (score, grade) = GB.GetFAI(speciesData, surveyUnavailableReason, abnormalCount, chasu);
+
+            return (score, grade);
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(GetIndexAndGrade), ex.Message);
+            return (null, null);
+        }
+    }
 
     #endregion
 }

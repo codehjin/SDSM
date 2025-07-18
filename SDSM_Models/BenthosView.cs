@@ -58,6 +58,6 @@ public class BenthosView
     [DisplayName("균등도(J')")] public double? IndexJ { get; set; }
     [DisplayName("BMI 점수")] public double? BMIScore { get; set; }
     [DisplayName("BMI 등급")] public string? BMIGrade { get; set; }
-    [DisplayName("종수")] public int SpeciesCount { get; set; }
-    [DisplayName("개체수")] public double IndividualCount { get; set; }
+    [DisplayName("종수")] public int? SpeciesCount { get; set; }
+    [DisplayName("개체수")] public double? IndividualCount { get; set; }
 }

@@ -247,7 +247,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     {
         try
         {
-            var (indexDI, indexH, indexR1, indexJ, bMIScore, bMIGrade) = GetIndexAndGrade();
+            var (indexDI, indexH, indexR1, indexJ, score, grade) = GetIndexAndGrade();
 
             var model = new Benthos
             {
@@ -297,8 +297,8 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
                 IndexH = indexH,
                 IndexR1 = indexR1,
                 IndexJ = indexJ,
-                BMIScore = bMIScore,
-                BMIGrade = bMIGrade,
+                BMIScore = score,
+                BMIGrade = grade,
             };
             return model;
 
@@ -311,7 +311,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     {
         try
         {
-            var (indexDI, indexH, indexR1, indexJ, bMIScore, bMIGrade) = GetIndexAndGrade();
+            var (indexDI, indexH, indexR1, indexJ, score, grade) = GetIndexAndGrade();
 
             EditModel.YearChsu = YearChsu;
             EditModel.Site = Site;
@@ -359,8 +359,8 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
             EditModel.IndexH = indexH;
             EditModel.IndexR1 = indexR1;
             EditModel.IndexJ = indexJ;
-            EditModel.BMIScore = bMIScore;
-            EditModel.BMIGrade = bMIGrade;
+            EditModel.BMIScore = score;
+            EditModel.BMIGrade = grade;
 
             return true;
         }

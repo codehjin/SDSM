@@ -244,6 +244,68 @@
         </Setter>
     </Style>
 
+    <Style x:Key="CustomCheckBoxStyle" TargetType="CheckBox">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="UseLayoutRounding" Value="true"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="IsThreeState" Value="False"/>
+        <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
+        <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=PrimaryBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=ButtonBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{telerik:Windows11Resource ResourceKey=MouseOverBackgroundBrush}"/>
+        <Setter Property="helpers:ThemeHelper.DisabledForegroundBrush" Value="{telerik:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
+        <Setter Property="helpers:ThemeHelper.DisabledBackgroundBrush" Value="{telerik:Windows11Resource ResourceKey=DisabledBackgroundBrush}"/>
+        <Setter Property="helpers:ThemeHelper.DisabledBrush" Value="{telerik:Windows11Resource ResourceKey=DisabledBorderBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Border x:Name="Border" 
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            CornerRadius="{telerik:Windows11Resource ResourceKey=CornerRadius}">
+                        <ContentPresenter x:Name="Content"
+                                          Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content, Converter={StaticResource NullToVisibilityConverter}}"
+                                          RecognizesAccessKey="True"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBrush)}"/>
+                            <Setter Property="Background" TargetName="Border" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush)}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=AccentControlForegroundBrush}"/>
+                            <Setter TargetName="Border" Property="Background" Value="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                                <Condition Property="IsChecked" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="Border" Property="Background" Value="{telerik:Windows11Resource ResourceKey=AccentMouseOverBrush}"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=AccentMouseOverBrush}"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledBackgroundBrush)}"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledBrush)}"/>
+                            <Setter TargetName="Content" Property="TextBlock.Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledForegroundBrush)}"/>
+                            <Setter TargetName="Content" Property="Opacity" Value="{telerik:Windows11Resource ResourceKey=DisabledOpacity}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!--#region 작성폼 -->
     <sys:Double x:Key="FormControlBigWidth">480</sys:Double>
     <sys:Double x:Key="FormControlWidth">240</sys:Double>

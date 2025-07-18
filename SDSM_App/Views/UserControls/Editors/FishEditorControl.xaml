@@ -8,6 +8,7 @@
              xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:culture="clr-namespace:System.Globalization;assembly=mscorlib"
+             xmlns:main="clr-namespace:SDSM_App"
              xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
              xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"             
              d:DataContext="{d:DesignInstance Type={x:Type viewmodel:FishEditorControlViewModel}}">
@@ -61,9 +62,54 @@
                                     <Run Text="방법"/>
                                 </TextBlock>
                             </Border>
-                            <Border Height="84" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                            <Border Height="84" Margin="0 48 0 0" Style="{StaticResource FormGroupBorderStyle}">
                                 <TextBlock Style="{StaticResource FormGroupTextBlockStyle}">
                                     <Run Text="서식처"/>
+                                    <LineBreak/>
+                                    <Run Text="하천"/>
+                                    <LineBreak/>
+                                    <Run Text="유형"/>
+                                </TextBlock>
+                            </Border>
+                            <Border Height="40" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                                <TextBlock Style="{StaticResource FormGroupTextBlockStyle}" FontSize="14">
+                                    <Run Text="서식처"/>
+                                    <LineBreak/>
+                                    <Run Text="수생식물"/>
+                                </TextBlock>
+                            </Border>
+                            <Border Height="84" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                                <TextBlock Style="{StaticResource FormGroupTextBlockStyle}" FontSize="14">
+                                    <Run Text="서식처"/>
+                                    <LineBreak/>
+                                    <Run Text="수변식생"/>
+                                    <LineBreak/>
+                                    <Run Text="좌안"/>
+                                </TextBlock>
+                            </Border>
+                            <Border Height="84" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                                <TextBlock Style="{StaticResource FormGroupTextBlockStyle}" FontSize="14">
+                                    <Run Text="서식처"/>
+                                    <LineBreak/>
+                                    <Run Text="수변식생"/>
+                                    <LineBreak/>
+                                    <Run Text="우안"/>
+                                </TextBlock>
+                            </Border>
+                            <Border Height="40" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                                <TextBlock Style="{StaticResource FormGroupTextBlockStyle}" FontSize="14">
+                                    <Run Text="서식처"/>
+                                    <LineBreak/>
+                                    <Run Text="제방형태"/>
+                                </TextBlock>
+                            </Border>
+                            <Border Height="84" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                                <TextBlock Style="{StaticResource FormGroupTextBlockStyle}" FontSize="14">
+                                    <Run Text="서식처"/>
+                                    <LineBreak/>
+                                    <Run Text="환경위해"/>
+                                    <LineBreak/>
+                                    <Run Text="요인"/>
                                 </TextBlock>
                             </Border>
                             <Border Height="128" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
@@ -75,16 +121,23 @@
                                     <Run Text="구성"/>
                                 </TextBlock>
                             </Border>
-                            <Border Height="172" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                            <Border Height="40" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
                                 <TextBlock Style="{StaticResource FormGroupTextBlockStyle}">
                                     <Run Text="서식처"/>
                                 </TextBlock>
                             </Border>
-                            <Border Height="40" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                            <Border Height="84" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
                                 <TextBlock Style="{StaticResource FormGroupTextBlockStyle}" FontSize="15">
                                     <Run Text="채집"/>
                                     <LineBreak/>
                                     <Run Text="불가시"/>
+                                </TextBlock>
+                            </Border>
+                            <Border Height="84" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                                <TextBlock Style="{StaticResource FormGroupTextBlockStyle}" FontSize="15">
+                                    <Run Text="비정상"/>
+                                    <LineBreak/>
+                                    <Run Text="종"/>
                                 </TextBlock>
                             </Border>
                             <Border Height="694" Margin="0 12 0 0" Style="{StaticResource FormGroupBorderStyle}">
@@ -133,7 +186,7 @@
                                                                    InputMode="DatePicker"
                                                                    AllowParsingWithoutSeparator="True"
                                                                    IsInputRestrictedToSelectableDates="True"
-                                                                   SelectableDateStart="2020-01-01"
+                                                                   SelectableDateStart="{Binding Path=(main:GB.MinDate)}"
                                                                    SelectableDateEnd ="{Binding Source={x:Static sys:DateTime.Today}}"
                                                                    Width="{StaticResource FormControlWidth}"
                                                                    Height="{StaticResource FormControlHeight}"
@@ -248,9 +301,9 @@
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="Surber net(30*30)" Style="{StaticResource FormLabelStyle}" />
+                                            <TextBlock Text="채집소요시간(분)" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
-                                        <telerik:RadNumericUpDown Value="{Binding Path=Surbernet30, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                        <telerik:RadNumericUpDown Value="{Binding Path=CollectionTime, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                                   UpdateValueEvent="PropertyChanged"
                                                                   Minimum="1"
                                                                   Width="{StaticResource FormControlWidth}"
@@ -259,68 +312,21 @@
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="Surber net(50*50)" Style="{StaticResource FormLabelStyle}" />
+                                            <TextBlock Text="채집도구" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
-                                        <telerik:RadNumericUpDown Value="{Binding Path=Surbernet50, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
-                                                                  UpdateValueEvent="PropertyChanged"
-                                                                  Minimum="1"
-                                                                  Width="{StaticResource FormControlWidth}"
-                                                                  Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
-                                    </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="드렛지" Style="{StaticResource FormLabelStyle}" />
-                                        </Border>
-                                        <telerik:RadNumericUpDown Value="{Binding Path=Dredge, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
-                                                                  UpdateValueEvent="PropertyChanged"
-                                                                  Minimum="1"
-                                                                  Width="{StaticResource FormControlWidth}"
-                                                                  Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="에크만" Style="{StaticResource FormLabelStyle}" />
-                                        </Border>
-                                        <telerik:RadNumericUpDown Value="{Binding Path=Ekman, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
-                                                                  UpdateValueEvent="PropertyChanged"
-                                                                  Minimum="1"
-                                                                  Width="{StaticResource FormControlWidth}"
-                                                                  Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
-                                    </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="유역이용" Style="{StaticResource FormLabelStyle}" />
-                                        </Border>
-                                        <telerik:RadWatermarkTextBox Text="{Binding Path=Watershed}"
-                                                                     Width="{StaticResource FormControlWidth}"
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=CollectionTool}"
+                                                                     Width="{StaticResource FormControlLargeWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
-                                                                     Style="{StaticResource FormWatermark255TextBoxStyle}"
+                                                                     Style="{StaticResource FormWatermark100TextBoxStyle}"
                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
-                                    <StackPanel Style="{StaticResource FormStackPanelStyle}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Style="{StaticResource FormLabelBorderStyle}">
-                                                <TextBlock Text="확인 가능 오염원" Style="{StaticResource FormLabelStyle}" />
-                                            </Border>
-                                            <telerik:RadWatermarkTextBox Text="{Binding Path=PollutionSource}"
-                                                                         Width="{StaticResource FormControlWidth}"
-                                                                         Height="{StaticResource FormControlHeight}"
-                                                                         Style="{StaticResource FormWatermark255TextBoxStyle}"
-                                                                         LostFocus="EmptyClear_LostFocus"/>
-                                        </StackPanel>
-                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="식생 수피도" Style="{StaticResource FormLabelStyle}" />
+                                            <TextBlock Text="흐름상태" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
-                                        <telerik:RadWatermarkTextBox Text="{Binding Path=CamopyCover}"
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=CollectionFlowState}"
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
@@ -328,21 +334,215 @@
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="하천차수" Style="{StaticResource FormLabelStyle}" />
+                                                <TextBlock Text="*" Style="{StaticResource FormLabelRequiredStyle}" />
+                                            </StackPanel>
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=AutoRiverChasu, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="1"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="유역형태" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=WatershedType}"
+                                                                     Width="{StaticResource FormControlWidth}"
+                                                                     Height="{StaticResource FormControlHeight}"
+                                                                     Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="수계형태" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=DrainageSystemType}"
+                                                                     Width="{StaticResource FormControlWidth}"
+                                                                     Height="{StaticResource FormControlHeight}"
+                                                                     Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                    </StackPanel>
                                     <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                         <StackPanel Orientation="Horizontal">
                                             <Border Style="{StaticResource FormLabelBorderStyle}">
-                                                <TextBlock Text="범람원의 이용" Style="{StaticResource FormLabelStyle}" />
+                                                <TextBlock Text="하폭(m)" Style="{StaticResource FormLabelStyle}" />
                                             </Border>
-                                            <telerik:RadWatermarkTextBox Text="{Binding Path=Floodplain}"
+                                            <telerik:RadWatermarkTextBox Text="{Binding Path=RiverWidth}"
                                                                          Width="{StaticResource FormControlWidth}"
                                                                          Height="{StaticResource FormControlHeight}"
                                                                          Style="{StaticResource FormWatermarkTextBoxStyle}"
                                                                          LostFocus="EmptyClear_LostFocus"/>
                                         </StackPanel>
                                     </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="제방(좌안)" Style="{StaticResource FormLabelStyle}" />
+                                            <TextBlock Text="유폭(m)" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=YuWidth}"
+                                                                     Width="{StaticResource FormControlWidth}"
+                                                                     Height="{StaticResource FormControlHeight}"
+                                                                     Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="수심(m)" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=Depth}"
+                                                                     Width="{StaticResource FormControlWidth}"
+                                                                     Height="{StaticResource FormControlHeight}"
+                                                                     Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="침수성" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=Submerged}"
+                                                                     Width="{StaticResource FormControlWidth}"
+                                                                     Height="{StaticResource FormControlHeight}"
+                                                                     Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="부수성" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=Floating}"
+                                                                     Width="{StaticResource FormControlWidth}"
+                                                                     Height="{StaticResource FormControlHeight}"
+                                                                     Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                    </StackPanel>
+                                    <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Style="{StaticResource FormLabelBorderStyle}">
+                                                <TextBlock Text="정수성" Style="{StaticResource FormLabelStyle}" />
+                                            </Border>
+                                            <telerik:RadWatermarkTextBox Text="{Binding Path=Emergent}"
+                                                                         Width="{StaticResource FormControlWidth}"
+                                                                         Height="{StaticResource FormControlHeight}"
+                                                                         Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                         LostFocus="EmptyClear_LostFocus"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="나지" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=LeftVacantLand, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="0"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="초본류" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=LeftH, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="0"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="관목류" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=LeftS, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="0"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="교목류" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=LeftT1, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="0"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="나지" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=RightVacantLand, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="0"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="초본류" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=RightH, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="0"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="관목류" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=RightS, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="0"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="교목류" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=RightT1, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="0"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="좌안" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
                                         <telerik:RadWatermarkTextBox Text="{Binding Path=LeveeLeft}"
                                                                      Width="{StaticResource FormControlWidth}"
@@ -350,19 +550,63 @@
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
-                                    <StackPanel Style="{StaticResource FormStackPanelStyle}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Style="{StaticResource FormLabelBorderStyle}">
-                                                <TextBlock Text="제방(우안)" Style="{StaticResource FormLabelStyle}" />
-                                            </Border>
-                                            <telerik:RadWatermarkTextBox Text="{Binding Path=LeveeRight}"
-                                                                         Width="{StaticResource FormControlWidth}"
-                                                                         Height="{StaticResource FormControlHeight}"
-                                                                         Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                         LostFocus="EmptyClear_LostFocus"/>
-                                        </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="우안" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=LeveeRight}"
+                                                                     Width="{StaticResource FormControlWidth}"
+                                                                     Height="{StaticResource FormControlHeight}"
+                                                                     Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                     LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
                                 </StackPanel>
+
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="교란요인" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=Confounder}"
+                                                                     Width="{StaticResource FormControlWidth}"
+                                                                     Height="{StaticResource FormControlHeight}"
+                                                                     Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="하천내 구조물" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=Structure}"
+                                                                      Width="{StaticResource FormControlWidth}"
+                                                                      Height="{StaticResource FormControlHeight}"
+                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                      LostFocus="EmptyClear_LostFocus"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="어도 유무" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=Fishway}"
+                                                                     Width="{StaticResource FormControlWidth}"
+                                                                     Height="{StaticResource FormControlHeight}"
+                                                                     Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                     LostFocus="Trim_LostFocus"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="기타 특이사항" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=EtcNote}"
+                                                                     Width="1056"
+                                                                     Height="{StaticResource FormControlHeight}"
+                                                                     Style="{StaticResource FormWatermark255TextBoxStyle}"
+                                                                     LostFocus="Trim_LostFocus"/>
+                                    </StackPanel>
+                                </StackPanel>
+
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -460,7 +704,7 @@
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="하천유형" Style="{StaticResource FormLabelStyle}" />
+                                            <TextBlock Text="하천헝태" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
                                         <telerik:RadWatermarkTextBox Text="{Binding Path=HabitatRiverType}"
                                                                      Width="{StaticResource FormControlLargeWidth}"
@@ -470,79 +714,9 @@
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="하폭, 제방과 제방사이 거리(m)" Style="{StaticResource FormLabelStyle}" />
-                                        </Border>
-                                        <telerik:RadNumericUpDown Value="{Binding Path=RiverWidth, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
-                                                                  UpdateValueEvent="PropertyChanged"
-                                                                  Minimum="0"
-                                                                  Width="{StaticResource FormControlWidth}"
-                                                                  Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
-                                    </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="수폭, 물이 흐르는 하도의 거리(m)" Style="{StaticResource FormLabelStyle}" />
-                                        </Border>
-                                        <telerik:RadNumericUpDown Value="{Binding Path=WaterWidth, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
-                                                                  UpdateValueEvent="PropertyChanged"
-                                                                  Minimum="0"
-                                                                  Width="{StaticResource FormControlWidth}"
-                                                                  Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="평균수심, 샘플링 지점 평균(cm)" Style="{StaticResource FormLabelStyle}" />
-                                        </Border>
-                                        <telerik:RadNumericUpDown Value="{Binding Path=AverageDepth, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
-                                                                  UpdateValueEvent="PropertyChanged"
-                                                                  Minimum="0"
-                                                                  Width="{StaticResource FormControlWidth}"
-                                                                  Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="평균유속, 샘플링 지점 평균(cm/s)" Style="{StaticResource FormLabelStyle}" />
-                                        </Border>
-                                        <telerik:RadNumericUpDown Value="{Binding Path=AverageVelocity, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
-                                                                  UpdateValueEvent="PropertyChanged"
-                                                                  Minimum="0"
-                                                                  Width="{StaticResource FormControlWidth}"
-                                                                  Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
-                                    </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="기온" Style="{StaticResource FormLabelStyle}" />
-                                        </Border>
-                                        <telerik:RadNumericUpDown Value="{Binding Path=Temperature, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
-                                                                  UpdateValueEvent="PropertyChanged"
-                                                                  Minimum="0"
-                                                                  Width="{StaticResource FormControlWidth}"
-                                                                  Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="수온" Style="{StaticResource FormLabelStyle}" />
-                                        </Border>
-                                        <telerik:RadNumericUpDown Value="{Binding Path=WaterTemperature, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
-                                                                  UpdateValueEvent="PropertyChanged"
-                                                                  Minimum="0"
-                                                                  Width="{StaticResource FormControlWidth}"
-                                                                  Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="흐름상태" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
-                                        <telerik:RadWatermarkTextBox Text="{Binding Path=FlowState}"
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=HabitatFlowState}"
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
@@ -552,49 +726,74 @@
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="투명도" Style="{StaticResource FormLabelStyle}" />
-                                        </Border>
-                                        <telerik:RadNumericUpDown Value="{Binding Path=Transparency, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
-                                                                  UpdateValueEvent="PropertyChanged"
-                                                                  Minimum="1"
-                                                                  Maximum="5"
-                                                                  Width="{StaticResource FormControlWidth}"
-                                                                  Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="냄새" Style="{StaticResource FormLabelStyle}" />
-                                        </Border>
-                                        <telerik:RadNumericUpDown Value="{Binding Path=Smell, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
-                                                                  UpdateValueEvent="PropertyChanged"
-                                                                  Minimum="1"
-                                                                  Maximum="5"
-                                                                  Width="{StaticResource FormControlWidth}"
-                                                                  Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="특이사항" Style="{StaticResource FormLabelStyle}" />
-                                        </Border>
-                                        <telerik:RadWatermarkTextBox Text="{Binding Path=Note}"
-                                                                     Width="{StaticResource FormControlWidth}"
-                                                                     Height="{StaticResource FormControlHeight}"
-                                                                     Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="Trim_LostFocus"/>
-                                    </StackPanel>
-                                </StackPanel>
-                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="채집불가 내용" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
                                         <telerik:RadWatermarkTextBox Text="{Binding Path=SurveyUnavailableReason}"
                                                                      Width="{StaticResource FormControlLargeWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
                                                                      LostFocus="EmptyClear_LostFocus"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="비고" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=Note}"
+                                                                     Width="1058"
+                                                                     Height="{StaticResource FormControlHeight}"
+                                                                     Style="{StaticResource FormWatermark255TextBoxStyle}"
+                                                                     LostFocus="Trim_LostFocus"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}" Width="320">
+                                            <TextBlock Text="기형(deformity) DE 종명(개체수)" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=DECount, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="1"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}" Width="320">
+                                            <TextBlock Text="지느러미손상(erosion of fin) EF 종명(개체수)" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=EFCount, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="1"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}" Width="320">
+                                            <TextBlock Text="피부손상(lesions) LE 종명(개체수)" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=LECount, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="1"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}" Width="320">
+                                            <TextBlock Text="종양(tumors) TU 종명(개체수)" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadNumericUpDown Value="{Binding Path=TUCount, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
+                                                                  UpdateValueEvent="PropertyChanged"
+                                                                  Minimum="1"
+                                                                  Width="{StaticResource FormControlWidth}"
+                                                                  Height="{StaticResource FormControlHeight}"
+                                                                  Style="{StaticResource FormIntNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
 
@@ -637,8 +836,7 @@
                                                                                           Minimum="0"
                                                                                           Width="156"
                                                                                           Height="{StaticResource FormControlHeight}"
-                                                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                                          LostFocus="DoubleValueToRound_LostFocus">
+                                                                                          Style="{StaticResource FormIntNumericUpDownStyle}">
                                                                     <telerik:EventToCommandBehavior.EventBindings>
                                                                         <telerik:EventBinding EventName="ValueChanged" Command="{Binding Path=DataContext.IndividualCountValueChangedExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
                                                                     </telerik:EventToCommandBehavior.EventBindings>

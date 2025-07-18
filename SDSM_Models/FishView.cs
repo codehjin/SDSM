@@ -25,6 +25,29 @@ public class FishView
     [DisplayName("채집소요시간(분)")] public int? CollectionTime { get; set; }
     [DisplayName("채집도구")] public string? CollectionTool { get; set; }
     [DisplayName("흐름상태")] public string? CollectionFlowState { get; set; }
+    [DisplayName("하천차수")] public int? AutoRiverChasu { get; set; }
+    [DisplayName("유역형태")] public string? WatershedType { get; set; }
+    [DisplayName("수계형태")] public string? DrainageSystemType { get; set; }
+    [DisplayName("하폭(m)")] public string? RiverWidth { get; set; }
+    [DisplayName("유폭(m)")] public string? YuWidth { get; set; }
+    [DisplayName("수심(m)")] public string? Depth { get; set; }
+    [DisplayName("침수성")] public string? Submerged { get; set; }
+    [DisplayName("부수성")] public string? Floating { get; set; }
+    [DisplayName("정수성")] public string? Emergent { get; set; }
+    [DisplayName("나지")] public int? LeftVacantLand { get; set; }
+    [DisplayName("초본류")] public int? LeftH { get; set; }
+    [DisplayName("관목류")] public int? LeftS { get; set; }
+    [DisplayName("교목류")] public int? LeftT1 { get; set; }
+    [DisplayName("나지")] public int? RightVacantLand { get; set; }
+    [DisplayName("초본류")] public int? RightH { get; set; }
+    [DisplayName("관목류")] public int? RightS { get; set; }
+    [DisplayName("교목류")] public int? RightT1 { get; set; }
+    [DisplayName("좌안")] public string? LeveeLeft { get; set; }
+    [DisplayName("우안")] public string? LeveeRight { get; set; }
+    [DisplayName("교란요인")] public string? Confounder { get; set; }
+    [DisplayName("하천내 구조물")] public string? Structure { get; set; }
+    [DisplayName("어도 유무")] public string? Fishway { get; set; }
+    [DisplayName("기타 특이사항")] public string? EtcNote { get; set; }
     [DisplayName("암반")] public int? Bedrock { get; set; }
     [DisplayName("콘크리트")] public int? Concrete { get; set; }
     [DisplayName("진흙이하(<0.063mm)")] public int? Mud { get; set; }
@@ -41,7 +64,8 @@ public class FishView
     [DisplayName("지느러미손상(erosion of fin) EF 종명(개체수)")] public int? EFCount { get; set; }
     [DisplayName("피부손상(lesions) LE 종명(개체수)")] public int? LECount { get; set; }
     [DisplayName("종양(tumors) TU 종명(개체수)")] public int? TUCount { get; set; }
+    [DisplayName("FAI 점수")] public double? FAIScore { get; set; }
     [DisplayName("FAI 등급")] public string? FAIGrade { get; set; }
-    [DisplayName("종수")] public int SpeciesCount { get; set; }
-    [DisplayName("개체수")] public int IndividualCount { get; set; }
+    [DisplayName("종수")] public int? SpeciesCount { get; set; }
+    [DisplayName("개체수")] public int? IndividualCount { get; set; }
 }

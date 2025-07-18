@@ -420,10 +420,21 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                         //형식은 Null - DB입력은 필수 날짜
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
+                            // 날짜 범위 체크
+                            var minDate = GB.MinDate;
+                            var maxDate = DateTime.Today;
+
                             if (DateTime.TryParse(value.ToString(), out DateTime dt))
                             {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, dt);
+                                if (dt < minDate || dt > maxDate)
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                }
+                                else
+                                {
+                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                    insertPropertyInfo?.SetValue(insertModel, dt);
+                                }
                             }
                             else if (int.TryParse(value.ToString(), out int i))
                             {
@@ -432,8 +443,15 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                                     var yyyymmdd = GB.ToDateFromInt(i);
                                     if (yyyymmdd != null)
                                     {
-                                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                        insertPropertyInfo?.SetValue(insertModel, yyyymmdd);
+                                        if (yyyymmdd < minDate || yyyymmdd > maxDate)
+                                        {
+                                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                        }
+                                        else
+                                        {
+                                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                            insertPropertyInfo?.SetValue(insertModel, yyyymmdd);
+                                        }
                                     }
                                     else
                                     {
@@ -445,8 +463,15 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                                     var yymmdd = GB.ToDateFrom6Int(i);
                                     if (yymmdd != null)
                                     {
-                                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                        insertPropertyInfo?.SetValue(insertModel, yymmdd);
+                                        if (yymmdd < minDate || yymmdd > maxDate)
+                                        {
+                                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                        }
+                                        else
+                                        {
+                                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                            insertPropertyInfo?.SetValue(insertModel, yymmdd);
+                                        }
                                     }
                                     else
                                     {
@@ -474,24 +499,28 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                         //날씨
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (int.TryParse(value.ToString(), out int i))
+                            var items = ((string)value).Replace(" ", "").Split([',', '.'], StringSplitOptions.RemoveEmptyEntries);
+                            var itemNames = new List<string>();
+
+                            foreach (var item in items)
                             {
-                                var weather = _weathers.Where(w => w.Item1 == i).Select(w => w.Item2).FirstOrDefault();
-                                if (weather != null)
+                                if (int.TryParse(item, out int num))
                                 {
-                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                    insertPropertyInfo?.SetValue(insertModel, weather);
+                                    var name = _weathers.FirstOrDefault(w => w.Item1 == num).Item2;
+                                    if (!string.IsNullOrEmpty(name))
+                                        itemNames.Add(name);
                                 }
                                 else
                                 {
-                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                    // 숫자가 아니면 원본 값 사용
+                                    itemNames.Add(item);
                                 }
                             }
-                            else
-                            {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
-                            }
+
+                            var result = string.Join(",", itemNames);
+
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, result);
                         }
                         else
                         {
@@ -616,93 +645,105 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                     }
                     else if (prop.Name == "CamopyCover" || prop.Name == "Floodplain" || prop.Name == "HabitatRiverType" || prop.Name == "FlowState")
                     {
+                        //숫자를 텍스트로
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             if (prop.Name == "CamopyCover")
                             {
-                                if (int.TryParse(value.ToString(), out int i))
-                                {
-                                    var camopyCover = _camopyCovers.Where(w => w.Item1 == i).Select(w => w.Item2).FirstOrDefault();
-                                    if (camopyCover != null)
-                                    {
-                                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                        insertPropertyInfo?.SetValue(insertModel, camopyCover);
-                                    }
-                                    else
-                                    {
-                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
-                                    }
-                                }
-                                else
-                                {
-                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
-                                }
-                            }
-                            else if (prop.Name == "Floodplain")
-                            {
-                                if (int.TryParse(value.ToString(), out int i))
-                                {
-                                    var floodplain = _floodplains.Where(w => w.Item1 == i).Select(w => w.Item2).FirstOrDefault();
-                                    if (floodplain != null)
-                                    {
-                                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                        insertPropertyInfo?.SetValue(insertModel, floodplain);
-                                    }
-                                    else
-                                    {
-                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
-                                    }
-                                }
-                                else
-                                {
-                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
-                                }
-                            }
-                            else if (prop.Name == "HabitatRiverType")
-                            {
-                                if (int.TryParse(value.ToString(), out int i))
-                                {
-                                    var habitatRiverType = _habitatRiverTypes.Where(w => w.Item1 == i).Select(w => w.Item2).FirstOrDefault();
-                                    if (habitatRiverType != null)
-                                    {
-                                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                        insertPropertyInfo?.SetValue(insertModel, habitatRiverType);
-                                    }
-                                    else
-                                    {
-                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
-                                    }
-                                }
-                                else
-                                {
-                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
-                                }
+                                var items = ((string)value).Replace(" ", "").Split([',', '.'], StringSplitOptions.RemoveEmptyEntries);
+                                var itemNames = new List<string>();
 
-                            }
-                            else if (prop.Name == "FlowState")
-                            {
-                                var flowStates = ((string)value).Replace(" ", "").Split([',', '.'], StringSplitOptions.RemoveEmptyEntries);
-                                var flowStateNames = new List<string>();
-
-                                foreach (var fs in flowStates)
+                                foreach (var item in items)
                                 {
-                                    if (int.TryParse(fs, out int num))
+                                    if (int.TryParse(item, out int num))
                                     {
-                                        var name = _flowStates.FirstOrDefault(w => w.Item1 == num).Item2;
+                                        var name = _camopyCovers.FirstOrDefault(w => w.Item1 == num).Item2;
                                         if (!string.IsNullOrEmpty(name))
-                                            flowStateNames.Add(name);
+                                            itemNames.Add(name);
                                     }
                                     else
                                     {
                                         // 숫자가 아니면 원본 값 사용
-                                        flowStateNames.Add(fs);
+                                        itemNames.Add(item);
                                     }
                                 }
 
-                                var result = string.Join(",", flowStateNames);
+                                var result = string.Join(",", itemNames);
+
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, result);
+                            }
+                            else if (prop.Name == "Floodplain")
+                            {
+                                var items = ((string)value).Replace(" ", "").Split([',', '.'], StringSplitOptions.RemoveEmptyEntries);
+                                var itemNames = new List<string>();
+
+                                foreach (var item in items)
+                                {
+                                    if (int.TryParse(item, out int num))
+                                    {
+                                        var name = _floodplains.FirstOrDefault(w => w.Item1 == num).Item2;
+                                        if (!string.IsNullOrEmpty(name))
+                                            itemNames.Add(name);
+                                    }
+                                    else
+                                    {
+                                        // 숫자가 아니면 원본 값 사용
+                                        itemNames.Add(item);
+                                    }
+                                }
+
+                                var result = string.Join(",", itemNames);
+
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, result);
+                            }
+                            else if (prop.Name == "HabitatRiverType")
+                            {
+                                var items = ((string)value).Replace(" ", "").Split([',', '.'], StringSplitOptions.RemoveEmptyEntries);
+                                var itemNames = new List<string>();
+
+                                foreach (var item in items)
+                                {
+                                    if (int.TryParse(item, out int num))
+                                    {
+                                        var name = _habitatRiverTypes.FirstOrDefault(w => w.Item1 == num).Item2;
+                                        if (!string.IsNullOrEmpty(name))
+                                            itemNames.Add(name);
+                                    }
+                                    else
+                                    {
+                                        // 숫자가 아니면 원본 값 사용
+                                        itemNames.Add(item);
+                                    }
+                                }
+
+                                var result = string.Join(",", itemNames);
+
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                insertPropertyInfo?.SetValue(insertModel, result);
+                            }
+                            else if (prop.Name == "FlowState")
+                            {
+                                var items = ((string)value).Replace(" ", "").Split([',', '.'], StringSplitOptions.RemoveEmptyEntries);
+                                var itemNames = new List<string>();
+
+                                foreach (var item in items)
+                                {
+                                    if (int.TryParse(item, out int num))
+                                    {
+                                        var name = _flowStates.FirstOrDefault(w => w.Item1 == num).Item2;
+                                        if (!string.IsNullOrEmpty(name))
+                                            itemNames.Add(name);
+                                    }
+                                    else
+                                    {
+                                        // 숫자가 아니면 원본 값 사용
+                                        itemNames.Add(item);
+                                    }
+                                }
+
+                                var result = string.Join(",", itemNames);
 
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                                 insertPropertyInfo?.SetValue(insertModel, result);
@@ -1037,7 +1078,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         var usedRange = worksheet.UsedCellRange;
         for (int rowIndex = 46; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
         {
-            // 
+            // 개체수는 실수
             var cellValue = worksheet.Cells[rowIndex, columnIndex].GetValue().Value.RawValue;
             if (!string.IsNullOrWhiteSpace(cellValue) && double.TryParse(cellValue, out double d))
             {

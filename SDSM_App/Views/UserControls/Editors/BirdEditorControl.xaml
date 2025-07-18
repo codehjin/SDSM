@@ -7,6 +7,7 @@
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:culture="clr-namespace:System.Globalization;assembly=mscorlib"
+             xmlns:main="clr-namespace:SDSM_App"
              xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
              xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"             
              d:DataContext="{d:DesignInstance Type={x:Type viewmodel:BirdEditorControlViewModel}}">
@@ -98,7 +99,7 @@
                                                                    InputMode="DatePicker"
                                                                    AllowParsingWithoutSeparator="True"
                                                                    IsInputRestrictedToSelectableDates="True"
-                                                                   SelectableDateStart="2020-01-01"
+                                                                   SelectableDateStart="{Binding Path=(main:GB.MinDate)}"
                                                                    SelectableDateEnd ="{Binding Source={x:Static sys:DateTime.Today}}"
                                                                    Width="{StaticResource FormControlWidth}"
                                                                    Height="{StaticResource FormControlHeight}"

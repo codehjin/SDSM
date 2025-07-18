@@ -6,6 +6,7 @@ using SDSM_App.ViewModels;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Telerik.Documents.SpreadsheetStreaming;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
@@ -81,6 +82,17 @@ public partial class BulkFishControl : UserControl, ITransientService
     #endregion
 
     #region 컨트롤 이벤트
+
+    private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        if (sender is ScrollViewer scrollViewer)
+        {
+            if (e.Delta > 0)
+                scrollViewer.LineLeft();
+            else
+                scrollViewer.LineRight();
+        }
+    }
 
     private void DataRadGridView_Loaded(object sender, RoutedEventArgs e)
     {

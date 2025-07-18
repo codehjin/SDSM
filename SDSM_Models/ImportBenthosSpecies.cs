@@ -19,7 +19,7 @@ public class ImportBenthosSpecies
     [DisplayName("국명")] public string? SpeciesKo { get; set; }
     [DisplayName("학명")] public string? SpeciesEn { get; set; }
 
-    //검수에서 striong -> double 형식으로 변경됨
+    //검수에서 string -> double 형식으로 변경됨
     [DisplayName("개체수")] public double? IndividualCount { get; set; }
 
     //일괄입력시 기존정보과 매치

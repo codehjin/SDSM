@@ -34,7 +34,7 @@ public class FishSpeciesList
     [DisplayName("학명")] public string? SpeciesEn { get; set; }
 
     [NotMapped]
-    [DisplayName("개체수")] public double? IndividualCount { get; set; }
+    [DisplayName("개체수")] public int? IndividualCount { get; set; }
 
     [NotMapped]
     public string SearchText => $"{SpeciesKo} {SpeciesEn}";

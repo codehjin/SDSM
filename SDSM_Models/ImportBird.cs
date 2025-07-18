@@ -8,7 +8,7 @@ public class ImportBird
     public string ErrorContent { get; set; } = string.Empty;
 
     [DisplayName("연도차수")] public string? YearChsu { get; set; }
-    [DisplayName("조사일")] public string? SurveyDate { get; set; }
+    [DisplayName("조사일\n(2010-01-01~오늘)")] public string? SurveyDate { get; set; }
     [DisplayName("날씨")] public string? Weather { get; set; }
     [DisplayName("하천명")] public string? River { get; set; }
     [DisplayName("지점명")] public string? Site { get; set; }

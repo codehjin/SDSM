@@ -8,6 +8,7 @@
              xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:culture="clr-namespace:System.Globalization;assembly=mscorlib"
+             xmlns:main="clr-namespace:SDSM_App"
              xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
              xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"             
              d:DataContext="{d:DesignInstance Type={x:Type viewmodel:BenthosEditorControlViewModel}}">
@@ -61,7 +62,7 @@
                                     <Run Text="방법"/>
                                 </TextBlock>
                             </Border>
-                            <Border Height="84" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                            <Border Height="128" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
                                 <TextBlock Style="{StaticResource FormGroupTextBlockStyle}">
                                     <Run Text="서식처"/>
                                 </TextBlock>
@@ -75,7 +76,7 @@
                                     <Run Text="구성"/>
                                 </TextBlock>
                             </Border>
-                            <Border Height="172" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
+                            <Border Height="216" Margin="0 4 0 0" Style="{StaticResource FormGroupBorderStyle}">
                                 <TextBlock Style="{StaticResource FormGroupTextBlockStyle}">
                                     <Run Text="서식처"/>
                                 </TextBlock>
@@ -133,7 +134,7 @@
                                                                    InputMode="DatePicker"
                                                                    AllowParsingWithoutSeparator="True"
                                                                    IsInputRestrictedToSelectableDates="True"
-                                                                   SelectableDateStart="2020-01-01"
+                                                                   SelectableDateStart="{Binding Path=(main:GB.MinDate)}"
                                                                    SelectableDateEnd ="{Binding Source={x:Static sys:DateTime.Today}}"
                                                                    Width="{StaticResource FormControlWidth}"
                                                                    Height="{StaticResource FormControlHeight}"
@@ -175,7 +176,7 @@
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="하천유명" Style="{StaticResource FormLabelStyle}" />
+                                            <TextBlock Text="하천유형" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
                                         <telerik:RadWatermarkTextBox Text="{Binding Path=RiverType}"
                                                                      Width="{StaticResource FormControlWidth}"
@@ -244,7 +245,7 @@
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
-                              
+
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -299,32 +300,32 @@
                                             <TextBlock Text="유역이용" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
                                         <telerik:RadWatermarkTextBox Text="{Binding Path=Watershed}"
-                                                                     Width="{StaticResource FormControlWidth}"
+                                                                     Width="1058"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermark255TextBoxStyle}"
                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
-                                    <StackPanel Style="{StaticResource FormStackPanelStyle}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Style="{StaticResource FormLabelBorderStyle}">
-                                                <TextBlock Text="확인 가능 오염원" Style="{StaticResource FormLabelStyle}" />
-                                            </Border>
-                                            <telerik:RadWatermarkTextBox Text="{Binding Path=PollutionSource}"
-                                                                         Width="{StaticResource FormControlWidth}"
-                                                                         Height="{StaticResource FormControlHeight}"
-                                                                         Style="{StaticResource FormWatermark255TextBoxStyle}"
-                                                                         LostFocus="EmptyClear_LostFocus"/>
-                                        </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource FormLabelBorderStyle}">
+                                            <TextBlock Text="확인 가능 오염원" Style="{StaticResource FormLabelStyle}" />
+                                        </Border>
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=PollutionSource}"
+                                                                     Width="{StaticResource FormControlLargeWidth}"
+                                                                     Height="{StaticResource FormControlHeight}"
+                                                                     Style="{StaticResource FormWatermark255TextBoxStyle}"
+                                                                     LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="식생 수피도" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
                                         <telerik:RadWatermarkTextBox Text="{Binding Path=CamopyCover}"
-                                                                     Width="{StaticResource FormControlWidth}"
-                                                                     Height="{StaticResource FormControlHeight}"
-                                                                     Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                      Width="{StaticResource FormControlWidth}"
+                                                                      Height="{StaticResource FormControlHeight}"
+                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -463,7 +464,7 @@
                                             <TextBlock Text="하천유형" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
                                         <telerik:RadWatermarkTextBox Text="{Binding Path=HabitatRiverType}"
-                                                                     Width="{StaticResource FormControlLargeWidth}"
+                                                                     Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
                                                                      LostFocus="EmptyClear_LostFocus"/>
@@ -574,14 +575,16 @@
                                                                   Height="{StaticResource FormControlHeight}"
                                                                   Style="{StaticResource FormIntNumericUpDownStyle}"/>
                                     </StackPanel>
+                                </StackPanel>
+                                <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="특이사항" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
                                         <telerik:RadWatermarkTextBox Text="{Binding Path=Note}"
-                                                                     Width="{StaticResource FormControlWidth}"
+                                                                     Width="1058"
                                                                      Height="{StaticResource FormControlHeight}"
-                                                                     Style="{StaticResource FormWatermarkTextBoxStyle}"
+                                                                     Style="{StaticResource FormWatermark255TextBoxStyle}"
                                                                      LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                 </StackPanel>

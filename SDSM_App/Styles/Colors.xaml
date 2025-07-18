@@ -76,22 +76,6 @@
         <GradientStop Color="#26A69A" Offset="1"/>
     </LinearGradientBrush>
 
-    <!--1등급-->
-    <Color x:Key="Grade1Color">#994C8F4C</Color>
-    <SolidColorBrush x:Key="Grade1Brush" Color="{StaticResource Grade1Color}" />
-    <!--2등급-->
-    <Color x:Key="Grade2Color">#99A2C34C</Color>
-    <SolidColorBrush x:Key="Grade2Brush" Color="{StaticResource Grade2Color}" />
-    <!--3등급-->
-    <Color x:Key="Grade3Color">#99EEEF4C</Color>
-    <SolidColorBrush x:Key="Grade3Brush" Color="{StaticResource Grade3Color}" />
-    <!--4등급-->
-    <Color x:Key="Grade4Color">#99FFB84E</Color>
-    <SolidColorBrush x:Key="Grade4Brush" Color="{StaticResource Grade4Color}" />
-    <!--5등급-->
-    <Color x:Key="Grade5Color">#99FF884C</Color>
-    <SolidColorBrush x:Key="Grade5Brush" Color="{StaticResource Grade5Color}" />
-
     <Color x:Key="MainPrimaryColor">#FF1E232E</Color>
     <SolidColorBrush x:Key="MainPrimaryBrush" Color="{StaticResource MainPrimaryColor}" />
 
@@ -103,5 +87,36 @@
 
     <Color x:Key="MenuForegroundColor">#FF869DCF</Color>
     <SolidColorBrush x:Key="MenuForegroundBrush" Color="{StaticResource MenuForegroundColor}"/>
+
+    <!--포인트 테두리-->
+    <Color x:Key="PointBorderColor">#44000000</Color>
+    <SolidColorBrush x:Key="PointBorderBrush" Color="{StaticResource PointBorderColor}"/>
+    <!--식생-->
+    <Color x:Key="VegetationColor">#007200</Color>
+    <SolidColorBrush x:Key="VegetationBrush" Color="{StaticResource VegetationColor}"/>
+    <!--식물-->
+    <Color x:Key="PlantColor">#00B200</Color>
+    <SolidColorBrush x:Key="PlantBrush" Color="{StaticResource PlantColor}"/>
+    <!--양서파충류-->
+    <Color x:Key="AmphibianReptileColor">#CC33FF</Color>
+    <SolidColorBrush x:Key="AmphibianReptileBrush" Color="{StaticResource AmphibianReptileColor}"/>
+    <!--어류-->
+    <Color x:Key="FishColor">#00B8D4</Color>
+    <SolidColorBrush x:Key="FishBrush" Color="{StaticResource FishColor}"/>
+    <!--저서동물-->
+    <Color x:Key="BenthosColor">#651FFF</Color>
+    <SolidColorBrush x:Key="BenthosBrush" Color="{StaticResource BenthosColor}"/>
+    <!--조류-->
+    <Color x:Key="BirdColor">#9E9D24</Color>
+    <SolidColorBrush x:Key="BirdBrush" Color="{StaticResource BirdColor}"/>
+    <!--포유류-->
+    <Color x:Key="MammalColor">#FE9900</Color>
+    <SolidColorBrush x:Key="MammalBrush" Color="{StaticResource MammalColor}"/>
+    <!--서식수변-->
+    <Color x:Key="HabitatWaterEdgeColor">#37474F</Color>
+    <SolidColorBrush x:Key="HabitatWaterEdgeBrush" Color="{StaticResource HabitatWaterEdgeColor}"/>
+    <!--수질-->
+    <Color x:Key="WaterQualityColor">#2979FF</Color>
+    <SolidColorBrush x:Key="WaterQualityBrush" Color="{StaticResource WaterQualityColor}"/>
 
 </ResourceDictionary>

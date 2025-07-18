@@ -58,7 +58,7 @@ public class SDSMDbContext : DbContext, ITransientService
     public DbSet<FishSpeciesView> FishSpeciesViews { get; set; }
 
     //양서파충류
-    public DbSet<AmphibianReptile> ARSurveys { get; set; }
+    public DbSet<AmphibianReptile> AmphibianReptiles { get; set; }
 
     public  DbSet<SelfUser> SelfUsers { get; set; }
 }

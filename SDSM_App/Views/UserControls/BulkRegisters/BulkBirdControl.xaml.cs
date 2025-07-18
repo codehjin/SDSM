@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Telerik.Documents.SpreadsheetStreaming;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
@@ -65,6 +66,17 @@ public partial class BulkBirdControl : UserControl, ITransientService
 
     #region 컨트롤 이벤트
 
+    private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        if (sender is ScrollViewer scrollViewer)
+        {
+            if (e.Delta > 0)
+                scrollViewer.LineLeft();
+            else
+                scrollViewer.LineRight();
+        }
+    }
+
     private void DataRadGridView_Loaded(object sender, RoutedEventArgs e)
     {
         if (sender is RadGridView gridView)
@@ -109,49 +121,6 @@ public partial class BulkBirdControl : UserControl, ITransientService
         if (sorts.Count != 0)
         {
             DataRadGridView.SortDescriptors.AddRange(sorts);
-        }
-    }
-
-    //표준양식 출력
-    private void FormExportRadButton_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            CommonOpenFileDialog dialog = new()
-            {
-                IsFolderPicker = true,
-                Title = "다운로드 - 폴더선택"
-            };
-
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                if (string.IsNullOrWhiteSpace(dialog.FileName))
-                    return;
-
-                var sri = Application.GetResourceStream(new Uri("pack://application:,,,/SDSM_App;component/Assets/Excels/조류_표준양식.xlsx")).Stream;
-
-                if (sri != null)
-                {
-                    string path = Path.Combine(dialog.FileName, $"조류_표준양식_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
-
-                    using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
-                    sri.CopyTo(fileStream);
-
-                    var toast = (GB.SaveMessage, true);
-                    WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
-                }
-                else
-                {
-                    MessageBox.Show("파일을 찾을 수 없습니다.", "파일 오류", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            GB.LogWrite(GetType().Name, nameof(FormExportRadButton_Click), ex.Message);
-
-            var toast = (ex.Message, false);
-            WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
         }
     }
 

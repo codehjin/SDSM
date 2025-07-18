@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SDSM_Models;
 
 /// <summary>
-/// 어류 출현종
+/// 어류 출현종 (개체수 => 정수)
 /// </summary>
 [Table("FishSpecies")]
 public class FishSpecies
@@ -30,7 +30,7 @@ public class FishSpecies
     [DisplayName("과")] public string? FamilyKo { get; set; }
     [DisplayName("국명")] public string? SpeciesKo { get; set; }
     [DisplayName("학명")] public string? SpeciesEn { get; set; }
-    [DisplayName("개체수")] public double? IndividualCount { get; set; }
+    [DisplayName("개체수")] public int? IndividualCount { get; set; }
 
     //조사자료
     [Description("ID")]

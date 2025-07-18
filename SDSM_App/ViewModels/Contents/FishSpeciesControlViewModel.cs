@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
 using NinjaNye.SearchExtensions;
 using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
@@ -45,7 +44,7 @@ public partial class FishSpeciesControlViewModel : ObservableObject, ITransientS
         get { return new EnumDataSource { EnumType = typeof(SearchModeType) }; }
     }
 
-    [ObservableProperty] List<BenthosSpeciesView> _modelCollection = [];
+    [ObservableProperty] List<FishSpeciesView> _modelCollection = [];
 
     #endregion
 
@@ -182,18 +181,18 @@ public partial class FishSpeciesControlViewModel : ObservableObject, ITransientS
             PageIndex = index;
 
             using var context = new SDSMDbContext();
-            IQueryable<BenthosSpeciesView> query;
+            IQueryable<FishSpeciesView> query;
 
             await Task.Run(() =>
             {
                 if (string.IsNullOrEmpty(QueryText))
                 {
-                    query = context.BenthosSpeciesViews;
+                    query = context.FishSpeciesViews;
                 }
                 else
                 {
-                    QueryableStringSearch<BenthosSpeciesView> searchQuery =
-                         context.BenthosSpeciesViews.Search(m => m.YearChsu,
+                    QueryableStringSearch<FishSpeciesView> searchQuery =
+                         context.FishSpeciesViews.Search(m => m.YearChsu,
                                                             m => m.Site,
                                                             m => m.SurveyDate.ToString(),
                                                             m => m.MajorRegion,
@@ -203,16 +202,32 @@ public partial class FishSpeciesControlViewModel : ObservableObject, ITransientS
                                                             m => m.Weather,
                                                             m => m.SurveyAgency,
                                                             m => m.Surveyor,
-                                                            m => m.Surbernet30.ToString(),
-                                                            m => m.Surbernet50.ToString(),
-                                                            m => m.Dredge.ToString(),
-                                                            m => m.Ekman.ToString(),
-                                                            m => m.Watershed,
-                                                            m => m.PollutionSource,
-                                                            m => m.CamopyCover,
-                                                            m => m.Floodplain,
+                                                            m => m.CollectionTime.ToString(),
+                                                            m => m.CollectionTool,
+                                                            m => m.CollectionFlowState,
+                                                            m => m.AutoRiverChasu.ToString(),
+                                                            m => m.WatershedType,
+                                                            m => m.DrainageSystemType,
+                                                            m => m.RiverWidth,
+                                                            m => m.YuWidth,
+                                                            m => m.Depth,
+                                                            m => m.Submerged,
+                                                            m => m.Floating,
+                                                            m => m.Emergent,
+                                                            m => m.LeftVacantLand.ToString(),
+                                                            m => m.LeftH.ToString(),
+                                                            m => m.LeftS.ToString(),
+                                                            m => m.LeftT1.ToString(),
+                                                            m => m.RightVacantLand.ToString(),
+                                                            m => m.RightH.ToString(),
+                                                            m => m.RightS.ToString(),
+                                                            m => m.RightT1.ToString(),
                                                             m => m.LeveeLeft,
                                                             m => m.LeveeRight,
+                                                            m => m.Confounder,
+                                                            m => m.Structure,
+                                                            m => m.Fishway,
+                                                            m => m.EtcNote,
                                                             m => m.Bedrock.ToString(),
                                                             m => m.Concrete.ToString(),
                                                             m => m.Mud.ToString(),
@@ -222,28 +237,24 @@ public partial class FishSpeciesControlViewModel : ObservableObject, ITransientS
                                                             m => m.SmallStone.ToString(),
                                                             m => m.BigStone.ToString(),
                                                             m => m.HabitatRiverType,
-                                                            m => m.RiverWidth.ToString(),
-                                                            m => m.WaterWidth.ToString(),
-                                                            m => m.AverageDepth.ToString(),
-                                                            m => m.AverageVelocity.ToString(),
-                                                            m => m.Temperature.ToString(),
-                                                            m => m.WaterTemperature.ToString(),
-                                                            m => m.FlowState,
-                                                            m => m.Transparency.ToString(),
-                                                            m => m.Smell.ToString(),
-                                                            m => m.Note,
+                                                            m => m.HabitatFlowState,
                                                             m => m.SurveyUnavailableReason,
-                                                            m => m.BMIGrade,
-                                                            m => m.IndexDI.ToString(),
-                                                            m => m.IndexH.ToString(),
-                                                            m => m.IndexR1.ToString(),
-                                                            m => m.IndexJ.ToString(),
-                                                            m => m.SaprobicValue.ToString(),
-                                                            m => m.IndicatorWeight.ToString(),
+                                                            m => m.Note,
+                                                            m => m.DECount.ToString(),
+                                                            m => m.EFCount.ToString(),
+                                                            m => m.LECount.ToString(),
+                                                            m => m.TUCount.ToString(),
+                                                            m => m.FAIGrade,
+                                                            m => m.FishTrait,
+                                                            m => m.ToleranceGuild,
+                                                            m => m.FeedingGuild,
+                                                            m => m.HabitatGuild,
+                                                            m => m.Exotic,
+                                                            m => m.Endemic,
                                                             m => m.Endangered1,
                                                             m => m.Endangered2,
-                                                            m => m.Endemic,
-                                                            m => m.PhylumKo,
+                                                            m => m.NaturalMonument,
+                                                            m => m.LineageOrder.ToString(),
                                                             m => m.ClassKo,
                                                             m => m.OrderKo,
                                                             m => m.FamilyKo,
@@ -272,7 +283,7 @@ public partial class FishSpeciesControlViewModel : ObservableObject, ITransientS
 
                 ModelTotal = query.Count();
 
-                ModelCollection = [.. query.OrderByDescending(m => m.BenthosId).Skip(index * PageSize).Take(PageSize)];
+                ModelCollection = [.. query.OrderByDescending(m => m.FishId).Skip(index * PageSize).Take(PageSize)];
 
             }, _cts.Token);
         }

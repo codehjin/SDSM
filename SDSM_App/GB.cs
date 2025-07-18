@@ -44,6 +44,9 @@ public static class GB
     //실수       
     public static string DoublePattern { get; set; } = "^[0-9]*(?:\\.[0-9]*)?$";
 
+    //최소날짜
+    public static DateTime MinDate { get; set; } = new DateTime(2010, 1, 1);
+
     //로그작성
     public static void LogWrite(string model, string method, string error)
     {
@@ -581,7 +584,210 @@ public static class GB
         if (percentile <= 0.8) return 2;
         return 1;
     }
-   
+
+
+    #endregion
+
+    #region 어류 등급계산
+
+    public static (double?, string?) GetFAI(IEnumerable<ImportFishSpecies> speciesData, string? surveyUnavailableReason, int abnormalCount, int chasu = 0)
+    {
+        // 조사불가 사유가 있으면 등급은 "-"
+        if (!string.IsNullOrWhiteSpace(surveyUnavailableReason))
+        {
+            var reason = surveyUnavailableReason.Replace(" ", "");
+            if (reason == "접근불가" || reason == "건천화" || reason == "준설" || reason == "공사중")
+                return (null, "-");
+        }
+
+        if (speciesData == null)
+            return (null, null);
+
+        int 총종수 = speciesData.Count(x => x.IndividualCount != null && x.IndividualCount > 0);
+        int 총개체수 = speciesData.Sum(x => x.IndividualCount) ?? 0;
+
+        int 외래종_종수 = speciesData.Count(x => x.Exotic == "O" && x.IndividualCount != null && x.IndividualCount > 0);
+        int 외래종_개체수 = speciesData.Where(x => x.Exotic == "O" && x.IndividualCount != null && x.IndividualCount > 0).Sum(x => x.IndividualCount ?? 0);
+
+        int 국내종총종수 = 총종수 - 외래종_종수;
+        int 국내종총개체수 = 총개체수 - 외래종_개체수;
+
+        int 여울성저서종수 = speciesData.Count(x => x.HabitatGuild == "RB" && x.IndividualCount != null && x.IndividualCount > 0);
+        int 민감종수 = speciesData.Count(x => x.ToleranceGuild == "SS" && x.IndividualCount != null && x.IndividualCount > 0);
+
+        int 내성종Sum = speciesData.Where(x => x.ToleranceGuild == "TS" && x.IndividualCount != null && x.IndividualCount > 0).Sum(x => x.IndividualCount ?? 0);
+        double 내성종개체수비율 = 총개체수 != 0 ? (double)내성종Sum / 총개체수 * 100 : 0;
+
+        int 잡식종Sum = speciesData.Where(x => x.FeedingGuild == "O" && x.IndividualCount != null && x.IndividualCount > 0).Sum(x => x.IndividualCount ?? 0);
+        double 잡식종개체수비율 = 총개체수 != 0 ? (double)잡식종Sum / 총개체수 * 100 : 0;
+
+        int 충식종Sum_I = speciesData.Where(x => x.FeedingGuild == "I" && x.IndividualCount != null && x.IndividualCount > 0).Sum(x => x.IndividualCount ?? 0);
+        int 충식종SumI_Exotic = speciesData.Where(x => x.FeedingGuild == "I" && x.Exotic == "O" && x.IndividualCount != null && x.IndividualCount > 0).Sum(x => x.IndividualCount ?? 0);
+        double 충식종개체수비율 = 총개체수 != 0 ? (double)(충식종Sum_I - 충식종SumI_Exotic) / 총개체수 * 100.0 : 0;
+
+        int 비정상개체수 = abnormalCount;
+        double 비정상개체수비율 = 비정상개체수 != 0 ? (비정상개체수 / 총개체수) * 100 : 0;
+
+        double m1 = GetM1Value(chasu, 국내종총종수);
+        double m2 = GetM2Value(chasu, 여울성저서종수);
+        double m3 = GetM3Value(chasu, 민감종수);
+        double m4 = GetM4Value(내성종개체수비율);
+        double m5 = GetM5Value(잡식종개체수비율);
+        double m6 = GetM6Value(충식종개체수비율);
+        double m7 = GetM7Value(chasu, 국내종총개체수);
+        double m8 = GetM8Value(비정상개체수비율);
+
+        var mValues = new List<double> { m1, m2, m3, m4, m5, m6, m7, m8 };
+        var reult = GetFAIValue(mValues, surveyUnavailableReason);
+
+        return reult;
+    }
+
+    //국내종총종수
+    private static double GetM1Value(int chasu, int value)
+    {
+        return chasu switch
+        {
+            1 => value <= 1 ? 0 : (value == 2 ? 6.25 : 12.5),
+            2 => value <= 2 ? 0 : (value <= 5 ? 6.25 : 12.5),
+            3 => value <= 4 ? 0 : (value <= 8 ? 6.25 : 12.5),
+            4 => value <= 5 ? 0 : (value <= 11 ? 6.25 : 12.5),
+            5 => value <= 7 ? 0 : (value <= 14 ? 6.25 : 12.5),
+            6 => value <= 9 ? 0 : (value <= 18 ? 6.25 : 12.5),
+            7 => value <= 11 ? 0 : (value <= 22 ? 6.25 : 12.5),
+            _ => 0
+        };
+    }
+
+    //여울성저서종수
+    private static double GetM2Value(int chasu, int value)
+    {
+        return chasu switch
+        {
+            1 => value == 0 ? 0 : (value == 1 ? 6.25 : 12.5),
+            2 => value == 0 ? 0 : (value <= 2 ? 6.25 : 12.5),
+            3 => value == 0 ? 0 : (value <= 2 ? 6.25 : 12.5),
+            4 => value <= 1 ? 0 : (value <= 3 ? 6.25 : 12.5),
+            5 => value == 0 ? 0 : (value <= 2 ? 6.25 : 12.5),
+            6 => value == 0 ? 0 : (value <= 2 ? 6.25 : 12.5),
+            7 => value == 0 ? 0 : (value == 1 ? 6.25 : 12.5),
+            _ => 0
+        };
+    }
+
+    //민감종수
+    private static double GetM3Value(int chasu, int value)
+    {
+        return chasu switch
+        {
+            1 => value == 0 ? 0 : (value <= 2 ? 6.25 : 12.5),
+            2 => value == 0 ? 0 : (value <= 3 ? 6.25 : 12.5),
+            3 => value <= 1 ? 0 : (value <= 4 ? 6.25 : 12.5),
+            4 => value <= 1 ? 0 : (value <= 4 ? 6.25 : 12.5),
+            5 => value <= 1 ? 0 : (value <= 4 ? 6.25 : 12.5),
+            6 => value == 0 ? 0 : (value <= 3 ? 6.25 : 12.5),
+            7 => value == 0 ? 0 : (value <= 2 ? 6.25 : 12.5),
+            _ => 0
+        };
+    }
+
+    //내성종 개체수 비율
+    private static double GetM4Value(double value)
+    {
+        if (value > 70)
+            return 0;
+        else if (value >= 30)
+            return 6.25;
+        else
+            return 12.5;
+    }
+
+    //잡식종 개체수 비율
+    private static double GetM5Value(double value)
+    {
+        if (value > 70)
+            return 0;
+        else if (value >= 30)
+            return 6.25;
+        else
+            return 12.5;
+    }
+
+    //충식종개체수비율
+    private static double GetM6Value(double value)
+    {
+        if (value < 20)
+            return 0;
+        else if (value <= 45)
+            return 6.25;
+        else
+            return 12.5;
+    }
+
+    //채집된 국내종 총 개체수
+    private static double GetM7Value(int chasu, int Value)
+    {
+        return chasu switch
+        {
+            1 => Value <= 10 ? 0 : (Value <= 20 ? 6.25 : 12.5),
+            2 => Value <= 30 ? 0 : (Value <= 55 ? 6.25 : 12.5),
+            3 => Value <= 50 ? 0 : (Value <= 90 ? 6.25 : 12.5),
+            4 => Value <= 60 ? 0 : (Value <= 115 ? 6.25 : 12.5),
+            5 => Value <= 80 ? 0 : (Value <= 160 ? 6.25 : 12.5),
+            6 => Value <= 100 ? 0 : (Value <= 200 ? 6.25 : 12.5),
+            7 => Value <= 120 ? 0 : (Value <= 240 ? 6.25 : 12.5),
+            _ => 0
+        };
+    }
+
+    //비정상종 개체수 비율
+    private static double GetM8Value(double value)
+    {
+        if (value > 1)
+            return 0;
+        else if (value > 0)
+            return 6.25;
+        else
+            return 12.5;
+    }
+
+    //
+    private static (double?, string?) GetFAIValue(List<double> mValues, string? surveyUnavailableReason)
+    {
+        // 조사불가 사유가 있으면 등급은 "-"
+        if (!string.IsNullOrWhiteSpace(surveyUnavailableReason))
+        {
+            var reason = surveyUnavailableReason.Replace(" ", "");
+            if (reason == "접근불가" || reason == "건천화" || reason == "준설" || reason == "공사중")
+                return (null, "-");
+        }
+
+        // mValues: m1, m2, m3, m4, m5, m6, m7, m8
+        double sum = mValues.Sum();
+        double rounded = Math.Round(sum, 1, MidpointRounding.AwayFromZero);
+
+        string grade;
+        // 등급 산정 (엑셀 IFERROR IF 중첩과 동일)
+        if (double.IsNaN(rounded) || double.IsInfinity(rounded))
+        {
+            grade = "E";
+            return (null, grade);
+        }
+        else if (rounded >= 80)
+            grade = "A";
+        else if (rounded >= 60)
+            grade = "B";
+        else if (rounded >= 40)
+            grade = "C";
+        else if (rounded >= 20)
+            grade = "D";
+        else if (rounded >= 0)
+            grade = "E";
+        else
+            grade = "Null";
+
+        return (rounded, grade);
+    }
 
     #endregion
 

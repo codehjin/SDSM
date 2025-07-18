@@ -8,6 +8,7 @@ using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
 using SDSM_Models;
+using SharpDX.Direct2D1.Effects;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Data.SQLite;
 using System.IO;
@@ -342,10 +343,21 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                         //형식은 Null - DB입력은 필수 날짜
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
+                            // 날짜 범위 체크
+                            var minDate = GB.MinDate;
+                            var maxDate = DateTime.Today;
+
                             if (DateTime.TryParse(value.ToString(), out DateTime dt))
                             {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, dt);
+                                if (dt < minDate || dt > maxDate)
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                }
+                                else
+                                {
+                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                    insertPropertyInfo?.SetValue(insertModel, dt);
+                                }
                             }
                             else if (int.TryParse(value.ToString(), out int i))
                             {
@@ -354,8 +366,15 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                                     var yyyymmdd = GB.ToDateFromInt(i);
                                     if (yyyymmdd != null)
                                     {
-                                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                        insertPropertyInfo?.SetValue(insertModel, yyyymmdd);
+                                        if (yyyymmdd < minDate || yyyymmdd > maxDate)
+                                        {
+                                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                        }
+                                        else
+                                        {
+                                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                            insertPropertyInfo?.SetValue(insertModel, yyyymmdd);
+                                        }
                                     }
                                     else
                                     {
@@ -367,8 +386,15 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                                     var yymmdd = GB.ToDateFrom6Int(i);
                                     if (yymmdd != null)
                                     {
-                                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                        insertPropertyInfo?.SetValue(insertModel, yymmdd);
+                                        if (yymmdd < minDate || yymmdd > maxDate)
+                                        {
+                                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                        }
+                                        else
+                                        {
+                                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                            insertPropertyInfo?.SetValue(insertModel, yymmdd);
+                                        }
                                     }
                                     else
                                     {
@@ -396,24 +422,28 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                         //날씨
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (int.TryParse(value.ToString(), out int i))
+                            var items = ((string)value).Replace(" ", "").Split([',', '.'], StringSplitOptions.RemoveEmptyEntries);
+                            var itemNames = new List<string>();
+
+                            foreach (var item in items)
                             {
-                                var weather = _weathers.Where(w => w.Item1 == i).Select(w => w.Item2).FirstOrDefault();
-                                if (weather != null)
+                                if (int.TryParse(item, out int num))
                                 {
-                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                    insertPropertyInfo?.SetValue(insertModel, weather);
+                                    var name = _weathers.FirstOrDefault(w => w.Item1 == num).Item2;
+                                    if (!string.IsNullOrEmpty(name))
+                                        itemNames.Add(name);
                                 }
                                 else
                                 {
-                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                    // 숫자가 아니면 원본 값 사용
+                                    itemNames.Add(item);
                                 }
                             }
-                            else
-                            {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
-                            }
+
+                            var result = string.Join(",", itemNames);
+
+                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                            insertPropertyInfo?.SetValue(insertModel, result);
                         }
                         else
                         {
