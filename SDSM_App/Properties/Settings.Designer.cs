@@ -58,5 +58,113 @@ namespace SDSM_App.Properties {
                 this["IsSideShow"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF007200")]
+        public string VegetationColor {
+            get {
+                return ((string)(this["VegetationColor"]));
+            }
+            set {
+                this["VegetationColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00B200")]
+        public string PlantColor {
+            get {
+                return ((string)(this["PlantColor"]));
+            }
+            set {
+                this["PlantColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFCC33FF")]
+        public string AmphibianReptileColor {
+            get {
+                return ((string)(this["AmphibianReptileColor"]));
+            }
+            set {
+                this["AmphibianReptileColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00B8D4")]
+        public string FishColor {
+            get {
+                return ((string)(this["FishColor"]));
+            }
+            set {
+                this["FishColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF651FFF")]
+        public string BenthosColor {
+            get {
+                return ((string)(this["BenthosColor"]));
+            }
+            set {
+                this["BenthosColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF9E9D24")]
+        public string BirdColor {
+            get {
+                return ((string)(this["BirdColor"]));
+            }
+            set {
+                this["BirdColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFE9900")]
+        public string MammalColor {
+            get {
+                return ((string)(this["MammalColor"]));
+            }
+            set {
+                this["MammalColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF37474F")]
+        public string HabitatWaterEdgeColor {
+            get {
+                return ((string)(this["HabitatWaterEdgeColor"]));
+            }
+            set {
+                this["HabitatWaterEdgeColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF2979FF")]
+        public string WaterQualityColor {
+            get {
+                return ((string)(this["WaterQualityColor"]));
+            }
+            set {
+                this["WaterQualityColor"] = value;
+            }
+        }
     }
 }

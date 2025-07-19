@@ -242,15 +242,15 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
         {
             using var context = new SDSMDbContext();
 
-            SurveyDataCollection.Add(new MapModel { Caption = "식생", MarkerFill = Application.Current.FindResource("VegetationBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "식물", MarkerFill = Application.Current.FindResource("PlantBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "양서파충류", MarkerFill = Application.Current.FindResource("AmphibianReptileBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "어류", MarkerFill = Application.Current.FindResource("FishBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "저서동물", MarkerFill = Application.Current.FindResource("BenthosBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "조류", MarkerFill = Application.Current.FindResource("BirdBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "포유류", MarkerFill = Application.Current.FindResource("MammalBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "서식수변", MarkerFill = Application.Current.FindResource("HabitatWaterEdgeBrush") as Brush });
-            SurveyDataCollection.Add(new MapModel { Caption = "수질", MarkerFill = Application.Current.FindResource("WaterQualityBrush") as Brush });
+            SurveyDataCollection.Add(new MapModel { Caption = "식생"});
+            SurveyDataCollection.Add(new MapModel { Caption = "식물"});
+            SurveyDataCollection.Add(new MapModel { Caption = "양서파충류"});
+            SurveyDataCollection.Add(new MapModel { Caption = "어류"});
+            SurveyDataCollection.Add(new MapModel { Caption = "저서동물"});
+            SurveyDataCollection.Add(new MapModel { Caption = "조류"});
+            SurveyDataCollection.Add(new MapModel { Caption = "포유류"});
+            SurveyDataCollection.Add(new MapModel { Caption = "서식수변"});
+            SurveyDataCollection.Add(new MapModel { Caption = "수질"});
         }
         catch (Exception ex)
         {

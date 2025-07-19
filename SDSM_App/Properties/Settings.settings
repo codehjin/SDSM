@@ -11,5 +11,32 @@
     <Setting Name="IsSideShow" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="VegetationColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF007200</Value>
+    </Setting>
+    <Setting Name="PlantColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF00B200</Value>
+    </Setting>
+    <Setting Name="AmphibianReptileColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFCC33FF</Value>
+    </Setting>
+    <Setting Name="FishColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF00B8D4</Value>
+    </Setting>
+    <Setting Name="BenthosColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF651FFF</Value>
+    </Setting>
+    <Setting Name="BirdColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF9E9D24</Value>
+    </Setting>
+    <Setting Name="MammalColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFE9900</Value>
+    </Setting>
+    <Setting Name="HabitatWaterEdgeColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF37474F</Value>
+    </Setting>
+    <Setting Name="WaterQualityColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF2979FF</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
