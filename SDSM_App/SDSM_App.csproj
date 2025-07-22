@@ -25,10 +25,6 @@
     <None Remove="Assets\Fonts\NotoSansKR-SemiBold.ttf" />
     <None Remove="Assets\Fonts\NotoSansKR-Thin.ttf" />
     <None Remove="Assets\Fonts\ROKG_R.TTF" />
-    <None Remove="Assets\Images\logo.v.png" />
-    <None Remove="Assets\Images\logomark.png" />
-    <None Remove="Assets\Images\logo_h.png" />
-    <None Remove="Assets\Images\logo_h_white.png" />
     <None Remove="Assets\Images\m.ico" />
     <None Remove="Assets\Images\m.png" />
     <None Remove="Assets\Images\marker_black.png" />
@@ -130,18 +126,6 @@
     </Resource>
     <Resource Include="Assets\Fonts\ROKG_R.TTF">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Images\logo.v.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Images\logomark.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Images\logo_h.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Images\logo_h_white.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\Images\marker_black.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

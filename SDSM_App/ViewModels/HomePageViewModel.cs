@@ -31,8 +31,8 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
     #region 속성
 
     [ObservableProperty] private double _zoom = 9;
-    [ObservableProperty] private Location _center = new(36.718243, 127.427757);
-
+    [ObservableProperty] private Location _center = new(37.031062, 127.044525);
+    
     [ObservableProperty] private string _degress = string.Empty;
 
     [ObservableProperty] private RadObservableCollection<MapModel> _surveyDataCollection = [];
@@ -294,11 +294,11 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                                     Lat = item.Lat,
                                     Lng = item.Lng,
                                     Surveyor = item.Surveyor,
-                                    FAIScore = item.FAIScore,
-                                    FAIGrade = item.FAIGrade,
+                                    Score = item.FAIScore,
+                                    Grade = item.FAIGrade,
                                     SpeciesCount = item.Subs.Count,
                                     IndividualCount = item.Subs.Sum(m => m.IndividualCount),
-                                    IsFAI = true,
+                                    IsScoreGrade = true,
                                     IsSpeciesCount = true,
                                     IsIndividualCount = true,
                                 };
@@ -332,11 +332,11 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                                     Lat = item.Lat,
                                     Lng = item.Lng,
                                     Surveyor = item.Surveyor,
-                                    BMIScore = item.BMIScore,
-                                    BMIGrade = item.BMIGrade,
+                                    Score = item.BMIScore,
+                                    Grade = item.BMIGrade,
                                     SpeciesCount = item.Subs.Count,
                                     IndividualCount = item.Subs.Sum(m => m.IndividualCount),
-                                    IsBMI = true,
+                                    IsScoreGrade = true,
                                     IsSpeciesCount = true,
                                     IsIndividualCount = true,
                                 };
@@ -431,9 +431,9 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                                     Lat = item.Lat,
                                     Lng = item.Lng,
                                     Surveyor = item.Surveyor,
-                                    EvaluationScore = item.EvaluationScore,
-                                    EvaluationGrade = item.EvaluationGrade,
-                                    IsHabitatWaterEdge = true,
+                                    Score = item.EvaluationScore,
+                                    Grade = item.EvaluationGrade,
+                                    IsScoreGrade = true,
                                 };
                                 models.Add(model);
                             }

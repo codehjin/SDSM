@@ -202,26 +202,9 @@ public partial class HomePage : Page, ITransientService
 
     #region Map
 
-    private void RadMap_ZoomChanged(object sender, EventArgs e)
+    private void RadMap_ZoomChanged(object? sender, EventArgs e)
     {
         MapPinCalloutPopupClose();
-        //if (_vm != null && _vm.IsCheckedLabelVisible)
-        //{
-        //    if (_vm.Zoom < 16)
-        //    {
-        //        foreach (var point in _vm.PointCollection)
-        //        {
-        //            point.IsVisibleLabel = false;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        foreach (var point in _vm.PointCollection)
-        //        {
-        //            point.IsVisibleLabel = true;
-        //        }
-        //    }
-        //}
     }
 
     private void RadMap_CenterChanged(object? sender, EventArgs e)

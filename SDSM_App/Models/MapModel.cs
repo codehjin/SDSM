@@ -26,17 +26,9 @@ public partial class MapModel : ObservableObject
     [DisplayName("경도")] public double? Lng { get; set; }
     [DisplayName("조사자")] public string? Surveyor { get; set; }
 
-    [DisplayName("평가점수")] public double? EvaluationScore { get; set; }
-    [DisplayName("평가등급")] public string? EvaluationGrade { get; set; }
-    public bool IsHabitatWaterEdge { get; set; }
-
-    [DisplayName("BMI 점수")] public double? BMIScore { get; set; }
-    [DisplayName("BMI 등급")] public string? BMIGrade { get; set; }
-    public bool IsBMI { get; set; }
-
-    [DisplayName("FAI 점수")] public double? FAIScore { get; set; }
-    [DisplayName("FAI 등급")] public string? FAIGrade { get; set; }
-    public bool IsFAI { get; set; }
+    [DisplayName("점수")] public double? Score { get; set; }
+    [DisplayName("등급")] public string? Grade { get; set; }
+    public bool IsScoreGrade { get; set; }
 
     [DisplayName("종수")] public int? SpeciesCount { get; set; }
     public bool IsSpeciesCount { get; set; }

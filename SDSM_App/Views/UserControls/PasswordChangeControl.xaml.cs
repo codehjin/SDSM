@@ -80,6 +80,7 @@ public partial class PasswordChangeControl : UserControl, ITransientService
 
             if (await repository.UpdateAsync(adminModel))
             {
+                //비밀번호 
                 GB.UserPassword = newPassword;
 
                 var toast = (GB.SaveMessage, true);
@@ -91,7 +92,7 @@ public partial class PasswordChangeControl : UserControl, ITransientService
 
                 if (Window.GetWindow(App.Current.MainWindow) is MainWindow mainWin)
                 {
-                   // mainWin.UserDropDownButton.IsOpen = false;
+                    mainWin.UserDropDownButton.IsOpen = false;
                 }
             }
         }

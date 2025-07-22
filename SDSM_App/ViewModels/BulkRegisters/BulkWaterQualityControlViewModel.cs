@@ -2,11 +2,13 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
+using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Data.SQLite;
@@ -30,18 +32,23 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
     private readonly (int, string)[] _weathers = [(1, "맑음"), (2, "흐림"), (3, "비(눈)")];
 
+    private string _loadedFileName = string.Empty;
+
     #endregion
 
     #region 생성자
 
     public BulkWaterQualityControlViewModel()
     {
-        GetColumnNumbers();
+        InitialLoad();
     }
 
     #endregion
 
     #region 속성
+
+    //저장된 파일목록
+    public List<SavedFileInfo> SavedFileInfos { get; set; } = [];
 
     //항목 열 번호 목록
     public List<ColumnNumber> ColumnNumbers { get; set; } = [];
@@ -99,6 +106,23 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         if (!File.Exists(fileName))
         {
             return;
+        }
+
+        _loadedFileName = fileName;
+        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).FirstOrDefault();
+
+        if (savedFileInfo != null)
+        {
+            var message = $"파일명 : {savedFileInfo.FileName}{Environment.NewLine}" +
+                           $"저장일 : {savedFileInfo.SavedTime:yyyy-MM-dd HH:mm:ss}{Environment.NewLine}" +
+                           $"저장된 기록이 있는 파일명입니다.{Environment.NewLine}{Environment.NewLine}" +
+                           $"계속 진행하시겠습니까?";
+            var result = MessageBox.Show(message, "저장된 기록이 있는 파일명", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
+
+            if (result == MessageBoxResult.Cancel)
+            {
+                return;
+            }
         }
 
         GB.IsBusy = true;
@@ -206,6 +230,18 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
         if (isSeccess)
         {
+            //저장된 파일정보
+            var repogitory = App.Current.Services.GetRequiredService<ISavedFileInfoRepository>();
+            var savedFileInfo = new SavedFileInfo
+            {
+                Division = "수질",
+                FileName = Path.GetFileName(_loadedFileName),
+                SavedTime = DateTime.Now
+            };
+
+            await repogitory.InsertAsync(savedFileInfo);
+            SavedFileInfos.Add(savedFileInfo);
+
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
 
@@ -220,6 +256,12 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
     #endregion
 
     #region 메서드
+
+    private void InitialLoad()
+    {
+        GetColumnNumbers();
+        GetSavedFileInfos();
+    }
 
     //엑셀->모델
     private List<ImportWaterQuality> DataTableToModels(Worksheet worksheet)
@@ -750,6 +792,13 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "T-P", Value = 20 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "생태독성", Value = 21 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "대장균군", Value = 22 });
+    }
+
+    private void GetSavedFileInfos()
+    {
+        using var context = new SDSMDbContext();
+
+        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "수질")];
     }
 
     #endregion

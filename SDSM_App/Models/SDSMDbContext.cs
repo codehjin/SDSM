@@ -61,4 +61,5 @@ public class SDSMDbContext : DbContext, ITransientService
     public DbSet<AmphibianReptile> AmphibianReptiles { get; set; }
 
     public  DbSet<SelfUser> SelfUsers { get; set; }
+    public  DbSet<SavedFileInfo> SavedFileInfos { get; set; }
 }

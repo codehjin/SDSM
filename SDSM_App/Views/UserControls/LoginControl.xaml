@@ -9,52 +9,77 @@
              mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="1.2*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <!--로고-->
+        <Border Width="280" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 10 0 0">
+            <StackPanel Orientation="Horizontal" Margin="15 2 0 0" VerticalAlignment="Center">
+                <Image Source="/Assets/Images/samsung_blue.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Width="160"/>
+            </StackPanel>
+        </Border>
+        
+        <!--제목-->
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="460">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="삼성DS" FontSize="24" Margin="0 0 10 10" FontFamily="{StaticResource High1FontFamily}" Foreground="{StaticResource GreenBrush}"/>
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 20" HorizontalAlignment="Left">
+                    <TextBlock Text="모니터링DB 통합관리 프로그램" 
+                                   FontSize="24"
+                                   Margin="0 0 10 0"
+                                   FontFamily="{StaticResource High1FontFamily}"
+                                   Foreground="#AA000000"/>
+                </StackPanel>
+            </StackPanel>
 
+            <telerik:RadButton Grid.Column="1" 
+                               HorizontalAlignment="Right" 
+                               Height="40"
+                               Background="Transparent"
+                               BorderBrush="{telerik:Windows11Resource ResourceKey=AlternativeBrush}"
+                               ToolTip="프로그램 닫기"
+                               Click="MainCloseRadButton_Click">
+                <telerik:RadGlyph Glyph="{StaticResource GlyphClose}" FontSize="24"/>
+            </telerik:RadButton>
+        </Grid>
+
+        <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Border Background="{telerik:Windows11Resource ResourceKey=TertiaryBackgroundBrush}"
                     BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"
                     BorderThickness="1 1 1 1" 
-                    CornerRadius="{telerik:Windows11Resource ResourceKey=OverlayCornerRadius}"
+                    CornerRadius="{telerik:Windows11Resource ResourceKey=CornerRadius}"
                     Padding="30">
-
-                <StackPanel>
-                    <TextBlock Text="사용자 선택"  Margin="0 0 0 10" Foreground="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
-                    <telerik:RadComboBox x:Name="radComboBox"
-                                         SelectedValue="{Binding Source={x:Static properties:Settings.Default}, Path=Observer , Mode=TwoWay}"
-                                         SelectedValuePath="Content"
-                                         Width="400"
-                                         Height="50" 
-                                         Margin="0 0 0 10"
-                                         Style="{StaticResource FormRadComboBoxStyle}">
-                        <telerik:RadComboBoxItem Content="관리자"/>
-                        <telerik:RadComboBoxItem Content="남궁정"/>
-                        <telerik:RadComboBoxItem Content="박성완"/>
-                        <telerik:RadComboBoxItem Content="오장근"/>
-                        <telerik:RadComboBoxItem Content="이정윤"/>
-                        <telerik:RadComboBoxItem Content="정세훈"/>
-                        <telerik:RadComboBoxItem Content="진승남"/>
-                    </telerik:RadComboBox>
-                    <telerik:RadButton Height="60" Content="로그인" FontSize="18" Style="{StaticResource AccentButtonStyle}"
-                                       IsDefault="True"
-                                       Click="LoginButton_Click"/>
+                <StackPanel Width="400">
+                    <TextBlock Text="관리자 로그인" Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 0 10" FontFamily="{StaticResource High1FontFamily}"/>
+                    <telerik:RadPasswordBox x:Name="PasswordTextBox" Label="비밀번호를 입력하세요." MinHeight="70" Margin="0 0 0 20" FontSize="18"/>
+                    <telerik:RadButton Height="62" Content="로그인" FontSize="18" IsDefault="True" FontFamily="{StaticResource High1FontFamily}" Style="{StaticResource AccentButtonStyle}" Click="LoginButton_Click"/>
                 </StackPanel>
             </Border>
+            <TextBlock x:Name="ErrorTextBlock" 
+                       Grid.Row="1" 
+                       Margin="0 0 3 5"
+                       Text="" 
+                       HorizontalAlignment="Right"
+                       TextTrimming="CharacterEllipsis"
+                       Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"
+                       VerticalAlignment="Bottom" />
         </Grid>
 
         <TextBlock Grid.Row="2" 
                    HorizontalAlignment="Right"
                    VerticalAlignment="Bottom"
-                   Margin="0 0 20 20"
-                   FontFamily="{StaticResource ROKGFontFamily}"
+                   Margin="0 0 30 20"
+                   FontFamily="{StaticResource High1FontFamily}"
                    Foreground="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}">
             <Run Text="버전"/>
             <Run Text="{x:Static main:GB.Version}"/>
         </TextBlock>
-        
+
     </Grid>
 </UserControl>

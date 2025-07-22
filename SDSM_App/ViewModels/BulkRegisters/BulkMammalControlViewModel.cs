@@ -2,11 +2,13 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
+using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
 using System.Data.SQLite;
 using System.IO;
@@ -29,18 +31,23 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
 
     private readonly (int, string)[] _weathers = [(1, "맑음"), (2, "흐림"), (3, "비(눈)")];
 
+    private string _loadedFileName = string.Empty;
+
     #endregion
 
     #region 생성자
 
     public BulkMammalControlViewModel()
     {
-        GetColumnNumbers();
+        InitialLoad();
     }
 
     #endregion
 
     #region 속성
+
+    //저장된 파일목록
+    public List<SavedFileInfo> SavedFileInfos { get; set; } = [];
 
     //항목 열 번호 목록
     public List<ColumnNumber> ColumnNumbers { get; set; } = [];
@@ -98,6 +105,23 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
         if (!File.Exists(fileName))
         {
             return;
+        }
+
+        _loadedFileName = fileName;
+        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).FirstOrDefault();
+
+        if (savedFileInfo != null)
+        {
+            var message = $"파일명 : {savedFileInfo.FileName}{Environment.NewLine}" +
+                           $"저장일 : {savedFileInfo.SavedTime:yyyy-MM-dd HH:mm:ss}{Environment.NewLine}" +
+                           $"저장된 기록이 있는 파일명입니다.{Environment.NewLine}{Environment.NewLine}" +
+                           $"계속 진행하시겠습니까?";
+            var result = MessageBox.Show(message, "저장된 기록이 있는 파일명", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
+
+            if (result == MessageBoxResult.Cancel)
+            {
+                return;
+            }
         }
 
         GB.IsBusy = true;
@@ -205,6 +229,18 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
 
         if (isSeccess)
         {
+            //저장된 파일정보
+            var repogitory = App.Current.Services.GetRequiredService<ISavedFileInfoRepository>();
+            var savedFileInfo = new SavedFileInfo
+            {
+                Division = "포유류",
+                FileName = Path.GetFileName(_loadedFileName),
+                SavedTime = DateTime.Now
+            };
+
+            await repogitory.InsertAsync(savedFileInfo);
+            SavedFileInfos.Add(savedFileInfo);
+
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
 
@@ -220,6 +256,12 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
     #endregion
 
     #region 메서드
+
+    private void InitialLoad()
+    {
+        GetColumnNumbers();
+        GetSavedFileInfos();
+    }
 
     //엑셀->모델
     private List<ImportMammal> DataTableToModels(Worksheet worksheet)
@@ -819,6 +861,13 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "기타(탐문 등)", Value = 31 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", Value = 32 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "특이사항", Value = 33 });
+    }
+
+    private void GetSavedFileInfos()
+    {
+        using var context = new SDSMDbContext();
+
+        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "포유류")];
     }
 
     #endregion

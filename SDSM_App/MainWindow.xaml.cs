@@ -52,7 +52,7 @@ public partial class MainWindow : Window, ISingletonService
         MenuItem_Click(FirstButton, null!);
         _vm.IsCheckedHome = true;
 
-        // LoginControlLoad();
+        LoginControlLoad();
     }
 
     //minimized button
@@ -119,8 +119,6 @@ public partial class MainWindow : Window, ISingletonService
             ScreenLockLayout.Visibility = Visibility.Collapsed;
             ScreenLockRadPasswordBox.Password = string.Empty;
 
-            GB.IsLockFloating = false;
-
             //아날로그 시계
             AnalogClockContentControl.Content = null;
         }
@@ -132,7 +130,6 @@ public partial class MainWindow : Window, ISingletonService
         ScreenLockRadPasswordBox.Password = string.Empty;
         ScreenLockLayout.Visibility = Visibility.Visible;
 
-        GB.IsLockFloating = true;
         UserDropDownButton.IsOpen = false;
 
         //아날로그 시계
@@ -142,7 +139,7 @@ public partial class MainWindow : Window, ISingletonService
     //로그아웃
     private void LogoutButton_Click(object sender, RoutedEventArgs e)
     {
-        //LoginControlLoad();
+        LoginControlLoad();
     }
 
     //사용자 정보
@@ -202,26 +199,23 @@ public partial class MainWindow : Window, ISingletonService
     //로그인창 보기
     private void LoginControlLoad()
     {
-        //var loginControl = App.Current.Services.GetRequiredService<LoginControl>();
-        //if (loginControl != null)
-        //{
-        //    loginControl.ElementClick += (s, e) =>
-        //    {
-        //        if (e.Source is LoginControl loginControl)
-        //        {
-        //            LoginLayout.Visibility = Visibility.Collapsed;
-        //            UserDropDownButton.Visibility = Visibility.Visible;
-        //            GB.IsLockFloating = false;
-        //        }
-        //    };
-        //    LoginContentControl.Content = loginControl;
-        //    LoginLayout.Visibility = Visibility.Visible;
-        //    UserDropDownButton.Visibility = Visibility.Collapsed;
+        var loginControl = App.Current.Services.GetRequiredService<LoginControl>();
+        if (loginControl != null)
+        {
+            loginControl.ElementClick += (s, e) =>
+            {
+                if (e.Source is LoginControl loginControl)
+                {
+                    LoginLayout.Visibility = Visibility.Collapsed;
+                    UserDropDownButton.Visibility = Visibility.Visible;
+                }
+            };
+            LoginContentControl.Content = loginControl;
+            LoginLayout.Visibility = Visibility.Visible;
+            UserDropDownButton.Visibility = Visibility.Collapsed;
 
-        //    GB.IsLockFloating = true;
-
-        //    UserDropDownButton.IsOpen = false;
-        //}
+            UserDropDownButton.IsOpen = false;
+        }
     }
 
     #endregion

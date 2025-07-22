@@ -179,9 +179,9 @@
             <Setter Property="TextAlignment" Value="Left"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="UseLayoutRounding" Value="True"/>
-            <Setter Property="MinWidth" Value="860"/>
-            <Setter Property="Width" Value="860"/>
-            <Setter Property="MaxWidth" Value="860"/>
+            <Setter Property="MinWidth" Value="1020"/>
+            <Setter Property="Width" Value="1020"/>
+            <Setter Property="MaxWidth" Value="1020"/>
             <Setter Property="Margin" Value="0 0 0 0"/>
             <Setter Property="Stretch" Value="None"/>
             <Setter Property="ContentTemplate">
@@ -194,9 +194,17 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="전체" Margin="0 0 5 0" FontFamily="{StaticResource High1FontFamily}"/>
-                                    <TextBlock Text="{Binding Path=Items.Count, Mode=OneWay, ElementName=DataRadGridView, StringFormat={}{0:N0}}" Margin="3 0 0 0" FontFamily="{StaticResource High1FontFamily}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
-                                    <TextBlock Text="건" Margin="0 0 5 0" FontFamily="{StaticResource High1FontFamily}"/>
+                                    <StackPanel.Resources>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}">
+                                            <Setter Property="FontFamily" Value="{StaticResource High1FontFamily}"/>
+                                        </Style>
+                                    </StackPanel.Resources>
+                                    <TextBlock Text="전체" Margin="0 0 5 0"/>
+                                    <TextBlock Text="{Binding Path=Items.Count, Mode=OneWay, ElementName=DataRadGridView, StringFormat={}{0:N0}}" Margin="3 0 0 0" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                                    <TextBlock Text="건" Margin="0 0 20 0"/>
+                                    <TextBlock Text="{Binding Path=Lat, StringFormat=({0:F6}}"/>                                    
+                                    <TextBlock Text="," Margin="2 0 10 5" FontFamily="{StaticResource DefaultFontFamily}"/>
+                                    <TextBlock Text="{Binding Path=Lng, StringFormat={}{0:F6})}"/>
                                 </StackPanel>
                                 <telerik:RadButton Grid.Column="1"
                                                    DockPanel.Dock="Right"
@@ -234,15 +242,11 @@
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="160" MaxWidth="160"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" IsVisible="{Binding Path=IsSpecies}"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="480" MaxWidth="480" TextWrapping="Wrap" IsVisible="{Binding Path=IsSpecies}"/>
-                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
-                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160" IsVisible="False"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160" IsVisible="False"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180"/>
-                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EvaluationScore}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsHabitatWaterEdge}"/>
-                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EvaluationGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsHabitatWaterEdge}"/>
-                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIScore}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsBMI}"/>
-                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BMIGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsBMI}"/>
-                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIScore}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsFAI}"/>
-                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsFAI}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Score}" DataFormatString="{}{0:F1}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsScoreGrade}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Grade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsScoreGrade}"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesCount}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsSpeciesCount}"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndividualCount}" DataFormatString="{}{0:N1}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsIndividualCount}"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=PHGrade}" MinWidth="80" Width="160" MaxWidth="160" IsVisible="{Binding Path=IsWaterQuality}"/>
@@ -404,9 +408,12 @@
                                                     </Rectangle>
                                                 </Grid>
                                             </CheckBox>
-                                            <telerik:RadDropDownButton  Grid.Column="1" Margin="10 0 0 0" Cursor="Hand" Height="36">
+                                            <telerik:RadDropDownButton  Grid.Column="1" Margin="8 0 0 0" Cursor="Hand" Height="36">
                                                 <telerik:RadDropDownButton.Content>
-                                                    <telerik:RadGlyph Glyph="{StaticResource GlyphColorCanvas}"/>
+                                                    <TextBlock Text="{StaticResource GlyphPalette}" 
+                                                               FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" 
+                                                               FontSize="18"
+                                                               Foreground="#AA000000"/>
                                                 </telerik:RadDropDownButton.Content>
                                                 <telerik:RadDropDownButton.DropDownContent>
                                                     <telerik:RadColorEditor Grid.Column="1" ColorMode="RGB" BorderThickness="0" Width="500" Margin="5">

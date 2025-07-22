@@ -1,6 +1,9 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using SDSM_App.InjectableServices;
+using SDSM_App.Messengers;
+using SDSM_App.Models;
+using System.Windows;
+using System.Windows.Controls;
 using Telerik.Windows.Controls;
 
 namespace SDSM_App.Views.UserControls;
@@ -26,10 +29,32 @@ public partial class LoginControl : UserControl, ITransientService
 
     private void LoginButton_Click(object sender, RoutedEventArgs e)
     {
-        if(radComboBox.SelectedValue != null && radComboBox.SelectedValue is string name)
-        {
+        var password = PasswordTextBox.Password;
 
-            Button_Click(null!, null!);
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            PasswordTextBox.Focus();
+            return;
+        }
+
+        using var context = new SDSMDbContext();
+
+        var admin = context.SelfUsers.Where(m => m.UserName == "관리자").FirstOrDefault();
+        if (admin != null)
+        {
+            if (admin.UserPassword == password)
+            {
+                ErrorTextBlock.Text = string.Empty;
+                Button_Click(null!, null!);
+            }
+            else
+            {
+                ErrorTextBlock.Text = "비밀번호가 잘못되었습니다.";
+            }
+        }
+        else
+        {
+            ErrorTextBlock.Text = "관리자 계정이 존재하지 않습니다.";
         }
     }
 

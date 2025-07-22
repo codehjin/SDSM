@@ -1145,7 +1145,7 @@
         <uc:ToastControl HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 80 0 0"/>
 
         <!--로그인창-->
-        <Border x:Name="LoginLayout" Visibility="Collapsed" Margin="0 55 0 0" Background="{telerik:Windows11Resource ResourceKey=AlternativeBrush}">
+        <Border x:Name="LoginLayout" Visibility="Collapsed" Margin="0 0 0 0" Background="{telerik:Windows11Resource ResourceKey=AlternativeBrush}">
             <ContentControl x:Name="LoginContentControl"  KeyboardNavigation.IsTabStop="False"/>
         </Border>
 

@@ -37,18 +37,23 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
     private readonly (int, string)[] _habitatRiverTypes = [(1, "자연형"), (2, "직강화"), (3, "복합형"), (4, "댐/보/교각"), (5, "공사")];
     private readonly (int, string)[] _habitatFlowStates = [(1, "아주빠름"), (2, "빠름"), (3, "보통"), (4, "느림"), (5, "정체")];
 
+    private string _loadedFileName = string.Empty;
+
     #endregion
 
     #region 생성자
 
     public BulkFishControlViewModel()
     {
-        GetColumnNumbers();
+        InitialLoad();
     }
 
     #endregion
 
     #region 속성
+
+    //저장된 파일목록
+    public List<SavedFileInfo> SavedFileInfos { get; set; } = [];
 
     //항목 열 번호 목록
     public RadObservableCollection<ColumnNumber> ColumnNumbers { get; set; } = [];
@@ -134,6 +139,23 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         if (!File.Exists(fileName))
         {
             return;
+        }
+
+        _loadedFileName = fileName;
+        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).FirstOrDefault();
+
+        if (savedFileInfo != null)
+        {
+            var message = $"파일명 : {savedFileInfo.FileName}{Environment.NewLine}" +
+                           $"저장일 : {savedFileInfo.SavedTime:yyyy-MM-dd HH:mm:ss}{Environment.NewLine}" +
+                           $"저장된 기록이 있는 파일명입니다.{Environment.NewLine}{Environment.NewLine}" +
+                           $"계속 진행하시겠습니까?";
+            var result = MessageBox.Show(message, "저장된 기록이 있는 파일명", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
+
+            if (result == MessageBoxResult.Cancel)
+            {
+                return;
+            }
         }
 
         GB.IsBusy = true;
@@ -259,6 +281,18 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
 
         if (isSeccess)
         {
+            //저장된 파일정보
+            var repogitory = App.Current.Services.GetRequiredService<ISavedFileInfoRepository>();
+            var savedFileInfo = new SavedFileInfo
+            {
+                Division = "어류",
+                FileName = Path.GetFileName(_loadedFileName),
+                SavedTime = DateTime.Now
+            };
+
+            await repogitory.InsertAsync(savedFileInfo);
+            SavedFileInfos.Add(savedFileInfo);
+
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
 
@@ -273,6 +307,12 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
     #endregion
 
     #region 메서드
+
+    private void InitialLoad()
+    {
+        GetColumnNumbers();
+        GetSavedFileInfos();
+    }
 
     //엑셀->모델 (서식수변 항목 미포함)
     private (List<ImportFish>, List<ImportFishSpecies>) DataTableToModels(Worksheet worksheet)
@@ -1305,6 +1345,13 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
             }
         }
         return speciess;
+    }
+
+    private void GetSavedFileInfos()
+    {
+        using var context = new SDSMDbContext();
+
+        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "어류")];
     }
 
     #endregion

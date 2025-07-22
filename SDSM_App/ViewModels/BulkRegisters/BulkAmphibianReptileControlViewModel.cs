@@ -2,11 +2,13 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
+using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
 using System.Data.SQLite;
 using System.IO;
@@ -28,6 +30,7 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
     #region 필드
 
     private readonly (int, string)[] _weathers = [(1, "맑음"), (2, "흐림"), (3, "비(눈)")];
+    private string _loadedFileName = string.Empty;
 
     #endregion
 
@@ -35,12 +38,15 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
 
     public BulkAmphibianReptileControlViewModel()
     {
-        GetColumnNumbers();
+        InitialLoad();
     }
 
     #endregion
 
     #region 속성
+
+    //저장된 파일목록
+    public List<SavedFileInfo> SavedFileInfos { get; set; } = [];
 
     //항목 열 번호 목록
     public List<ColumnNumber> ColumnNumbers { get; set; } = [];
@@ -98,7 +104,24 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
         if (!File.Exists(fileName))
         {
             return;
-        }        
+        }
+
+        _loadedFileName = fileName;
+        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).FirstOrDefault();
+
+        if (savedFileInfo != null)
+        {
+            var message = $"파일명 : {savedFileInfo.FileName}{Environment.NewLine}" +
+                           $"저장일 : {savedFileInfo.SavedTime:yyyy-MM-dd HH:mm:ss}{Environment.NewLine}" +
+                           $"저장된 기록이 있는 파일명입니다.{Environment.NewLine}{Environment.NewLine}" +
+                           $"계속 진행하시겠습니까?";
+            var result = MessageBox.Show(message, "저장된 기록이 있는 파일명", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
+
+            if (result == MessageBoxResult.Cancel)
+            {
+                return;
+            }
+        }
 
         GB.IsBusy = true;
         GB.BusyContent = "자료 가져오는 중...";
@@ -205,6 +228,18 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
 
         if (isSeccess)
         {
+            //저장된 파일정보
+            var repogitory = App.Current.Services.GetRequiredService<ISavedFileInfoRepository>();
+            var savedFileInfo = new SavedFileInfo
+            {
+                Division = "양서파충류",
+                FileName = Path.GetFileName(_loadedFileName),
+                SavedTime = DateTime.Now
+            };
+
+            await repogitory.InsertAsync(savedFileInfo);
+            SavedFileInfos.Add(savedFileInfo);
+
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
 
@@ -220,6 +255,12 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
     #endregion
 
     #region 메서드
+
+    private void InitialLoad()
+    {
+        GetColumnNumbers();
+        GetSavedFileInfos();
+    }
 
     //엑셀->모델
     private List<ImportAmphibianReptile> DataTableToModels(Worksheet worksheet)
@@ -611,7 +652,7 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                     var maxDate = DateTime.Today;
 
                     var date = new DateTime(insertModel.YearValue.Value, insertModel.MonthValue.Value, insertModel.DayValue.Value);
-                    
+
                     if (date < minDate || date > maxDate)
                     {
                         sb.Append(GB.GetImportErrorText(dateProp, ErrorType.Conversion));
@@ -621,7 +662,7 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                         //가져온값, 변환된값 둘다 대입
                         insertModel.SurveyDate = date;
                         model.SurveyDate = date;
-                    }                    
+                    }
                 }
                 else
                 {
@@ -772,6 +813,13 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "중분류", Value = 28 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", Value = 29 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "특이사항", Value = 30 });
+    }
+
+    private void GetSavedFileInfos()
+    {
+        using var context = new SDSMDbContext();
+
+        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "양서파충류")];
     }
 
     #endregion

@@ -36,18 +36,23 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
     private readonly (int, string)[] _habitatRiverTypes = [(1, "산강형"), (2, "평지형"), (3, "강"), (4, "인공구조물")];
     private readonly (int, string)[] _flowStates = [(1, "여울"), (2, "흐름"), (3, "소")];
 
+    private string _loadedFileName = string.Empty;
+
     #endregion
 
     #region 생성자
 
     public BulkBenthosControlViewModel()
     {
-        GetColumnNumbers();
+        InitialLoad();
     }
 
     #endregion
 
     #region 속성
+
+    //저장된 파일목록
+    public List<SavedFileInfo> SavedFileInfos { get; set; } = [];
 
     //항목 열 번호 목록
     public List<ColumnNumber> ColumnNumbers { get; set; } = [];
@@ -117,6 +122,23 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         if (!File.Exists(fileName))
         {
             return;
+        }
+
+        _loadedFileName = fileName;
+        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).FirstOrDefault();
+
+        if (savedFileInfo != null)
+        {
+            var message = $"파일명 : {savedFileInfo.FileName}{Environment.NewLine}" +
+                           $"저장일 : {savedFileInfo.SavedTime:yyyy-MM-dd HH:mm:ss}{Environment.NewLine}" +
+                           $"저장된 기록이 있는 파일명입니다.{Environment.NewLine}{Environment.NewLine}" +
+                           $"계속 진행하시겠습니까?";
+            var result = MessageBox.Show(message, "저장된 기록이 있는 파일명", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
+
+            if (result == MessageBoxResult.Cancel)
+            {
+                return;
+            }
         }
 
         GB.IsBusy = true;
@@ -231,6 +253,18 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
         if (isSeccess)
         {
+            //저장된 파일정보
+            var repogitory = App.Current.Services.GetRequiredService<ISavedFileInfoRepository>();
+            var savedFileInfo = new SavedFileInfo
+            {
+                Division = "저서동물",
+                FileName = Path.GetFileName(_loadedFileName),
+                SavedTime = DateTime.Now
+            };
+
+            await repogitory.InsertAsync(savedFileInfo);
+            SavedFileInfos.Add(savedFileInfo);
+
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
 
@@ -245,6 +279,12 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
     #endregion
 
     #region 메서드
+
+    private void InitialLoad()
+    {
+        GetColumnNumbers();
+        GetSavedFileInfos();
+    }
 
     //엑셀->모델
     private (List<ImportBenthos>, List<ImportBenthosSpecies>) DataTableToModels(Worksheet worksheet)
@@ -1103,6 +1143,13 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
             }
         }
         return speciess;
+    }
+
+    private void GetSavedFileInfos()
+    {
+        using var context = new SDSMDbContext();
+
+        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "저서동물")];
     }
 
     #endregion
