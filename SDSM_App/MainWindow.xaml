@@ -941,7 +941,7 @@
                                     </Border>
 
                                     <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
-                                        <Expander BorderThickness="0" IsExpanded="True">
+                                        <Expander x:Name="LastExpander" BorderThickness="0" IsExpanded="True">
                                             <Expander.Header>
                                                 <StackPanel Orientation="Horizontal">
                                                     <icon:PackIconPhosphorIcons>
@@ -982,8 +982,8 @@
                                         </Expander>
                                     </Border>
 
-                                    <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
-                                        <Expander x:Name="LastExpander" BorderThickness="0">
+                                    <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0" Visibility="Collapsed">
+                                        <Expander BorderThickness="0">
                                             <Expander.Header>
                                                 <StackPanel Orientation="Horizontal">
                                                     <icon:PackIconPhosphorIcons Style="{StaticResource ExpanderPackIconPhosphorIconsStyle}"/>

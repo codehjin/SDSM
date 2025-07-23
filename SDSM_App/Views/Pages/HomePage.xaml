@@ -22,11 +22,12 @@
     <Page.Resources>
 
         <converter:StringToBrushConverter x:Key="StringToBrushConverter" />
+        <converter:BackgroundStringToForegroundConverter x:Key="BackgroundStringToForegroundConverter"/>
 
         <!--클러스터-->
         <converter:ClusterChildrenToBoolConverter x:Key="ClusterChildrenToBoolConverter" />
         <telerik:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        
+
         <!--클러스터-->
         <DataTemplate x:Key="ClusterTemplate">
             <Grid x:Name="ParentRoot" Width="40" Height="30" Cursor="Hand" telerik:MapLayer.HotSpot="0.5, 0.5" MouseLeftButtonDown="ClusterMouseLeftButtonDown" MouseRightButtonDown="ClusterMouseRightButtonDown">
@@ -71,7 +72,6 @@
             <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}"/>
             <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
             <Setter Property="Tag" Value="expander"/>
-            <Setter Property="IsChecked" Value="True"/>
             <Style.Triggers>
                 <Trigger Property="IsChecked" Value="False">
                     <Setter Property="Padding" Value="5 5"/>
@@ -157,8 +157,32 @@
                         <Style TargetType="TextBlock">
                             <Setter Property="Foreground" Value="#FFFFFF"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
-                                    <Setter Property="Foreground" Value="White"/>
+                                <DataTrigger Binding="{Binding Path=Caption}" Value="식생">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Caption}" Value="식물">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Caption}" Value="양서파충류">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Caption}" Value="어류">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Caption}" Value="저서동물">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Caption}" Value="조류">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Caption}" Value="포유류">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Caption}" Value="서식수변">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Caption}" Value="수질">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -202,7 +226,7 @@
                                     <TextBlock Text="전체" Margin="0 0 5 0"/>
                                     <TextBlock Text="{Binding Path=Items.Count, Mode=OneWay, ElementName=DataRadGridView, StringFormat={}{0:N0}}" Margin="3 0 0 0" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
                                     <TextBlock Text="건" Margin="0 0 20 0"/>
-                                    <TextBlock Text="{Binding Path=Lat, StringFormat=({0:F6}}"/>                                    
+                                    <TextBlock Text="{Binding Path=Lat, StringFormat=({0:F6}}"/>
                                     <TextBlock Text="," Margin="2 0 10 5" FontFamily="{StaticResource DefaultFontFamily}"/>
                                     <TextBlock Text="{Binding Path=Lng, StringFormat={}{0:F6})}"/>
                                 </StackPanel>
@@ -310,20 +334,20 @@
         <Grid>
 
             <!--상단-->
-            <WrapPanel>
+            <WrapPanel Orientation="Horizontal">
                 <!--조사자료-->
-                <Grid Margin="10">
+                <Grid Margin="10 10 0 10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <CheckBox x:Name="SurveyDataVisibleCheckBox" HorizontalContentAlignment="Stretch" Style="{StaticResource ExpanderCheckBoxStyle}" Width="270">
+                    <CheckBox x:Name="SurveyDataVisibleCheckBox" HorizontalContentAlignment="Stretch" Style="{StaticResource ExpanderCheckBoxStyle}" Padding="20 5" IsChecked="True">
                         <Grid Height="32">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="조사자료" Margin="5 8 0 0" FontFamily="{StaticResource High1FontFamily}"/>
+                            <TextBlock Text="조사자료" Margin="0 8 20 0" FontFamily="{StaticResource High1FontFamily}"/>
                             <telerik:RadGlyph Grid.Column="1">
                                 <telerik:RadGlyph.Style>
                                     <Style TargetType="telerik:RadGlyph">
@@ -339,7 +363,7 @@
                         </Grid>
                     </CheckBox>
 
-                    <Border x:Name="SurveyDataLayout" Grid.Row="1" Style="{StaticResource ContentBorderStyle}" Margin="0 5 0 0" Visibility="{Binding Path=IsChecked, ElementName=SurveyDataVisibleCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border Grid.Row="1" Style="{StaticResource ContentBorderStyle}" Margin="0 5 0 0" Visibility="{Binding Path=IsChecked, ElementName=SurveyDataVisibleCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel>
                             <StackPanel.Resources>
                                 <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}">
@@ -365,7 +389,7 @@
                                                       CommandParameter="{Binding}">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="90"/>
+                                                        <ColumnDefinition Width="100"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
 
@@ -459,6 +483,201 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!--주제도-->
+                <Grid Margin="10 10 0 10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox x:Name="ThemeMapVisibleCheckBox" HorizontalContentAlignment="Stretch" Style="{StaticResource ExpanderCheckBoxStyle}" Padding="20 5">
+                        <Grid Height="32">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="주제도" Margin="0 8 20 0" FontFamily="{StaticResource High1FontFamily}"/>
+                            <telerik:RadGlyph Grid.Column="1">
+                                <telerik:RadGlyph.Style>
+                                    <Style TargetType="telerik:RadGlyph">
+                                        <Setter Property="Glyph" Value="{StaticResource GlyphArrowChevronDown}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=CheckBox}}" Value="True">
+                                                <Setter Property="Glyph" Value="{StaticResource GlyphArrowChevronUp}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </telerik:RadGlyph.Style>
+                            </telerik:RadGlyph>
+                        </Grid>
+                    </CheckBox>
+
+                    <Border Grid.Row="1" Style="{StaticResource ContentBorderStyle}" Margin="0 5 0 0" Padding="10 10 10 5" VerticalAlignment="Top" Visibility="{Binding Path=IsChecked, ElementName=ThemeMapVisibleCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid>
+                            <Grid.Resources>
+                                <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Height" Value="{StaticResource DefaultHeight}"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <telerik:RadButton Content="전체 선택해제" Margin="0 0 0 10" Height="{StaticResource DefaultHeight}" HorizontalAlignment="Right" Click="AllThemeMapUnCheckedRadButton_Click"/>
+
+                            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly" Margin="0 0 -10 0" Padding="0 0 10 0">
+                                <ItemsControl ItemsSource="{Binding Path=ThemeMapCollection}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.Resources>
+                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}"/>
+                                                </Grid.Resources>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <!--체크박스-->
+                                                <DockPanel>
+                                                    <telerik:RadToggleButton DockPanel.Dock="Right" Content="범례" IsChecked="{Binding Path=IsVisibleLegend, Mode=TwoWay}" Margin="20 0 0 0" Padding="15 5" VerticalAlignment="Center" Cursor="Hand"/>
+                                                    <CheckBox DockPanel.Dock="Left" Content="{Binding Path=Caption}" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" Checked="ThemeMapCheckBox_Checked" Unchecked="ThemeMapCheckBox_Unchecked"/>
+                                                </DockPanel>
+
+                                                <!--불투명도-->
+                                                <Grid Grid.Row="1" Margin="0 10">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="불투명도" FontFamily="{StaticResource High1FontFamily}" Width="80"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding Path=Value, ElementName=TransparencyRadSlider, StringFormat={}{0:P0}}" FontFamily="{StaticResource High1FontFamily}" TextAlignment="Right" Width="60" Margin="0 0 10 0"/>
+                                                    <telerik:RadSlider x:Name="TransparencyRadSlider"
+                                                                       Grid.Column="2"
+                                                                       Maximum="1.0"
+                                                                       Minimum="0"
+                                                                       SmallChange="0.1"
+                                                                       LargeChange="0.1"
+                                                                       IsMoveToPointEnabled="True"
+                                                                       Width="250">
+                                                        <telerik:RadSlider.Style>
+                                                            <Style TargetType="telerik:RadSlider">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Path=OpacityName}" Value="BiotopesRarityOpacity">
+                                                                        <Setter Property="Value" Value="{Binding Path=DataContext.BiotopesRarityOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}, Mode=TwoWay}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Path=OpacityName}" Value="InvasiveSpeciesOpacity">
+                                                                        <Setter Property="Value" Value="{Binding Path=DataContext.InvasiveSpeciesOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}, Mode=TwoWay}"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </telerik:RadSlider.Style>
+                                                    </telerik:RadSlider>
+                                                </Grid>
+
+                                                <!--범례-->
+                                                <Border Grid.Row="2" Visibility="{Binding Path=IsVisibleLegend, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 10 0 0">
+                                                    <telerik:RadGridView x:Name="DataRadGridView"
+                                                                         Grid.Column="1"
+                                                                         Grid.Row="1"
+                                                                         ItemsSource="{Binding Path=ContentSubItems}"
+                                                                         BusyIndicatorIsIndeterminate="False"
+                                                                         FrozenColumnsSplitterVisibility="Collapsed"
+                                                                         LeftFrozenColumnCount="0"
+                                                                         IsSynchronizedWithCurrentItem="{x:Null}"
+                                                                         CanUserSortColumns="False"
+                                                                         CanUserSelect="False"
+                                                                         IsReadOnly="True"
+                                                                         Width="400"
+                                                                         MinHeight="100"
+                                                                         HorizontalAlignment="Left"
+                                                                         Background="Transparent"
+                                                                         IsFilteringAllowed="False"
+                                                                         VerticalGridLinesBrush="Transparent">
+                                                        <telerik:RadGridView.Columns>
+                                                            <telerik:GridViewDataColumn Header="범례" MinWidth="50" Width="50" MaxWidth="50" HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}">
+                                                                <telerik:GridViewDataColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <Grid>
+                                                                            <Rectangle Fill="{Binding Path=MarkerFill}" Stroke="#33000000" StrokeThickness="0.5" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                                       Visibility="{Binding Path=IsBiotopesRarity, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                                            <Ellipse Fill="{Binding Path=MarkerFill}" Stroke="#33000000" StrokeThickness="0.5" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                                     Visibility="{Binding Path=IsInvasiveSpecies, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                                        </Grid>
+                                                                    </DataTemplate>
+                                                                </telerik:GridViewDataColumn.CellTemplate>
+                                                            </telerik:GridViewDataColumn>
+                                                            <telerik:GridViewDataColumn Header="등급" DataMemberBinding="{Binding Path=Grade}" MinWidth="80" Width="140" MaxWidth="140" TextWrapping="Wrap" HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}" IsVisible="{Binding Path=IsBiotopesRarity}"/>
+                                                            <telerik:GridViewDataColumn Header="개수" DataMemberBinding="{Binding Path=Count}" DataFormatString="N0" MinWidth="80" Width="100" MaxWidth="100" HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}" CellStyle="{StaticResource GridViewCellRightStyle}" IsVisible="{Binding Path=IsBiotopesRarity}"/>
+                                                            <telerik:GridViewDataColumn Header="면적(km²)" DataMemberBinding="{Binding Path=Area}" DataFormatString="F2" MinWidth="80" Width="100" MaxWidth="100" HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}" CellStyle="{StaticResource GridViewCellRightStyle}" IsVisible="{Binding Path=IsBiotopesRarity}"/>
+                                                            <telerik:GridViewDataColumn Header="교란종" DataMemberBinding="{Binding Path=Grade}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}" IsVisible="{Binding Path=IsInvasiveSpecies}"/>
+                                                            <telerik:GridViewDataColumn Header="개체수" DataMemberBinding="{Binding Path=Count}" DataFormatString="N0" MinWidth="80" Width="100" MaxWidth="100" HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}" CellStyle="{StaticResource GridViewCellRightStyle}" IsVisible="{Binding Path=IsInvasiveSpecies}"/>                                                            
+                                                        </telerik:RadGridView.Columns>
+                                                    </telerik:RadGridView>
+                                                </Border>
+                                                <Grid Grid.Row="2" Visibility="Collapsed" Margin="0 10 0 0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="40"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="100"/>
+                                                        <ColumnDefinition Width="110"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="32"/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="범례" HorizontalAlignment="Center"/>
+                                                    <TextBlock Grid.Column="1" Text="희소성 등급" HorizontalAlignment="Center"/>
+                                                    <TextBlock Grid.Column="2" Text="개수" HorizontalAlignment="Right"/>
+                                                    <TextBlock Grid.Column="3" Text="면적(km²)" HorizontalAlignment="Right" Margin="0 0 10 0"/>
+                                                </Grid>
+
+                                                <ItemsControl Grid.Row="3" ItemsSource="{Binding Path=ContentSubItems}" Visibility="Collapsed">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="40"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="100"/>
+                                                                    <ColumnDefinition Width="110"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="32"/>
+                                                                </Grid.RowDefinitions>
+                                                                <Rectangle Grid.Column="0" Fill="{Binding Path=MarkerFill}" StrokeThickness="1" Width="20" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                    <Rectangle.Style>
+                                                                        <Style TargetType="Rectangle">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding Path=Grade}" Value="전체">
+                                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Rectangle.Style>
+                                                                </Rectangle>
+                                                                <TextBlock Grid.Column="1" Text="{Binding Path=Grade}" HorizontalAlignment="Center"/>
+                                                                <TextBlock Grid.Column="2" Text="{Binding Path=Count, StringFormat={}{0:N0}}" HorizontalAlignment="Right"/>
+                                                                <TextBlock Grid.Column="3" Text="{Binding Path=Area, StringFormat={}{0:F2}}" HorizontalAlignment="Right" Margin="0 0 10 0"/>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+
+                                                <Rectangle Grid.Row="4" Style="{StaticResource HorizontalRectangleStyle}" Margin="0 20"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
                     </Border>
                 </Grid>
             </WrapPanel>

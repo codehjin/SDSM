@@ -14,6 +14,8 @@ namespace SDSM_App.Views.Pages;
 
 /// <summary>
 /// 홈
+/// 주제도 7~15
+/// 지도 7~14
 /// </summary>
 public partial class HomePage : Page, ITransientService
 {
@@ -152,6 +154,37 @@ public partial class HomePage : Page, ITransientService
         MapPinCalloutPopupClose();
     }
 
+    //주제도 전체선택해제
+    private void AllThemeMapUnCheckedRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (var item in _vm.ThemeMapCollection.Where(m => m.IsSelected))
+        {
+            item.IsSelected = false;
+            item.IsVisibleLegend = false;
+        }
+
+        RemoveMbTilesProvider("주제도");
+    }
+
+    //주제도 이미지
+
+    private void ThemeMapCheckBox_Checked(object sender, RoutedEventArgs e)
+    {
+        if (sender is CheckBox checkBox && checkBox.DataContext is ContentItem item)
+        {
+            AddMbTilesProvider(item.MbTilesName, item.OpacityName);
+        }
+    }
+
+    //주제도 이미지
+    private void ThemeMapCheckBox_Unchecked(object sender, RoutedEventArgs e)
+    {
+        if (sender is CheckBox checkBox && checkBox.DataContext is ContentItem item)
+        {
+            RemoveMbTilesProvider(item.MbTilesName);
+        }
+    }
+
     #endregion
 
     #region 클러스터 이벤트
@@ -220,7 +253,7 @@ public partial class HomePage : Page, ITransientService
         var degress = $"{location.Latitude:F6}, {location.Longitude:F6}";
 
         _vm.Degress = degress;
-       
+
     }
 
     //클릭좌표 복사
@@ -255,7 +288,7 @@ public partial class HomePage : Page, ITransientService
         _vm.Zoom = currentZoom;
     }
 
-    private void AddMbTilesProvider(string division)
+    private void AddMbTilesProvider(string division, string opacityName = "")
     {
         if (division == "os_1-6")
         {
@@ -285,12 +318,28 @@ public partial class HomePage : Page, ITransientService
         }
         else
         {
-            
+            var opacityBinding = new Binding(opacityName);
+
+            var file = Path.Combine($"{_mbDirectory.FullName}", $"{division}.mbtiles");
+            if (File.Exists(file))
+            {
+                var mbTilesProvider = new MbTilesMapProvider
+                {
+                    Source = new Uri(file, UriKind.RelativeOrAbsolute),
+                };
+
+                if (opacityBinding != null)
+                {
+                    BindingOperations.SetBinding(mbTilesProvider, MbTilesMapProvider.OpacityProperty, opacityBinding);
+                }
+
+                radMap.Providers.Add(mbTilesProvider);
+            }
         }
         ZommMoveGesture();
     }
 
-    //MbTilesProvider 단일제거
+    //MbTilesProvider 제거
     private void RemoveMbTilesProvider(string division)
     {
         var providers = radMap.Providers.Where(m => m.GetType() == typeof(MbTilesMapProvider)).ToList();
@@ -308,31 +357,6 @@ public partial class HomePage : Page, ITransientService
             }
             ZommMoveGesture();
         }
-    }
-
-    //MbTilesProvider 일괄제거
-    private bool RemoveAllMbTilesProvider()
-    {
-        //if (string.IsNullOrEmpty(_beforeKnpName))
-        //    return true;
-
-        //var providers = radMap.Providers.Where(m => m.GetType() == typeof(MbTilesMapProvider)).ToList();
-        //if (providers.Count > 0)
-        //{
-        //    foreach (var provider in providers)
-        //    {
-        //        if (provider is MbTilesMapProvider mapProvider)
-        //        {
-        //            if (mapProvider.Source.OriginalString.Contains(_beforeKnpName))
-        //            {
-        //                radMap.Providers.Remove(provider);
-        //            }
-        //        }
-        //    }
-        //    ZommMoveGesture();
-        //}
-
-        return true;
     }
 
     #endregion
@@ -360,5 +384,5 @@ public partial class HomePage : Page, ITransientService
         _clickCallout.DataContext = null;
     }
 
-    #endregion
+    #endregion 
 }
