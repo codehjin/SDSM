@@ -192,6 +192,23 @@
         <Setter Property="BusyContent" Value="{Binding Path=(main:GB.BusyContent)}"/>
     </Style>
 
+    <!--RadGridView 진행표시-->
+    <DataTemplate x:Key="ExportBusyGridViewTemplate">
+        <Border CornerRadius="{StaticResource AllCornerRadius}" Padding="40 60 40 20" Margin="0 -60 0 0" Background="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}">
+            <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=telerik:RadGridView}}" VerticalAlignment="Center" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="파일 작성중..." FontFamily="{StaticResource High1FontFamily}"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="{Binding BusyIndicatorProgressValue}" FontFamily="{StaticResource High1FontFamily}"/>
+                    <TextBlock Text="%" FontFamily="{StaticResource High1FontFamily}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DataTemplate>
+    
     <!--Page Size-->
     <Style x:Key="PageSizeRadNumericUpDownStyle" TargetType="telerik:RadNumericUpDown">
         <Setter Property="Minimum" Value="{Binding Path=(main:GB.MinPageSize)}"/>
@@ -206,17 +223,6 @@
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="14"/>
     </Style>
-
-    <!--RadGridView 진행표시-->
-    <DataTemplate x:Key="ExportBusyGridViewTemplate">
-        <Border CornerRadius="{telerik:Windows11Resource ResourceKey=CornerRadius}" Padding="60 60 60 20" Margin="0 -60 0 0" Background="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}">
-            <StackPanel Orientation="Horizontal" DataContext="{Binding RelativeSource={RelativeSource AncestorType=telerik:RadGridView}}" VerticalAlignment="Center" >
-                <TextBlock Text="파일 작성중..." />
-                <TextBlock Text="{Binding BusyIndicatorProgressValue}" />
-                <TextBlock Text="%"/>
-            </StackPanel>
-        </Border>
-    </DataTemplate>
 
     <Style x:Key="PageButtonStyle" TargetType="telerik:RadButton" BasedOn="{StaticResource RadButtonStyle}">
         <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=IconBrush}"/>
@@ -387,6 +393,7 @@
         <Setter Property="Padding" Value="5 0"/>
     </Style>
 
+    <!--CommonHeader-->
     <Style TargetType="telerik:CommonColumnHeader" BasedOn="{StaticResource CommonColumnHeaderStyle}">
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"/>

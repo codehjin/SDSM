@@ -108,7 +108,7 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
         }
 
         _loadedFileName = fileName;
-        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).FirstOrDefault();
+        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).LastOrDefault();
 
         if (savedFileInfo != null)
         {
@@ -238,8 +238,11 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                 SavedTime = DateTime.Now
             };
 
-            await repogitory.InsertAsync(savedFileInfo);
-            SavedFileInfos.Add(savedFileInfo);
+            var savedModel = await repogitory.InsertAsync(savedFileInfo);
+            if (savedModel != null)
+            {
+                SavedFileInfos.Add(savedModel);
+            }
 
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
@@ -867,7 +870,7 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
     {
         using var context = new SDSMDbContext();
 
-        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "포유류")];
+        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "포유류").OrderBy(m => m.SavedFileInfoId)];
     }
 
     #endregion

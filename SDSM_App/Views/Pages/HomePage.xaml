@@ -389,11 +389,19 @@
                                                       CommandParameter="{Binding}">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="100"/>
+                                                        <ColumnDefinition Width="150"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
 
-                                                    <TextBlock Text="{Binding Path=Caption}"/>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding Path=Caption}"/>
+                                                        <TextBlock>
+                                                            <Run Text="("/>
+                                                            <Run Text="{Binding Path=Count, StringFormat={}{0:N0}}"/>
+                                                            <Run Text=")"/>
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                                
                                                     <Rectangle Grid.Column="1" Width="20" Height="18" Margin="10 0 0 0" RadiusX="3" RadiusY="3">
                                                         <Rectangle.Style>
                                                             <Style TargetType="Rectangle">

@@ -13,6 +13,7 @@ public partial class MapModel : ObservableObject
     [ObservableProperty] private bool _isSelected;
     [ObservableProperty] private bool _isVisible = true;
     [ObservableProperty] private Brush? _markerFill;
+    [ObservableProperty] private int _count;
 
     [DisplayName("연도차수")] public string? YearChsu { get; set; }
     [DisplayName("조사일")] public DateTime? SurveyDate { get; set; }

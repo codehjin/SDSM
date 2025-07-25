@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using RestoreWindowPlace;
 using SDSM_App.Commons;
 using SDSM_App.InjectableServices;

@@ -23,6 +23,8 @@ public class SDSMDbContext : DbContext, ITransientService
         modelBuilder.Entity<BenthosSpeciesView>(m => { m.HasNoKey(); });
         modelBuilder.Entity<FishView>(m => { m.HasNoKey(); });
         modelBuilder.Entity<FishSpeciesView>(m => { m.HasNoKey(); });
+        
+        modelBuilder.Entity<TaxonCoordinateCountView>(m => { m.HasNoKey(); });
 
         //Foregin Include
         //modelBuilder.Entity<FishSurveySpecies>().Navigation(e => e.FishSurvey).AutoInclude();
@@ -59,6 +61,8 @@ public class SDSMDbContext : DbContext, ITransientService
 
     //양서파충류
     public DbSet<AmphibianReptile> AmphibianReptiles { get; set; }
+
+    public  DbSet<TaxonCoordinateCountView> TaxonCoordinateCountViews { get; set; }
 
     public  DbSet<SelfUser> SelfUsers { get; set; }
     public  DbSet<SavedFileInfo> SavedFileInfos { get; set; }

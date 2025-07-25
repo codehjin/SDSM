@@ -240,15 +240,17 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
         {
             using var context = new SDSMDbContext();
 
+            var taxonCoordinateCount = await context.TaxonCoordinateCountViews.FirstOrDefaultAsync();
+
             SurveyDataCollection.Add(new MapModel { Caption = "식생" });
             SurveyDataCollection.Add(new MapModel { Caption = "식물" });
             SurveyDataCollection.Add(new MapModel { Caption = "양서파충류" });
-            SurveyDataCollection.Add(new MapModel { Caption = "어류" });
-            SurveyDataCollection.Add(new MapModel { Caption = "저서동물" });
-            SurveyDataCollection.Add(new MapModel { Caption = "조류" });
-            SurveyDataCollection.Add(new MapModel { Caption = "포유류" });
-            SurveyDataCollection.Add(new MapModel { Caption = "서식수변" });
-            SurveyDataCollection.Add(new MapModel { Caption = "수질" });
+            SurveyDataCollection.Add(new MapModel { Caption = "어류", Count = taxonCoordinateCount?.FishCount ?? 0 });
+            SurveyDataCollection.Add(new MapModel { Caption = "저서동물", Count = taxonCoordinateCount?.BenthosCount ?? 0 });
+            SurveyDataCollection.Add(new MapModel { Caption = "조류", Count = taxonCoordinateCount?.BirdCount ?? 0 });
+            SurveyDataCollection.Add(new MapModel { Caption = "포유류", Count = taxonCoordinateCount?.MammalCount ?? 0 });
+            SurveyDataCollection.Add(new MapModel { Caption = "서식수변", Count = taxonCoordinateCount?.HabitatWaterEdgeCount ?? 0 });
+            SurveyDataCollection.Add(new MapModel { Caption = "수질", Count = taxonCoordinateCount?.WaterQualityCount ?? 0 });
 
             var themeMaps = new List<ContentItem>
             {
@@ -298,7 +300,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
         }
     }
 
-    //조류
+    //조사자료 포인트
     private async Task<List<MapModel>> GetPoints(string caption)
     {
         using var context = new SDSMDbContext();

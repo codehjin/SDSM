@@ -107,7 +107,7 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
         }
 
         _loadedFileName = fileName;
-        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).FirstOrDefault();
+        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).LastOrDefault();
 
         if (savedFileInfo != null)
         {
@@ -237,8 +237,11 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                 SavedTime = DateTime.Now
             };
 
-            await repogitory.InsertAsync(savedFileInfo);
-            SavedFileInfos.Add(savedFileInfo);
+            var savedModel = await repogitory.InsertAsync(savedFileInfo);
+            if (savedModel != null)
+            {
+                SavedFileInfos.Add(savedModel);
+            }
 
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
@@ -819,7 +822,7 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
     {
         using var context = new SDSMDbContext();
 
-        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "양서파충류")];
+        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "양서파충류").OrderBy(m => m.SavedFileInfoId)];
     }
 
     #endregion

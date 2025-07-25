@@ -108,7 +108,7 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
         }
 
         _loadedFileName = fileName;
-        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).FirstOrDefault();
+        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).LastOrDefault();
 
         if (savedFileInfo != null)
         {
@@ -238,8 +238,11 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                 SavedTime = DateTime.Now
             };
 
-            await repogitory.InsertAsync(savedFileInfo);
-            SavedFileInfos.Add(savedFileInfo);
+            var savedModel = await repogitory.InsertAsync(savedFileInfo);
+            if (savedModel != null)
+            {
+                SavedFileInfos.Add(savedModel);
+            }
 
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
@@ -859,7 +862,7 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
     {
         using var context = new SDSMDbContext();
 
-        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "조류")];
+        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "조류").OrderBy(m => m.SavedFileInfoId)];
     }
 
     #endregion

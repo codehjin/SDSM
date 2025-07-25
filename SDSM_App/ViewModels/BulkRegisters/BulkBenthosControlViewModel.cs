@@ -125,7 +125,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         }
 
         _loadedFileName = fileName;
-        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).FirstOrDefault();
+        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).LastOrDefault();
 
         if (savedFileInfo != null)
         {
@@ -262,8 +262,11 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                 SavedTime = DateTime.Now
             };
 
-            await repogitory.InsertAsync(savedFileInfo);
-            SavedFileInfos.Add(savedFileInfo);
+            var savedModel = await repogitory.InsertAsync(savedFileInfo);
+            if (savedModel != null)
+            {
+                SavedFileInfos.Add(savedModel);
+            }
 
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
@@ -427,7 +430,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
                     var value = prop.GetValue(model);
 
-                    if (prop.Name == "MacthNumber" 
+                    if (prop.Name == "MacthNumber"
                         || prop.Name == "IndexDI" || prop.Name == "IndexH" || prop.Name == "IndexR1" || prop.Name == "IndexJ"
                         || prop.Name == "BMIScore" || prop.Name == "BMIGrade"
                         || prop.Name == "SpeciesCount" || prop.Name == "IndividualCount")
@@ -886,7 +889,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                             insertPropertyInfo?.SetValue(insertModel, null);
                         }
                     }
-                    else if(prop.Name == "IndicatorWeight")
+                    else if (prop.Name == "IndicatorWeight")
                     {
                         //정수
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -1149,7 +1152,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
     {
         using var context = new SDSMDbContext();
 
-        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "저서동물")];
+        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "저서동물").OrderBy(m => m.SavedFileInfoId)];
     }
 
     #endregion

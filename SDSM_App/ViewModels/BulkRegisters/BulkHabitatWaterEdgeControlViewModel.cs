@@ -108,7 +108,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
         }
 
         _loadedFileName = fileName;
-        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).FirstOrDefault();
+        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).LastOrDefault();
 
         if (savedFileInfo != null)
         {
@@ -237,8 +237,11 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                 SavedTime = DateTime.Now
             };
 
-            await repogitory.InsertAsync(savedFileInfo);
-            SavedFileInfos.Add(savedFileInfo);
+            var savedModel = await repogitory.InsertAsync(savedFileInfo);
+            if (savedModel != null)
+            {
+                SavedFileInfos.Add(savedModel);
+            }
 
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
@@ -755,7 +758,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
     {
         using var context = new SDSMDbContext();
 
-        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "서식수변")];
+        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "서식수변").OrderBy(m => m.SavedFileInfoId)];
 
     }
     #endregion

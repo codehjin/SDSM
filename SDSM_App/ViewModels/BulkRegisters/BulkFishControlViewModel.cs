@@ -12,7 +12,6 @@ using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.IO;
 using System.Media;
 using System.Reflection;
@@ -142,7 +141,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         }
 
         _loadedFileName = fileName;
-        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).FirstOrDefault();
+        var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).LastOrDefault();
 
         if (savedFileInfo != null)
         {
@@ -290,8 +289,11 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                 SavedTime = DateTime.Now
             };
 
-            await repogitory.InsertAsync(savedFileInfo);
-            SavedFileInfos.Add(savedFileInfo);
+            var savedModel = await repogitory.InsertAsync(savedFileInfo);
+            if (savedModel != null)
+            {
+                SavedFileInfos.Add(savedModel);
+            }
 
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
@@ -1351,7 +1353,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
     {
         using var context = new SDSMDbContext();
 
-        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "어류")];
+        SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "어류").OrderBy(m => m.SavedFileInfoId)];
     }
 
     #endregion
