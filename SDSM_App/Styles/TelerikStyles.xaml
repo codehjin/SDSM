@@ -158,13 +158,31 @@
     <Style x:Key="DarkButtonStyle" TargetType="telerik:RadButton" >
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="MinHeight" Value="{StaticResource DefaultHeight}"/>
-        <Setter Property="Padding" Value="20 0"/>
         <Setter Property="Background" Value="#000000"/>
         <Setter Property="BorderBrush" Value="#000000"/>
         <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="#333333"/>
         <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="#333333"/>
         <Setter Property="helpers:ThemeHelper.PressedBackgroundBrush" Value="#222222"/>
         <Setter Property="helpers:ThemeHelper.PressedBrush" Value="#222222"/>
+        <Setter Property="helpers:ThemeHelper.FocusBrush" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=AccentControlForegroundBrush}"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--녹색 버튼-->
+    <Style x:Key="GreenButtonStyle" TargetType="telerik:RadButton" >
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="MinHeight" Value="{StaticResource DefaultHeight}"/>
+        <Setter Property="Background" Value="#558B2F"/>
+        <Setter Property="BorderBrush" Value="#558B2F"/>
+        <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="#689F38"/>
+        <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="#689F38"/>
+        <Setter Property="helpers:ThemeHelper.PressedBackgroundBrush" Value="#7CB342"/>
+        <Setter Property="helpers:ThemeHelper.PressedBrush" Value="#7CB342"/>
         <Setter Property="helpers:ThemeHelper.FocusBrush" Value="Transparent"/>
         <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=AccentControlForegroundBrush}"/>
         <Style.Triggers>
@@ -194,7 +212,7 @@
 
     <!--RadGridView 진행표시-->
     <DataTemplate x:Key="ExportBusyGridViewTemplate">
-        <Border CornerRadius="{StaticResource AllCornerRadius}" Padding="40 60 40 20" Margin="0 -60 0 0" Background="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}">
+        <Border CornerRadius="{telerik:Windows11Resource ResourceKey=CornerRadius}" Padding="40 60 40 20" Margin="0 -60 0 0" Background="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}">
             <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=telerik:RadGridView}}" VerticalAlignment="Center" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -651,12 +669,12 @@
                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                   RecognizesAccessKey="True"/>
                         <Grid x:Name="DropDownIndicator"
-                      Grid.Column="1"
-                      Grid.Row="2"
-                      Margin="{telerik:Windows11Resource ResourceKey=DropDownIndicatorMargin}"
-                      Canvas.ZIndex="2"
-                      IsHitTestVisible="False"
-                      Visibility="{TemplateBinding DropDownIndicatorVisibility}">
+                              Grid.Column="1"
+                              Grid.Row="2"
+                              Margin="{telerik:Windows11Resource ResourceKey=DropDownIndicatorMargin}"
+                              Canvas.ZIndex="2"
+                              IsHitTestVisible="False"
+                              Visibility="{TemplateBinding DropDownIndicatorVisibility}">
                             <telerik:RadGlyph x:Name="arrow"
                                       FontSize="{telerik:Windows11Resource ResourceKey=GlyphFontSizeS}"
                                       Foreground="{telerik:Windows11Resource ResourceKey=IconSecondaryBrush}"
@@ -666,37 +684,37 @@
                 </Grid>
             </Grid>
             <Popup x:Name="DropDownPopup"
-           AllowsTransparency="True"
-           StaysOpen="False"
-           Focusable="False"
-           Placement="Bottom"
-           PopupAnimation="{TemplateBinding PopupAnimation}"
-           HorizontalOffset="-800"
-           VerticalOffset="{telerik:Windows11Resource ResourceKey=PopupOffset}">
+                   AllowsTransparency="True"
+                   StaysOpen="False"
+                   Focusable="False"
+                   Placement="Bottom"
+                   PopupAnimation="{TemplateBinding PopupAnimation}"
+                   HorizontalOffset="-800"
+                   VerticalOffset="{telerik:Windows11Resource ResourceKey=PopupOffset}">
                 <Grid Margin="{telerik:Windows11Resource ResourceKey=PopupMargin}">
                     <mat:Shadow Background="{telerik:Windows11Resource ResourceKey=TertiaryBackgroundBrush}" ShadowDepth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mat:MaterialAssist.ShadowDepth)}" CornerRadius="{telerik:Windows11Resource ResourceKey=OverlayCornerRadius}"/>
                     <Border x:Name="DropDownPopupBorder"
-                    MinWidth="{TemplateBinding DropDownMinWidth}"
-                    MinHeight="{TemplateBinding DropDownMinHeight}"
-                    Width="{TemplateBinding DropDownWidth}"
-                    Height="{TemplateBinding DropDownHeight}"
-                    MaxWidth="{TemplateBinding DropDownMaxWidth}"
-                    MaxHeight="{TemplateBinding DropDownMaxHeight}"
-                    CornerRadius="{telerik:Windows11Resource ResourceKey=OverlayCornerRadius}"
-                    Background="{telerik:Windows11Resource ResourceKey=TertiaryBackgroundBrush}"
-                    BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"
-                    BorderThickness="1">
+                            MinWidth="{TemplateBinding DropDownMinWidth}"
+                            MinHeight="{TemplateBinding DropDownMinHeight}"
+                            Width="{TemplateBinding DropDownWidth}"
+                            Height="{TemplateBinding DropDownHeight}"
+                            MaxWidth="{TemplateBinding DropDownMaxWidth}"
+                            MaxHeight="{TemplateBinding DropDownMaxHeight}"
+                            CornerRadius="{telerik:Windows11Resource ResourceKey=OverlayCornerRadius}"
+                            Background="{telerik:Windows11Resource ResourceKey=TertiaryBackgroundBrush}"
+                            BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"
+                            BorderThickness="1">
                         <ContentControl x:Name="DropDownPopupContent"
-                                Content="{TemplateBinding DropDownContent}"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                ContentTemplate="{TemplateBinding DropDownContentTemplate}"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                telerik:CornerRadiusHelper.ClipRadius="{telerik:Windows11Resource ResourceKey=OverlayCornerRadius}"
-                                DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DataContext}"
-                                ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"/>
+                                        Content="{TemplateBinding DropDownContent}"
+                                        HorizontalContentAlignment="Stretch"
+                                        VerticalContentAlignment="Stretch"
+                                        ContentTemplate="{TemplateBinding DropDownContentTemplate}"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        telerik:CornerRadiusHelper.ClipRadius="{telerik:Windows11Resource ResourceKey=OverlayCornerRadius}"
+                                        DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DataContext}"
+                                        ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"/>
                     </Border>
                 </Grid>
             </Popup>

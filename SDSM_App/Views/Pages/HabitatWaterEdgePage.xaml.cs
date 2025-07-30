@@ -1,17 +1,12 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Win32;
+﻿using FMRRC_App.Helpers;
 using SDSM_App.InjectableServices;
-using SDSM_App.Messengers;
 using SDSM_App.ViewModels;
 using SDSM_App.Views.UserControls;
 using SDSM_Models;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Telerik.Documents.SpreadsheetStreaming;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
 
 namespace SDSM_App.Views.Pages;
 
@@ -119,6 +114,26 @@ public partial class HabitatWaterEdgePage : Page, ITransientService
         }
     }
 
+    //자료 출력
+    private void DataExportButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataRadGridView.Items.Count == 0) return;
+
+        DataExportHelper.ExportGridViewToExcel(
+            DataRadGridView,
+            "서식수변",
+            progress => DataRadGridView.BusyIndicatorProgressValue = progress,
+            () =>
+            {
+                //추가 완료 처리 필요시 구현 
+                // UI는 콜백에서 변경
+
+                DataRadGridView.BusyIndicatorProgressValue = 0;
+            },
+            showColumnGroups: true
+        );
+    }
+
     #endregion
 
     #region 메서드
@@ -136,137 +151,6 @@ public partial class HabitatWaterEdgePage : Page, ITransientService
         DataRadGridView.SortDescriptors.Clear();
 
         _vm.SearchExecutedCommand.Execute(null);
-    }
-
-    #endregion
-
-    #region 출력메서드
-
-    //자료 출력
-    private void DataExportButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (DataRadGridView.Items.Count == 0) return;
-
-        ExcelExportAsync();
-    }
-
-    private void ExcelExportAsync()
-    {
-        try
-        {
-            string fileName = $"서식수변_{DateTime.Now:yyyyMMddHHmmss}";
-            string downloadPath = string.Empty;
-            string fileFullName = string.Empty;
-
-            SaveFileDialog dialog = new()
-            {
-                DefaultExt = "xlsx",
-                Filter = $"엑셀파일|*.xlsx",
-                FileName = fileName,
-            };
-
-            if (dialog.ShowDialog() == true)
-            {
-                fileFullName = dialog.FileName;
-            }
-
-            if (string.IsNullOrWhiteSpace(fileFullName))
-                return;
-
-            GB.IsBusy = true;
-            GB.BusyIndicatorVisibility = Visibility.Collapsed;
-
-            var spreadStreamExport = new GridViewSpreadStreamExport(DataRadGridView)
-            {
-                ExportFormat = SpreadStreamExportFormat.Xlsx,
-                ShowLoadingIndicatorWhileAsyncExport = true,
-                SheetName = "서식수변",
-            };
-
-            spreadStreamExport.ElementExportingToDocument += (s, e) =>
-            {
-                if (e.Element == SpreadStreamExportElement.Cell)
-                {
-                    if (e.Value == null)
-                        return;
-
-                    if (int.TryParse(e.Value.ToString(), out var i))
-                    {
-                        e.Value = i;
-
-                        e.Style = new SpreadStreamCellStyle()
-                        {
-                            HorizontalAlignment = SpreadHorizontalAlignment.Center,
-                            VerticalAlignment = SpreadVerticalAlignment.Center,
-                        };
-                    }
-                    else if (double.TryParse(e.Value.ToString(), out var d))
-                    {
-                        e.Value = d;
-
-                        e.Style = new SpreadStreamCellStyle()
-                        {
-                            HorizontalAlignment = SpreadHorizontalAlignment.Center,
-                            VerticalAlignment = SpreadVerticalAlignment.Center,
-                        };
-                    }
-                    else
-                    {
-                        e.Style = new SpreadStreamCellStyle()
-                        {
-                            HorizontalAlignment = SpreadHorizontalAlignment.Center,
-                            VerticalAlignment = SpreadVerticalAlignment.Center,
-                        };
-                    }
-                }
-                else
-                {
-                    e.Style = new SpreadStreamCellStyle()
-                    {
-                        HorizontalAlignment = SpreadHorizontalAlignment.Center,
-                        VerticalAlignment = SpreadVerticalAlignment.Center,
-                    };
-                }
-            };
-
-            spreadStreamExport.AsyncExportProgressChanged += SpreadStreamExport_AsyncExportProgressChanged!;
-            spreadStreamExport.AsyncExportCompleted += SpreadStreamExport_AsyncExportCompleted!;
-            spreadStreamExport.RunExportAsync(fileFullName,
-                                              new SpreadStreamExportRenderer(),
-                                              new GridViewSpreadStreamExportOptions
-                                              {
-                                                  ShowColumnHeaders = true,
-                                                  ColumnWidth = 180,
-                                                  ShowColumnGroups = true,
-                                              });
-        }
-        catch (Exception ex)
-        {
-            GB.LogWrite(GetType().Name, nameof(ExcelExportAsync), ex.Message);
-            var toast = (ex.Message, false);
-            WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
-
-            GB.IsBusy = false;
-            GB.BusyIndicatorVisibility = Visibility.Visible;
-        }
-    }
-
-    //출력완료
-    private void SpreadStreamExport_AsyncExportCompleted(object sender, AsyncCompletedEventArgs e)
-    {
-        var toast = (GB.ExportMessage, true);
-        WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
-
-        DataRadGridView.BusyIndicatorProgressValue = 0;
-
-        GB.IsBusy = false;
-        GB.BusyIndicatorVisibility = Visibility.Visible;
-    }
-
-    //출력진행률
-    private void SpreadStreamExport_AsyncExportProgressChanged(object sender, ProgressChangedEventArgs e)
-    {
-        DataRadGridView.BusyIndicatorProgressValue = e.ProgressPercentage;
     }
 
     #endregion

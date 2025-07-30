@@ -8,6 +8,8 @@ public class CustomLocalizationManaber : LocalizationManager
     {
         switch (key)
         {
+            case "Alert":
+                return "알림";
             case "OK":
                 return "확인";
             case "Cancel":

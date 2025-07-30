@@ -588,7 +588,7 @@
                             </Grid>
                         </Border>
 
-                         <!--컨트롤-->
+                        <!--컨트롤-->
                         <Border Grid.Column="2" Background="{telerik:Windows11Resource ResourceKey=OverlayBrush}">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
                                 <StackPanel.Resources>
@@ -674,6 +674,7 @@
                                 </uc:WinButtonControl>
                             </StackPanel>
                         </Border>
+                        
                     </Grid>
                 </Border>
 
@@ -894,19 +895,19 @@
                                                 </StackPanel>
                                             </Expander.Header>
                                             <StackPanel>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click" IsEnabled="False">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="식생"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click" IsEnabled="False">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="식물"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedAmphibianReptile, Mode=TwoWay}" Tag="AmphibianReptilePage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedAmphibianReptile, Mode=TwoWay}" Tag="AmphibianReptilePage" Click="MenuItem_Click" IsEnabled="False">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="양서파충류"/>

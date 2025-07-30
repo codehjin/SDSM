@@ -1,16 +1,7 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Win32;
-using SDSM_App.InjectableServices;
-using SDSM_App.Messengers;
-using SDSM_App.ViewModels;
-using System.ComponentModel;
+﻿using SDSM_App.InjectableServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Xml.Linq;
-using Telerik.Documents.SpreadsheetStreaming;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
 
 namespace SDSM_App.Views.Pages;
 
@@ -19,14 +10,9 @@ namespace SDSM_App.Views.Pages;
 /// </summary>
 public partial class BulkRegisterPage : Page, ITransientService
 {
-    private readonly BulkRegisterPageViewModel _vm;
-
-    public BulkRegisterPage(BulkRegisterPageViewModel vm)
+    public BulkRegisterPage()
     {
         InitializeComponent();
-
-        _vm = vm;
-        DataContext = _vm;
     }
 
     #region This 이벤트
@@ -61,5 +47,4 @@ public partial class BulkRegisterPage : Page, ITransientService
     #region 메서드
 
     #endregion
-
 }

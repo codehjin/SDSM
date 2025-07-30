@@ -1,10 +1,7 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using SDSM_App.InjectableServices;
-using SDSM_App.Messengers;
+﻿using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using System.Windows;
 using System.Windows.Controls;
-using Telerik.Windows.Controls;
 
 namespace SDSM_App.Views.UserControls;
 

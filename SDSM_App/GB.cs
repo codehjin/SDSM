@@ -4,10 +4,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
-using Telerik.Windows.Documents.Spreadsheet.Model;
 
 namespace SDSM_App;
 
@@ -328,7 +326,8 @@ public static class GB
         }
 
         // 2. 특수문자 구분 ("36°47’00.5464“" 또는 "36°47'00.5464\"")
-        var dmsPattern = @"(\d+)[°](\d+)[’'](\d+(?:\.\d+)?)[“""]";
+        //    초 뒤에 ", “, 또는 ''(작은따옴표 두 개) 모두 허용
+        var dmsPattern = @"(\d+)[°](\d+)[’'](\d+(?:\.\d+)?)([“""]|'{2})";
         var match = System.Text.RegularExpressions.Regex.Match(cleaned, dmsPattern);
         if (match.Success)
         {

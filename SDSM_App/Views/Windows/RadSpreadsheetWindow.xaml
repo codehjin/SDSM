@@ -1,0 +1,179 @@
+﻿<Window x:Class="SDSM_App.Views.Windows.RadSpreadsheetWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
+        xmlns:spreadsheetControls="clr-namespace:Telerik.Windows.Controls.Spreadsheet.Controls;assembly=Telerik.Windows.Controls.Spreadsheet"
+        xmlns:icon ="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
+        xmlns:properties="clr-namespace:SDSM_App.Properties"
+        xmlns:main="clr-namespace:SDSM_App"
+        Background="{telerik:Windows11Resource ResourceKey=OverlayBrush}"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="CanResize"
+        MinWidth="980"
+        Width="1280"
+        MinHeight="720" 
+        FontFamily="{StaticResource DefaultFontFamily}"
+        FontSize="{StaticResource DefaultFontSize}">
+    <WindowChrome.WindowChrome>
+        <WindowChrome ResizeBorderThickness="8" CaptionHeight="62" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Border>
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Margin" Value="0"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType=Window}}" Value="Maximized">
+                            <Setter Property="Margin" Value="8"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!--상단-->
+                <Border Background="{StaticResource NoThemeLightBackgroundBrush}" Panel.ZIndex="1">
+                   
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!--타이틀-->
+                        <StackPanel Orientation="Horizontal" Margin="10 10 0 0" VerticalAlignment="Top">
+                            <TextBlock Text="일괄등록" Style="{StaticResource PrimaryTitleTextBlcokStyle}"/>
+                            <telerik:RadGlyph Glyph="{StaticResource GlyphArrowChevronRight}" Style="{StaticResource TitleRadGlyphStyle}" FontSize="16"/>
+                            <TextBlock Text="자료 붙여넣기" Style="{StaticResource PrimaryTitleTextBlcokStyle}"/>
+                        </StackPanel>
+
+                        <!--Buttons-->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                            <StackPanel.Resources>
+                                <Style TargetType="telerik:RadCallout" BasedOn="{StaticResource TooltipRadCalloutStyle}"/>
+                            </StackPanel.Resources>
+                            <!--최소화-->
+                            <uc:WinButtonControl Icon="ChromeMinimize" 
+                                                 DefaultForegroundBrush="{StaticResource NoThemeForegroundBrush}"
+                                                 MouseOverForegroundBrush ="{StaticResource NoThemeForegroundBrush}"
+                                                 MouseOverBackgroundBrush="{StaticResource NoThemeMouseOverBackgroundBrush}"
+                                                 MouseOverBorderCornerRadius="0"
+                                                 telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
+                                                 telerik:RadToolTipService.Placement ="Bottom"
+                                                 telerik:RadToolTipService.HorizontalOffset ="-10"
+                                                 telerik:RadToolTipService.InitialShowDelay ="0"
+                                                 telerik:RadToolTipService.ShowDuration ="30000"
+                                                 ElementClick="Minimize_Click">
+                                <telerik:RadToolTipService.ToolTipContent>
+                                    <telerik:RadCallout Content="최소화"/>
+                                </telerik:RadToolTipService.ToolTipContent>
+                            </uc:WinButtonControl>
+                            <!--최대화-->
+                            <uc:WinButtonControl DefaultForegroundBrush="{StaticResource NoThemeForegroundBrush}"
+                                                 MouseOverForegroundBrush ="{StaticResource NoThemeForegroundBrush}"
+                                                 MouseOverBackgroundBrush="{StaticResource NoThemeMouseOverBackgroundBrush}"
+                                                 MouseOverBorderCornerRadius="0"
+                                                 telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
+                                                 telerik:RadToolTipService.Placement ="Bottom"
+                                                 telerik:RadToolTipService.HorizontalOffset ="-10"
+                                                 telerik:RadToolTipService.InitialShowDelay ="0"
+                                                 telerik:RadToolTipService.ShowDuration ="30000"
+                                                 ElementClick="Maximize_Click">
+                                <uc:WinButtonControl.Style>
+                                    <Style TargetType="uc:WinButtonControl">
+                                        <Setter Property="Icon" Value="ChromeMaximize"/>
+                                        <Setter Property="telerik:RadToolTipService.ToolTipContent">
+                                            <Setter.Value>
+                                                <telerik:RadCallout Content="최대화"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType=Window}}" Value="Maximized">
+                                                <Setter Property="Icon" Value="ChromeRestore"/>
+                                                <Setter Property="telerik:RadToolTipService.ToolTipContent">
+                                                    <Setter.Value>
+                                                        <telerik:RadCallout Content="이전크기로 복원"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </uc:WinButtonControl.Style>
+                            </uc:WinButtonControl>
+                            <!--닫기-->
+                            <uc:WinButtonControl Icon="ChromeClose"
+                                                 DefaultForegroundBrush="{StaticResource NoThemeForegroundBrush}"
+                                                 MouseOverForegroundBrush ="White"
+                                                 MouseOverBackgroundBrush="{telerik:Windows11Resource ResourceKey=ValidationBrush}"
+                                                 telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
+                                                 telerik:RadToolTipService.Placement ="Bottom"
+                                                 telerik:RadToolTipService.HorizontalOffset ="-10"
+                                                 telerik:RadToolTipService.InitialShowDelay ="0"
+                                                 telerik:RadToolTipService.ShowDuration ="30000"
+                                                 ElementClick="Close_Click">
+                                <telerik:RadToolTipService.ToolTipContent>
+                                    <telerik:RadCallout Content="닫기"/>
+                                </telerik:RadToolTipService.ToolTipContent>
+                            </uc:WinButtonControl>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0 0 0 10" WindowChrome.IsHitTestVisibleInChrome="True">
+                            <telerik:RadButton Height="44" CornerRadius="20 0 0 20" Padding="20 0" BorderThickness="1 1 0.5 1" helpers:ThemeHelper.FocusBrush="Transparent"
+                                               Click="PasteRadButton_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <telerik:RadGlyph Glyph="{StaticResource GlyphPaste}"/>
+                                    <TextBlock Text="1행 1열에 붙여넣기" Margin="5 0 0 0"/>
+                                </StackPanel>
+                            </telerik:RadButton>
+                            <telerik:RadButton Content="내용 지우기" Height="44" CornerRadius="0 20 20 0" Padding="20 0" BorderThickness="0.5 1 1 1" helpers:ThemeHelper.FocusBrush="Transparent"
+                                               Click="ClearRadButton_Click"/>
+                            <telerik:RadButton Margin="10 0 0 0" Height="44" CornerRadius="20" Padding="20 0" Style="{StaticResource AccentButtonStyle}" Click="SendRadButton_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="자료 보내기" Margin="0 0 5 0"/>
+                                    <icon:PackIconPhosphorIcons Kind="ShareFat" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </telerik:RadButton>
+                        </StackPanel>
+                    </Grid>                   
+                </Border>
+
+                <Border Grid.Row="1" Padding="8" Background="{StaticResource GrayLinearBrush}">
+                    <telerik:RadSpreadsheet x:Name="RadSpreadsheet" 
+                                            spreadsheetControls:RadSpreadsheetSheetSelector.IsSheetSelectorVisible="False"
+                                            spreadsheetControls:RadSpreadsheetSheetSelector.IsAddButtonVisible="False" >
+                        <telerik:RadSpreadsheet.WorksheetEditorContextMenu>
+                            <telerik:RadContextMenu>
+                                <telerik:RadMenuItem Header="붙여넣기" Cursor="Hand" Click="RadMenuItem_Click">
+                                    <telerik:RadMenuItem.Icon>
+                                        <telerik:RadGlyph Glyph="{StaticResource GlyphPaste}"/>
+                                    </telerik:RadMenuItem.Icon>
+                                </telerik:RadMenuItem>
+                            </telerik:RadContextMenu>
+                        </telerik:RadSpreadsheet.WorksheetEditorContextMenu>
+                    </telerik:RadSpreadsheet>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!--화면잠금-->
+        <Border Background="#E0000000" Visibility="{Binding Path=(main:GB.IsLockFloating), Converter={StaticResource BooleanToVisibilityConverter}}">
+            <icon:PackIconIonicons Kind="LockiOS" HorizontalAlignment="Center" VerticalAlignment="Center" Width="64" Height="64" Foreground="{telerik:Windows11Resource ResourceKey=AccentBrush}">
+                <icon:PackIconIonicons.Effect>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Direction="270" Opacity="0.5"/>
+                </icon:PackIconIonicons.Effect>
+            </icon:PackIconIonicons>
+        </Border>
+    </Grid>
+</Window>

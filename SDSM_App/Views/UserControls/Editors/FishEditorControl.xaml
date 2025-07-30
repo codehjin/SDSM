@@ -29,7 +29,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Path=FormTitle}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                        <TextBlock Text="{Binding Path=FormTitle}" Style="{StaticResource PrimaryTitleTextBlcokStyle}"/>
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 30 0">
                             <TextBlock Text="*" Style="{StaticResource FormLabelRequiredStyle}" Margin="0 8 0 0"/>
                             <TextBlock Text="필수 항목" Style="{StaticResource FormLabelStyle}" FontFamily="{StaticResource High1FontFamily}"/>
@@ -815,15 +815,16 @@
                                                              LeftFrozenColumnCount="0"
                                                              ShowSearchPanel="True"
                                                              IsReadOnly="False"
+                                                             EditTriggers="CellClick"
                                                              Height="652">
                                             <telerik:RadGridView.Columns>
                                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=OrderKo}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap" IsFilterable="False" IsReadOnly="True"/>
                                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FamilyKo}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap" IsFilterable="False" IsReadOnly="True"/>
                                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="220" MaxWidth="220" TextWrapping="Wrap" IsFilterable="False" IsReadOnly="True"/>
-                                                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="320" MaxWidth="320" TextWrapping="Wrap"
+                                                <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="400" MaxWidth="400" TextWrapping="Wrap"
                                                                             CellStyle="{StaticResource GridViewCellLeftStyle}" IsFilterable="False" IsReadOnly="True">
                                                 </telerik:GridViewDataColumn>
-                                                <telerik:GridViewDataColumn Header="개체수(작성)" DataMemberBinding="{Binding Path=IndividualCount}" MinWidth="80" Width="219" MaxWidth="219">
+                                                <telerik:GridViewDataColumn Header="개체수(작성)" DataMemberBinding="{Binding Path=IndividualCount}" MinWidth="80" Width="139" MaxWidth="139">
                                                     <telerik:GridViewDataColumn.CellEditTemplate>
                                                         <DataTemplate>
                                                             <Grid>
@@ -834,22 +835,13 @@
                                                                 <telerik:RadNumericUpDown Value="{Binding Path=IndividualCount, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                                                           UpdateValueEvent="PropertyChanged"
                                                                                           Minimum="0"
-                                                                                          Width="156"
+                                                                                          Width="130"
                                                                                           Height="{StaticResource FormControlHeight}"
-                                                                                          Style="{StaticResource FormIntNumericUpDownStyle}">
+                                                                                          Style="{StaticResource FormIntNoMouseWheelNumericUpDownStyle}">
                                                                     <telerik:EventToCommandBehavior.EventBindings>
                                                                         <telerik:EventBinding EventName="ValueChanged" Command="{Binding Path=DataContext.IndividualCountValueChangedExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
                                                                     </telerik:EventToCommandBehavior.EventBindings>
                                                                 </telerik:RadNumericUpDown>
-                                                                <telerik:RadButton Grid.Column="1" 
-                                                                                   Content="NULL"
-                                                                                   Margin="5 0 0 0"
-                                                                                   Padding="7 0"
-                                                                                   FontSize="14" 
-                                                                                   Height="{StaticResource DefaultHeight}" IsTabStop="False"                                                                                   
-                                                                                   Click="NullValueRadButton_Click">
-
-                                                                </telerik:RadButton>
                                                             </Grid>
                                                         </DataTemplate>
                                                     </telerik:GridViewDataColumn.CellEditTemplate>

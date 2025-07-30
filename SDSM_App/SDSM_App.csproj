@@ -8,10 +8,6 @@
     <ApplicationIcon>m.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Assets\Excels\서식수변_표준양식.xlsx" />
-    <None Remove="Assets\Excels\수질_표준양식.xlsx" />
-    <None Remove="Assets\Excels\조류_표준양식.xlsx" />
-    <None Remove="Assets\Excels\포유류_표준양식.xlsx" />
     <None Remove="Assets\Fonts\high1 Wonchuri Title B.ttf" />
     <None Remove="Assets\Fonts\high1 Wonchuri Title L.ttf" />
     <None Remove="Assets\Fonts\high1 Wonchuri Title M.ttf" />
@@ -41,18 +37,6 @@
     <Content Include="m.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\Excels\서식수변_표준양식.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Excels\수질_표준양식.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Excels\조류_표준양식.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Excels\포유류_표준양식.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="Assets\Images\m.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -64,7 +48,7 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Windows\" />
+    <Folder Include="Assets\Excels\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
@@ -80,7 +64,7 @@
     <PackageReference Include="System.ComponentModel.Composition" Version="9.0.5" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
     <PackageReference Include="Telerik.UI.for.Wpf.80.Xaml">
-      <Version>2025.2.521</Version>
+      <Version>2025.2.707</Version>
     </PackageReference>
     <PackageReference Include="WindowsAPICodePack" Version="8.0.6" />
   </ItemGroup>

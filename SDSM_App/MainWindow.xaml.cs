@@ -4,7 +4,6 @@ using SDSM_App.ViewModels;
 using SDSM_App.Views.UserControls;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Telerik.Windows.Controls;
 
 namespace SDSM_App;
@@ -52,7 +51,7 @@ public partial class MainWindow : Window, ISingletonService
         MenuItem_Click(FirstButton, null!);
         _vm.IsCheckedHome = true;
 
-        LoginControlLoad();
+        //LoginControlLoad();
     }
 
     //minimized button

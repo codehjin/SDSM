@@ -30,60 +30,51 @@
                 <TextBlock Text="저서동물" Style="{StaticResource TitleTextBlockStyle}"/>
             </StackPanel>
 
-            <Grid Grid.Row="1" Margin="30 30 30 20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal">
-                    <telerik:RadButton Command="{Binding Path=AddEditorOpenExecutedCommand}" Style="{StaticResource AddButtonStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <telerik:RadGlyph Glyph="{StaticResource GlyphPlus}" />
-                            <TextBlock Text="추가" Margin="5 0 0 0"/>
-                        </StackPanel>
-                    </telerik:RadButton>
-                    <telerik:RadButton Content="수정" Command="{Binding Path=EditEditorOpenExecutedCommand}" Style="{StaticResource EditButtonStyle}"/>
-                    <telerik:RadDropDownButton Content="삭제"
-                                               Cursor="Hand"
-                                               Margin="10 0 0 0"
-                                               CloseOnPopupMouseLeftButtonUp="True"
-                                               helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=ValidationBrush}">
-                        <telerik:RadDropDownButton.Style>
-                            <Style TargetType="telerik:RadDropDownButton">
-                                <Setter Property="IsEnabled" Value="True"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=DataContext.ModelSelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" Value="{x:Null}">
-                                        <Setter Property="IsEnabled" Value="False"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </telerik:RadDropDownButton.Style>
-                        <telerik:RadDropDownButton.DropDownContent>
-                            <StackPanel Margin="10">
-                                <telerik:RadButton Content="선택 자료 삭제" 
-                                                   Height="{StaticResource DefaultHeight}"
-                                                   Margin="0 0 0 5"
-                                                   IsTabStop="False"
-                                                   HorizontalContentAlignment="Left"
-                                                   Tag="single"
-                                                   Click="DeleteRadButton_Click"/>
-                                <telerik:RadButton Content="페이지 자료 삭제" 
-                                                   Height="{StaticResource DefaultHeight}"
-                                                   IsTabStop="False"
-                                                   HorizontalContentAlignment="Left"
-                                                   Tag="page"
-                                                   Click="DeleteRadButton_Click"/>
-                            </StackPanel>
-                        </telerik:RadDropDownButton.DropDownContent>
-                    </telerik:RadDropDownButton>
-                </StackPanel>
-                <telerik:RadButton Grid.Column="1" Command="{Binding Path=SpeceisOpenExecutedCommand}">
+            <StackPanel Grid.Row="1" Orientation="Horizontal"  Margin="30 30 30 20">
+                <telerik:RadButton Command="{Binding Path=AddEditorOpenExecutedCommand}" Style="{StaticResource AddButtonStyle}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="출현종 보기"/>
-                        <icon:PackIconPhosphorIcons Kind="ArrowUpRightThin" Margin="5 2 0 0" VerticalAlignment="Center" Width="14" Height="14"/>
+                        <telerik:RadGlyph Glyph="{StaticResource GlyphPlus}" />
+                        <TextBlock Text="추가" Margin="5 0 0 0"/>
                     </StackPanel>
                 </telerik:RadButton>
-            </Grid>
+                <telerik:RadButton Content="수정" Command="{Binding Path=EditEditorOpenExecutedCommand}" Style="{StaticResource EditButtonStyle}"/>
+                <telerik:RadDropDownButton Content="삭제"
+                                            Cursor="Hand"
+                                            Margin="10 0 0 0"
+                                            CloseOnPopupMouseLeftButtonUp="True"
+                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=ValidationBrush}">
+                    <telerik:RadDropDownButton.Style>
+                        <Style TargetType="telerik:RadDropDownButton">
+                            <Setter Property="IsEnabled" Value="True"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=DataContext.ModelSelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" Value="{x:Null}">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </telerik:RadDropDownButton.Style>
+                    <telerik:RadDropDownButton.DropDownContent>
+                        <StackPanel Margin="10">
+                            <telerik:RadButton Content="선택 자료 삭제" 
+                                                Height="{StaticResource DefaultHeight}"
+                                                Margin="0 0 0 5"
+                                                IsTabStop="False"
+                                                HorizontalContentAlignment="Left"
+                                                Tag="single"
+                                                Click="DeleteRadButton_Click"/>
+                            <telerik:RadButton Content="페이지 자료 삭제" 
+                                                Height="{StaticResource DefaultHeight}"
+                                                IsTabStop="False"
+                                                HorizontalContentAlignment="Left"
+                                                Tag="page"
+                                                Click="DeleteRadButton_Click"/>
+                        </StackPanel>
+                    </telerik:RadDropDownButton.DropDownContent>
+                </telerik:RadDropDownButton>
+
+                <Rectangle Style="{StaticResource VerticalRectangleStyle}" Margin="20 0" Height="38"/>
+                <telerik:RadButton Content="출현종 보기" Command="{Binding Path=SpeceisOpenExecutedCommand}"/>
+            </StackPanel>
 
             <Border Grid.Row="2" Margin="30 0 30 0" Padding="0" BorderThickness="0" Background="Transparent" Style="{StaticResource ContentBoxStyle}">
                 <Grid>

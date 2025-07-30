@@ -122,7 +122,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         return !string.IsNullOrWhiteSpace(SheetName);
     }
 
-    //자료 가져오기
+    //엑셀 자료 가져오기
     [RelayCommand(CanExecute = nameof(CanDataImport))]
     private async Task DataImportExecuted()
     {
@@ -187,11 +187,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
 
             if (isExist == false)
             {
-                string success = "성공";
-                string fail = "실패";
-
-                var message = $"엑셀 시트명{Environment.NewLine}" +
-                              $"조사자료 : {(isExist ? success : fail)}{Environment.NewLine}";
+                var message = $"엑셀 시트명 : {SheetName}{Environment.NewLine}을 찾을 수 없습니다.{Environment.NewLine}";
 
                 MessageBox.Show(message, "엑셀 시트명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
 
@@ -206,7 +202,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
             {
                 var (models, species) = (new List<ImportFish>(), new List<ImportFishSpecies>());
 
-                if(IsContainHabitat == false)
+                if (IsContainHabitat == false)
                 {
                     (models, species) = await Task.Run(() => DataTableToModels(worksheet));
 
@@ -426,7 +422,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         }
     }
 
-    //엑셀->모델 (서식수변 항목 포함)
+    //엑셀->모델 (서식수변 추가 항목(24개) 포함)
     private (List<ImportFish>, List<ImportFishSpecies>) ContainHabitatDataTableToModels(Worksheet worksheet)
     {
         var importModels = new List<ImportFish>();
@@ -1103,6 +1099,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         }
     }
 
+    //저장
     private async Task<bool> AddSave()
     {
         try
@@ -1148,6 +1145,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         }
     }
 
+    //하위 저정
     private void SubBatchSave(int parentId, int macthNumber)
     {
         try
@@ -1240,7 +1238,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "채집도구", Value = 15 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "흐름상태", Value = 16 });
 
-        if(IsContainHabitat == false)
+        if (IsContainHabitat == false)
         {
             ColumnNumbers.Add(new ColumnNumber { ColumnName = "암반", Value = 18 });
             ColumnNumbers.Add(new ColumnNumber { ColumnName = "콘크리트", Value = 19 });
@@ -1260,7 +1258,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
             ColumnNumbers.Add(new ColumnNumber { ColumnName = "종양", Value = 47 });
         }
         else
-        {            
+        {
             ColumnNumbers.Add(new ColumnNumber { ColumnName = "유역형태", Value = 18 });
             ColumnNumbers.Add(new ColumnNumber { ColumnName = "수계형태", Value = 19 });
             ColumnNumbers.Add(new ColumnNumber { ColumnName = "하폭(m)", Value = 20 });
@@ -1316,7 +1314,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         var speciess = new List<ImportFishSpecies>();
 
         var usedRange = worksheet.UsedCellRange;
-        for (int rowIndex = speciesFirshtNumber-1; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
+        for (int rowIndex = speciesFirshtNumber - 1; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
         {
             // 개체수는 정수
             var cellValue = worksheet.Cells[rowIndex, columnIndex].GetValue().Value.RawValue;

@@ -5,7 +5,8 @@
                     xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
                     xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
                     xmlns:animation="clr-namespace:Telerik.Windows.Controls.Animation;assembly=Telerik.Windows.Controls"
-                    xmlns:converter="clr-namespace:SDSM_App.Converters">
+                    xmlns:converter="clr-namespace:SDSM_App.Converters"
+                    xmlns:behavior="clr-namespace:SDSM_App.Behaviors">
 
     <converter:StringToBoolConverter x:Key="StringToBoolConverter"/>
 
@@ -60,6 +61,10 @@
     <Style x:Key="PrimaryTextBlcokStyle" TargetType="TextBlock">
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
+    </Style>
+
+    <Style x:Key="PrimaryTitleTextBlcokStyle" TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}">
+        <Setter Property="FontFamily" Value="{StaticResource High1FontFamily}"/>
     </Style>
 
     <Style x:Key="TitleStackPanelStyle" TargetType="StackPanel">
@@ -481,6 +486,16 @@
     <Style x:Key="FormDoubleNumericUpDownStyle" TargetType="telerik:RadNumericUpDown" BasedOn="{StaticResource FormIntNumericUpDownStyle}">
         <Setter Property="IsInteger" Value="False"/>
         <Setter Property="NumberDecimalDigits" Value="1"/>
+    </Style>
+    
+    <Style x:Key="FormIntNoMouseWheelNumericUpDownStyle" TargetType="telerik:RadNumericUpDown" BasedOn="{StaticResource FormIntNumericUpDownStyle}">
+        <Setter Property="behavior:MouseWheelBehavior.IsEnabled" Value="False" />
+    </Style>    
+
+    <Style x:Key="FormDoubleNoMouseWheelNumericUpDownStyle" TargetType="telerik:RadNumericUpDown" BasedOn="{StaticResource FormIntNumericUpDownStyle}">
+        <Setter Property="IsInteger" Value="False"/>
+        <Setter Property="NumberDecimalDigits" Value="1"/>
+        <Setter Property="behavior:MouseWheelBehavior.IsEnabled" Value="False" />
     </Style>
 
     <Style x:Key="FormRadComboBoxStyle" TargetType="telerik:RadComboBox" BasedOn="{StaticResource RadComboBoxStyle}">

@@ -16,6 +16,11 @@
     <Color x:Key="MinColor">#FF5B9BD5</Color>
     <SolidColorBrush x:Key="MinBrush" Color="{StaticResource MinColor}" />
 
+    <LinearGradientBrush x:Key="GrayLinearBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#C9C9C9" Offset="0"/>
+        <GradientStop Color="#E4E4E4" Offset="1"/>
+    </LinearGradientBrush>
+    
     <LinearGradientBrush x:Key="GreenLinearBrush" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#7B8A72" Offset="0"/>
         <GradientStop Color="#68795E" Offset="0.3"/>
@@ -76,6 +81,7 @@
         <GradientStop Color="#26A69A" Offset="1"/>
     </LinearGradientBrush>
 
+    <!--주메뉴-->
     <Color x:Key="MainPrimaryColor">#FF1E232E</Color>
     <SolidColorBrush x:Key="MainPrimaryBrush" Color="{StaticResource MainPrimaryColor}" />
 

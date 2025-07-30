@@ -93,7 +93,8 @@
                             <telerik:RadCallout Content="하천 서식환경 24개 항목이 추가된 엑셀" Style="{StaticResource TooltipRadCalloutStyle}"/>
                         </telerik:RadToolTipService.ToolTipContent>
                     </CheckBox>
-                    <telerik:RadButton Content="자료 가져오기" Margin="30 0 0 0" Command="{Binding Path=DataImportExecutedCommand}" Style="{StaticResource DarkButtonStyle}"/>
+                    <Rectangle Margin="20 0" Style="{StaticResource VerticalRectangleStyle}"/>
+                    <telerik:RadButton Content="엑셀자료 가져오기" Command="{Binding Path=DataImportExecutedCommand}" Style="{StaticResource DarkButtonStyle}"/>
                 </StackPanel>
             </ScrollViewer>
         </Border>
@@ -108,7 +109,7 @@
                 <telerik:RadToggleButton x:Name="ImportRadToggleButton" Content="가져온 자료" IsChecked="True"  Width="150" Height="44" Margin="0 0 5 0" Cursor="Hand"/>
                 <telerik:RadToggleButton x:Name="ConvertedRadToggleButton" Content="변환된 자료" IsChecked="True" Width="150" Height="44" Cursor="Hand"/>
 
-                <Rectangle Style="{StaticResource VerticalRectangleStyle}" Margin="10 0" Height="42"/>
+                <Rectangle Style="{StaticResource VerticalRectangleStyle}" Margin="20 0" Height="42"/>
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <StackPanel.Resources>
@@ -122,12 +123,7 @@
                     <TextBlock Text="건"/>
                 </StackPanel>
 
-                <telerik:RadButton Height="44" Margin="10 0 0 0" Click="SpeciesVisibleRadButton_Click">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="종 목록 보기"/>
-                        <icon:PackIconPhosphorIcons Kind="ArrowUpRightThin" Margin="5 2 0 0" VerticalAlignment="Center" Width="14" Height="14"/>
-                    </StackPanel>
-                </telerik:RadButton>
+                <telerik:RadButton Content="종 목록 보기" Height="44" Margin="20 0 0 0" Click="SpeciesVisibleRadButton_Click"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -418,7 +414,7 @@
             </Border>
         </Grid>
 
-        <Border x:Name="SpeciesLayout" Grid.RowSpan="3" CornerRadius="{telerik:Windows11Resource ResourceKey=CornerRadius}" Margin="0 -90 0 0" Style="{StaticResource EditorLayoutStyle}">
+        <Border x:Name="SpeciesLayout" Grid.RowSpan="3" Margin="-30 -90 -30 -30" Style="{StaticResource EditorLayoutStyle}">
             <Grid Margin="20 12 20 20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -535,7 +531,7 @@
                             <StackPanel.Resources>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}"/>
                             </StackPanel.Resources>
-                            <TextBlock Text="가져온 자료"/>
+                            <TextBlock Text="변환된 자료"/>
                             <TextBlock Text="총" Margin="20 0 5 0"/>
                             <TextBlock Text="{Binding Path=SpeciesCollection.Count, Mode=OneWay, StringFormat={}{0:N0}건}"/>
                             <TextBlock Text="오류" Margin="10 0 5 0"/>

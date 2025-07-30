@@ -1,7 +1,9 @@
 ﻿using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_App.ViewModels;
+using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -152,6 +154,44 @@ public partial class HomePage : Page, ITransientService
     private void MapPinCalloutCloseRadButton_Click(object sender, RoutedEventArgs e)
     {
         MapPinCalloutPopupClose();
+    }
+
+    //복사
+    private async void AllCopyRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is RadButton button && button.Tag is Tuple<object, object> tuple)
+        {
+            try
+            {
+                button.IsEnabled = false;
+
+                if (tuple.Item1 is RadGridView gridView && tuple.Item2 is TextBlock copyTextBlock)
+                {
+                    var selectedItem = gridView.SelectedItem ?? null;
+                    gridView.SelectionMode = SelectionMode.Multiple;
+                    gridView.SelectAll();
+
+                    var copyCommand = RadGridViewCommands.Copy as RoutedUICommand;
+                    copyCommand?.Execute(null, gridView);
+
+                    gridView.UnselectAll();
+                    gridView.SelectionMode = SelectionMode.Single;
+                    gridView.SelectedItem = selectedItem;
+
+                    copyTextBlock.Text = "복사됨";
+                    await Task.Delay(500);
+                    copyTextBlock.Text = "복사";
+                };
+            }
+            catch (Exception ex)
+            {
+                GB.LogWrite(GetType().Name, nameof(AllCopyRadButton_Click), ex.Message);
+            }
+            finally
+            {
+                button.IsEnabled = true;
+            }
+        }
     }
 
     //주제도 전체선택해제
@@ -384,5 +424,21 @@ public partial class HomePage : Page, ITransientService
         _clickCallout.DataContext = null;
     }
 
-    #endregion 
+    #endregion
+
+    private void DataRadGridView_Copying(object sender, GridViewClipboardEventArgs e)
+    {
+        if (sender is RadGridView radGridView)
+        {
+            radGridView.SelectionMode = SelectionMode.Multiple;
+            radGridView.SelectAll();
+
+            var copyCommand = RadGridViewCommands.Copy as RoutedUICommand;
+            copyCommand?.Execute(null, radGridView);
+
+            radGridView.UnselectAll();
+            radGridView.SelectionMode = SelectionMode.Single;
+            radGridView.SelectedItem = null;
+        }
+    }    
 }

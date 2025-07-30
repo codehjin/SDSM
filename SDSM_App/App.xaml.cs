@@ -36,6 +36,7 @@ public partial class App : Application
         Windows11Palette.Palette.SecondaryForegroundColor = (Color)ColorConverter.ConvertFromString("#BB000000");
         Windows11Palette.Palette.PrimarySolidBorderColor = (Color)ColorConverter.ConvertFromString("#FFE5E5E5");
         Windows11Palette.Palette.SelectedColor = (Color)ColorConverter.ConvertFromString("#FFE5E5E5");
+        Windows11Palette.Palette.ReadOnlyOpacity = 1;
 
         //창 상태 생성
         WindowPlace = new WindowPlace("RestoreWindowPlace.config");
@@ -109,7 +110,6 @@ public partial class App : Application
 
     public static void SetDarkModeThemes()
     {
-        //Windows11Palette.Palette.ValidationColor = (Color)ColorConverter.ConvertFromString("#FFFF5163");
         Windows11Palette.Palette.AccentColor = (Color)ColorConverter.ConvertFromString("#FF00AFFF");
         Windows11Palette.Palette.AccentMouseOverColor = (Color)ColorConverter.ConvertFromString("#E600AFFF");
         Windows11Palette.Palette.AccentPressedColor = (Color)ColorConverter.ConvertFromString("#CC00AFFF");

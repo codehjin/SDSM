@@ -155,11 +155,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
             if (isExist == false)
             {
-                string success = "성공";
-                string fail = "실패";
-
-                var message = $"엑셀 시트명{Environment.NewLine}" +
-                              $"조사자료 : {(isExist ? success : fail)}{Environment.NewLine}";
+                var message = $"엑셀 시트명 : {SheetName}{Environment.NewLine}을 찾을 수 없습니다.{Environment.NewLine}";
 
                 MessageBox.Show(message, "엑셀 시트명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
 

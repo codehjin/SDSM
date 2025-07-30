@@ -9,8 +9,6 @@
       xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
       xmlns:common="clr-namespace:SDSM_App.Commons"
-      xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"
-      d:DataContext="{d:DesignInstance Type={x:Type viewmodel:BulkRegisterPageViewModel}}"
       FontFamily="{StaticResource DefaultFontFamily}"
       FontSize="{StaticResource DefaultFontSize}"
       Title="일괄등록">
@@ -157,9 +155,9 @@
                     </StackPanel.Resources>
                     <TextBlock Text="생물조사" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="5 0 0 10"/>
                     <UniformGrid Columns="4">
-                        <telerik:RadButton Content="식생" Click="OpenRadButton_Click"/>
-                        <telerik:RadButton Content="식물" Click="OpenRadButton_Click"/>
-                        <telerik:RadButton Content="양서파충류" Tag="BulkAmphibianReptileControl" Click="OpenRadButton_Click"/>
+                        <telerik:RadButton Content="식생" Click="OpenRadButton_Click" IsEnabled="False"/>
+                        <telerik:RadButton Content="식물" Click="OpenRadButton_Click" IsEnabled="False"/>
+                        <telerik:RadButton Content="양서파충류" Tag="BulkAmphibianReptileControl" Click="OpenRadButton_Click" IsEnabled="False"/>
                         <telerik:RadButton Content="어류" Tag="BulkFishControl" Click="OpenRadButton_Click"/>
                     </UniformGrid>
                     <UniformGrid Columns="3">
