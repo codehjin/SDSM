@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SDSM_App.Enums;
@@ -21,6 +22,7 @@ using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
 using Telerik.Windows.Documents.Spreadsheet.Model;
+
 namespace SDSM_App.ViewModels;
 
 /// <summary>
@@ -71,6 +73,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
     [ObservableProperty] private int _firstRowNumber = 2;
     [ObservableProperty] private int _firstColumnNumber = 13;
+    [ObservableProperty] private int _speciesFirstRowNumber = 47;
 
     //에러 개수
     [ObservableProperty]
@@ -90,6 +93,16 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
     //종목록 변환된 자료 개수
     [ObservableProperty]
     private int _convertedSpeciesCount;
+
+    #endregion
+
+    #region 종목록 속성
+
+    //기존 종목록
+    public List<BenthosSpeciesList> SpeciesListData { get; set; } = [];
+
+    // 엑셀에서 가져온 종목록
+    public List<BenthosSpeciesList> ImportSpeciesListData { get; set; } = [];
 
     #endregion
 
@@ -205,6 +218,15 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
                     ConvertedSpeciesCount = SpeciesCollection.Count;
                     ErrorSpeciesCount = ConvertedSpeciesCollection.Count(m => m.ErrorContent.Length > 0);
+
+                    //기존 종목록, 엑셀시트 종목록 가져오기
+                    if (ErrorCount == 0 && ErrorSpeciesCount == 0)
+                    {
+                        using var context = new SDSMDbContext();
+
+                        SpeciesListData = await context.BenthosSpeciesLists.ToListAsync();
+                        ImportSpeciesListData = await Task.Run(() => GetImportSpeciesData(worksheet, SpeciesFirstRowNumber));
+                    }
                 }
             }
 
@@ -304,7 +326,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                     matchNumber++;
 
                     //종목록
-                    var speciesData = GetSpeciesData(worksheet, columnIndex, matchNumber);
+                    var speciesData = GetSpeciesData(worksheet, columnIndex, matchNumber, SpeciesFirstRowNumber);
 
                     // 1. IndividualCount 값만 추출 (null은 0으로 처리)
                     int[] individualCounts = [.. speciesData.Select(x => x.IndividualCount.HasValue ? (int)x.IndividualCount.Value : 0)];
@@ -974,6 +996,15 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                 }
             }
 
+            //기존 종목록에 없는 종목록 추가
+            var newSpecies = GetNewSpeciesData();
+            if (newSpecies.Count != 0)
+            {
+                using var context = new SDSMDbContext();
+                context.BenthosSpeciesLists.AddRange(newSpecies);
+                await context.SaveChangesAsync();
+            }            
+
             return true;
         }
         catch (Exception ex)
@@ -1054,6 +1085,9 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         ErrorCount = 0;
         ConvertedSpeciesCount = 0;
         ErrorSpeciesCount = 0;
+
+        SpeciesListData.Clear();
+        ImportSpeciesListData.Clear();
     }
 
     private void GetColumnNumbers()
@@ -1110,12 +1144,12 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
     /// 워크시트에서 특정 문자열이 포함된 첫 번째 셀의 위치(행, 열)를 반환합니다.
     /// 찾지 못하면 null을 반환합니다.
     /// </summary>
-    private static List<ImportBenthosSpecies> GetSpeciesData(Worksheet worksheet, int columnIndex, int matchNumber)
+    private static List<ImportBenthosSpecies> GetSpeciesData(Worksheet worksheet, int columnIndex, int matchNumber, int speciesFirstRowNumber)
     {
         var speciess = new List<ImportBenthosSpecies>();
 
         var usedRange = worksheet.UsedCellRange;
-        for (int rowIndex = 46; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
+        for (int rowIndex = speciesFirstRowNumber - 1; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
         {
             // 개체수는 실수
             var cellValue = worksheet.Cells[rowIndex, columnIndex].GetValue().Value.RawValue;
@@ -1149,6 +1183,69 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         using var context = new SDSMDbContext();
 
         SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "저서동물").OrderBy(m => m.SavedFileInfoId)];
+    }
+
+    #endregion
+
+    #region 엑셀시트에서 가져온 종목록
+
+    private List<BenthosSpeciesList> GetImportSpeciesData(Worksheet worksheet, int speciesFirstRowNumber)
+    {
+        var data = new List<BenthosSpeciesList>();
+
+        try
+        {
+            var usedRange = worksheet.UsedCellRange;
+            for (int rowIndex = speciesFirstRowNumber - 1; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
+            {
+                double? saprobicValue = double.TryParse(worksheet.Cells[rowIndex, 0].GetValue().Value.RawValue, out double saprobicValueResult) ? saprobicValueResult : null;
+                int? indicatorWeight = int.TryParse(worksheet.Cells[rowIndex, 1].GetValue().Value.RawValue, out int indicatorWeightResult) ? indicatorWeightResult : null;
+                string? speciesEn = worksheet.Cells[rowIndex, 9].GetValue().Value.RawValue;
+                string? speciesKo = worksheet.Cells[rowIndex, 10].GetValue().Value.RawValue;
+
+                if(!string.IsNullOrWhiteSpace(speciesEn) && !string.IsNullOrWhiteSpace(speciesKo))
+                {
+                    var species = new BenthosSpeciesList
+                    {
+                        SaprobicValue = saprobicValue,
+                        IndicatorWeight = indicatorWeight,
+                        Endangered1 = worksheet.Cells[rowIndex, 2].GetValue().Value.RawValue,
+                        Endangered2 = worksheet.Cells[rowIndex, 3].GetValue().Value.RawValue,
+                        Endemic = worksheet.Cells[rowIndex, 4].GetValue().Value.RawValue,
+                        PhylumKo = worksheet.Cells[rowIndex, 5].GetValue().Value.RawValue,
+                        ClassKo = worksheet.Cells[rowIndex, 6].GetValue().Value.RawValue,
+                        OrderKo = worksheet.Cells[rowIndex, 7].GetValue().Value.RawValue,
+                        FamilyKo = worksheet.Cells[rowIndex, 8].GetValue().Value.RawValue,
+                        SpeciesEn = speciesEn,
+                        SpeciesKo = speciesKo,
+                    };
+
+                    data.Add(species);               
+                }
+            }
+
+            return data;
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(GetImportSpeciesData), ex.Message);
+            return data;
+        }
+    }
+
+    private List<BenthosSpeciesList> GetNewSpeciesData()
+    {
+        // SpeciesKo, SpeciesEn 기준으로 직접 비교
+        var newSpecies = ImportSpeciesListData
+            .Where(import =>
+                !SpeciesListData.Any(existing =>
+                    import.SpeciesKo?.Replace(" ","").ToLower() == existing.SpeciesKo?.Replace(" ","").ToLower() &&
+                    import.SpeciesEn?.Replace(" ", "").ToLower() == existing.SpeciesEn?.Replace(" ", "").ToLower()
+                )
+            )
+            .ToList();
+        
+        return newSpecies;
     }
 
     #endregion

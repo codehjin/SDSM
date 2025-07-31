@@ -21,6 +21,8 @@ using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
 using Telerik.Windows.Documents.Spreadsheet.Model;
+using Microsoft.EntityFrameworkCore;
+
 namespace SDSM_App.ViewModels;
 
 /// <summary>
@@ -71,7 +73,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
 
     [ObservableProperty] private int _firstRowNumber = 2;
     [ObservableProperty] private int _firstColumnNumber = 17;
-    [ObservableProperty] private int _speciesFirstRowNumver = 79;
+    [ObservableProperty] private int _speciesFirstRowNumber = 79;
     [ObservableProperty] private bool _isContainHabitat;
 
     //에러 개수
@@ -95,6 +97,16 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
 
     #endregion
 
+    #region 종목록 속성
+
+    //기존 종목록
+    public List<FishSpeciesList> SpeciesListData { get; set; } = [];
+
+    // 엑셀에서 가져온 종목록
+    public List<FishSpeciesList> ImportSpeciesListData { get; set; } = [];
+
+    #endregion
+
     #region ICommand 구현
 
     [RelayCommand]
@@ -108,11 +120,11 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
     {
         if (IsContainHabitat == false)
         {
-            SpeciesFirstRowNumver = 79;
+            SpeciesFirstRowNumber = 79;
         }
         else
         {
-            SpeciesFirstRowNumver = 103;
+            SpeciesFirstRowNumber = 103;
         }
         GetColumnNumbers();
     }
@@ -232,6 +244,15 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
 
                     ConvertedSpeciesCount = SpeciesCollection.Count;
                     ErrorSpeciesCount = ConvertedSpeciesCollection.Count(m => m.ErrorContent.Length > 0);
+
+                    //기존 종목록, 엑셀시트 종목록 가져오기
+                    if (ErrorCount == 0 && ErrorSpeciesCount == 0)
+                    {
+                        using var context = new SDSMDbContext();
+
+                        SpeciesListData = await context.FishSpeciesLists.ToListAsync();
+                        ImportSpeciesListData = await Task.Run(() => GetImportSpeciesData(worksheet, SpeciesFirstRowNumber));
+                    }
                 }
             }
 
@@ -322,7 +343,6 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         {
             CellRange usedCellRange = worksheet.UsedCellRange;
             int matchNumber = 0;
-            int speciesColumnNumber = SpeciesFirstRowNumver;
 
             for (int columnIndex = FirstColumnNumber - 1; columnIndex <= usedCellRange.ToIndex.ColumnIndex; columnIndex++)
             {
@@ -332,7 +352,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                     matchNumber++;
 
                     //종목록
-                    var speciesData = GetSpeciesData(worksheet, columnIndex, matchNumber, speciesColumnNumber);
+                    var speciesData = GetSpeciesData(worksheet, columnIndex, matchNumber, SpeciesFirstRowNumber);
 
                     // 1. IndividualCount 값만 추출 (null은 0으로 처리)
                     int[] individualCounts = [.. speciesData.Select(x => x.IndividualCount.HasValue ? (int)x.IndividualCount.Value : 0)];
@@ -432,7 +452,6 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         {
             CellRange usedCellRange = worksheet.UsedCellRange;
             int matchNumber = 0;
-            int speciesColumnNumber = SpeciesFirstRowNumver;
 
             for (int columnIndex = FirstColumnNumber - 1; columnIndex <= usedCellRange.ToIndex.ColumnIndex; columnIndex++)
             {
@@ -442,7 +461,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                     matchNumber++;
 
                     //종목록
-                    var speciesData = GetSpeciesData(worksheet, columnIndex, matchNumber, speciesColumnNumber);
+                    var speciesData = GetSpeciesData(worksheet, columnIndex, matchNumber, SpeciesFirstRowNumber);
 
                     // 1. IndividualCount 값만 추출 (null은 0으로 처리)
                     int[] individualCounts = [.. speciesData.Select(x => x.IndividualCount.HasValue ? (int)x.IndividualCount.Value : 0)];
@@ -1129,6 +1148,15 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                 }
             }
 
+            //기존 종목록에 없는 종목록 추가
+            var newSpecies = GetNewSpeciesData();
+            if (newSpecies.Count != 0)
+            {
+                using var context = new SDSMDbContext();
+                context.FishSpeciesLists.AddRange(newSpecies);
+                await context.SaveChangesAsync();
+            }
+
             return true;
         }
         catch (Exception ex)
@@ -1216,6 +1244,9 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         ErrorCount = 0;
         ConvertedSpeciesCount = 0;
         ErrorSpeciesCount = 0;
+
+        SpeciesListData.Clear();
+        ImportSpeciesListData.Clear();
     }
 
     private void GetColumnNumbers()
@@ -1352,6 +1383,72 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         using var context = new SDSMDbContext();
 
         SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "어류").OrderBy(m => m.SavedFileInfoId)];
+    }
+
+    #endregion
+
+    #region 엑셀시트에서 가져온 종목록
+
+    private List<FishSpeciesList> GetImportSpeciesData(Worksheet worksheet, int speciesFirstRowNumber)
+    {
+        var data = new List<FishSpeciesList>();
+
+        try
+        {
+            var usedRange = worksheet.UsedCellRange;
+            for (int rowIndex = speciesFirstRowNumber - 1; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
+            {
+                int? lineageOrder = int.TryParse(worksheet.Cells[rowIndex, 9].GetValue().Value.RawValue, out int lineageOrderResult) ? lineageOrderResult : null;
+                string? speciesKo = worksheet.Cells[rowIndex, 13].GetValue().Value.RawValue;
+                string? speciesEn = worksheet.Cells[rowIndex, 14].GetValue().Value.RawValue;
+
+                if (!string.IsNullOrWhiteSpace(speciesEn) && !string.IsNullOrWhiteSpace(speciesKo))
+                {
+                    var species = new FishSpeciesList
+                    {
+                        FishTrait = worksheet.Cells[rowIndex, 0].GetValue().Value.RawValue,
+                        ToleranceGuild = worksheet.Cells[rowIndex, 1].GetValue().Value.RawValue,
+                        FeedingGuild = worksheet.Cells[rowIndex, 2].GetValue().Value.RawValue,
+                        HabitatGuild = worksheet.Cells[rowIndex, 3].GetValue().Value.RawValue,
+                        Exotic = worksheet.Cells[rowIndex, 4].GetValue().Value.RawValue,
+                        Endemic = worksheet.Cells[rowIndex, 5].GetValue().Value.RawValue,
+                        Endangered1 = worksheet.Cells[rowIndex, 6].GetValue().Value.RawValue,
+                        Endangered2 = worksheet.Cells[rowIndex, 7].GetValue().Value.RawValue,
+                        NaturalMonument = worksheet.Cells[rowIndex, 8].GetValue().Value.RawValue,
+                        LineageOrder = lineageOrder,
+                        ClassKo = worksheet.Cells[rowIndex, 10].GetValue().Value.RawValue,
+                        OrderKo = worksheet.Cells[rowIndex, 11].GetValue().Value.RawValue,
+                        FamilyKo = worksheet.Cells[rowIndex, 12].GetValue().Value.RawValue,
+                        SpeciesKo = speciesKo,
+                        SpeciesEn = speciesEn,
+                    };
+
+                    data.Add(species);
+                }
+            }
+
+            return data;
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(GetImportSpeciesData), ex.Message);
+            return data;
+        }
+    }
+
+    private List<FishSpeciesList> GetNewSpeciesData()
+    {
+        // SpeciesKo, SpeciesEn 기준으로 직접 비교
+        var newSpecies = ImportSpeciesListData
+            .Where(import =>
+                !SpeciesListData.Any(existing =>
+                    import.SpeciesKo?.Replace(" ", "").ToLower() == existing.SpeciesKo?.Replace(" ", "").ToLower() &&
+                    import.SpeciesEn?.Replace(" ", "").ToLower() == existing.SpeciesEn?.Replace(" ", "").ToLower()
+                )
+            )
+            .ToList();
+
+        return newSpecies;
     }
 
     #endregion

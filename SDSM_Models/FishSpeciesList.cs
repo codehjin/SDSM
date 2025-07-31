@@ -5,8 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SDSM_Models;
 
 /// <summary>
-/// 어류종
-/// Benthic Macroinvertebrate
+/// 어류 생물종 목록
 /// </summary>
 
 [Table("FishSpeciesList")]

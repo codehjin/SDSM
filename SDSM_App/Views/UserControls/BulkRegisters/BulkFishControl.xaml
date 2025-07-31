@@ -35,7 +35,7 @@
                     <TextBlock Text="{Binding Path=FirstColumnNumber}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
                     <TextBlock Text="열," Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 10 0"/>
                     <TextBlock Text="생물종" Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 10 0"/>
-                    <TextBlock Text="{Binding Path=SpeciesFirstRowNumver}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                    <TextBlock Text="{Binding Path=SpeciesFirstRowNumber}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
                     <TextBlock Text="행 부터~ ," Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 10 0"/>
                     <telerik:RadDropDownButton Content="항목 행 번호" Cursor="Hand">
                         <telerik:RadDropDownButton.DropDownContent>
