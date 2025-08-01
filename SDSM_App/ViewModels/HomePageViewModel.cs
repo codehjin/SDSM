@@ -326,7 +326,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                                 {
                                     Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
                                     Caption = caption,
-                                    Label = $"어{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
+                                    Label = $"어{ProcessYearChsu(item.YearChsu):00}",
                                     MarkerFill = Application.Current.FindResource("FishBrush") as Brush,
                                     YearChsu = item.YearChsu,
                                     SurveyDate = item.SurveyDate,
@@ -364,7 +364,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                                 {
                                     Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
                                     Caption = caption,
-                                    Label = $"저{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
+                                    Label = $"저{ProcessYearChsu(item.YearChsu):00}",
                                     MarkerFill = Application.Current.FindResource("BenthosBrush") as Brush,
                                     YearChsu = item.YearChsu,
                                     SurveyDate = item.SurveyDate,
@@ -399,7 +399,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                                 {
                                     Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
                                     Caption = caption,
-                                    Label = $"조{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
+                                    Label = $"조{ProcessYearChsu(item.YearChsu):00}",
                                     MarkerFill = Application.Current.FindResource("BirdBrush") as Brush,
                                     YearChsu = item.YearChsu,
                                     SurveyDate = item.SurveyDate,
@@ -432,7 +432,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                                 {
                                     Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
                                     Caption = caption,
-                                    Label = $"포{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
+                                    Label = $"포{ProcessYearChsu(item.YearChsu):00}",
                                     MarkerFill = Application.Current.FindResource("MammalBrush") as Brush,
                                     YearChsu = item.YearChsu,
                                     SurveyDate = item.SurveyDate,
@@ -463,7 +463,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                                 {
                                     Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
                                     Caption = caption,
-                                    Label = $"서{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
+                                    Label = $"서{ProcessYearChsu(item.YearChsu):00}",
                                     MarkerFill = Application.Current.FindResource("HabitatWaterEdgeBrush") as Brush,
                                     YearChsu = item.YearChsu,
                                     SurveyDate = item.SurveyDate,
@@ -494,7 +494,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                                 {
                                     Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
                                     Caption = caption,
-                                    Label = $"수{item.SurveyDate?.Year.ToString().Substring(2, 2)}",
+                                    Label = $"수{ProcessYearChsu(item.YearChsu):00}",
                                     MarkerFill = Application.Current.FindResource("WaterQualityBrush") as Brush,
                                     YearChsu = item.YearChsu,
                                     SurveyDate = item.SurveyDate,
@@ -529,6 +529,34 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
             GB.LogWrite(GetType().Name, nameof(GetPoints), ex.Message);
             return models;
         }
+    }
+
+    private static int ProcessYearChsu(string? yearChsu)
+    {
+        if (string.IsNullOrEmpty(yearChsu) || yearChsu.Length < 2)
+            return 0;
+
+        // 앞 4글자가 모두 숫자인지 확인
+        bool first4IsDigit = yearChsu[..4].All(char.IsDigit);
+
+        if (first4IsDigit)
+        {
+            // 3~4번째 글자를 int로 변환하여 반환
+            if (int.TryParse(yearChsu.AsSpan(2, 2), out int result))
+                return result;
+        }
+        else
+        {
+            // 앞 2글자가 모두 숫자인지 확인
+            bool first2IsDigit = yearChsu[..2].All(char.IsDigit);
+            if (first2IsDigit)
+            {
+                if (int.TryParse(yearChsu.AsSpan(0, 2), out int result))
+                    return result;
+            }
+        }
+
+        return 0;
     }
 
     #endregion 
