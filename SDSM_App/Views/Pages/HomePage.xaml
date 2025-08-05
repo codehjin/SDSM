@@ -309,7 +309,7 @@
                         Language="ko-KR"
                         UseDefaultLayout="False"
                         UseSpringAnimations="False"
-                        MinZoomLevel="6"
+                        MinZoomLevel="3"
                         MaxZoomLevel="20"
                         ZoomLevel="12"
                         ZoomStep="1"
@@ -769,8 +769,8 @@
 
                             <Border>
                                 <telerik:RadSlider Value="{Binding ElementName=radMap, Path=Zoom}"
-                                                   Maximum="18"
-                                                   Minimum="6" 
+                                                   Maximum="20"
+                                                   Minimum="3" 
                                                    IsDirectionReversed="False"
                                                    Orientation="Vertical" 
                                                    TickFrequency="1"
@@ -817,7 +817,7 @@
                                     <Style TargetType="telerik:RadButton">
                                         <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=radMap, Path=Zoom }" Value="6">
+                                            <DataTrigger Binding="{Binding ElementName=radMap, Path=Zoom }" Value="3">
                                                 <Setter Property="IsEnabled" Value="False"/>
                                             </DataTrigger>
                                         </Style.Triggers>

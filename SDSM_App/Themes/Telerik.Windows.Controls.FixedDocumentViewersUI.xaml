@@ -2997,9 +2997,9 @@
     <Style x:Key="RadPdfViewerTooltipRadCalloutStyle" TargetType="telerik:RadCallout" BasedOn="{StaticResource RadCalloutStyle}">
         <Setter Property="CalloutType"  Value="RoundedRectangle"/>
         <Setter Property="ArrowType"  Value="Triangle"/>
-        <Setter Property="ArrowAnchorPoint"  Value="0.15,1.15"/>
-        <Setter Property="ArrowBasePoint1"  Value="0.5,0.5"/>
-        <Setter Property="ArrowBasePoint2"  Value="0.05,0.8"/>
+        <Setter Property="ArrowAnchorPoint"  Value="0.15,0.15"/>
+        <Setter Property="ArrowBasePoint1"  Value="0.3,-0.2"/>
+        <Setter Property="ArrowBasePoint2"  Value="0.5,0.25"/>
         <Setter Property="MinWidth"  Value="40"/>
         <Setter Property="MinHeight"  Value="32"/>
         <Setter Property="Margin"  Value="10"/>
@@ -3045,18 +3045,10 @@
                                         Padding="0 5" 
                                         BorderThickness="0"
                                         >
-                        
-                        <!--
-                        추가
-                        helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                        Padding="1" 
-                        Cursor="Hand"
-                        Width="40"
-                        Height="40">
-                        -->
+
                         <telerik:RadButton x:Name="PART_OpenButton"
                                            Command="{Binding OpenCommandDescriptor.Command}"
-                                           ToolTipService.ToolTip="Open"
+                                           ToolTipService.ToolTip="열기"
                                            Visibility="{Binding OpenCommandDescriptor.IsEnabled, Converter={StaticResource BoolToVisibilityConverter}}"
                                            HorizontalAlignment="Left"
                                            VerticalAlignment="Center"
@@ -3084,7 +3076,7 @@
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
                                            Padding="1" Cursor="Hand" Width="40" Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Top"
+                                           telerik:RadToolTipService.Placement ="Bottom"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
@@ -3107,11 +3099,11 @@
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
                                            Padding="1" Cursor="Hand" Width="40" Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Top"
+                                           telerik:RadToolTipService.Placement ="Bottom"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
-                                           telerik:RadToolTipService.ShowDuration ="30000">                                           
+                                           telerik:RadToolTipService.ShowDuration ="30000">
                             <telerik:RadGlyph x:Name="GlyphPrint" Glyph="{StaticResource GlyphPrint}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
                             <telerik:RadToolTipService.ToolTipContent>
                                 <telerik:RadCallout Content="인쇄" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
@@ -3120,19 +3112,19 @@
                         <!--추가 Margin="10 0"-->
                         <telerik:RadToolBarSeparator x:Name="PART_FirstSeparator" Margin="5 0"/>
                         <telerik:RadButton x:Name="PART_CounterclockwiseButton"
-                                           Command="{Binding RotateCounterClockwiseCommandDescriptor.Command}"
-                                           HorizontalAlignment="Left"
-                                           VerticalAlignment="Center"
-                                           MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
-                                           Margin="1"
-                                           helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                                           Padding="1" Cursor="Hand" Width="40" Height="40"
-                                           telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Top"
-                                           telerik:RadToolTipService.HorizontalOffset ="-10"
-                                           telerik:RadToolTipService.VerticalOffset ="2"
-                                           telerik:RadToolTipService.InitialShowDelay ="0"
-                                           telerik:RadToolTipService.ShowDuration ="30000">
+                                          Command="{Binding RotateCounterClockwiseCommandDescriptor.Command}"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
+                                          Margin="1"
+                                          helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
+                                          Padding="1" Cursor="Hand" Width="40" Height="40"
+                                          telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
+                                          telerik:RadToolTipService.Placement ="Bottom"
+                                          telerik:RadToolTipService.HorizontalOffset ="-10"
+                                          telerik:RadToolTipService.VerticalOffset ="2"
+                                          telerik:RadToolTipService.InitialShowDelay ="0"
+                                          telerik:RadToolTipService.ShowDuration ="30000">
                             <telerik:RadGlyph x:Name="GlyphReset" Glyph="{StaticResource GlyphReset}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
                             <telerik:RadToolTipService.ToolTipContent>
                                 <telerik:RadCallout Content="왼쪽으로 회전" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
@@ -3147,7 +3139,7 @@
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
                                            Padding="1" Cursor="Hand" Width="40" Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Top"
+                                           telerik:RadToolTipService.Placement ="Bottom"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
@@ -3170,7 +3162,7 @@
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
                                            Padding="1" Cursor="Hand" Width="40" Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Top"
+                                           telerik:RadToolTipService.Placement ="Bottom"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
@@ -3192,7 +3184,7 @@
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
                                            Padding="1" Cursor="Hand" Width="40" Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Top"
+                                           telerik:RadToolTipService.Placement ="Bottom"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
@@ -3226,7 +3218,7 @@
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
                                            Padding="1" Cursor="Hand" Width="40" Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Top"
+                                           telerik:RadToolTipService.Placement ="Bottom"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
@@ -3248,7 +3240,7 @@
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
                                            Padding="1" Cursor="Hand" Width="40" Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Top"
+                                           telerik:RadToolTipService.Placement ="Bottom"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
@@ -3259,11 +3251,11 @@
                             </telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadButton>
                         <fixedDocumentViewersUI:PercentComboBox AutomationProperties.Name="Zoom Percent"
-                                                                x:Name="PART_PercentComboBox"
-                                                                Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=RadPdfViewer.ScaleFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                RadPdfViewer="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=RadPdfViewer}"
-                                                                Margin="1 1 1 1"
-                                                                Height="40"/>
+                                                               x:Name="PART_PercentComboBox"
+                                                               Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=RadPdfViewer.ScaleFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                               RadPdfViewer="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=RadPdfViewer}"
+                                                               Margin="1 1 1 1"
+                                                               Height="40"/>
                         <telerik:RadToolBarSeparator x:Name="PART_FourthSeparator" Margin="5 0"/>
                         <telerik:RadToggleButton x:Name="PART_FitToWidthButton"
                                                  Command="{Binding FitToWidthFixedDocumentPagesPresenterCommandDescriptor.Command}"
@@ -3276,7 +3268,7 @@
                                                  Margin="1"
                                                  Padding="1" Cursor="Hand" Width="40" Height="40"
                                                  telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                                 telerik:RadToolTipService.Placement ="Top"
+                                                 telerik:RadToolTipService.Placement ="Bottom"
                                                  telerik:RadToolTipService.HorizontalOffset ="-10"
                                                  telerik:RadToolTipService.VerticalOffset ="2"
                                                  telerik:RadToolTipService.InitialShowDelay ="0"
@@ -3288,7 +3280,7 @@
                         </telerik:RadToggleButton>
                         <telerik:RadToggleButton x:Name="PART_FitToPageButton"
                                                  Command="{Binding FitToPageFixedDocumentSinglePageViewPresenterCommandDescriptor.Command}"
-                                                 IsEnabled="{Binding FitToPageFixedDocumentSinglePageViewPresenterCommandDescriptor.IsEnabled, Converter={StaticResource InvertedBooleanConverter}, Mode=TwoWay}"
+                                                 IsEnabled="{Binding FitToPageFixedDocumentSinglePageViewPresenterCommandDescriptor.IsEnabled, Converter={StaticResource InvertedBooleanConverter},Mode=TwoWay}"
                                                  IsChecked="{Binding FitToPageFixedDocumentSinglePageViewPresenterCommandDescriptor.IsEnabled, Mode=TwoWay}"
                                                  helpers:ThemeHelper.CheckedBackgroundBrush="#FF60CDFF"
                                                  HorizontalAlignment="Left"
@@ -3297,7 +3289,7 @@
                                                  Margin="1"
                                                  Padding="1" Cursor="Hand" Width="40" Height="40"
                                                  telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                                 telerik:RadToolTipService.Placement ="Top"
+                                                 telerik:RadToolTipService.Placement ="Bottom"
                                                  telerik:RadToolTipService.HorizontalOffset ="-10"
                                                  telerik:RadToolTipService.VerticalOffset ="2"
                                                  telerik:RadToolTipService.InitialShowDelay ="0"
@@ -3316,7 +3308,7 @@
                                                  Margin="1"
                                                  Padding="1" Cursor="Hand" Width="40" Height="40"
                                                  telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                                 telerik:RadToolTipService.Placement ="Top"
+                                                 telerik:RadToolTipService.Placement ="Bottom"
                                                  telerik:RadToolTipService.HorizontalOffset ="-10"
                                                  telerik:RadToolTipService.VerticalOffset ="2"
                                                  telerik:RadToolTipService.InitialShowDelay ="0"
@@ -3334,7 +3326,7 @@
                                                  Margin="1"
                                                  Padding="1" Cursor="Hand" Width="40" Height="40"
                                                  telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                                 telerik:RadToolTipService.Placement ="Top"
+                                                 telerik:RadToolTipService.Placement ="Bottom"
                                                  telerik:RadToolTipService.HorizontalOffset ="-10"
                                                  telerik:RadToolTipService.VerticalOffset ="2"
                                                  telerik:RadToolTipService.InitialShowDelay ="0"
@@ -3344,6 +3336,7 @@
                                 <telerik:RadCallout Content="텍스트 선택" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
                             </telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadToggleButton>
+                        
                         <telerik:RadToggleButton x:Name="PART_SignatureButton"
                                                  AutomationProperties.Name="Signature"
                                                  ToolTipService.ToolTip="Signature Panel"

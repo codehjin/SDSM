@@ -32,6 +32,7 @@
     <None Remove="Assets\Images\samsung_blue.png" />
     <None Remove="Assets\Images\samsung_white.png" />
     <None Remove="Assets\MBTiles\os_1-6.mbtiles" />
+    <None Remove="Assets\Pdfs\manual.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="m.ico" />
@@ -52,16 +53,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="MahApps.Metro.IconPacks" Version="5.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.5" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.5" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NinjaNye.SearchExtensions" Version="4.0.1" />
     <PackageReference Include="RestoreWindowPlace" Version="3.1.0" />
-    <PackageReference Include="Scrutor" Version="6.0.1" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.5" />
+    <PackageReference Include="Scrutor" Version="6.1.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.7" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
     <PackageReference Include="Telerik.UI.for.Wpf.80.Xaml">
       <Version>2025.2.707</Version>
@@ -134,6 +135,9 @@
     </Resource>
     <Resource Include="Assets\MBTiles\os_1-6.mbtiles">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Pdfs\manual.pdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <ItemGroup>

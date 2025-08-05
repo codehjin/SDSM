@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.InjectableServices;
-using SDSM_App.Messengers;
+using SDSM_App.Views.Windows;
+using System.Windows;
+using System.Windows.Forms;
 
 namespace SDSM_App.ViewModels;
 
@@ -37,55 +39,39 @@ public partial class MainWindowViewModel : ObservableObject, ISingletonService
     [ObservableProperty] private bool _isCheckedHabitatWaterEdge;
     [ObservableProperty] private bool _isCheckedWaterQuality;
 
-    [ObservableProperty] private bool _isCheckedProtectedArea;    
-
+    [ObservableProperty] private bool _isCheckedProtectedArea;
 
     [ObservableProperty] private bool _IsCheckedBulkRegister;
-
-    public static bool FloatingWindowOpend { get; set; }
 
     #endregion
 
     #region ICommand 구현
 
-    //새창 열기
+    //메뉴얼
     [RelayCommand]
-    private void FloatingWindowOpenExecuted(string paneName)
+    public void ManualWindowOpen()
     {
-        //if (FloatingWindowOpend == false)
-        //{
-        //    Window win = App.Current.Services.GetRequiredService<FloatingWindow>();
-        //    win.Owner = Application.Current.MainWindow;
-        //    win.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-        //    win.Closed += (s, e) =>
-        //    {
-        //        FloatingWindowOpend = false;
-        //    };
-        //    FloatingWindowOpend = true;
-        //    win.Show();
-        //}
-        //else
-        //{
-        //    var window = Application.Current.Windows.OfType<FloatingWindow>().FirstOrDefault();
-        //    if (window != null)
-        //    {
-        //        if (window.WindowState == WindowState.Minimized)
-        //        {
-        //            window.WindowState = WindowState.Normal;
-        //        }
-        //        window.Topmost = true;
-        //        window.Topmost = false;
-        //    }
-        //}
-
-        WeakReferenceMessenger.Default.Send(new FloatingTargetMessage(paneName));
+        var window = App.Current.Windows.OfType<ManualWindow>().FirstOrDefault();
+        if (window != null)
+        {
+            if (window.WindowState == WindowState.Minimized)
+            {
+                window.WindowState = WindowState.Normal;
+            }
+            window.Topmost = true;
+            window.Topmost = false;
+        }
+        else
+        {
+            Window win = App.Current.Services.GetRequiredService<ManualWindow>();
+            win.Show();
+        }
     }
 
     #endregion
 
     #region 메서드
 
-   
 
     #endregion
 

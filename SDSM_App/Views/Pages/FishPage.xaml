@@ -34,7 +34,7 @@
                 <telerik:RadButton Command="{Binding Path=AddEditorOpenExecutedCommand}" Style="{StaticResource AddButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <telerik:RadGlyph Glyph="{StaticResource GlyphPlus}" />
-                        <TextBlock Text="추가" Margin="5 0 0 0"/>
+                        <TextBlock Text="신규" Margin="5 0 0 0"/>
                     </StackPanel>
                 </telerik:RadButton>
                 <telerik:RadButton Content="수정" Command="{Binding Path=EditEditorOpenExecutedCommand}" Style="{StaticResource EditButtonStyle}"/>

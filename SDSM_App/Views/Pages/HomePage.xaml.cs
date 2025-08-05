@@ -90,15 +90,15 @@ public partial class HomePage : Page, ITransientService
         }
     }
 
-    #endregion
-
-    #region Control 이벤트
-
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
         CalloutPopupService.CloseAll();
         radMap.Dispose();
     }
+
+    #endregion
+
+    #region Control 이벤트
 
     //지도 초기화
     private void RadMap_Loaded(object sender, RoutedEventArgs e)
@@ -107,7 +107,6 @@ public partial class HomePage : Page, ITransientService
         {
             AddMbTilesProvider("os_1-6");
             AddMbTilesProvider("vworld_road");
-            //AddMbTilesProvider("map");
         }
     }
 
@@ -425,20 +424,4 @@ public partial class HomePage : Page, ITransientService
     }
 
     #endregion
-
-    private void DataRadGridView_Copying(object sender, GridViewClipboardEventArgs e)
-    {
-        if (sender is RadGridView radGridView)
-        {
-            radGridView.SelectionMode = SelectionMode.Multiple;
-            radGridView.SelectAll();
-
-            var copyCommand = RadGridViewCommands.Copy as RoutedUICommand;
-            copyCommand?.Execute(null, radGridView);
-
-            radGridView.UnselectAll();
-            radGridView.SelectionMode = SelectionMode.Single;
-            radGridView.SelectedItem = null;
-        }
-    }    
 }

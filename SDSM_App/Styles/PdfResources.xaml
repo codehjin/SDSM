@@ -1,0 +1,357 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation">
+
+    <SolidColorBrush x:Key="ThumbnailsAccentBrush" Color="#FF000000" />
+    <SolidColorBrush x:Key="ThumbnailsAccentBrushAlpha25" Color="#11000000" />
+    <SolidColorBrush x:Key="ThumbnailsBasicBrush" Color="#33000000" />
+    <SolidColorBrush x:Key="ThumbnailsStrongBrush" Color="#FF0078D4" />
+
+    <Style x:Key="ThumbnailsButtonBaseStyle" TargetType="ButtonBase">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="3"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3 4"/>
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+    </Style>
+
+    <Style x:Key="ThumbnailsButtonStyle" TargetType="telerik:RadButton" BasedOn="{StaticResource ThumbnailsButtonBaseStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="telerik:RadButton">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MouseOverBorder" Storyboard.TargetProperty="Visibility">
+                                            <DiscreteObjectKeyFrame KeyTime="00:00:00">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Visibility>Visible</Visibility>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed" />
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" Storyboard.TargetName="Border" Storyboard.TargetProperty="Opacity" To="0.5"/>
+                                        <DoubleAnimation Duration="0" Storyboard.TargetName="Content" Storyboard.TargetProperty="Opacity" To="0.3"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="BackgroundVisibility">
+                                <VisualState x:Name="BackgroundIsHidden">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="Visibility">
+                                            <DiscreteObjectKeyFrame KeyTime="00:00:00">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Visibility>Collapsed</Visibility>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="BackgroundIsVisible"/>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStatesGroup">
+                                <VisualState x:Name="Unfocused" />
+                                <VisualState x:Name="Focused" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Border x:Name="Border"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <Border x:Name="MouseOverBorder" Visibility="Collapsed" CornerRadius="{TemplateBinding CornerRadius}" BorderBrush="White" BorderThickness="1"/>
+                        <ContentControl x:Name="Content"
+                                IsTabStop="False"
+                                Content="{TemplateBinding Content}"
+                                Foreground="{TemplateBinding Foreground}"
+                                Margin="{TemplateBinding Padding}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ThumbnailsToggleButtonStyle" TargetType="telerik:RadToggleButton" BasedOn="{StaticResource ThumbnailsButtonBaseStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="telerik:RadToggleButton">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MouseOverBorder" Storyboard.TargetProperty="Visibility">
+                                            <DiscreteObjectKeyFrame KeyTime="00:00:00">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Visibility>Visible</Visibility>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PressedBorder" Storyboard.TargetProperty="Visibility">
+                                            <DiscreteObjectKeyFrame KeyTime="00:00:00">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Visibility>Visible</Visibility>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" Storyboard.TargetName="Border" Storyboard.TargetProperty="Opacity" To="0.5"/>
+                                        <DoubleAnimation Duration="0" Storyboard.TargetName="Content" Storyboard.TargetProperty="Opacity" To="0.3"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="DisabledChecked">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" Storyboard.TargetName="Content" Storyboard.TargetProperty="Opacity" To="0.5"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="MouseOverChecked">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MouseOverBorder" Storyboard.TargetProperty="Visibility">
+                                            <DiscreteObjectKeyFrame KeyTime="00:00:00">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Visibility>Visible</Visibility>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="BackgroundVisibility">
+                                <VisualState x:Name="BackgroundIsHidden">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="Visibility">
+                                            <DiscreteObjectKeyFrame KeyTime="00:00:00">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Visibility>Collapsed</Visibility>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="BackgroundIsVisible"/>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="CheckStates">
+                                <VisualState x:Name="Checked" />
+                                <VisualState x:Name="Unchecked"/>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStatesGroup">
+                                <VisualState x:Name="Unfocused" />
+                                <VisualState x:Name="Focused" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Border x:Name="Border"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <Border x:Name="MouseOverBorder" Visibility="Collapsed" Background="{StaticResource ThumbnailsBasicBrush}" BorderThickness="0" CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <Border x:Name="PressedBorder" Visibility="Collapsed" Background="{StaticResource ThumbnailsBasicBrush}" Opacity="0.2" CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <Border x:Name="CheckedVisual"
+                                Opacity="0"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Background="{StaticResource ThumbnailsAccentBrush}"
+                                BorderBrush="{StaticResource ThumbnailsAccentBrush}"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <ContentControl x:Name="Content"
+                                IsTabStop="False"
+                                Content="{TemplateBinding Content}"
+                                Foreground="{TemplateBinding Foreground}"
+                                Margin="{TemplateBinding Padding}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PageNavigationStyle" TargetType="telerik:RadListBoxItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0 10" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="telerik:RadListBoxItem">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.15" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="MouseOverVisualElement"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" To=".55" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="ContentPresenter"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="SelectionStates">
+                                <VisualState x:Name="Unselected"/>
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.15" To=".35" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SelectedVisualElement"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Focused">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Visibility" Storyboard.TargetName="FocusVisualElement">
+                                            <DiscreteObjectKeyFrame KeyTime="0">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Visibility>Visible</Visibility>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Unfocused"/>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Rectangle x:Name="MouseOverVisualElement" Grid.RowSpan="2" Opacity="0" Fill="{StaticResource ThumbnailsBasicBrush}" IsHitTestVisible="False"/>
+                            <Rectangle x:Name="SelectedVisualElement" Grid.RowSpan="2" Opacity="0" Fill="{StaticResource ThumbnailsStrongBrush}" IsHitTestVisible="False"/>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 10 0 0">
+
+                                <TextBlock TextTrimming="CharacterEllipsis">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="프로그램 화면 구성 및 주요 기능"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="1">
+                                                    <Setter Property="Text" Value="통합관리 프로그램"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="2">
+                                                    <Setter Property="Text" Value="목차"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="7">
+                                                    <Setter Property="Text" Value="홈"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="8">
+                                                    <Setter Property="Text" Value="홈"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="9">
+                                                    <Setter Property="Text" Value="생물조사-어류"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="10">
+                                                    <Setter Property="Text" Value="생물조사-저서동물"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="11">
+                                                    <Setter Property="Text" Value="생물조사-조류"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="12">
+                                                    <Setter Property="Text" Value="생물조사-포유류"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="13">
+                                                    <Setter Property="Text" Value="환경자료-서식수변"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="14">
+                                                    <Setter Property="Text" Value="환경자료-수질"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="15">
+                                                    <Setter Property="Text" Value="일괄등록"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="16">
+                                                    <Setter Property="Text" Value="일괄등록"/>
+                                                </DataTrigger>                                              
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="17">
+                                                    <Setter Property="Text" Value="사용설명서"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="18">
+                                                    <Setter Property="Text" Value="프로그램 개발정보"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="19">
+                                                    <Setter Property="Text" Value="테이블명세서-양서파충류"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="20">
+                                                    <Setter Property="Text" Value="테이블명세서-어류"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="21">
+                                                    <Setter Property="Text" Value="테이블명세서-어류"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="22">
+                                                    <Setter Property="Text" Value="테이블명세서-어류"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="23">
+                                                    <Setter Property="Text" Value="테이블명세서-저서동물"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="24">
+                                                    <Setter Property="Text" Value="테이블명세서-저서동물"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="25">
+                                                    <Setter Property="Text" Value="테이블명세서-저서동물"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="26">
+                                                    <Setter Property="Text" Value="테이블명세서-조류"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="27">
+                                                    <Setter Property="Text" Value="테이블명세서-서식수변"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="28">
+                                                    <Setter Property="Text" Value="테이블명세서-수질"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="29">
+                                                    <Setter Property="Text" Value="테이블명세서-수질"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="1" Text="{Binding Page.PageNo, StringFormat=p{0}}"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 0 0 0"/>
+
+                            <Border Grid.Row="1" BorderThickness="0" Background="White" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="0 5 0 10">
+                                <Border.Effect>
+                                    <DropShadowEffect Direction="270" Opacity="0.15" BlurRadius="10" ShadowDepth="2"/>
+                                </Border.Effect>
+                                <Grid>
+                                    <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                    <Rectangle x:Name="FocusVisualElement" Fill="{StaticResource ThumbnailsAccentBrushAlpha25}" Stroke="{StaticResource ThumbnailsAccentBrush}" StrokeThickness="1" Visibility="Collapsed"/>
+                                </Grid>
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

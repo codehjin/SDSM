@@ -310,7 +310,7 @@
                     <Setter Property="Kind" Value="ArrowRight"/>
                     <Setter Property="Width" Value="15"/>
                     <Setter Property="Foreground" Value="White"/>
-                </DataTrigger>                
+                </DataTrigger>
             </Style.Triggers>
         </Style>
 
@@ -674,7 +674,7 @@
                                 </uc:WinButtonControl>
                             </StackPanel>
                         </Border>
-                        
+
                     </Grid>
                 </Border>
 
@@ -1073,8 +1073,8 @@
                                         </Expander>
                                     </Border>
 
-                                    <Border Padding="0 15" BorderBrush="{StaticResource MainSelectedBrush}">
-                                        <Border.Style>
+                                    <Border Grid.Row="0" BorderBrush="{StaticResource MainSelectedBrush}" Margin="0 0 0 0" Padding="0 12 0 0">
+                                        <!--<Border.Style>
                                             <Style TargetType="Border">
                                                 <Setter Property="BorderThickness" Value="0 1 0 0"/>
                                                 <Style.Triggers>
@@ -1083,7 +1083,16 @@
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </Border.Style>
+                                        </Border.Style>-->
+                                        <telerik:RadRadioButton Tag="BulkRegisterPage" IsChecked="{Binding Path=IsCheckedBulkRegister, Mode=TwoWay}" Click="MenuItem_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <icon:PackIconPhosphorIcons Kind="ListPlusLight" Style="{StaticResource PackIconPhosphorIconsStyle}"/>
+                                                <TextBlock Text="일괄등록" Style="{StaticResource MenuContentTextBlcokStyle}"/>
+                                            </StackPanel>
+                                        </telerik:RadRadioButton>
+                                    </Border>
+
+                                    <Border Padding="0 15" BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
                                         <StackPanel>
                                             <StackPanel.Resources>
                                                 <Style TargetType="icon:PackIconFeatherIcons">
@@ -1095,7 +1104,7 @@
                                                     <Setter Property="Opacity" Value="0.8"/>
                                                 </Style>
                                                 <Style TargetType="telerik:RadButton">
-                                                    <Setter Property="Height" Value="44"/>
+                                                    <Setter Property="Height" Value="44"/>                                                    
                                                     <Setter Property="Margin" Value="10 2 10 2"/>
                                                     <Setter Property="Padding" Value="15 10 15 10"/>
                                                     <Setter Property="Cursor" Value="Hand"/>
@@ -1111,18 +1120,12 @@
                                                     <Setter Property="helpers:ThemeHelper.FocusBackgroundBrush" Value="Transparent"/>
                                                     <Setter Property="helpers:ThemeHelper.FocusBrush" Value="Transparent"/>
                                                 </Style>
-                                            </StackPanel.Resources>
-                                            <telerik:RadRadioButton Tag="BulkRegisterPage" IsChecked="{Binding Path=IsCheckedBulkRegister, Mode=TwoWay}" Click="MenuItem_Click">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <icon:PackIconPhosphorIcons Kind="ListPlusLight" Style="{StaticResource PackIconPhosphorIconsStyle}"/>
-                                                    <TextBlock Text="일괄등록" Style="{StaticResource MenuContentTextBlcokStyle}"/>
-                                                </StackPanel>
-                                            </telerik:RadRadioButton>
-                                            <telerik:RadButton Command="{Binding Path=FloatingWindowOpenExecutedCommand}" CommandParameter="ManualPane" Visibility="Collapsed">
+                                            </StackPanel.Resources>                                            
+                                            <telerik:RadButton Command="{Binding Path=ManualWindowOpenCommand}">
                                                 <DockPanel>
                                                     <icon:PackIconVaadinIcons Kind="InfoCircleOutline" Style="{StaticResource InfoIconStyle}" Foreground="{StaticResource MenuForegroundBrush}"/>
                                                     <TextBlock Text="사용설명서" VerticalAlignment="Center" Foreground="{StaticResource MenuForegroundBrush}"/>
-                                                    <icon:PackIconFeatherIcons Kind="ArrowUpRight" HorizontalAlignment="Right"/>
+                                                    <icon:PackIconFeatherIcons Kind="ArrowUpRight" HorizontalAlignment="Right" Width="12" Height="12"/>
                                                 </DockPanel>
                                             </telerik:RadButton>
                                         </StackPanel>
