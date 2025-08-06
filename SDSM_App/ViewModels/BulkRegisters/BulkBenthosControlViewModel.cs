@@ -320,7 +320,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
             for (int columnIndex = FirstColumnNumber - 1; columnIndex <= usedCellRange.ToIndex.ColumnIndex; columnIndex++)
             {
-                var firstValue = worksheet.Cells[FirstRowNumber - 1, columnIndex].GetValue().Value.RawValue;
+                var firstValue = ((ICellValue)(worksheet.Cells[FirstRowNumber - 1, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[FirstRowNumber - 1, columnIndex].GetFormat().Value);
                 if (!string.IsNullOrWhiteSpace(firstValue))
                 {
                     matchNumber++;
@@ -341,7 +341,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                         species.RankScorer = rankScorer;
                     }
 
-                    var surveyUnavailableReason = worksheet.Cells[43, columnIndex].GetValue().Value.RawValue;
+                    var surveyUnavailableReason = ((ICellValue)(worksheet.Cells[43, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[43, columnIndex].GetFormat().Value);
 
                     var indexDI = GB.GetDI(speciesData);
                     var indexH = GB.GetH(speciesData);
@@ -356,46 +356,46 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                     {
                         MacthNumber = matchNumber,
                         YearChsu = firstValue,
-                        Site = worksheet.Cells[2, columnIndex].GetValue().Value.RawValue,
+                        Site = ((ICellValue)(worksheet.Cells[2, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[2, columnIndex].GetFormat().Value),
                         SurveyDate = ((ICellValue)(worksheet.Cells[3, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[3, columnIndex].GetFormat().Value),
-                        MajorRegion = worksheet.Cells[4, columnIndex].GetValue().Value.RawValue,
-                        MiddleRegion = worksheet.Cells[5, columnIndex].GetValue().Value.RawValue,
-                        River = worksheet.Cells[6, columnIndex].GetValue().Value.RawValue,
-                        RiverType = worksheet.Cells[7, columnIndex].GetValue().Value.RawValue,
-                        Lat = worksheet.Cells[8, columnIndex].GetValue().Value.RawValue,
-                        Lng = worksheet.Cells[9, columnIndex].GetValue().Value.RawValue,
-                        Weather = worksheet.Cells[10, columnIndex].GetValue().Value.RawValue,
-                        SurveyAgency = worksheet.Cells[11, columnIndex].GetValue().Value.RawValue,
-                        Surveyor = worksheet.Cells[12, columnIndex].GetValue().Value.RawValue,
-                        Surbernet30 = worksheet.Cells[13, columnIndex].GetValue().Value.RawValue,
-                        Surbernet50 = worksheet.Cells[14, columnIndex].GetValue().Value.RawValue,
-                        Dredge = worksheet.Cells[15, columnIndex].GetValue().Value.RawValue,
-                        Ekman = worksheet.Cells[16, columnIndex].GetValue().Value.RawValue,
-                        Watershed = worksheet.Cells[17, columnIndex].GetValue().Value.RawValue,
-                        PollutionSource = worksheet.Cells[18, columnIndex].GetValue().Value.RawValue,
-                        CamopyCover = worksheet.Cells[19, columnIndex].GetValue().Value.RawValue,
-                        Floodplain = worksheet.Cells[20, columnIndex].GetValue().Value.RawValue,
-                        LeveeLeft = worksheet.Cells[21, columnIndex].GetValue().Value.RawValue,
-                        LeveeRight = worksheet.Cells[22, columnIndex].GetValue().Value.RawValue,
-                        Bedrock = worksheet.Cells[23, columnIndex].GetValue().Value.RawValue,
-                        Concrete = worksheet.Cells[24, columnIndex].GetValue().Value.RawValue,
-                        Mud = worksheet.Cells[25, columnIndex].GetValue().Value.RawValue,
-                        Sand = worksheet.Cells[26, columnIndex].GetValue().Value.RawValue,
-                        FineGravel = worksheet.Cells[27, columnIndex].GetValue().Value.RawValue,
-                        Gravel = worksheet.Cells[28, columnIndex].GetValue().Value.RawValue,
-                        SmallStone = worksheet.Cells[29, columnIndex].GetValue().Value.RawValue,
-                        BigStone = worksheet.Cells[30, columnIndex].GetValue().Value.RawValue,
-                        HabitatRiverType = worksheet.Cells[32, columnIndex].GetValue().Value.RawValue,
-                        RiverWidth = worksheet.Cells[33, columnIndex].GetValue().Value.RawValue,
-                        WaterWidth = worksheet.Cells[34, columnIndex].GetValue().Value.RawValue,
-                        AverageDepth = worksheet.Cells[35, columnIndex].GetValue().Value.RawValue,
-                        AverageVelocity = worksheet.Cells[36, columnIndex].GetValue().Value.RawValue,
-                        Temperature = worksheet.Cells[37, columnIndex].GetValue().Value.RawValue,
-                        WaterTemperature = worksheet.Cells[38, columnIndex].GetValue().Value.RawValue,
-                        FlowState = worksheet.Cells[39, columnIndex].GetValue().Value.RawValue,
-                        Transparency = worksheet.Cells[40, columnIndex].GetValue().Value.RawValue,
-                        Smell = worksheet.Cells[41, columnIndex].GetValue().Value.RawValue,
-                        Note = worksheet.Cells[42, columnIndex].GetValue().Value.RawValue,
+                        MajorRegion = ((ICellValue)(worksheet.Cells[4, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[4, columnIndex].GetFormat().Value),
+                        MiddleRegion = ((ICellValue)(worksheet.Cells[5, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[5, columnIndex].GetFormat().Value),
+                        River = ((ICellValue)(worksheet.Cells[6, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[6, columnIndex].GetFormat().Value),
+                        RiverType = ((ICellValue)(worksheet.Cells[7, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[7, columnIndex].GetFormat().Value),
+                        Lat = ((ICellValue)(worksheet.Cells[8, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[8, columnIndex].GetFormat().Value),
+                        Lng = ((ICellValue)(worksheet.Cells[9, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[9, columnIndex].GetFormat().Value),
+                        Weather = ((ICellValue)(worksheet.Cells[10, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[10, columnIndex].GetFormat().Value),
+                        SurveyAgency = ((ICellValue)(worksheet.Cells[11, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[11, columnIndex].GetFormat().Value),
+                        Surveyor = ((ICellValue)(worksheet.Cells[12, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[12, columnIndex].GetFormat().Value),
+                        Surbernet30 = ((ICellValue)(worksheet.Cells[13, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[13, columnIndex].GetFormat().Value),
+                        Surbernet50 = ((ICellValue)(worksheet.Cells[14, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[14, columnIndex].GetFormat().Value),
+                        Dredge = ((ICellValue)(worksheet.Cells[15, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[15, columnIndex].GetFormat().Value),
+                        Ekman = ((ICellValue)(worksheet.Cells[16, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[16, columnIndex].GetFormat().Value),
+                        Watershed = ((ICellValue)(worksheet.Cells[17, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[17, columnIndex].GetFormat().Value),
+                        PollutionSource = ((ICellValue)(worksheet.Cells[18, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[18, columnIndex].GetFormat().Value),
+                        CamopyCover = ((ICellValue)(worksheet.Cells[19, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[19, columnIndex].GetFormat().Value),
+                        Floodplain = ((ICellValue)(worksheet.Cells[20, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[20, columnIndex].GetFormat().Value),
+                        LeveeLeft = ((ICellValue)(worksheet.Cells[21, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[21, columnIndex].GetFormat().Value),
+                        LeveeRight = ((ICellValue)(worksheet.Cells[22, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[22, columnIndex].GetFormat().Value),
+                        Bedrock = ((ICellValue)(worksheet.Cells[23, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[23, columnIndex].GetFormat().Value),
+                        Concrete = ((ICellValue)(worksheet.Cells[24, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[24, columnIndex].GetFormat().Value),
+                        Mud = ((ICellValue)(worksheet.Cells[25, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[25, columnIndex].GetFormat().Value),
+                        Sand = ((ICellValue)(worksheet.Cells[26, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[26, columnIndex].GetFormat().Value),
+                        FineGravel = ((ICellValue)(worksheet.Cells[27, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[27, columnIndex].GetFormat().Value),
+                        Gravel = ((ICellValue)(worksheet.Cells[28, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[28, columnIndex].GetFormat().Value),
+                        SmallStone = ((ICellValue)(worksheet.Cells[29, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[29, columnIndex].GetFormat().Value),
+                        BigStone = ((ICellValue)(worksheet.Cells[30, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[30, columnIndex].GetFormat().Value),
+                        HabitatRiverType = ((ICellValue)(worksheet.Cells[32, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[32, columnIndex].GetFormat().Value),
+                        RiverWidth = ((ICellValue)(worksheet.Cells[33, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[33, columnIndex].GetFormat().Value),
+                        WaterWidth = ((ICellValue)(worksheet.Cells[34, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[34, columnIndex].GetFormat().Value),
+                        AverageDepth = ((ICellValue)(worksheet.Cells[35, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[35, columnIndex].GetFormat().Value),
+                        AverageVelocity = ((ICellValue)(worksheet.Cells[36, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[36, columnIndex].GetFormat().Value),
+                        Temperature = ((ICellValue)(worksheet.Cells[37, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[37, columnIndex].GetFormat().Value),
+                        WaterTemperature = ((ICellValue)(worksheet.Cells[38, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[38, columnIndex].GetFormat().Value),
+                        FlowState = ((ICellValue)(worksheet.Cells[39, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[39, columnIndex].GetFormat().Value),
+                        Transparency = ((ICellValue)(worksheet.Cells[40, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[40, columnIndex].GetFormat().Value),
+                        Smell = ((ICellValue)(worksheet.Cells[41, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[41, columnIndex].GetFormat().Value),
+                        Note = ((ICellValue)(worksheet.Cells[42, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[42, columnIndex].GetFormat().Value),
                         SurveyUnavailableReason = surveyUnavailableReason,
                         IndexDI = indexDI,
                         IndexH = indexH,
@@ -1152,23 +1152,23 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         for (int rowIndex = speciesFirstRowNumber - 1; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
         {
             // 개체수는 실수
-            var cellValue = worksheet.Cells[rowIndex, columnIndex].GetValue().Value.RawValue;
+            var cellValue = ((ICellValue)(worksheet.Cells[rowIndex, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, columnIndex].GetFormat().Value);
             if (!string.IsNullOrWhiteSpace(cellValue) && double.TryParse(cellValue, out double d))
             {
                 var species = new ImportBenthosSpecies
                 {
                     MacthNumber = matchNumber,
-                    SaprobicValue = worksheet.Cells[rowIndex, 0].GetValue().Value.RawValue,
-                    IndicatorWeight = worksheet.Cells[rowIndex, 1].GetValue().Value.RawValue,
-                    Endangered1 = worksheet.Cells[rowIndex, 2].GetValue().Value.RawValue,
-                    Endangered2 = worksheet.Cells[rowIndex, 3].GetValue().Value.RawValue,
-                    Endemic = worksheet.Cells[rowIndex, 4].GetValue().Value.RawValue,
-                    PhylumKo = worksheet.Cells[rowIndex, 5].GetValue().Value.RawValue,
-                    ClassKo = worksheet.Cells[rowIndex, 6].GetValue().Value.RawValue,
-                    OrderKo = worksheet.Cells[rowIndex, 7].GetValue().Value.RawValue,
-                    FamilyKo = worksheet.Cells[rowIndex, 8].GetValue().Value.RawValue,
-                    SpeciesEn = worksheet.Cells[rowIndex, 9].GetValue().Value.RawValue,
-                    SpeciesKo = worksheet.Cells[rowIndex, 10].GetValue().Value.RawValue,
+                    SaprobicValue = ((ICellValue)(worksheet.Cells[rowIndex, 0].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 0].GetFormat().Value),
+                    IndicatorWeight = ((ICellValue)(worksheet.Cells[rowIndex, 1].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 1].GetFormat().Value),
+                    Endangered1 = ((ICellValue)(worksheet.Cells[rowIndex, 2].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 2].GetFormat().Value),
+                    Endangered2 = ((ICellValue)(worksheet.Cells[rowIndex, 3].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 3].GetFormat().Value),
+                    Endemic = ((ICellValue)(worksheet.Cells[rowIndex, 4].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 4].GetFormat().Value),
+                    PhylumKo = ((ICellValue)(worksheet.Cells[rowIndex, 5].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 5].GetFormat().Value),
+                    ClassKo = ((ICellValue)(worksheet.Cells[rowIndex, 6].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 6].GetFormat().Value),
+                    OrderKo = ((ICellValue)(worksheet.Cells[rowIndex, 7].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 7].GetFormat().Value),
+                    FamilyKo = ((ICellValue)(worksheet.Cells[rowIndex, 8].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 8].GetFormat().Value),
+                    SpeciesEn = ((ICellValue)(worksheet.Cells[rowIndex, 9].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 9].GetFormat().Value),
+                    SpeciesKo = ((ICellValue)(worksheet.Cells[rowIndex, 10].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 10].GetFormat().Value),
                     IndividualCount = d,
                 };
 
@@ -1198,10 +1198,10 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
             var usedRange = worksheet.UsedCellRange;
             for (int rowIndex = speciesFirstRowNumber - 1; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
             {
-                double? saprobicValue = double.TryParse(worksheet.Cells[rowIndex, 0].GetValue().Value.RawValue, out double saprobicValueResult) ? saprobicValueResult : null;
-                int? indicatorWeight = int.TryParse(worksheet.Cells[rowIndex, 1].GetValue().Value.RawValue, out int indicatorWeightResult) ? indicatorWeightResult : null;
-                string? speciesEn = worksheet.Cells[rowIndex, 9].GetValue().Value.RawValue;
-                string? speciesKo = worksheet.Cells[rowIndex, 10].GetValue().Value.RawValue;
+                double? saprobicValue = double.TryParse(((ICellValue)(worksheet.Cells[rowIndex, 0].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 0].GetFormat().Value), out double saprobicValueResult) ? saprobicValueResult : null;
+                int? indicatorWeight = int.TryParse(((ICellValue)(worksheet.Cells[rowIndex, 1].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 1].GetFormat().Value), out int indicatorWeightResult) ? indicatorWeightResult : null;
+                string? speciesEn = ((ICellValue)(worksheet.Cells[rowIndex, 9].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 9].GetFormat().Value);
+                string? speciesKo = ((ICellValue)(worksheet.Cells[rowIndex, 10].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 10].GetFormat().Value);
 
                 if(!string.IsNullOrWhiteSpace(speciesEn) && !string.IsNullOrWhiteSpace(speciesKo))
                 {
@@ -1209,13 +1209,13 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                     {
                         SaprobicValue = saprobicValue,
                         IndicatorWeight = indicatorWeight,
-                        Endangered1 = worksheet.Cells[rowIndex, 2].GetValue().Value.RawValue,
-                        Endangered2 = worksheet.Cells[rowIndex, 3].GetValue().Value.RawValue,
-                        Endemic = worksheet.Cells[rowIndex, 4].GetValue().Value.RawValue,
-                        PhylumKo = worksheet.Cells[rowIndex, 5].GetValue().Value.RawValue,
-                        ClassKo = worksheet.Cells[rowIndex, 6].GetValue().Value.RawValue,
-                        OrderKo = worksheet.Cells[rowIndex, 7].GetValue().Value.RawValue,
-                        FamilyKo = worksheet.Cells[rowIndex, 8].GetValue().Value.RawValue,
+                        Endangered1 = ((ICellValue)(worksheet.Cells[rowIndex, 2].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 2].GetFormat().Value),
+                        Endangered2 = ((ICellValue)(worksheet.Cells[rowIndex, 3].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 3].GetFormat().Value),
+                        Endemic = ((ICellValue)(worksheet.Cells[rowIndex, 4].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 4].GetFormat().Value),
+                        PhylumKo = ((ICellValue)(worksheet.Cells[rowIndex, 5].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 5].GetFormat().Value),
+                        ClassKo = ((ICellValue)(worksheet.Cells[rowIndex, 6].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 6].GetFormat().Value),
+                        OrderKo = ((ICellValue)(worksheet.Cells[rowIndex, 7].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 7].GetFormat().Value),
+                        FamilyKo = ((ICellValue)(worksheet.Cells[rowIndex, 8].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 8].GetFormat().Value),
                         SpeciesEn = speciesEn,
                         SpeciesKo = speciesKo,
                     };
@@ -1233,6 +1233,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         }
     }
 
+    //기존 종목록과 비교하여 새로 추가된 종
     private List<BenthosSpeciesList> GetNewSpeciesData()
     {
         // SpeciesKo, SpeciesEn 기준으로 직접 비교

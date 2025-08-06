@@ -62,6 +62,24 @@ public class ImportFish
     [DisplayName("피부손상(lesions) LE 종명(개체수)")] public string? LECount { get; set; }
     [DisplayName("종양(tumors) TU 종명(개체수)")] public string? TUCount { get; set; }
     //자동계산
+    [DisplayName("총 개체수")] public int? TotalIndividualCount { get; set; }
+    //자동계산
+    [DisplayName("총 종수")] public int? TotalSpeciesCount { get; set; }
+    //자동계산
+    [DisplayName("국내종 총 종수")] public int? M1Value { get; set; }
+    //자동계산
+    [DisplayName("어울성 저서 종수")] public int? M2Value { get; set; }
+    //자동계산
+    [DisplayName("민감 종수")] public int? M3Value { get; set; }
+    //자동계산
+    [DisplayName("내성종 개체수 비율(%)")] public double? M4Value { get; set; }
+    //자동계산
+    [DisplayName("잡식종 개체수 비율(%)")] public double? M5Value { get; set; }
+    //자동계산
+    [DisplayName("충식종 개체수 비율(%)")] public double? M6Value { get; set; }
+    //자동계산
+    [DisplayName("국내종 총 개체수")] public int? M7Value { get; set; }    
+    //자동계산
     [DisplayName("FAI 점수")] public double? FAIScore { get; set; }
     //자동계산
     [DisplayName("FAI 등급")] public string? FAIGrade { get; set; }

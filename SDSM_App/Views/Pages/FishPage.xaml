@@ -150,6 +150,7 @@
                             <telerik:GridViewColumnGroup Name="harmful" Header="서식처 환경위해요인"/>
                             <telerik:GridViewColumnGroup Name="etc" Header="채집 불가시"/>
                             <telerik:GridViewColumnGroup Name="abnormal" Header="비정상종"/>
+                            <telerik:GridViewColumnGroup Name="cluster" Header="군집정보"/> 
                             <telerik:GridViewColumnGroup Name="grade" Header="건강성"/> 
                             <telerik:GridViewColumnGroup Name="species" Header="출현종"/>                          
                         </telerik:RadGridView.ColumnGroups>
@@ -208,6 +209,15 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EFCount}" MinWidth="80" Width="260" MaxWidth="260" ColumnGroupName="abnormal"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LECount}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="abnormal"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TUCount}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="abnormal"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TotalIndividualCount}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="cluster"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TotalSpeciesCount}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="cluster"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M1Value}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="cluster"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M2Value}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="cluster"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M3Value}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="cluster"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M4Value}" MinWidth="80" Width="200" MaxWidth="200" ColumnGroupName="cluster"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M5Value}" MinWidth="80" Width="200" MaxWidth="200" ColumnGroupName="cluster"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M6Value}" MinWidth="80" Width="200" MaxWidth="200" ColumnGroupName="cluster"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M7Value}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="cluster"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIScore}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="grade"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIGrade}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="grade"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesCount}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>

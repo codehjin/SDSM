@@ -277,6 +277,15 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EFCount}" MinWidth="80" Width="260" MaxWidth="260"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LECount}" MinWidth="80" Width="180" MaxWidth="180"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TUCount}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TotalIndividualCount}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TotalSpeciesCount}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M1Value}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M2Value}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M3Value}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M4Value}" MinWidth="80" Width="180" MaxWidth="180" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M5Value}" MinWidth="80" Width="180" MaxWidth="180" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M6Value}" MinWidth="80" Width="180" MaxWidth="180" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M7Value}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIScore}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIGrade}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesCount}" DataFormatString="{}{0:N0}" MinWidth="80" Width="160" MaxWidth="160"/>
@@ -404,6 +413,15 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EFCount}" MinWidth="80" Width="260" MaxWidth="260"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LECount}" MinWidth="80" Width="180" MaxWidth="180"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TUCount}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TotalIndividualCount}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TotalSpeciesCount}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M1Value}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M2Value}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M3Value}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M4Value}" MinWidth="80" Width="180" MaxWidth="180" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M5Value}" MinWidth="80" Width="180" MaxWidth="180" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M6Value}" MinWidth="80" Width="180" MaxWidth="180" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=M7Value}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIScore}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIGrade}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesCount}" DataFormatString="{}{0:N0}" MinWidth="80" Width="160" MaxWidth="160"/>

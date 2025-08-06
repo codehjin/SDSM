@@ -269,7 +269,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
             CellRange usedCellRange = worksheet.UsedCellRange;
             for (int columnIndex = FirstColumnNumber - 1; columnIndex <= usedCellRange.ToIndex.ColumnIndex; columnIndex++)
             {
-                var firstValue = worksheet.Cells[FirstRowNumber - 1, columnIndex].GetValue().Value.RawValue;
+                var firstValue = ((ICellValue)(worksheet.Cells[FirstRowNumber - 1, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[FirstRowNumber - 1, columnIndex].GetFormat().Value);
                 if (!string.IsNullOrWhiteSpace(firstValue))
                 {
                     var (score, grade) = GetGrade(worksheet, columnIndex);
@@ -277,29 +277,29 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                     var model = new ImportHabitatWaterEdge
                     {
                         YearChsu = firstValue,
-                        Site = worksheet.Cells[2, columnIndex].GetValue().Value.RawValue,
+                        Site = ((ICellValue)(worksheet.Cells[2, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[2, columnIndex].GetFormat().Value),
                         SurveyDate = ((ICellValue)(worksheet.Cells[3, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[3, columnIndex].GetFormat().Value),
-                        MajorRegion = worksheet.Cells[4, columnIndex].GetValue().Value.RawValue,
-                        MiddleRegion = worksheet.Cells[5, columnIndex].GetValue().Value.RawValue,
-                        River = worksheet.Cells[6, columnIndex].GetValue().Value.RawValue,
-                        RiverType = worksheet.Cells[7, columnIndex].GetValue().Value.RawValue,
-                        Lat = worksheet.Cells[8, columnIndex].GetValue().Value.RawValue,
-                        Lng = worksheet.Cells[9, columnIndex].GetValue().Value.RawValue,
-                        Weather = worksheet.Cells[10, columnIndex].GetValue().Value.RawValue,
-                        SurveyAgency = worksheet.Cells[11, columnIndex].GetValue().Value.RawValue,
-                        Surveyor = worksheet.Cells[12, columnIndex].GetValue().Value.RawValue,
-                        SurveyUnavailableReason = worksheet.Cells[13, columnIndex].GetValue().Value.RawValue,
-                        Note = worksheet.Cells[14, columnIndex].GetValue().Value.RawValue,
-                        EvaluationItem1 = worksheet.Cells[16, columnIndex].GetValue().Value.RawValue,
-                        EvaluationItem2 = worksheet.Cells[17, columnIndex].GetValue().Value.RawValue,
-                        EvaluationItem3 = worksheet.Cells[18, columnIndex].GetValue().Value.RawValue,
-                        EvaluationItem4 = worksheet.Cells[19, columnIndex].GetValue().Value.RawValue,
-                        EvaluationItem5 = worksheet.Cells[20, columnIndex].GetValue().Value.RawValue,
-                        EvaluationItem6 = worksheet.Cells[21, columnIndex].GetValue().Value.RawValue,
-                        EvaluationItem7 = worksheet.Cells[22, columnIndex].GetValue().Value.RawValue,
-                        EvaluationItem8 = worksheet.Cells[23, columnIndex].GetValue().Value.RawValue,
-                        EvaluationItem9 = worksheet.Cells[24, columnIndex].GetValue().Value.RawValue,
-                        EvaluationItem10 = worksheet.Cells[25, columnIndex].GetValue().Value.RawValue,
+                        MajorRegion = ((ICellValue)(worksheet.Cells[4, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[4, columnIndex].GetFormat().Value),
+                        MiddleRegion = ((ICellValue)(worksheet.Cells[5, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[5, columnIndex].GetFormat().Value),
+                        River = ((ICellValue)(worksheet.Cells[6, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[6, columnIndex].GetFormat().Value),
+                        RiverType = ((ICellValue)(worksheet.Cells[7, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[7, columnIndex].GetFormat().Value),
+                        Lat = ((ICellValue)(worksheet.Cells[8, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[8, columnIndex].GetFormat().Value),
+                        Lng = ((ICellValue)(worksheet.Cells[9, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[9, columnIndex].GetFormat().Value),
+                        Weather = ((ICellValue)(worksheet.Cells[10, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[10, columnIndex].GetFormat().Value),
+                        SurveyAgency = ((ICellValue)(worksheet.Cells[11, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[11, columnIndex].GetFormat().Value),
+                        Surveyor = ((ICellValue)(worksheet.Cells[12, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[12, columnIndex].GetFormat().Value),
+                        SurveyUnavailableReason = ((ICellValue)(worksheet.Cells[13, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[13, columnIndex].GetFormat().Value),
+                        Note = ((ICellValue)(worksheet.Cells[14, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[14, columnIndex].GetFormat().Value),
+                        EvaluationItem1 = ((ICellValue)(worksheet.Cells[16, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[16, columnIndex].GetFormat().Value),
+                        EvaluationItem2 = ((ICellValue)(worksheet.Cells[17, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[17, columnIndex].GetFormat().Value),
+                        EvaluationItem3 = ((ICellValue)(worksheet.Cells[18, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[18, columnIndex].GetFormat().Value),
+                        EvaluationItem4 = ((ICellValue)(worksheet.Cells[19, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[19, columnIndex].GetFormat().Value),
+                        EvaluationItem5 = ((ICellValue)(worksheet.Cells[20, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[20, columnIndex].GetFormat().Value),
+                        EvaluationItem6 = ((ICellValue)(worksheet.Cells[21, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[21, columnIndex].GetFormat().Value),
+                        EvaluationItem7 = ((ICellValue)(worksheet.Cells[22, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[22, columnIndex].GetFormat().Value),
+                        EvaluationItem8 = ((ICellValue)(worksheet.Cells[23, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[23, columnIndex].GetFormat().Value),
+                        EvaluationItem9 = ((ICellValue)(worksheet.Cells[24, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[24, columnIndex].GetFormat().Value),
+                        EvaluationItem10 = ((ICellValue)(worksheet.Cells[25, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[25, columnIndex].GetFormat().Value),
                         EvaluationScore = score,
                         EvaluationGrade = grade,
                     };
@@ -769,7 +769,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
 
         for (int row = 16; row <= 25; row++)
         {
-            var cellValue = worksheet.Cells[row, columnIndex].GetValue().Value.RawValue;
+            var cellValue = ((ICellValue)(worksheet.Cells[row, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[row, columnIndex].GetFormat().Value);
             if (double.TryParse(cellValue, out double v))
                 total += v;
         }
@@ -777,7 +777,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
         double? score = total != 0 ? Math.Round(total / 2, 1, MidpointRounding.AwayFromZero) : null;
 
         // "접근불가"가 아니면 등급 산정
-        var unavailable = worksheet.Cells[13, columnIndex].GetValue().Value.RawValue.Replace(" ", "");
+        var unavailable = ((ICellValue)(worksheet.Cells[13, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[13, columnIndex].GetFormat().Value).Replace(" ", "");
         if (unavailable.Contains("접근불가") == false)
         {
             if (score >= 80) grade = "A";

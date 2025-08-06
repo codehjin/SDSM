@@ -64,6 +64,15 @@ public class FishView
     [DisplayName("지느러미손상(erosion of fin) EF 종명(개체수)")] public int? EFCount { get; set; }
     [DisplayName("피부손상(lesions) LE 종명(개체수)")] public int? LECount { get; set; }
     [DisplayName("종양(tumors) TU 종명(개체수)")] public int? TUCount { get; set; }
+    [DisplayName("총 개체수")] public int? TotalIndividualCount { get; set; }
+    [DisplayName("총 종수")] public int? TotalSpeciesCount { get; set; }
+    [DisplayName("국내종 총 종수")] public int? M1Value { get; set; }
+    [DisplayName("어울성 저서 종수")] public int? M2Value { get; set; }
+    [DisplayName("민감 종수")] public int? M3Value { get; set; }
+    [DisplayName("내성종 개체수 비율(%)")] public double? M4Value { get; set; }
+    [DisplayName("잡식종 개체수 비율(%)")] public double? M5Value { get; set; }
+    [DisplayName("충식종 개체수 비율(%)")] public double? M6Value { get; set; }
+    [DisplayName("국내종 총 개체수")] public int? M7Value { get; set; }
     [DisplayName("FAI 점수")] public double? FAIScore { get; set; }
     [DisplayName("FAI 등급")] public string? FAIGrade { get; set; }
     [DisplayName("종수")] public int? SpeciesCount { get; set; }

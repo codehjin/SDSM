@@ -270,38 +270,39 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
             CellRange usedCellRange = worksheet.UsedCellRange;
             for (int rowIndex = FirstRowNumber - 1; rowIndex <= usedCellRange.ToIndex.RowIndex; rowIndex++)
             {
-                var firstValue = worksheet.Cells[rowIndex, FirstColumnNumber - 1].GetValue().Value.RawValue;
+                var firstValue = ((ICellValue)(worksheet.Cells[rowIndex, FirstColumnNumber - 1].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, FirstColumnNumber - 1].GetFormat().Value);
                 if (!string.IsNullOrWhiteSpace(firstValue))
                 {
                     var model = new ImportAmphibianReptile
                     {
                         YearChsu = firstValue,
-                        YearValue = worksheet.Cells[rowIndex, 2].GetValue().Value.RawValue,
-                        DayValue = worksheet.Cells[rowIndex, 4].GetValue().Value.RawValue,
-                        Weather = worksheet.Cells[rowIndex, 5].GetValue().Value.RawValue,
-                        River = worksheet.Cells[rowIndex, 6].GetValue().Value.RawValue,
-                        Site = worksheet.Cells[rowIndex, 7].GetValue().Value.RawValue,
-                        SpeciesKo = worksheet.Cells[rowIndex, 8].GetValue().Value.RawValue,
-                        SpeciesEn = worksheet.Cells[rowIndex, 9].GetValue().Value.RawValue,
-                        Feature = worksheet.Cells[rowIndex, 10].GetValue().Value.RawValue,
-                        Trace1 = worksheet.Cells[rowIndex, 11].GetValue().Value.RawValue,
-                        Trace2 = worksheet.Cells[rowIndex, 12].GetValue().Value.RawValue,
-                        Trace3 = worksheet.Cells[rowIndex, 13].GetValue().Value.RawValue,
-                        Trace4 = worksheet.Cells[rowIndex, 14].GetValue().Value.RawValue,
-                        Trace5 = worksheet.Cells[rowIndex, 15].GetValue().Value.RawValue,
-                        Trace6 = worksheet.Cells[rowIndex, 16].GetValue().Value.RawValue,
-                        Lat_Do = worksheet.Cells[rowIndex, 17].GetValue().Value.RawValue,
-                        Lat_Bun = worksheet.Cells[rowIndex, 18].GetValue().Value.RawValue,
-                        Lat_Cho = worksheet.Cells[rowIndex, 19].GetValue().Value.RawValue,
-                        Lng_Do = worksheet.Cells[rowIndex, 20].GetValue().Value.RawValue,
-                        Lng_Bun = worksheet.Cells[rowIndex, 21].GetValue().Value.RawValue,
-                        Lng_Cho = worksheet.Cells[rowIndex, 22].GetValue().Value.RawValue,
-                        Lat = worksheet.Cells[rowIndex, 23].GetValue().Value.RawValue,
-                        Lng = worksheet.Cells[rowIndex, 24].GetValue().Value.RawValue,
-                        MajorCategory = worksheet.Cells[rowIndex, 26].GetValue().Value.RawValue,
-                        MiddleCategory = worksheet.Cells[rowIndex, 27].GetValue().Value.RawValue,
-                        Surveyor = worksheet.Cells[rowIndex, 28].GetValue().Value.RawValue,
-                        Note = worksheet.Cells[rowIndex, 29].GetValue().Value.RawValue,
+                        YearValue = ((ICellValue)(worksheet.Cells[rowIndex, 2].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 2].GetFormat().Value),
+                        MonthValue = ((ICellValue)(worksheet.Cells[rowIndex, 3].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 3].GetFormat().Value),
+                        DayValue = ((ICellValue)(worksheet.Cells[rowIndex, 4].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 4].GetFormat().Value),
+                        Weather = ((ICellValue)(worksheet.Cells[rowIndex, 5].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 5].GetFormat().Value),
+                        River = ((ICellValue)(worksheet.Cells[rowIndex, 6].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 6].GetFormat().Value),
+                        Site = ((ICellValue)(worksheet.Cells[rowIndex, 7].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 7].GetFormat().Value),
+                        SpeciesKo = ((ICellValue)(worksheet.Cells[rowIndex, 8].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 8].GetFormat().Value),
+                        SpeciesEn = ((ICellValue)(worksheet.Cells[rowIndex, 9].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 9].GetFormat().Value),
+                        Feature = ((ICellValue)(worksheet.Cells[rowIndex, 10].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 10].GetFormat().Value),
+                        Trace1 = ((ICellValue)(worksheet.Cells[rowIndex, 11].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 11].GetFormat().Value),
+                        Trace2 = ((ICellValue)(worksheet.Cells[rowIndex, 12].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 12].GetFormat().Value),
+                        Trace3 = ((ICellValue)(worksheet.Cells[rowIndex, 13].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 13].GetFormat().Value),
+                        Trace4 = ((ICellValue)(worksheet.Cells[rowIndex, 14].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 14].GetFormat().Value),
+                        Trace5 = ((ICellValue)(worksheet.Cells[rowIndex, 15].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 15].GetFormat().Value),
+                        Trace6 = ((ICellValue)(worksheet.Cells[rowIndex, 16].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 16].GetFormat().Value),
+                        Lat_Do = ((ICellValue)(worksheet.Cells[rowIndex, 17].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 17].GetFormat().Value),
+                        Lat_Bun = ((ICellValue)(worksheet.Cells[rowIndex, 18].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 18].GetFormat().Value),
+                        Lat_Cho = ((ICellValue)(worksheet.Cells[rowIndex, 19].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 19].GetFormat().Value),
+                        Lng_Do = ((ICellValue)(worksheet.Cells[rowIndex, 20].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 20].GetFormat().Value),
+                        Lng_Bun = ((ICellValue)(worksheet.Cells[rowIndex, 21].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 21].GetFormat().Value),
+                        Lng_Cho = ((ICellValue)(worksheet.Cells[rowIndex, 22].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 22].GetFormat().Value),
+                        Lat = ((ICellValue)(worksheet.Cells[rowIndex, 23].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 23].GetFormat().Value),
+                        Lng = ((ICellValue)(worksheet.Cells[rowIndex, 24].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 24].GetFormat().Value),
+                        MajorCategory = ((ICellValue)(worksheet.Cells[rowIndex, 26].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 26].GetFormat().Value),
+                        MiddleCategory = ((ICellValue)(worksheet.Cells[rowIndex, 27].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 27].GetFormat().Value),
+                        Surveyor = ((ICellValue)(worksheet.Cells[rowIndex, 28].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 28].GetFormat().Value),
+                        Note = ((ICellValue)(worksheet.Cells[rowIndex, 29].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 29].GetFormat().Value),
                     };
 
                     importModels.Add(model);

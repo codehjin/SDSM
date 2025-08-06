@@ -1,4 +1,5 @@
 ﻿using SDSM_App.Enums;
+using SDSM_App.Models;
 using SDSM_Models;
 using System.ComponentModel;
 using System.Data;
@@ -589,18 +590,18 @@ public static class GB
 
     #region 어류 등급계산
 
-    public static (double?, string?) GetFAI(IEnumerable<ImportFishSpecies> speciesData, string? surveyUnavailableReason, int abnormalCount, int chasu = 0)
+    public static (ClusterModel? cluster,  double?, string?) GetFAI(IEnumerable<ImportFishSpecies> speciesData, string? surveyUnavailableReason, int abnormalCount, int chasu = 0)
     {
         // 조사불가 사유가 있으면 등급은 "-"
         if (!string.IsNullOrWhiteSpace(surveyUnavailableReason))
         {
             var reason = surveyUnavailableReason.Replace(" ", "");
             if (reason == "접근불가" || reason == "건천화" || reason == "준설" || reason == "공사중")
-                return (null, "-");
+                return (null,null, "-");
         }
 
         if (speciesData == null)
-            return (null, null);
+            return (null, null, null);
 
         int 총종수 = speciesData.Count(x => x.IndividualCount != null && x.IndividualCount > 0);
         int 총개체수 = speciesData.Sum(x => x.IndividualCount) ?? 0;
@@ -636,10 +637,23 @@ public static class GB
         double m7 = GetM7Value(chasu, 국내종총개체수);
         double m8 = GetM8Value(비정상개체수비율);
 
-        var mValues = new List<double> { m1, m2, m3, m4, m5, m6, m7, m8 };
-        var reult = GetFAIValue(mValues, surveyUnavailableReason);
+        var cluster = new ClusterModel 
+        {
+            TotalIndividualCount = 총개체수,
+            TotalSpeciesCount = 총종수,
+            M1Value = 국내종총종수,
+            M2Value = 여울성저서종수,
+            M3Value = 민감종수,
+            M4Value = Math.Round(내성종개체수비율, 1),
+            M5Value = Math.Round(잡식종개체수비율, 1),
+            M6Value = Math.Round(충식종개체수비율, 1),
+            M7Value = 국내종총개체수,
+        };
 
-        return reult;
+        var mValues = new List<double> { m1, m2, m3, m4, m5, m6, m7, m8 };
+        var (score, grade) = GetFAIValue(mValues, surveyUnavailableReason);
+
+        return (cluster, score, grade);
     }
 
     //국내종총종수

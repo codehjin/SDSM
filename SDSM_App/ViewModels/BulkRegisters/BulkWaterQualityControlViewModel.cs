@@ -271,32 +271,32 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
             CellRange usedCellRange = worksheet.UsedCellRange;
             for (int columnIndex = FirstColumnNumber - 1; columnIndex <= usedCellRange.ToIndex.ColumnIndex; columnIndex++)
             {
-                var firstValue = worksheet.Cells[FirstRowNumber - 1, columnIndex].GetValue().Value.RawValue;
+                var firstValue = ((ICellValue)(worksheet.Cells[FirstRowNumber - 1, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[FirstRowNumber - 1, columnIndex].GetFormat().Value);
                 if (!string.IsNullOrWhiteSpace(firstValue))
                 {
                     var model = new ImportWaterQuality
                     {
                         YearChsu = firstValue,
-                        Site = worksheet.Cells[2, columnIndex].GetValue().Value.RawValue.ToString(),
+                        Site = ((ICellValue)(worksheet.Cells[2, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[2, columnIndex].GetFormat().Value).ToString(),
                         SurveyDate = ((ICellValue)(worksheet.Cells[3, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[3, columnIndex].GetFormat().Value),
-                        MajorRegion = worksheet.Cells[4, columnIndex].GetValue().Value.RawValue,
-                        MiddleRegion = worksheet.Cells[5, columnIndex].GetValue().Value.RawValue,
-                        River = worksheet.Cells[6, columnIndex].GetValue().Value.RawValue,
-                        RiverType = worksheet.Cells[7, columnIndex].GetValue().Value.RawValue,
-                        Lat = worksheet.Cells[8, columnIndex].GetValue().Value.RawValue,
-                        Lng = worksheet.Cells[9, columnIndex].GetValue().Value.RawValue,
-                        Weather = worksheet.Cells[10, columnIndex].GetValue().Value.RawValue,
-                        SurveyAgency = worksheet.Cells[11, columnIndex].GetValue().Value.RawValue,
-                        Surveyor = worksheet.Cells[12, columnIndex].GetValue().Value.RawValue,
-                        PH = worksheet.Cells[13, columnIndex].GetValue().Value.RawValue,
-                        BOD = worksheet.Cells[14, columnIndex].GetValue().Value.RawValue,
-                        COD = worksheet.Cells[15, columnIndex].GetValue().Value.RawValue,
-                        TOC = worksheet.Cells[16, columnIndex].GetValue().Value.RawValue,
-                        SS = worksheet.Cells[17, columnIndex].GetValue().Value.RawValue,
-                        DO = worksheet.Cells[18, columnIndex].GetValue().Value.RawValue,
-                        TP = worksheet.Cells[19, columnIndex].GetValue().Value.RawValue,
-                        Ecotoxicity = worksheet.Cells[20, columnIndex].GetValue().Value.RawValue,
-                        EColi = worksheet.Cells[21, columnIndex].GetValue().Value.RawValue,
+                        MajorRegion = ((ICellValue)(worksheet.Cells[4, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[4, columnIndex].GetFormat().Value),
+                        MiddleRegion = ((ICellValue)(worksheet.Cells[5, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[5, columnIndex].GetFormat().Value),
+                        River = ((ICellValue)(worksheet.Cells[6, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[6, columnIndex].GetFormat().Value),
+                        RiverType = ((ICellValue)(worksheet.Cells[7, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[7, columnIndex].GetFormat().Value),
+                        Lat = ((ICellValue)(worksheet.Cells[8, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[8, columnIndex].GetFormat().Value),
+                        Lng = ((ICellValue)(worksheet.Cells[9, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[9, columnIndex].GetFormat().Value),
+                        Weather = ((ICellValue)(worksheet.Cells[10, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[10, columnIndex].GetFormat().Value),
+                        SurveyAgency = ((ICellValue)(worksheet.Cells[11, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[11, columnIndex].GetFormat().Value),
+                        Surveyor = ((ICellValue)(worksheet.Cells[12, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[12, columnIndex].GetFormat().Value),
+                        PH = ((ICellValue)(worksheet.Cells[13, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[13, columnIndex].GetFormat().Value),
+                        BOD = ((ICellValue)(worksheet.Cells[14, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[14, columnIndex].GetFormat().Value),
+                        COD = ((ICellValue)(worksheet.Cells[15, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[15, columnIndex].GetFormat().Value),
+                        TOC = ((ICellValue)(worksheet.Cells[16, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[16, columnIndex].GetFormat().Value),
+                        SS = ((ICellValue)(worksheet.Cells[17, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[17, columnIndex].GetFormat().Value),
+                        DO = ((ICellValue)(worksheet.Cells[18, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[18, columnIndex].GetFormat().Value),
+                        TP = ((ICellValue)(worksheet.Cells[19, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[19, columnIndex].GetFormat().Value),
+                        Ecotoxicity = ((ICellValue)(worksheet.Cells[20, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[20, columnIndex].GetFormat().Value),
+                        EColi = ((ICellValue)(worksheet.Cells[21, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[21, columnIndex].GetFormat().Value),
                         TN = FindCellPositionByText(worksheet, "T-N", 22, columnIndex),
                         EC = FindCellPositionByText(worksheet, "EC", 22, columnIndex),
                         Flow = FindCellPositionByText(worksheet, "유량", 22, columnIndex),
@@ -817,10 +817,10 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         for (int rowIndex = startRowIndex; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
         {
             //2 => 항목이름 열위치
-            var cellValue = worksheet.Cells[rowIndex, 2].GetValue().Value.RawValue.Replace(" ", "").ToLower();
+            var cellValue = ((ICellValue)(worksheet.Cells[rowIndex, 2].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 2].GetFormat().Value).Replace(" ", "").ToLower();
             if (!string.IsNullOrWhiteSpace(cellValue) && cellValue.StartsWith(searchText.ToLower()))
             {
-                return worksheet.Cells[rowIndex, columnIndex].GetValue().Value.RawValue;
+                return ((ICellValue)(worksheet.Cells[rowIndex, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, columnIndex].GetFormat().Value);
             }
         }
         return null;
@@ -828,7 +828,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
     private static int? GetPhGrade(Worksheet worksheet, int columnIndex)
     {
-        var value = worksheet.Cells[13, columnIndex].GetValue().Value.RawValue;
+        var value = ((ICellValue)(worksheet.Cells[13, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[13, columnIndex].GetFormat().Value);
         if (double.TryParse(value, out double d))
             return (d >= 6.5 && d <= 8.5) ? 1 : 4;
         return 4;
@@ -836,7 +836,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
     private static string GetBodGrade(Worksheet worksheet, int columnIndex)
     {
-        var value = worksheet.Cells[14, columnIndex].GetValue().Value.RawValue;
+        var value = ((ICellValue)(worksheet.Cells[14, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[14, columnIndex].GetFormat().Value);
         if (!double.TryParse(value, out double d))
             return "6";
         if (d <= 1) return "1a";
@@ -850,7 +850,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
     private static string GetCodGrade(Worksheet worksheet, int columnIndex)
     {
-        var bodValue = worksheet.Cells[15, columnIndex].GetValue().Value.RawValue;
+        var bodValue = ((ICellValue)(worksheet.Cells[15, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[15, columnIndex].GetFormat().Value);
         if (!double.TryParse(bodValue, out double d))
             return "6";
         if (d <= 2) return "1a";
@@ -864,7 +864,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
     private static string GetTocGrade(Worksheet worksheet, int columnIndex)
     {
-        var value = worksheet.Cells[16, columnIndex].GetValue().Value.RawValue;
+        var value = ((ICellValue)(worksheet.Cells[16, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[16, columnIndex].GetFormat().Value);
         if (!double.TryParse(value, out double d))
             return "6";
         if (d <= 2) return "1a";
@@ -878,7 +878,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
     private static int GetSsGrade(Worksheet worksheet, int columnIndex)
     {
-        var value = worksheet.Cells[17, columnIndex].GetValue().Value.RawValue;
+        var value = ((ICellValue)(worksheet.Cells[17, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[17, columnIndex].GetFormat().Value);
         if (!double.TryParse(value, out double d))
             return 5;
         if (d <= 25) return 1;
@@ -888,7 +888,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
     private static string GetDoGrade(Worksheet worksheet, int columnIndex)
     {
-        var value = worksheet.Cells[18, columnIndex].GetValue().Value.RawValue;
+        var value = ((ICellValue)(worksheet.Cells[18, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[18, columnIndex].GetFormat().Value);
         if (!double.TryParse(value, out double d))
             return "6";
         if (d >= 7.5) return "1a";
@@ -899,7 +899,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
     private static string GetTpGrade(Worksheet worksheet, int columnIndex)
     {
-        var value = worksheet.Cells[19, columnIndex].GetValue().Value.RawValue;
+        var value = ((ICellValue)(worksheet.Cells[19, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[19, columnIndex].GetFormat().Value);
         if (!double.TryParse(value, out double d))
             return "6";
         if (d <= 0.02) return "1a";
@@ -913,7 +913,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
     private static string GetEColiGrade(Worksheet worksheet, int columnIndex)
     {
-        var value = worksheet.Cells[21, columnIndex].GetValue().Value.RawValue;
+        var value = ((ICellValue)(worksheet.Cells[21, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[21, columnIndex].GetFormat().Value);
         if (!double.TryParse(value, out double d))
             return "4";
         if (d <= 50) return "1a";

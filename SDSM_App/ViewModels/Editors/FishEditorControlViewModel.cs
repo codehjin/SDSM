@@ -60,7 +60,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     [ObservableProperty] private int? _collectionTime;
     [ObservableProperty] private string? _collectionTool;
     [ObservableProperty] private string? _collectionFlowState;
-    [ObservableProperty] private int? _autoRiverChasu;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private int? _autoRiverChasu;
     [ObservableProperty] private string? _WatershedType;
     [ObservableProperty] private string? _drainageSystemType;
     [ObservableProperty] private string? _riverWidth;
@@ -99,6 +99,15 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     [ObservableProperty] private int? _eFCount;
     [ObservableProperty] private int? _lECount;
     [ObservableProperty] private int? _tUCount;
+    [ObservableProperty] private int? _totalIndividualCount;
+    [ObservableProperty] private int? _totalSpeciesCount;
+    [ObservableProperty] private int? _m1Value;
+    [ObservableProperty] private int? _m2Value;
+    [ObservableProperty] private int? _m3Value;
+    [ObservableProperty] private double? _m4Value;
+    [ObservableProperty] private double? _m5Value;
+    [ObservableProperty] private double? _m6Value;
+    [ObservableProperty] private int? _m7Value;
     [ObservableProperty] private double? _fAIScore;
     [ObservableProperty] private string? _fAIGrade;
 
@@ -268,7 +277,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     {
         try
         {
-            var (score, grade) = GetIndexAndGrade();
+            var (cluster, score, grade) = GetIndexAndGrade();
 
             var model = new Fish
             {
@@ -326,6 +335,15 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
                 EFCount = EFCount,
                 LECount = LECount,
                 TUCount = TUCount,
+                TotalIndividualCount = TotalIndividualCount,
+                TotalSpeciesCount = TotalSpeciesCount,
+                M1Value = cluster?.M1Value,
+                M2Value = cluster?.M2Value,
+                M3Value = cluster?.M3Value,
+                M4Value = cluster?.M4Value,
+                M5Value = cluster?.M5Value,
+                M6Value = cluster?.M6Value,
+                M7Value = cluster?.M7Value,
                 FAIScore = score,
                 FAIGrade = grade,
             };
@@ -340,7 +358,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     {
         try
         {
-            var (score, grade) = GetIndexAndGrade();
+            var (cluster, score, grade) = GetIndexAndGrade();
 
             EditModel.YearChsu = YearChsu;
             EditModel.Site = Site;
@@ -396,6 +414,15 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
             EditModel.EFCount = EFCount;
             EditModel.LECount = LECount;
             EditModel.TUCount = TUCount;
+            EditModel.TotalIndividualCount = TotalIndividualCount;
+            EditModel.TotalSpeciesCount = TotalSpeciesCount;
+            EditModel.M1Value = cluster?.M1Value;
+            EditModel.M2Value = cluster?.M2Value;
+            EditModel.M3Value = cluster?.M3Value;
+            EditModel.M4Value = cluster?.M4Value;
+            EditModel.M5Value = cluster?.M5Value;
+            EditModel.M6Value = cluster?.M6Value;
+            EditModel.M7Value = cluster?.M7Value;
             EditModel.FAIScore = score;
             EditModel.FAIGrade = grade;
 
@@ -481,6 +508,15 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
         EFCount = EditModel.EFCount;
         LECount = EditModel.LECount;
         TUCount = EditModel.TUCount;
+        TotalIndividualCount = EditModel.TotalIndividualCount;
+        TotalSpeciesCount = EditModel.TotalSpeciesCount;
+        M1Value = EditModel.M1Value;
+        M2Value = EditModel.M2Value;
+        M3Value = EditModel.M3Value;
+        M4Value = EditModel.M4Value;
+        M5Value = EditModel.M5Value;
+        M6Value = EditModel.M6Value;
+        M7Value = EditModel.M7Value;
         FAIScore = EditModel.FAIScore;
         FAIGrade = EditModel.FAIGrade;
 
@@ -563,6 +599,15 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
         EFCount = null;
         LECount = null;
         TUCount = null;
+        TotalIndividualCount = null;
+        TotalSpeciesCount = null;
+        M1Value = null;
+        M2Value = null;
+        M3Value = null;
+        M4Value = null;
+        M5Value = null;
+        M6Value = null;
+        M7Value = null;
         FAIScore = null;
         FAIGrade = null;
 
@@ -604,7 +649,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
 
     #region 점수 및 등급
 
-    private (double?, string?) GetIndexAndGrade()
+    private (ClusterModel?, double?, string?) GetIndexAndGrade()
     {
         try
         {
@@ -638,14 +683,14 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
                 + (int.TryParse(LECount.ToString(), out int le) ? le : 0)
                 + (int.TryParse(TUCount.ToString(), out int tu) ? tu : 0);
 
-            var (score, grade) = GB.GetFAI(speciesData, surveyUnavailableReason, abnormalCount, chasu);
+            var (cluster, score, grade) = GB.GetFAI(speciesData, surveyUnavailableReason, abnormalCount, chasu);
 
-            return (score, grade);
+            return (cluster, score, grade);
         }
         catch (Exception ex)
         {
             GB.LogWrite(GetType().Name, nameof(GetIndexAndGrade), ex.Message);
-            return (null, null);
+            return (null, null, null);
         }
     }
 
