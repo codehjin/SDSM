@@ -286,7 +286,7 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
             await Task.Run(() =>
             {
                 var ids = context.Benthoss.Select(m => new Benthos { BenthosId = m.BenthosId }).ToList();
-                delteItems = [.. ids.Where(m => DeleteData.Any(i => i.BenthosId == i.BenthosId))];
+                delteItems = [.. ids.Where(m => DeleteData.Any(i => i.BenthosId == m.BenthosId))];
             });
 
             //삭제 파일

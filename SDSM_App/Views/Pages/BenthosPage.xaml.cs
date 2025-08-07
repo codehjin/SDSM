@@ -100,10 +100,9 @@ public partial class BenthosPage : Page, ITransientService
         if (sender is RadButton button && button.Tag is string tag)
         {
             List<BenthosView> deleteData = [];
-            if (tag == "single")
+            if (tag == "selection")
             {
-                var item = DataRadGridView.SelectedItem as BenthosView;
-                deleteData.Add(item ?? new());
+                deleteData = [.. DataRadGridView.SelectedItems.Cast<BenthosView>()];
             }
             else if (tag == "page")
             {

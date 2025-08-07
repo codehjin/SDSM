@@ -11,6 +11,7 @@ using SDSM_App.Messengers;
 using SDSM_App.Models;
 using SDSM_App.Views.UserControls;
 using SDSM_Models;
+using System.Diagnostics;
 using System.Windows;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
@@ -275,6 +276,11 @@ public partial class FishPageViewModel : ObservableObject, ITransientService
     {
         if (DeleteData != null && DeleteData.Count > 0)
         {
+            foreach (var item in DeleteData)
+            {
+                Debug.WriteLine(item.YearChsu);
+            }
+
             GB.IsBusy = true;
             GB.BusyContent = "자료 삭제 중...";
 
@@ -286,7 +292,7 @@ public partial class FishPageViewModel : ObservableObject, ITransientService
             await Task.Run(() =>
             {
                 var ids = context.Fishs.Select(m => new Fish { FishId = m.FishId }).ToList();
-                delteItems = [.. ids.Where(m => DeleteData.Any(i => i.FishId == i.FishId))];
+                delteItems = [.. ids.Where(m => DeleteData.Any(i => i.FishId == m.FishId))];
             });
 
             //삭제 파일

@@ -2152,12 +2152,13 @@
                                         Margin="{TemplateBinding Padding}"
                                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                <!--추가  Cursor Arrow=> Hand/>-->
                                 <telerik:RadButton x:Name="RemoveItemButton"
                                         Grid.Column="1"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
                                         CommandParameter="{Binding}"
-                                        Cursor="Arrow"
+                                        Cursor="Hand"
                                         IsTabStop="False"
                                         Focusable="False"
                                         Command="{x:Static telerik:RadAutoCompleteBoxCommands.RemoveItem}"

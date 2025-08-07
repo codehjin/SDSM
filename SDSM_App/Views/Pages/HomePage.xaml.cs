@@ -1,9 +1,7 @@
 ﻿using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_App.ViewModels;
-using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -180,7 +178,8 @@ public partial class HomePage : Page, ITransientService
                     copyTextBlock.Text = "복사됨";
                     await Task.Delay(500);
                     copyTextBlock.Text = "복사";
-                };
+                }
+                ;
             }
             catch (Exception ex)
             {
@@ -410,7 +409,7 @@ public partial class HomePage : Page, ITransientService
             _clickCallout.DataContext = item;
             _pointTarget = placementTarget;
 
-            _vm.AddSelectedPointsExecutedCommand.Execute(item);
+            _vm.PopupPointsExecutedCommand.Execute(item);
 
             CalloutPopupService.Show(_clickCallout, _pointTarget, _popupSettings);
         }
@@ -424,4 +423,10 @@ public partial class HomePage : Page, ITransientService
     }
 
     #endregion
+
+    private void RadAutoCompleteBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        MapPinCalloutPopupClose();
+        _vm.SearchValueSelectionChangedExecutedCommand.Execute(null);
+    }
 }

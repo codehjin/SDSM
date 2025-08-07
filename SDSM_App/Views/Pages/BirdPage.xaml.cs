@@ -101,10 +101,9 @@ public partial class BirdPage : Page, ITransientService
         if (sender is RadButton button && button.Tag is string tag)
         {
             List<Bird> deleteData = [];
-            if (tag == "single")
+            if (tag == "selection")
             {
-                var item = DataRadGridView.SelectedItem as Bird;
-                deleteData.Add(item ?? new());
+                deleteData = [.. DataRadGridView.SelectedItems.Cast<Bird>()];
             }
             else if (tag == "page")
             {

@@ -100,10 +100,9 @@ public partial class MammalPage : Page, ITransientService
         if (sender is RadButton button && button.Tag is string tag)
         {
             List<Mammal> deleteData = [];
-            if (tag == "single")
+            if (tag == "selection")
             {
-                var item = DataRadGridView.SelectedItem as Mammal;
-                deleteData.Add(item ?? new());
+                deleteData = [.. DataRadGridView.SelectedItems.Cast<Mammal>()];
             }
             else if (tag == "page")
             {

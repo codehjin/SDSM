@@ -100,10 +100,9 @@ public partial class AmphibianReptilePage : Page, ITransientService
         if (sender is RadButton button && button.Tag is string tag)
         {
             List<AmphibianReptile> deleteData = [];
-            if (tag == "single")
+            if (tag == "selection")
             {
-                var item = DataRadGridView.SelectedItem as AmphibianReptile;
-                deleteData.Add(item ?? new());
+                deleteData = [.. DataRadGridView.SelectedItems.Cast<AmphibianReptile>()];
             }
             else if (tag == "page")
             {

@@ -99,10 +99,9 @@ public partial class FishPage : Page, ITransientService
         if (sender is RadButton button && button.Tag is string tag)
         {
             List<FishView> deleteData = [];
-            if (tag == "single")
+            if (tag == "selection")
             {
-                var item = DataRadGridView.SelectedItem as FishView;
-                deleteData.Add(item ?? new());
+                deleteData = [.. DataRadGridView.SelectedItems.Cast<FishView>()];
             }
             else if (tag == "page")
             {

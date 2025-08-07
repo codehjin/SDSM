@@ -101,10 +101,9 @@ public partial class HabitatWaterEdgePage : Page, ITransientService
         if (sender is RadButton button && button.Tag is string tag)
         {
             List<HabitatWaterEdge> deleteData = [];
-            if (tag == "single")
+            if (tag == "selection")
             {
-                var item = DataRadGridView.SelectedItem as HabitatWaterEdge;
-                deleteData.Add(item ?? new());
+                deleteData = [.. DataRadGridView.SelectedItems.Cast<HabitatWaterEdge>()];
             }
             else if (tag == "page")
             {

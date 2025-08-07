@@ -235,7 +235,7 @@
                                             <MultiBinding Converter="{StaticResource MultiBindingValueConverter}">
                                                 <Binding ElementName="DataRadGridView"/>
                                                 <Binding ElementName="CopyTextBlock"/>
-                                            </MultiBinding>                                        
+                                            </MultiBinding>
                                         </telerik:RadButton.Tag>
                                         <StackPanel Orientation="Horizontal">
                                             <telerik:RadGlyph Glyph="{StaticResource GlyphCopy}"/>
@@ -261,7 +261,7 @@
                             </Grid>
                             <Grid Margin="0 0 0 0">
                                 <telerik:RadGridView x:Name="DataRadGridView"
-                                                     ItemsSource="{Binding Path=DataContext.SelectedCollection, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
+                                                     ItemsSource="{Binding Path=DataContext.PopupPointCollection, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
                                                      BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
                                                      BusyIndicatorIsIndeterminate="False"
                                                      FrozenColumnsSplitterVisibility="Collapsed"
@@ -277,8 +277,8 @@
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="140" MaxWidth="140"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="140" MaxWidth="140" TextTrimming="CharacterEllipsis"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="140" MaxWidth="140" TextTrimming="CharacterEllipsis"/>
-                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" IsVisible="{Binding Path=IsSpecies}"/>
-                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="480" MaxWidth="480" TextWrapping="Wrap" IsVisible="{Binding Path=IsSpecies}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="320" MaxWidth="320" TextWrapping="Wrap" IsVisible="{Binding Path=IsSpecies}" />
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="320" MaxWidth="320" TextTrimming="CharacterEllipsis" IsVisible="{Binding Path=IsSpecies}" />
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180" TextTrimming="CharacterEllipsis"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Score}" DataFormatString="{}{0:F1}" MinWidth="80" Width="120" MaxWidth="120" IsVisible="{Binding Path=IsScoreGrade}"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Grade}" MinWidth="80" Width="120" MaxWidth="120" IsVisible="{Binding Path=IsScoreGrade}"/>
@@ -301,6 +301,13 @@
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <!--RadAutoCompleteBox-->
+        <Style x:Key="SearchBoxesItemxStyle" TargetType="telerik:RadAutoCompleteBoxItem" BasedOn="{StaticResource RadAutoCompleteBoxItemStyle}">
+            <Setter Property="Padding" Value="3" />
+            <Setter Property="helpers:ThemeHelper.CornerRadius" Value="3"/>
+            <Setter Property="Background" Value="#99000000"/>
         </Style>
     </Page.Resources>
 
@@ -340,7 +347,7 @@
                                         ClusteringEnabled="True"
                                         AutoCalculateClusteringThreshold="False"
                                         ClusteringEnabledThreshold ="13"
-                                        ClusterItemTemplate="{StaticResource ClusterTemplate}"
+                                        ClusterItemTemplate="{StaticResource ClusterTemplate}"                                        
                                         ItemTemplate="{StaticResource PointDataTemplate}"/>
         </telerik:RadMap>
 
@@ -352,7 +359,7 @@
                 <Grid Margin="10 10 0 10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <CheckBox x:Name="SurveyDataVisibleCheckBox" HorizontalContentAlignment="Stretch" Style="{StaticResource ExpanderCheckBoxStyle}" Padding="20 5" IsChecked="True">
                         <Grid Height="32">
@@ -377,133 +384,210 @@
                     </CheckBox>
 
                     <Border Grid.Row="1" Style="{StaticResource ContentBorderStyle}" Margin="0 5 0 0" Visibility="{Binding Path=IsChecked, ElementName=SurveyDataVisibleCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <StackPanel>
-                            <StackPanel.Resources>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.Resources>
                                 <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}">
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                     <Setter Property="Height" Value="{StaticResource DefaultHeight}"/>
                                     <Setter Property="Cursor" Value="Hand"/>
                                 </Style>
-                            </StackPanel.Resources>
+                            </Grid.Resources>
 
-                            <telerik:RadButton Content="전체 선택해제" Margin="0 0 0 10" Height="{StaticResource DefaultHeight}" HorizontalAlignment="Right" Command="{Binding Path=AllClearPointExecutedCommand}"/>
+                            <DockPanel Margin="0 0 0 10">
+                                <telerik:RadToggleButton x:Name="SearchRadToggleButton" Cursor="Hand" Height="{StaticResource DefaultHeight}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <telerik:RadGlyph Glyph="{StaticResource GlyphZoom}" VerticalAlignment="Center"/>
+                                        <TextBlock Text="검색" Margin="5 0 0 0"/>
+                                    </StackPanel>
+                                </telerik:RadToggleButton>
+                                <telerik:RadButton Content="전체 선택해제" Height="{StaticResource DefaultHeight}" HorizontalAlignment="Right" Command="{Binding Path=AllClearPointExecutedCommand}"/>
+                            </DockPanel>
 
-                            <ItemsControl ItemsSource="{Binding Path=SurveyDataCollection}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"
-                                                      Margin="0 0 0 5"
-                                                      Command="{Binding Path=DataContext.AddAndRemovePointExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" 
-                                                      CommandParameter="{Binding}">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="150"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
+                            <Border Grid.Row="1" Margin="0 0 0 15" Visibility="{Binding Path=IsChecked, ElementName=SearchRadToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="5"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Path=Caption}"/>
-                                                        <TextBlock>
-                                                            <Run Text="("/>
-                                                            <Run Text="{Binding Path=Count, StringFormat={}{0:N0}}"/>
-                                                            <Run Text=")"/>
-                                                        </TextBlock>
-                                                    </StackPanel>
-                                                                
-                                                    <Rectangle Grid.Column="1" Width="20" Height="18" Margin="10 0 0 0" RadiusX="3" RadiusY="3">
-                                                        <Rectangle.Style>
-                                                            <Style TargetType="Rectangle">
-                                                                <Setter Property="Fill" Value="Transparent"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="식생">
-                                                                        <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="식물">
-                                                                        <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="양서파충류">
-                                                                        <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="어류">
-                                                                        <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="저서동물">
-                                                                        <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="조류">
-                                                                        <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="포유류">
-                                                                        <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="서식수변">
-                                                                        <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="수질">
-                                                                        <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Rectangle.Style>
-                                                    </Rectangle>
-                                                </Grid>
-                                            </CheckBox>
-                                            <telerik:RadDropDownButton  Grid.Column="1" Margin="8 0 0 0" Cursor="Hand" Height="36">
-                                                <telerik:RadDropDownButton.Content>
-                                                    <TextBlock Text="{StaticResource GlyphPalette}" 
-                                                               FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" 
-                                                               FontSize="18"
-                                                               Foreground="#AA000000"/>
-                                                </telerik:RadDropDownButton.Content>
-                                                <telerik:RadDropDownButton.DropDownContent>
-                                                    <telerik:RadColorEditor Grid.Column="1" ColorMode="RGB" BorderThickness="0" Width="500" Margin="5">
-                                                        <telerik:RadColorEditor.Style>
-                                                            <Style TargetType="telerik:RadColorEditor">
-                                                                <Setter Property="SelectedColor" Value="Transparent"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="식생">
-                                                                        <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationColor, Mode=TwoWay}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="식물">
-                                                                        <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantColor, Mode=TwoWay}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="양서파충류">
-                                                                        <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileColor, Mode=TwoWay}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="어류">
-                                                                        <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishColor, Mode=TwoWay}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="저서동물">
-                                                                        <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosColor, Mode=TwoWay}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="조류">
-                                                                        <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdColor, Mode=TwoWay}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="포유류">
-                                                                        <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalColor, Mode=TwoWay}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="서식수변">
-                                                                        <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeColor, Mode=TwoWay}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Caption}" Value="수질">
-                                                                        <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityColor, Mode=TwoWay}"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </telerik:RadColorEditor.Style>
-                                                    </telerik:RadColorEditor>
-                                                </telerik:RadDropDownButton.DropDownContent>
-                                            </telerik:RadDropDownButton>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
+                                    <TextBlock Text="선택" VerticalAlignment="Top" Margin="0 8 0 0" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                                    <telerik:RadComboBox Grid.Column="1"
+                                                         ItemsSource="{Binding Path=SearchCaptionCollection}"
+                                                         SelectedItem="{Binding Path=SearchCaptionSelectedItem}"
+                                                         Cursor="Hand"
+                                                         Height="{StaticResource DefaultHeight}">
+                                        <telerik:EventToCommandBehavior.EventBindings>
+                                            <telerik:EventBinding EventName="SelectionChanged" Command="{Binding Path=SearchCaptionSelectionChangedExecutedCommand}"/>
+                                        </telerik:EventToCommandBehavior.EventBindings>
+                                    </telerik:RadComboBox>
+                                    <telerik:RadAutoCompleteBox Grid.Column="0"
+                                                                Grid.Row="2"
+                                                                Grid.ColumnSpan="2"
+                                                                ItemsSource="{Binding Path=SearchValueCollection}"
+                                                                SelectedItems="{Binding Path=SearchValueSelectionCollection}"
+                                                                AutoCompleteMode="Suggest"
+                                                                DisplayMemberPath="SearchText"
+                                                                WatermarkContent="검색어를 입력하세요."
+                                                                Width="305"
+                                                                MinHeight="{StaticResource DefaultHeight}"
+                                                                MaxHeight="75"
+                                                                NoResultsContent="목록 값없음"
+                                                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                                BoxesItemStyle="{StaticResource SearchBoxesItemxStyle}"
+                                                                SelectionChanged="RadAutoCompleteBox_SelectionChanged">
+                                        <telerik:RadAutoCompleteBox.FilteringBehavior>
+                                            <telerik:AsyncFilteringBehavior/>
+                                        </telerik:RadAutoCompleteBox.FilteringBehavior>
+                                        <telerik:RadAutoCompleteBox.TextBoxStyle>
+                                            <Style TargetType="telerik:RadWatermarkTextBox" BasedOn="{StaticResource RadAutoCompleteTextBoxStyle}">
+                                                <Setter Property="InputMethod.PreferredImeState" Value="On"/>
+                                                <Setter Property="InputMethod.PreferredImeConversionMode" Value="Native"/>
+                                            </Style>
+                                        </telerik:RadAutoCompleteBox.TextBoxStyle>
+                                    </telerik:RadAutoCompleteBox>
+                                </Grid>
+                            </Border>
+
+                            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly" Margin="0 0 -14 0">
+                                <ScrollViewer.Style>
+                                    <Style TargetType="ScrollViewer">
+                                        <Setter Property="Padding" Value="0 0 14 0"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="ComputedVerticalScrollBarVisibility" Value="Visible">
+                                                <Setter Property="Padding" Value="0 0 0 0"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ScrollViewer.Style>
+                                <ItemsControl ItemsSource="{Binding Path=SurveyDataCollection}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="85"/>
+                                                </Grid.ColumnDefinitions>
+                                                <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"
+                                                          Margin="0 0 0 5"
+                                                          Command="{Binding Path=DataContext.AddAndRemovePointExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" 
+                                                          CommandParameter="{Binding}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="150"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Path=Caption}"/>
+                                                            <TextBlock>
+                                                                <Run Text="("/>
+                                                                <Run Text="{Binding Path=Count, StringFormat={}{0:N0}}"/>
+                                                                <Run Text=")"/>
+                                                            </TextBlock>
+                                                        </StackPanel>
+
+                                                        <Rectangle Grid.Column="1" Width="20" Height="18" Margin="10 0 0 0" RadiusX="3" RadiusY="3">
+                                                            <Rectangle.Style>
+                                                                <Style TargetType="Rectangle">
+                                                                    <Setter Property="Fill" Value="Transparent"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="식생">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="식물">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="양서파충류">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="어류">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="저서동물">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="조류">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="포유류">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="서식수변">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="수질">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Rectangle.Style>
+                                                        </Rectangle>
+                                                    </Grid>
+                                                </CheckBox>
+
+                                                <telerik:RadDropDownButton Grid.Column="1" Margin="8 0 0 0" Cursor="Hand" Height="36">
+                                                    <telerik:RadDropDownButton.Content>
+                                                        <TextBlock Text="{StaticResource GlyphPalette}" 
+                                                                       FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" 
+                                                                       FontSize="18"
+                                                                       Foreground="#AA000000"/>
+                                                    </telerik:RadDropDownButton.Content>
+                                                    <telerik:RadDropDownButton.DropDownContent>
+                                                        <telerik:RadColorEditor Grid.Column="1" ColorMode="RGB" BorderThickness="0" Width="500" Margin="5">
+                                                            <telerik:RadColorEditor.Style>
+                                                                <Style TargetType="telerik:RadColorEditor">
+                                                                    <Setter Property="SelectedColor" Value="Transparent"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="식생">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="식물">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="양서파충류">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="어류">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="저서동물">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="조류">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="포유류">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="서식수변">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Caption}" Value="수질">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </telerik:RadColorEditor.Style>
+                                                        </telerik:RadColorEditor>
+                                                    </telerik:RadDropDownButton.DropDownContent>
+                                                </telerik:RadDropDownButton>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
                     </Border>
                 </Grid>
 
@@ -640,7 +724,7 @@
                                                             <telerik:GridViewDataColumn Header="개수" DataMemberBinding="{Binding Path=Count}" DataFormatString="N0" MinWidth="80" Width="100" MaxWidth="100" HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}" CellStyle="{StaticResource GridViewCellRightStyle}" IsVisible="{Binding Path=IsBiotopesRarity}"/>
                                                             <telerik:GridViewDataColumn Header="면적(km²)" DataMemberBinding="{Binding Path=Area}" DataFormatString="F2" MinWidth="80" Width="100" MaxWidth="100" HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}" CellStyle="{StaticResource GridViewCellRightStyle}" IsVisible="{Binding Path=IsBiotopesRarity}"/>
                                                             <telerik:GridViewDataColumn Header="교란종" DataMemberBinding="{Binding Path=Grade}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}" IsVisible="{Binding Path=IsInvasiveSpecies}"/>
-                                                            <telerik:GridViewDataColumn Header="개체수" DataMemberBinding="{Binding Path=Count}" DataFormatString="N0" MinWidth="80" Width="100" MaxWidth="100" HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}" CellStyle="{StaticResource GridViewCellRightStyle}" IsVisible="{Binding Path=IsInvasiveSpecies}"/>                                                            
+                                                            <telerik:GridViewDataColumn Header="개체수" DataMemberBinding="{Binding Path=Count}" DataFormatString="N0" MinWidth="80" Width="100" MaxWidth="100" HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}" CellStyle="{StaticResource GridViewCellRightStyle}" IsVisible="{Binding Path=IsInvasiveSpecies}"/>
                                                         </telerik:RadGridView.Columns>
                                                     </telerik:RadGridView>
                                                 </Border>

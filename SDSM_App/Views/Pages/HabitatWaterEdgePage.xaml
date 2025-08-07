@@ -9,7 +9,7 @@
       xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
       xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"
-      d:DataContext="{d:DesignInstance Type={x:Type viewmodel:HabitatWaterEdgePagePageViewModel}}"
+      d:DataContext="{d:DesignInstance Type={x:Type viewmodel:HabitatWaterEdgePageViewModel}}"
       FontFamily="{StaticResource DefaultFontFamily}"
       FontSize="{StaticResource DefaultFontSize}"
       Title="서식수변">
@@ -64,7 +64,7 @@
                                                Margin="0 0 0 5"
                                                IsTabStop="False"
                                                HorizontalContentAlignment="Left"
-                                               Tag="single"
+                                               Tag="selection"
                                                Click="DeleteRadButton_Click"/>
                             <telerik:RadButton Content="페이지 자료 삭제" 
                                                Height="{StaticResource DefaultHeight}"
@@ -136,7 +136,8 @@
                                          BusyIndicatorIsIndeterminate="False"
                                          FrozenColumnsSplitterVisibility="Visible"
                                          RowIndicatorVisibility="Visible"
-                                         LeftFrozenColumnCount="0">
+                                         LeftFrozenColumnCount="0"
+                                         SelectionMode="Extended">
                         <telerik:RadGridView.ColumnGroups>
                             <telerik:GridViewColumnGroup Name="survey" Header="조사개황"/>
                             <telerik:GridViewColumnGroup Name="unsurvey" Header="조사불가시"/>

@@ -644,9 +644,9 @@ public static class GB
             M1Value = 국내종총종수,
             M2Value = 여울성저서종수,
             M3Value = 민감종수,
-            M4Value = Math.Round(내성종개체수비율, 1),
-            M5Value = Math.Round(잡식종개체수비율, 1),
-            M6Value = Math.Round(충식종개체수비율, 1),
+            M4Value = Math.Round(내성종개체수비율, 1, MidpointRounding.AwayFromZero),
+            M5Value = Math.Round(잡식종개체수비율, 1, MidpointRounding.AwayFromZero),
+            M6Value = Math.Round(충식종개체수비율, 1, MidpointRounding.AwayFromZero),
             M7Value = 국내종총개체수,
         };
 

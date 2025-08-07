@@ -101,10 +101,9 @@ public partial class WaterQualityPage : Page, ITransientService
         if (sender is RadButton button && button.Tag is string tag)
         {
             List<WaterQuality> deleteData = [];
-            if (tag == "single")
+            if (tag == "selection")
             {
-                var item = DataRadGridView.SelectedItem as WaterQuality;
-                deleteData.Add(item ?? new());
+                deleteData = [.. DataRadGridView.SelectedItems.Cast<WaterQuality>()];
             }
             else if (tag == "page")
             {

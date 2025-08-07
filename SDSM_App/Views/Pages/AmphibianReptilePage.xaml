@@ -64,7 +64,7 @@
                                                Margin="0 0 0 5"
                                                IsTabStop="False"
                                                HorizontalContentAlignment="Left"
-                                               Tag="single"
+                                               Tag="selection"
                                                Click="DeleteRadButton_Click"/>
                             <telerik:RadButton Content="페이지 자료 삭제" 
                                                Height="{StaticResource DefaultHeight}"
@@ -136,7 +136,8 @@
                                          BusyIndicatorIsIndeterminate="False"
                                          FrozenColumnsSplitterVisibility="Visible"
                                          RowIndicatorVisibility="Visible"
-                                         LeftFrozenColumnCount="0">
+                                         LeftFrozenColumnCount="0"
+                                         SelectionMode="Extended">
                         <telerik:RadGridView.ColumnGroups>
                             <telerik:GridViewColumnGroup Name="species" Header="출현종"/>
                             <telerik:GridViewColumnGroup Name="observation" Header="출현종 관찰내용"/>
