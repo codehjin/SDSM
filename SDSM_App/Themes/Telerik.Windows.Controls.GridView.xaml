@@ -321,7 +321,8 @@
                             <Setter TargetName="FocusVisual" Property="Opacity" Value="1"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PART_RootElement" Property="Background" Value="{telerik1:Windows11Resource ResourceKey=SecondaryBackgroundBrush}"/>
+                            <!--추가 SecondaryBackgroundBrush => SecondaryBorderBrush-->
+                            <Setter TargetName="PART_RootElement" Property="Background" Value="{telerik1:Windows11Resource ResourceKey=TertiarySmokeBackgroundBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="PART_RootElement" Property="BorderBrush" Value="{telerik1:Windows11Resource ResourceKey=SecondaryBorderBrush}"/>

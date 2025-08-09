@@ -37,7 +37,10 @@
                     <TextBlock Text="생물종" Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 10 0"/>
                     <TextBlock Text="{Binding Path=SpeciesFirstRowNumber}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
                     <TextBlock Text="행 부터~ ," Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 10 0"/>
-                    <telerik:RadDropDownButton Content="항목 행 번호" Cursor="Hand">
+                    <telerik:RadDropDownButton Content="항목 행 번호"
+                                               Cursor="Hand"
+                                               helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
+                                               helpers:ThemeHelper.CheckedBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}">
                         <telerik:RadDropDownButton.DropDownContent>
                             <StackPanel>
                                 <Grid Margin="15 5">

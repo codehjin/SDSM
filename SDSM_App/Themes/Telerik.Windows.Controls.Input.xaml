@@ -462,6 +462,8 @@
             <!-- General setters for IsMouseOver -->
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{telerik1:Windows11Resource ResourceKey=MouseOverBackgroundBrush}"/>
+                <!--추가-->
+                <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{telerik1:Windows11Resource ResourceKey=FocusBrush}"/>
             </Trigger>
 
             <!-- General setters for IsPressed -->

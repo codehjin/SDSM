@@ -3,15 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using SDSM_App.InjectableServices;
 using SDSM_App.Models;
-using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
-using Telerik.Windows.Controls.Gauge;
 using Telerik.Windows.Controls.Map;
-using Telerik.Windows.Controls.Spreadsheet.Dialogs;
 using Telerik.Windows.Data;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace SDSM_App.ViewModels;
 
@@ -140,7 +135,10 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
 
                 if (isChecked == true)
                 {
-                    SearchCaptionCollection.Add(caption);
+                    if(caption != "서식수변" && caption != "수질")
+                    {
+                        SearchCaptionCollection.Add(caption);
+                    }
 
                     PointCollection.AddRange([.. PointData.Where(m => m.Caption == caption)]);
                 }
@@ -308,7 +306,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                         IsSpecies = true,
                         IsSpeciesCount = true,
                         IsIndividualCount = true,
-                        SpeciesKo = string.Join(",", item.Subs.OrderBy(m => m.SpeciesKo).Select(s => s.SpeciesKo ?? " ").Distinct()),
+                        SpeciesKo = string.Join(",", item.Subs.OrderBy(m => m.SpeciesKo).Select(s => s.SpeciesKo).Distinct()),
                     };
                     PointData.Add(model);
                 }
@@ -356,7 +354,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                         IsSpecies = true,
                         IsSpeciesCount = true,
                         IsIndividualCount = true,
-                        SpeciesKo = string.Join(",", item.Subs.OrderBy(m => m.SpeciesKo).Select(s => s.SpeciesKo ?? " ").Distinct()),
+                        SpeciesKo = string.Join(",", item.Subs.OrderBy(m => m.SpeciesKo).Select(s => s.SpeciesKo).Distinct()),
                     };
                     PointData.Add(model);
                 }

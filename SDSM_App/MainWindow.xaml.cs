@@ -38,8 +38,6 @@ public partial class MainWindow : Window, ISingletonService
         //첫 로딩화면
         if (RadSplashScreenManager.IsSplashScreenActive)
         {
-            Thread.Sleep(2000);
-
             RadSplashScreenManager.Close();
         }
 
@@ -100,7 +98,6 @@ public partial class MainWindow : Window, ISingletonService
     }
 
     #endregion
-
 
     #region Control 이벤트
 

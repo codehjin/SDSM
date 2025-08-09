@@ -383,7 +383,10 @@
                         </Grid>
                     </CheckBox>
 
-                    <Border Grid.Row="1" Style="{StaticResource ContentBorderStyle}" Margin="0 5 0 0" Visibility="{Binding Path=IsChecked, ElementName=SurveyDataVisibleCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border Grid.Row="1" Style="{StaticResource ContentBorderStyle}"
+                            Margin="0 5 0 0" 
+                            VerticalAlignment="Top"
+                            Visibility="{Binding Path=IsChecked, ElementName=SurveyDataVisibleCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -425,7 +428,10 @@
                                                          ItemsSource="{Binding Path=SearchCaptionCollection}"
                                                          SelectedItem="{Binding Path=SearchCaptionSelectedItem}"
                                                          Cursor="Hand"
-                                                         Height="{StaticResource DefaultHeight}">
+                                                         MaxDropDownHeight="600"
+                                                         Height="{StaticResource DefaultHeight}"
+                                                         helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
+                                                         helpers:ThemeHelper.CheckedBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}">
                                         <telerik:EventToCommandBehavior.EventBindings>
                                             <telerik:EventBinding EventName="SelectionChanged" Command="{Binding Path=SearchCaptionSelectionChangedExecutedCommand}"/>
                                         </telerik:EventToCommandBehavior.EventBindings>
@@ -536,7 +542,9 @@
                                                     </Grid>
                                                 </CheckBox>
 
-                                                <telerik:RadDropDownButton Grid.Column="1" Margin="8 0 0 0" Cursor="Hand" Height="36">
+                                                <telerik:RadDropDownButton Grid.Column="1" Margin="8 0 0 0" Cursor="Hand" Height="36" 
+                                                                           helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
+                                                                           helpers:ThemeHelper.CheckedBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}">
                                                     <telerik:RadDropDownButton.Content>
                                                         <TextBlock Text="{StaticResource GlyphPalette}" 
                                                                        FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" 
@@ -619,7 +627,11 @@
                         </Grid>
                     </CheckBox>
 
-                    <Border Grid.Row="1" Style="{StaticResource ContentBorderStyle}" Margin="0 5 0 0" Padding="10 10 10 5" VerticalAlignment="Top" Visibility="{Binding Path=IsChecked, ElementName=ThemeMapVisibleCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border Grid.Row="1" Style="{StaticResource ContentBorderStyle}" 
+                            Margin="0 5 0 0"
+                            Padding="14 14 14 4"
+                            VerticalAlignment="Top" 
+                            Visibility="{Binding Path=IsChecked, ElementName=ThemeMapVisibleCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Grid>
                             <Grid.Resources>
                                 <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}">
@@ -634,7 +646,17 @@
                             </Grid.RowDefinitions>
                             <telerik:RadButton Content="전체 선택해제" Margin="0 0 0 10" Height="{StaticResource DefaultHeight}" HorizontalAlignment="Right" Click="AllThemeMapUnCheckedRadButton_Click"/>
 
-                            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly" Margin="0 0 -10 0" Padding="0 0 10 0">
+                            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly" Margin="0 0 -14 0">
+                                <ScrollViewer.Style>
+                                    <Style TargetType="ScrollViewer">
+                                        <Setter Property="Padding" Value="0 0 14 0"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="ComputedVerticalScrollBarVisibility" Value="Visible">
+                                                <Setter Property="Padding" Value="0 0 0 0"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ScrollViewer.Style>
                                 <ItemsControl ItemsSource="{Binding Path=ThemeMapCollection}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
@@ -776,7 +798,7 @@
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
 
-                                                <Rectangle Grid.Row="4" Style="{StaticResource HorizontalRectangleStyle}" Margin="0 20"/>
+                                                <Rectangle Grid.Row="4" Style="{StaticResource HorizontalRectangleStyle}" Margin="0 15"/>
                                             </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
