@@ -39,6 +39,11 @@ public partial class MapModel : ObservableObject
     [DisplayName("개체수")] public double? IndividualCount { get; set; }
     public bool IsIndividualCount { get; set; }
 
+    [DisplayName("출현종")] public string? SubSpecies { get; set; }
+    public bool IsSubSpecies { get; set; }
+
+    public List<NameValue>? SubSpeciesData { get; set; }
+
     [DisplayName("pH 등급")] public int? PHGrade { get; set; }
     [DisplayName("BOD 등급")] public string? BODGrade { get; set; }
     [DisplayName("COD 등급")] public string? CODGrade { get; set; }

@@ -125,36 +125,32 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
     [RelayCommand]
     private void AddAndRemovePointExecuted(object obj)
     {
-        if (obj is MapModel selectedModel)
+        try
         {
-
-            try
+            if (obj is MapModel selectedModel)
             {
+
                 string caption = selectedModel.Caption;
                 bool isChecked = selectedModel.IsSelected;
 
                 if (isChecked == true)
                 {
-                    if(caption != "서식수변" && caption != "수질")
+                    if (caption != "서식수변" && caption != "수질")
                     {
                         SearchCaptionCollection.Add(caption);
                     }
 
-                    PointCollection.AddRange([.. PointData.Where(m => m.Caption == caption)]);
+                    PointCollection.AddRange(PointData.Where(m => m.Caption == caption));
                 }
                 else
                 {
                     SearchCaptionCollection.Remove(caption);
 
-                    var points = PointCollection.Where(m => m.Caption == caption);
-                    if (points.Any())
-                    {
-                        PointCollection.RemoveRange(points);
-                    }
+                    PointCollection.RemoveRange(PointCollection.Where(m => m.Caption == caption));
                 }
             }
-            catch { }
         }
+        catch { }
     }
 
     //선택 팝업 목록
@@ -285,6 +281,12 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
 
                 foreach (var item in items)
                 {
+                    var subs = item.Subs.GroupBy(m => m.SpeciesKo)
+                                         .Select(g => new NameValue { Name = g.Key ?? "", Value = g.Sum(x => x.IndividualCount ?? 0) })
+                                         .OrderByDescending(m => m.Value)
+                                         .ThenBy(m => m.Name)
+                                         .ToList();
+
                     var model = new MapModel
                     {
                         Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
@@ -303,10 +305,11 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                         SpeciesCount = item.Subs.Count,
                         IndividualCount = item.Subs.Sum(m => m.IndividualCount),
                         IsScoreGrade = true,
-                        IsSpecies = true,
                         IsSpeciesCount = true,
                         IsIndividualCount = true,
-                        SpeciesKo = string.Join(",", item.Subs.OrderBy(m => m.SpeciesKo).Select(s => s.SpeciesKo).Distinct()),
+                        SubSpecies = string.Join(",", subs.Select(s => s.Name)),
+                        IsSubSpecies = true,
+                        SubSpeciesData = subs,
                     };
                     PointData.Add(model);
                 }
@@ -333,6 +336,12 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
 
                 foreach (var item in items)
                 {
+                    var subs = item.Subs.GroupBy(m => m.SpeciesKo)
+                                         .Select(g => new NameValue { Name = g.Key ?? "", Value = g.Sum(x => x.IndividualCount ?? 0) })
+                                         .OrderByDescending(m => m.Value)
+                                         .ThenBy(m => m.Name)
+                                         .ToList();
+
                     var model = new MapModel
                     {
                         Location = new Location(item.Lat ?? 0, item.Lng ?? 0),
@@ -351,10 +360,11 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                         SpeciesCount = item.Subs.Count,
                         IndividualCount = item.Subs.Sum(m => m.IndividualCount),
                         IsScoreGrade = true,
-                        IsSpecies = true,
                         IsSpeciesCount = true,
                         IsIndividualCount = true,
-                        SpeciesKo = string.Join(",", item.Subs.OrderBy(m => m.SpeciesKo).Select(s => s.SpeciesKo).Distinct()),
+                        SubSpecies = string.Join(",", subs.Select(m => m.Name)),
+                        IsSubSpecies = true,
+                        SubSpeciesData = subs,
                     };
                     PointData.Add(model);
                 }

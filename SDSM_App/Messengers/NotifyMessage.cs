@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SDSM_App.Messengers;
+﻿namespace SDSM_App.Messengers;
 
 public class NotifyMessage
 {

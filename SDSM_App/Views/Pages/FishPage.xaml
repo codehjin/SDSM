@@ -39,10 +39,11 @@
                 </telerik:RadButton>
                 <telerik:RadButton Content="수정" Command="{Binding Path=EditEditorOpenExecutedCommand}" Style="{StaticResource EditButtonStyle}"/>
                 <telerik:RadDropDownButton Content="삭제"
-                                            Cursor="Hand"
-                                            Margin="10 0 0 0"
-                                            CloseOnPopupMouseLeftButtonUp="True"
-                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=ValidationBrush}">
+                                           Cursor="Hand"
+                                           Margin="10 0 0 0"
+                                           CloseOnPopupMouseLeftButtonUp="True"
+                                           helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=ValidationBrush}"
+                                           helpers:ThemeHelper.CheckedBrush="{telerik:Windows11Resource ResourceKey=ValidationBrush}">
                     <telerik:RadDropDownButton.Style>
                         <Style TargetType="telerik:RadDropDownButton">
                             <Setter Property="IsEnabled" Value="True"/>

@@ -1124,7 +1124,7 @@
                                             <telerik:RadButton Command="{Binding Path=ManualWindowOpenCommand}">
                                                 <DockPanel>
                                                     <icon:PackIconVaadinIcons Kind="InfoCircleOutline" Style="{StaticResource InfoIconStyle}" Foreground="{StaticResource MenuForegroundBrush}"/>
-                                                    <TextBlock Text="사용설명서" VerticalAlignment="Center" Foreground="{StaticResource MenuForegroundBrush}"/>
+                                                    <TextBlock Text="사용 설명서" VerticalAlignment="Center" Foreground="{StaticResource MenuForegroundBrush}"/>
                                                     <icon:PackIconFeatherIcons Kind="ArrowUpRight" HorizontalAlignment="Right" Width="12" Height="12"/>
                                                 </DockPanel>
                                             </telerik:RadButton>

@@ -1,14 +1,13 @@
-﻿namespace SDSM_App.Enums
+﻿namespace SDSM_App.Enums;
+
+public enum ErrorType
 {
-    public enum ErrorType
-    {
-        Key =0,
-        Unique,
-        ParentNull,
-        ListType,
-        Conversion,
-        Duplicate,
-        DBDuplicate,
-        SpeciesDuplicate,
-    }
+    Key =0,
+    Unique,
+    ParentNull,
+    ListType,
+    Conversion,
+    Duplicate,
+    DBDuplicate,
+    SpeciesDuplicate,
 }
