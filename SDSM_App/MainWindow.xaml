@@ -894,25 +894,7 @@
                                                     <TextBlock Text="생물조사" Style="{StaticResource MenuContentTextBlcokStyle}"/>
                                                 </StackPanel>
                                             </Expander.Header>
-                                            <StackPanel>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click" IsEnabled="False">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="식생"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click" IsEnabled="False">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="식물"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedAmphibianReptile, Mode=TwoWay}" Tag="AmphibianReptilePage" Click="MenuItem_Click" IsEnabled="False">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="양서파충류"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
+                                            <StackPanel>                                                
                                                 <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedFish, Mode=TwoWay}" Tag="FishPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
@@ -935,6 +917,24 @@
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="포유류"/>
+                                                    </StackPanel>
+                                                </telerik:RadRadioButton>
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click" IsEnabled="False">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
+                                                        <TextBlock Text="식생"/>
+                                                    </StackPanel>
+                                                </telerik:RadRadioButton>
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click" IsEnabled="False">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
+                                                        <TextBlock Text="식물"/>
+                                                    </StackPanel>
+                                                </telerik:RadRadioButton>
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedAmphibianReptile, Mode=TwoWay}" Tag="AmphibianReptilePage" Click="MenuItem_Click" IsEnabled="False">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
+                                                        <TextBlock Text="양서파충류"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
                                             </StackPanel>

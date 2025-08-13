@@ -1,6 +1,7 @@
 ﻿using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_App.ViewModels;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -125,6 +126,7 @@ public partial class HomePage : Page, ITransientService
         }
     }
 
+    //포인트 클릭
     private void Point_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (sender is Border border && border.DataContext is MapModel item)
@@ -153,6 +155,35 @@ public partial class HomePage : Page, ITransientService
         MapPinCalloutPopupClose();
     }
 
+    //조사포인트 검색
+    private void RadAutoCompleteBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        MapPinCalloutPopupClose();
+        _vm.SearchValueSelectionChangedExecutedCommand.Execute(null);
+    }
+
+    //좌표 변경 창 열기
+    private void LatLngChangeViewOpenRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is RadButton button && button.DataContext is MapModel mapModel)
+        {
+            _vm.LatLngChangeViewOpenExectedCommand.Execute(mapModel);
+
+            MapPinCalloutPopupClose();
+        }
+    }
+
+    //좌표 변경 목록 선택 
+    private void LatLngChangeRadGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
+    {
+        if(sender is RadGridView gridView)
+        {
+            _vm.LatLngChangeSelectedItems.Clear();
+            _vm.LatLngChangeSelectedItems.AddRange(gridView.SelectedItems.Cast<MapData>());
+            _vm.LatLngChangeSelectionCount = _vm.LatLngChangeSelectedItems.Count;
+        }
+    }
+
     //복사
     private async void AllCopyRadButton_Click(object sender, RoutedEventArgs e)
     {
@@ -175,9 +206,9 @@ public partial class HomePage : Page, ITransientService
                     gridView.SelectionMode = SelectionMode.Single;
                     gridView.SelectedItem = selectedItem;
 
-                    copyTextBlock.Text = "복사됨";
+                    copyTextBlock.Text = "목록 복사됨";
                     await Task.Delay(500);
-                    copyTextBlock.Text = "복사";
+                    copyTextBlock.Text = "목록 복사";
                 }
                 ;
             }
@@ -195,7 +226,7 @@ public partial class HomePage : Page, ITransientService
     //주제도 전체선택해제
     private void AllThemeMapUnCheckedRadButton_Click(object sender, RoutedEventArgs e)
     {
-        foreach (var item in _vm.ThemeMapCollection.Where(m => m.IsSelected))
+        foreach (var item in _vm.ThemeMapCollection)
         {
             item.IsSelected = false;
             item.IsVisibleLegend = false;
@@ -288,10 +319,15 @@ public partial class HomePage : Page, ITransientService
     {
         var mousePostion = Mouse.GetPosition(radMap);
         var location = Location.GetCoordinates(radMap, mousePostion);
-        var degress = $"{location.Latitude:F6}, {location.Longitude:F6}";
 
+        var degress = $"{location.Latitude:F6}, {location.Longitude:F6}";
         _vm.Degress = degress;
 
+        if (_vm.LatLngChangeViewVisibility == Visibility.Visible)
+        {
+            _vm.AfterLat = Math.Round(location.Latitude, 6, MidpointRounding.AwayFromZero);
+            _vm.AfterLng = Math.Round(location.Longitude, 6, MidpointRounding.AwayFromZero);
+        }
     }
 
     //클릭좌표 복사
@@ -423,10 +459,4 @@ public partial class HomePage : Page, ITransientService
     }
 
     #endregion
-
-    private void RadAutoCompleteBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        MapPinCalloutPopupClose();
-        _vm.SearchValueSelectionChangedExecutedCommand.Execute(null);
-    }
 }

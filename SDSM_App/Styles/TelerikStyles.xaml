@@ -418,6 +418,15 @@
         <Setter Property="Padding" Value="5 0"/>
     </Style>
 
+    <!--GridView Header CheckBox-->
+    <Style x:Key="HeaderCheckBoxStyle" TargetType="CheckBox">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="helpers:ThemeHelper.FocusBackgroundBrush" Value="Transparent"/>
+        <Setter Property="helpers:ThemeHelper.FocusBrush" Value="Transparent"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
     <!--GridView 컨텍스트메뉴-->
     <Style x:Key="GridViewMenuItemContainerStyle" TargetType="telerik:RadMenuItem">
         <Setter Property="Height" Value="44"/>
