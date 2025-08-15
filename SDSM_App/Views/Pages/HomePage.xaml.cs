@@ -180,7 +180,6 @@ public partial class HomePage : Page, ITransientService
         {
             _vm.LatLngChangeSelectedItems.Clear();
             _vm.LatLngChangeSelectedItems.AddRange(gridView.SelectedItems.Cast<MapData>());
-            _vm.LatLngChangeSelectionCount = _vm.LatLngChangeSelectedItems.Count;
         }
     }
 

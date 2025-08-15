@@ -25,6 +25,7 @@
         <converter:BackgroundStringToForegroundConverter x:Key="BackgroundStringToForegroundConverter"/>
         <converter:MultiBindingValueConverter x:Key="MultiBindingValueConverter"/>
 
+        <converter:AutoCompleteBoxFilteringBehavior x:Key="AutoCompleteBoxFilteringBehavior"/>
         <converter:CommaSplitConverter x:Key="CommaSplitConverter"/>
 
         <!--클러스터-->
@@ -498,7 +499,7 @@
                             <Border Grid.Row="1" Margin="0 0 0 15" Visibility="{Binding Path=IsChecked, ElementName=SearchRadToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
@@ -530,15 +531,13 @@
                                                                 WatermarkContent="검색어를 입력하세요."
                                                                 Width="330"
                                                                 MinHeight="{StaticResource DefaultHeight}"
-                                                                MaxHeight="75"
+                                                                MaxHeight="170"
                                                                 NoResultsContent="목록 값없음"
                                                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                                                                 BoxesItemStyle="{StaticResource SearchBoxesItemxStyle}"
+                                                                FilteringBehavior="{StaticResource AutoCompleteBoxFilteringBehavior}"
                                                                 SelectionChanged="RadAutoCompleteBox_SelectionChanged">
-                                        <telerik:RadAutoCompleteBox.FilteringBehavior>
-                                            <telerik:AsyncFilteringBehavior/>
-                                        </telerik:RadAutoCompleteBox.FilteringBehavior>
                                         <telerik:RadAutoCompleteBox.TextBoxStyle>
                                             <Style TargetType="telerik:RadWatermarkTextBox" BasedOn="{StaticResource RadAutoCompleteTextBoxStyle}">
                                                 <Setter Property="InputMethod.PreferredImeState" Value="On"/>
@@ -566,7 +565,7 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Margin="0 0 0 10">
+                                    <TextBlock Margin="0 10 0 5">
                                         <Run Text="("/>
                                         <Run Text="자료 개수"/>
                                         <Run Text="/"/>
@@ -1065,7 +1064,7 @@
                 Margin="0 10 10 10"
                 CornerRadius="8"
                 Background="White"
-                BorderBrush="#33000000"
+                BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"
                 BorderThickness="1"
                 Visibility="{Binding Path=LatLngChangeViewVisibility}">
             <Grid Margin="20 10 20 20">
@@ -1073,58 +1072,70 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-              
-                <DockPanel Margin="0 0 0 10">
+
+                <DockPanel Margin="0 0 0 20">
                     <TextBlock Text="위경도 변경" Style="{StaticResource PrimaryTitleTextBlcokStyle}"/>
                     <telerik:RadButton HorizontalAlignment="Right" BorderBrush="White" Margin="0 0 -10 0" Command="{Binding Path=LatLngChangeViewCloseExectedCommand}">
                         <telerik:RadGlyph Glyph="{StaticResource GlyphClose}"/>
                     </telerik:RadButton>
                 </DockPanel>
 
-                <TextBlock Grid.Row="1" Text="지도에서 우측 버튼을 클릭하면 좌표를 취득할 수 있습니다." Margin="0 0 0 20" Style="{StaticResource PrimaryTitleTextBlcokStyle}"/>
-
-                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 0 0 10">
-                    <Border Padding="10 0" Margin="0 0 10 0" Background="#666666" CornerRadius="3" Height="32">
-                        <TextBlock Text="위도" Foreground="White" Style="{StaticResource PrimaryTextBlcokStyle}"/>
-                    </Border>
-                    <TextBlock Text="{Binding Path=BeforeLat, StringFormat={}{0:F6}}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
-                    <telerik:RadGlyph Glyph="{StaticResource GlyphArrow60Right}" Margin="10 0"/>
-                    <telerik:RadNumericUpDown Value="{Binding Path=AfterLat}"
-                                              Minimum="0"
-                                              NumberDecimalDigits="6"
-                                              ShowButtons="False"
-                                              Width="180" 
-                                              Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
-
-                    <Border Padding="10 0" Margin="30 0 10 0" Background="#666666" CornerRadius="3" Height="32">
-                        <TextBlock Text="경도" Foreground="White" Style="{StaticResource PrimaryTextBlcokStyle}"/>
-                    </Border>
-                    <TextBlock Text="{Binding Path=BeforeLng, StringFormat={}{0:F6}}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
-                    <telerik:RadGlyph Glyph="{StaticResource GlyphArrow60Right}" Margin="10 0"/>
-                    <telerik:RadNumericUpDown Value="{Binding Path=AfterLng}"
-                                              Minimum="0"
-                                              NumberDecimalDigits="6"
-                                              ShowButtons="False"
-                                              Width="180" 
-                                              Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <icon:PackIconVaadinIcons Kind="InfoCircleOutline" Margin="0 1 10 0"  Foreground="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
+                    <TextBlock Text="배경 지도에서 우측 버튼을 클릭하면 좌표를 취득 및 복사할 수 있습니다." Style="{StaticResource PrimaryTitleTextBlcokStyle}"/>
                 </StackPanel>
 
-                <telerik:RadButton Grid.Row="3" Margin="0 10 0 20" HorizontalAlignment="Center" Style="{StaticResource AccentButtonStyle}" Command="{Binding Path=LatLngChangedSaveExecutedCommand}">
+                <telerik:RadButton Grid.Row="2" Margin="0 20 0 0" HorizontalAlignment="Left" Command="{Binding Path=LatLngChangeResetExecutedCommand}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="선택 목록("/>
-                        <TextBlock Text="{Binding Path=LatLngChangeSelectedItems.Count, StringFormat={}{0:N0}}"/>
-                        <TextBlock Text="건)" Margin="0 0 5 0"/>
-                        <TextBlock Text="위경도 일괄 변경"/>
+                        <telerik:RadGlyph Glyph="{StaticResource GlyphReset}"/>
+                        <TextBlock Text="초기화" Margin="5 0 0 0"/>
                     </StackPanel>
                 </telerik:RadButton>
 
-                
+                <Rectangle Grid.Row="3" Style="{StaticResource HorizontalRectangleStyle}"/>
 
                 <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0 0 0 10">
+                    <Border Padding="10 0" Margin="0 0 20 0" Background="#666666" CornerRadius="2" Height="32">
+                        <TextBlock Text="위도" Foreground="White" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                    </Border>
+                    <TextBlock Text="{Binding Path=BeforeLat, StringFormat={}{0:F6}, TargetNullValue=?, FallbackValue=?}" Style="{StaticResource PrimaryTitleTextBlcokStyle}"/>
+                    <telerik:RadGlyph Glyph="{StaticResource GlyphArrow60Right}" Margin="10 0"/>
+                    <telerik:RadNumericUpDown Value="{Binding Path=AfterLat}"
+                                              UpdateValueEvent="PropertyChanged"
+                                              Minimum="0"
+                                              NumberDecimalDigits="6"
+                                              ShowButtons="False"
+                                              Width="170" 
+                                              Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+
+                    <Border Padding="10 0" Margin="30 0 20 0" Background="#666666" CornerRadius="2" Height="32">
+                        <TextBlock Text="경도" Foreground="White" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                    </Border>
+                    <TextBlock Text="{Binding Path=BeforeLng, StringFormat={}{0:F6}, TargetNullValue=?, FallbackValue=?}" Style="{StaticResource PrimaryTitleTextBlcokStyle}"/>
+                    <telerik:RadGlyph Glyph="{StaticResource GlyphArrow60Right}" Margin="10 0"/>
+                    <telerik:RadNumericUpDown Value="{Binding Path=AfterLng}"
+                                              UpdateValueEvent="PropertyChanged"
+                                              Minimum="0"
+                                              NumberDecimalDigits="6"
+                                              ShowButtons="False"
+                                              Width="170" 
+                                              Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                </StackPanel>
+
+                <telerik:RadButton Grid.Row="5" Margin="0 10 0 20" HorizontalAlignment="Center" Style="{StaticResource AccentButtonStyle}" Command="{Binding Path=LatLngChangedSaveExecutedCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Path=LatLngChangeSelectedItems.Count, StringFormat={}{0:N0}건}"/>
+                        <TextBlock Text="일괄 변경 후 새로고침" Margin="5 0 0 0"/>
+                    </StackPanel>
+                </telerik:RadButton>
+
+                <StackPanel Grid.Row="6" Orientation="Horizontal" Margin="0 0 0 10">
                     <TextBlock Text="전체" Margin="0 0 5 0"/>
                     <TextBlock Text="{Binding Path=Items.Count, Mode=OneWay, ElementName=LatLngChangeRadGridView, StringFormat={}{0:N0}}" Margin="3 0 0 0"/>
                     <TextBlock Text="건" Margin="0 0 5 0"/>
@@ -1135,7 +1146,7 @@
                 </StackPanel>
 
                 <telerik:RadGridView x:Name="LatLngChangeRadGridView"
-                                     Grid.Row="5"
+                                     Grid.Row="7"
                                      ItemsSource="{Binding Path=LatLngChangeCollection}"
                                      BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
                                      BusyIndicatorIsIndeterminate="False"
@@ -1178,8 +1189,8 @@
                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="140" MaxWidth="140" TextTrimming="CharacterEllipsis"/>
                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="140" MaxWidth="140" TextTrimming="CharacterEllipsis"/>
                     </telerik:RadGridView.Columns>
-                </telerik:RadGridView>              
-            </Grid>          
+                </telerik:RadGridView>
+            </Grid>
         </Border>
     </Grid>
 </Page>

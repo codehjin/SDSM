@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using SDSM_App.InjectableServices;
 using SDSM_App.Models;
-using System.Diagnostics;
+using System.Collections.Specialized;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
@@ -25,6 +25,9 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
 
     public HomePageViewModel()
     {
+        // 이벤트 연결 추가
+        _latLngChangeSelectedItems.CollectionChanged += LatLngChangeSelectedItems_CollectionChanged;
+
         InitialLoad();
     }
 
@@ -143,23 +146,58 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
     #region 좌표변경 속성 and ICommand 구현
 
     [ObservableProperty] private RadObservableCollection<MapData> _latLngChangeCollection = [];
-    [ObservableProperty] private RadObservableCollection<MapData> _latLngChangeSelectedItems = [];
+
+    private RadObservableCollection<MapData> _latLngChangeSelectedItems = [];
+    public RadObservableCollection<MapData> LatLngChangeSelectedItems
+    {
+        get => _latLngChangeSelectedItems;
+        set
+        {
+            if (_latLngChangeSelectedItems != null)
+                _latLngChangeSelectedItems.CollectionChanged -= LatLngChangeSelectedItems_CollectionChanged;
+
+            SetProperty(ref _latLngChangeSelectedItems, value);
+
+            if (_latLngChangeSelectedItems != null)
+                _latLngChangeSelectedItems.CollectionChanged += LatLngChangeSelectedItems_CollectionChanged;
+        }
+    }
+
+    private void LatLngChangeSelectedItems_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        LatLngChangeSelectionCount = _latLngChangeSelectedItems.Count;
+    }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LatLngChangedSaveExecutedCommand))]
     private int _latLngChangeSelectionCount;
 
     [ObservableProperty] private Visibility _latLngChangeViewVisibility = Visibility.Collapsed;
-    [ObservableProperty] private double? _beforeLat;
-    [ObservableProperty] private double? _beforeLng;
-    [ObservableProperty] private double? _afterLat;
-    [ObservableProperty] private double? _afterLng;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LatLngChangedSaveExecutedCommand))]
+    private double? _beforeLat;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LatLngChangedSaveExecutedCommand))]
+    private double? _beforeLng;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LatLngChangedSaveExecutedCommand))]
+    private double? _afterLat;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LatLngChangedSaveExecutedCommand))]
+    private double? _afterLng;
 
     [RelayCommand]
     private void LatLngChangeViewOpenExected(MapModel model)
     {
         if (LatLngChangeCollection.Count != 0)
             LatLngChangeCollection.Clear();
+
+        if (LatLngChangeSelectedItems.Count != 0)
+            LatLngChangeSelectedItems.Clear();
 
         if (model == null)
             return;
@@ -182,17 +220,138 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
         LatLngChangeSelectedItems.Clear();
     }
 
-    private bool CanLatLngChangedSave()
+    //위경도 변경 속성 초기화
+    [RelayCommand]
+    private void LatLngChangeResetExecuted()
     {
-        return LatLngChangeSelectionCount > 0;
+        LatLngChangeReset();
     }
 
-    [RelayCommand(CanExecute = nameof(CanLatLngChangedSave))]
-    private void LatLngChangedSaveExecuted()
+    private bool CanLatLngChangedSave()
     {
-        foreach (var item in LatLngChangeSelectedItems)
+        return BeforeLat != null
+            && BeforeLng != null
+            && AfterLat != null
+            && AfterLng != null
+            && LatLngChangeSelectionCount > 0;
+    }
+
+    //위경도 변경 저장
+    [RelayCommand(CanExecute = nameof(CanLatLngChangedSave))]
+    private async Task LatLngChangedSaveExecuted()
+    {
+        GB.IsBusy = true;
+
+        try
         {
-            Debug.WriteLine($"{item.Id}-{item.Lat}/{item.Lng}");
+            var groups = LatLngChangeSelectedItems.GroupBy(m => m.Caption)
+                                                   .Select(g => new
+                                                   {
+                                                       Caption = g.Key,
+                                                       Ids = g.Select(x => x.Id).ToList()
+                                                   })
+                                                   .ToList();
+
+            using var context = new SDSMDbContext();
+
+            foreach (var group in groups)
+            {
+                switch (group.Caption)
+                {
+                    case "어류":
+                        var fishList = context.Fishs.Where(f => group.Ids.Contains(f.FishId)).ToList();
+                        foreach (var fish in fishList)
+                        {
+                            fish.Lat = AfterLat;
+                            fish.Lng = AfterLng;
+                        }
+                        break;
+                    case "저서동물":
+                        var benthosList = context.Benthoss.Where(b => group.Ids.Contains(b.BenthosId)).ToList();
+                        foreach (var benthos in benthosList)
+                        {
+                            benthos.Lat = AfterLat;
+                            benthos.Lng = AfterLng;
+                        }
+                        break;
+                    case "조류":
+                        var birdList = context.Birds.Where(b => group.Ids.Contains(b.BirdId)).ToList();
+                        foreach (var bird in birdList)
+                        {
+                            bird.Lat = AfterLat;
+                            bird.Lng = AfterLng;
+                        }
+                        break;
+                    case "포유류":
+                        var mammalList = context.Mammals.Where(m => group.Ids.Contains(m.MammalId)).ToList();
+                        foreach (var mammal in mammalList)
+                        {
+                            mammal.Lat = AfterLat;
+                            mammal.Lng = AfterLng;
+                        }
+                        break;
+                    case "서식수변":
+                        var habitatList = context.HabitatWaterEdges.Where(h => group.Ids.Contains(h.HabitatWaterEdgeId)).ToList();
+                        foreach (var habitat in habitatList)
+                        {
+                            habitat.Lat = AfterLat;
+                            habitat.Lng = AfterLng;
+                        }
+                        break;
+                    case "수질":
+                        var waterList = context.WaterQualitys.Where(w => group.Ids.Contains(w.WaterQualityId)).ToList();
+                        foreach (var water in waterList)
+                        {
+                            water.Lat = AfterLat;
+                            water.Lng = AfterLng;
+                        }
+                        break;
+                }
+            }
+
+            context.SaveChanges();
+
+            // 위경도 변경 초기화
+            LatLngChangeReset();
+            LatLngChangeViewVisibility = Visibility.Collapsed;
+
+            //선택된 조사자료
+            var selectedSurveys = SurveyDataCollection.Where(m => m.IsSelected).ToList();
+
+            //조사자료와 포인트 다시 불러오기
+            var tasks = new[] { GetSurveyData(), GetPoints(), };
+
+            await Task.WhenAll(tasks);
+
+            //검색 속성 초기화
+            SearchCaptionCollection.Clear();
+            SearchCaptionSelectionChangedExecuted();
+
+            //포인트 목록 초기화
+            PointCollection.Clear();
+
+            //기존 조사자료 선택하기
+            foreach (var item in SurveyDataCollection)
+            {
+                item.IsSelected = selectedSurveys.Any(m => m.Caption == item.Caption);
+            }
+
+            //선택된 조사자료 불러오기
+            foreach (var item in SurveyDataCollection)
+            {
+                if (item.IsSelected)
+                {
+                    AddAndRemovePointExecutedCommand.Execute(item);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(LatLngChangedSaveExecuted), ex.Message);
+        }
+        finally
+        {
+            GB.IsBusy = false;
         }
     }
 
@@ -275,7 +434,9 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
 
         try
         {
-            var tasks = new[] { GetData(), GetPoints(), GetSearchData() };
+            GetThemeMapData();
+
+            var tasks = new[] { GetSurveyData(), GetPoints(), GetSearchData() };
 
             await Task.WhenAll(tasks);
         }
@@ -287,13 +448,16 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
     }
 
     //조사자료 목록, 주제도 목록
-    private async Task GetData()
+    private async Task GetSurveyData()
     {
         try
         {
             using var context = new SDSMDbContext();
 
             var taxonCoordinateCount = await context.TaxonCoordinateCountViews.FirstOrDefaultAsync();
+
+            if (SurveyDataCollection.Count != 0)
+                SurveyDataCollection.Clear();
 
             SurveyDataCollection.Add(new MapModel { Caption = "어류", Count = taxonCoordinateCount?.FishCount ?? 0, PointCount = taxonCoordinateCount?.FishDistinctCount ?? 0, IsSearch = true });
             SurveyDataCollection.Add(new MapModel { Caption = "저서동물", Count = taxonCoordinateCount?.BenthosCount ?? 0, PointCount = taxonCoordinateCount?.BenthosDistinctCount ?? 0, IsSearch = true });
@@ -304,51 +468,63 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
             SurveyDataCollection.Add(new MapModel { Caption = "양서파충류" });
             SurveyDataCollection.Add(new MapModel { Caption = "서식수변", Count = taxonCoordinateCount?.HabitatWaterEdgeCount ?? 0, PointCount = taxonCoordinateCount?.HabitatWaterEdgeDistinctCount ?? 0, });
             SurveyDataCollection.Add(new MapModel { Caption = "수질", Count = taxonCoordinateCount?.WaterQualityCount ?? 0, PointCount = taxonCoordinateCount?.WaterQualityDistinctCount ?? 0, });
-
-            var themeMaps = new List<ContentItem>
-            {
-                new() {
-                    Caption = "비오톱 희소성",
-                    MbTilesName = "주제도_비오톱_희소성",
-                    OpacityName = "BiotopesRarityOpacity",
-                    IsBiotopesRarity = true,
-                    ContentSubItems =
-                        [
-                            new() { Grade = "1등급", Count = 16_978, Area = 96155556.7779988/1_000_000, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2b83ba")), IsBiotopesRarity = true },
-                            new() { Grade = "2등급", Count = 48_588, Area = 106250153.032994/1_000_000, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#abdda4")), IsBiotopesRarity = true },
-                            new() { Grade = "3등급", Count = 53_149, Area = 101646920.864996/1_000_000, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ffffbf")) , IsBiotopesRarity = true},
-                            new() { Grade = "4등급", Count = 95_496, Area = 148402707.012997/1_000_000, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#fdae61")), IsBiotopesRarity = true },
-                            new() { Grade = "5등급", Count = 129_749, Area = 121767846.826001/1_000_000, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#d7191c")), IsBiotopesRarity = true },
-                        ],
-                },
-                new() {
-                    Caption = "생태계교란종",
-                    MbTilesName = "주제도_생태계교란종",
-                    OpacityName = "InvasiveSpeciesOpacity",
-                    IsInvasiveSpecies =true,
-                    ContentSubItems =
-                        [
-                            new() { Grade = "가시박", Count = 93, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2b83ba")), IsInvasiveSpecies =true },
-                            new() { Grade = "가시상추", Count = 111, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5ea7b1")), IsInvasiveSpecies =true },
-                            new() { Grade = "단풍잎돼지풀", Count = 105, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#91cba9")), IsInvasiveSpecies =true },
-                            new() { Grade = "도깨비가지", Count = 3, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#bce4aa")), IsInvasiveSpecies =true },
-                            new() { Grade = "돼지풀", Count = 24, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#def2b4")), IsInvasiveSpecies =true },
-                            new() { Grade = "미국쑥부쟁이", Count = 93, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ffffbf")), IsInvasiveSpecies =true },
-                            new() { Grade = "서양금혼초", Count = 2, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ffdf9a")), IsInvasiveSpecies =true },
-                            new() { Grade = "애기수영", Count = 1, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#febe74")), IsInvasiveSpecies =true },
-                            new() { Grade = "양미역취", Count = 2, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#f69053")), IsInvasiveSpecies =true },
-                            new() { Grade = "환삼덩굴", Count = 217, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e75437")), IsInvasiveSpecies =true },
-                        ],
-                },
-            };
-
-            //주제도 지도
-            ThemeMapCollection.AddRange(themeMaps);
-
         }
         catch (Exception ex)
         {
-            GB.LogWrite(GetType().Name, nameof(GetData), ex.Message);
+            GB.LogWrite(GetType().Name, nameof(GetSurveyData), ex.Message);
+            throw;
+        }
+    }
+
+    //주제도 목록
+    private void GetThemeMapData()
+    {
+        try
+        {
+            var themeMaps = new List<ContentItem>();
+            themeMaps =
+            [
+                new() {
+                        Caption = "비오톱 희소성",
+                        MbTilesName = "주제도_비오톱_희소성",
+                        OpacityName = "BiotopesRarityOpacity",
+                        IsBiotopesRarity = true,
+                        ContentSubItems =
+                            [
+                                new() { Grade = "1등급", Count = 16_978, Area = 96155556.7779988/1_000_000, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2b83ba")), IsBiotopesRarity = true },
+                                new() { Grade = "2등급", Count = 48_588, Area = 106250153.032994/1_000_000, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#abdda4")), IsBiotopesRarity = true },
+                                new() { Grade = "3등급", Count = 53_149, Area = 101646920.864996/1_000_000, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ffffbf")) , IsBiotopesRarity = true},
+                                new() { Grade = "4등급", Count = 95_496, Area = 148402707.012997/1_000_000, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#fdae61")), IsBiotopesRarity = true },
+                                new() { Grade = "5등급", Count = 129_749, Area = 121767846.826001/1_000_000, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#d7191c")), IsBiotopesRarity = true },
+                            ],
+                    },
+                    new() {
+                        Caption = "생태계교란종",
+                        MbTilesName = "주제도_생태계교란종",
+                        OpacityName = "InvasiveSpeciesOpacity",
+                        IsInvasiveSpecies =true,
+                        ContentSubItems =
+                            [
+                                new() { Grade = "가시박", Count = 93, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2b83ba")), IsInvasiveSpecies =true },
+                                new() { Grade = "가시상추", Count = 111, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5ea7b1")), IsInvasiveSpecies =true },
+                                new() { Grade = "단풍잎돼지풀", Count = 105, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#91cba9")), IsInvasiveSpecies =true },
+                                new() { Grade = "도깨비가지", Count = 3, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#bce4aa")), IsInvasiveSpecies =true },
+                                new() { Grade = "돼지풀", Count = 24, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#def2b4")), IsInvasiveSpecies =true },
+                                new() { Grade = "미국쑥부쟁이", Count = 93, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ffffbf")), IsInvasiveSpecies =true },
+                                new() { Grade = "서양금혼초", Count = 2, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ffdf9a")), IsInvasiveSpecies =true },
+                                new() { Grade = "애기수영", Count = 1, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#febe74")), IsInvasiveSpecies =true },
+                                new() { Grade = "양미역취", Count = 2, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#f69053")), IsInvasiveSpecies =true },
+                                new() { Grade = "환삼덩굴", Count = 217, MarkerFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e75437")), IsInvasiveSpecies =true },
+                            ],
+                    },
+            ];
+
+            //주제도 지도
+            ThemeMapCollection.AddRange(themeMaps);
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(GetThemeMapData), ex.Message);
             throw;
         }
     }
@@ -360,6 +536,9 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
 
         try
         {
+            if (PointData.Count != 0)
+                PointData.Clear();
+
             //어류
             var fishGroups = await context.Fishs.Where(m => m.Lat != null && m.Lng != null)
                                             .Include(m => m.Subs)
@@ -481,7 +660,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
 
                     var data = new MapData
                     {
-                        Id= item.BenthosId,
+                        Id = item.BenthosId,
                         Caption = "저서동물",
                         YearChsu = item.YearChsu,
                         SurveyDate = item.SurveyDate,
@@ -857,5 +1036,15 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
         return 0;
     }
 
-    #endregion 
+    private void LatLngChangeReset()
+    {
+        BeforeLat = null;
+        BeforeLng = null;
+        AfterLat = null;
+        AfterLng = null;
+        LatLngChangeCollection.Clear();
+        LatLngChangeSelectedItems.Clear();
+    }
+
+    #endregion
 }
