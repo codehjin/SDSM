@@ -28,8 +28,129 @@
         <WindowChrome ResizeBorderThickness="8" CaptionHeight="48" UseAeroCaptionButtons="False"/>
     </WindowChrome.WindowChrome>
     <Window.Resources>
-        <sys:Double x:Key="MainMenuFontSize">17</sys:Double>
+        <sys:Double x:Key="MainMenuFontSize">16</sys:Double>
 
+        <ControlTemplate x:Key="SlidingMenuRadToggleButtonTemplate" TargetType="telerik:RadToggleButton">
+            <Grid>
+                <Border x:Name="FocusVisual" Style="{StaticResource FocusVisualBorderStyle}" CornerRadius="{TemplateBinding CornerRadius}"/>
+                <Grid Margin="{TemplateBinding helpers:ThemeHelper.FocusVisualMargin}">
+                    <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" MinHeight="{TemplateBinding MinHeight}" MinWidth="{TemplateBinding MinWidth}">
+                        <Border x:Name="BorderVisual"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <ContentPresenter x:Name="Content"
+                                          Margin="{TemplateBinding Padding}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                          ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                          RecognizesAccessKey="True"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <ControlTemplate.Triggers>
+
+                <!-- background is hidden -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsBackgroundVisible" Value="False"/>
+                        <Condition Property="IsEnabled" Value="True"/>
+                        <Condition Property="IsMouseOver" Value="False"/>
+                        <Condition Property="IsChecked" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                </MultiTrigger>
+
+                <!-- general setters for IsKeyboardFocused -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsKeyboardFocused" Value="True"/>
+                        <Condition Property="IsEnabled" Value="True"/>
+                        <Condition Property="IsMouseOver" Value="False"/>
+                        <Condition Property="IsPressed" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter TargetName="FocusVisual" Property="Opacity" Value="1"/>
+                </MultiTrigger>
+
+                <!-- General setters for IsMouseOver -->
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush)}"/>
+                </Trigger>
+
+                <!-- General setters for IsPressed -->
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"/>
+                    <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=PressedBackgroundBrush}"/>
+                    <Setter Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"/>
+                </Trigger>
+
+                <!-- General setters for IsChecked -->
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBackgroundBrush)}"/>
+                    <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBackgroundBrush)}"/>
+                </Trigger>
+
+                <!-- mouse over and toggled -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsMouseOver" Value="True"/>
+                        <Condition Property="IsChecked" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush)}"/>
+                    <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBrush)}"/>
+                </MultiTrigger>
+
+                <!-- pressed and toggled -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsPressed" Value="True"/>
+                        <Condition Property="IsChecked" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.PressedBackgroundBrush)}"/>
+                    <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.PressedBrush)}"/>
+                </MultiTrigger>
+
+                <!-- disabled -->
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledBackgroundBrush)}"/>
+                    <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledBrush)}"/>
+                    <Setter TargetName="Content" Property="TextBlock.Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledForegroundBrush)}"/>
+                    <Setter TargetName="Content" Property="Opacity" Value="{telerik:Windows11Resource ResourceKey=DisabledOpacity}"/>
+                </Trigger>
+
+                <!-- disabled and toggled -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsEnabled" Value="False"/>
+                        <Condition Property="IsChecked" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBackgroundBrush)}"/>
+                    <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBrush)}"/>
+                    <Setter TargetName="Content" Property="TextBlock.Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledForegroundBrush)}"/>
+                    <Setter TargetName="Content" Property="Opacity" Value="{telerik:Windows11Resource ResourceKey=DisabledOpacity}"/>
+                </MultiTrigger>
+
+                <!-- disabled & background is hidden -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsEnabled" Value="False"/>
+                        <Condition Property="IsBackgroundVisible" Value="False"/>
+                        <Condition Property="IsChecked" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="helpers:ThemeHelper.DisabledBackgroundBrush" Value="Transparent"/>
+                    <Setter Property="helpers:ThemeHelper.DisabledBrush" Value="Transparent"/>
+                    <Setter TargetName="Content" Property="Opacity" Value="{telerik:Windows11Resource ResourceKey=DisabledOpacity}"/>
+                    <Setter TargetName="Content" Property="TextBlock.Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledForegroundBrush)}"/>
+                </MultiTrigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        
         <Style x:Key="ExpanderPillStyle" TargetType="Rectangle">
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Fill" Value="Transparent"/>
@@ -560,7 +681,17 @@
                 </Grid.RowDefinitions>
 
                 <!--상단-->
-                <Border Background="{StaticResource MainPrimaryBrush}" Panel.ZIndex="99">
+                <Border Panel.ZIndex="99">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="{StaticResource MainPrimaryBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=IsSideShow}" Value="False">
+                                    <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=OverlayBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -568,23 +699,288 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <!--로고-->
-                        <Border Background="{StaticResource MainPrimaryBrush}" Width="280">
-                            <StackPanel Orientation="Horizontal" Margin="15 2 0 0" VerticalAlignment="Center">
-                                <Image Source="/Assets/Images/samsung_white.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Width="150"/>
-                            </StackPanel>
-                        </Border>
+                        <StackPanel Orientation="Horizontal" Margin="0 0 0 0" Width="250">
+                            <telerik:RadToggleButton x:Name="ShowHideMenuButton"
+                                                     Visibility="Visible"
+                                                     WindowChrome.IsHitTestVisibleInChrome="True"
+                                                     Margin="10 0 0 0"    
+                                                     Padding="10"
+                                                     BorderThickness="0"                                                    
+                                                     IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=IsSideShow, Mode=TwoWay}"
+                                                     VerticalAlignment="Center"
+                                                     Cursor="Hand"
+                                                     Checked="ShowHideMenuButton_Checked"
+                                                     Unchecked="ShowHideMenuButton_Unchecked"
+                                                     Background="Transparent"
+                                                     helpers:ThemeHelper.CheckedBackgroundBrush="Transparent"
+                                                     helpers:ThemeHelper.CheckedBrush="Transparent"
+                                                     helpers:ThemeHelper.FocusBackgroundBrush="Transparent"
+                                                     helpers:ThemeHelper.FocusBrush="Transparent"
+                                                     Template="{StaticResource SlidingMenuRadToggleButtonTemplate}">
+                                <telerik:RadToggleButton.Style>
+                                    <Style TargetType="telerik:RadToggleButton">
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{StaticResource MainSelectedBrush}"/>
+                                        <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{StaticResource MainSelectedBrush}"/>
+                                        <Setter Property="helpers:ThemeHelper.PressedBackgroundBrush" Value="{StaticResource MainSelectedBrush}"/>
+                                        <Setter Property="helpers:ThemeHelper.PressedBrush" Value="{StaticResource MainSelectedBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=IsSideShow}" Value="False">
+                                                <Setter Property="Foreground" Value="{StaticResource NoThemeForegroundBrush}"/>
+                                                <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{StaticResource NoThemeMouseOverBackgroundBrush}"/>
+                                                <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{StaticResource NoThemeMouseOverBackgroundBrush}"/>
+                                                <Setter Property="helpers:ThemeHelper.PressedBackgroundBrush" Value="{StaticResource NoThemeMouseOverBackgroundBrush}"/>
+                                                <Setter Property="helpers:ThemeHelper.PressedBrush" Value="{StaticResource NoThemeMouseOverBackgroundBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </telerik:RadToggleButton.Style>
+                                <icon:PackIconPhosphorIcons Width="20" Height="20">
+                                    <icon:PackIconPhosphorIcons.Style>
+                                        <Style TargetType="icon:PackIconPhosphorIcons">
+                                            <Setter Property="Kind" Value="LayoutLight"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsChecked,ElementName=ShowHideMenuButton}" Value="True">
+                                                    <Setter Property="Kind" Value="BrowserLight"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </icon:PackIconPhosphorIcons.Style>
+                                </icon:PackIconPhosphorIcons>
+                            </telerik:RadToggleButton>
+                            <telerik:RadToggleButton x:Name="SlidingMenuButton"
+                                                     WindowChrome.IsHitTestVisibleInChrome="True"
+                                                     Padding="10"
+                                                     BorderThickness="0"
+                                                     Visibility="{Binding Path=IsChecked, ElementName=ShowHideMenuButton, Converter={StaticResource InvertedBooleanToVisibilityConverter}}" 
+                                                     IsChecked="False"
+                                                     VerticalAlignment="Center"                                                         
+                                                     Cursor="Hand"
+                                                     Checked="SlidingMenuButton_Checked"
+                                                     Unchecked="SlidingMenuButton_Unchecked"
+                                                     Foreground="{StaticResource NoThemeForegroundBrush}"
+                                                     Background="Transparent"
+                                                     helpers:ThemeHelper.MouseOverBackgroundBrush="{StaticResource NoThemeMouseOverBackgroundBrush}"
+                                                     helpers:ThemeHelper.MouseOverBrush="{StaticResource NoThemeMouseOverBackgroundBrush}"
+                                                     helpers:ThemeHelper.PressedBackgroundBrush="{StaticResource NoThemeMouseOverBackgroundBrush}"
+                                                     helpers:ThemeHelper.PressedBrush="{StaticResource NoThemeMouseOverBackgroundBrush}"
+                                                     helpers:ThemeHelper.CheckedBackgroundBrush="Transparent"
+                                                     helpers:ThemeHelper.CheckedBrush="Transparent"
+                                                     helpers:ThemeHelper.FocusBackgroundBrush="Transparent"
+                                                     helpers:ThemeHelper.FocusBrush="Transparent"
+                                                     Template="{StaticResource SlidingMenuRadToggleButtonTemplate}">
+                                <icon:PackIconPhosphorIcons Kind="List" Width="18" Height="18"/>
+                            </telerik:RadToggleButton>
+                            <!--로고-->
+                            <Image Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Width="150">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Source" Value="/Assets/Images/samsung_white.png"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=IsSideShow}" Value="False">
+                                                <Setter Property="Source" Value="/Assets/Images/samsung_blue.png"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </StackPanel>                        
 
                         <!--제목-->
-                        <Border Grid.Column="1" Background="{telerik:Windows11Resource ResourceKey=OverlayBrush}" CornerRadius="8 0 0 0">
+                        <Border Grid.Column="1" Background="{telerik:Windows11Resource ResourceKey=OverlayBrush}">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="8 0 0 0"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=IsSideShow}" Value="False">
+                                            <Setter Property="CornerRadius" Value="0"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
                             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5 5 5 0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <Viewbox MaxWidth="320">
-                                    <TextBlock Text="삼성DS 모니터링DB 통합관리 프로그램" Style="{StaticResource TitleTextBlockStyle}"/>
-                                </Viewbox>
+                                
+                                <TextBlock Text="삼성DS 모니터링DB 통합관리 프로그램" FontSize="22" Style="{StaticResource TitleTextBlockStyle}"/>
+
+                                <!--전체메뉴-->
+                                <telerik:RadDropDownButton Grid.Column="1" 
+                                                           WindowChrome.IsHitTestVisibleInChrome="True"
+                                                           DropDownMinWidth="1200"
+                                                           DropDownWidth="1200"
+                                                           DropDownMaxWidth="1200"
+                                                           DropDownPlacement="Bottom" 
+                                                           DropDownIndicatorVisibility="Collapsed"
+                                                           PopupAnimation="Slide"
+                                                           CloseOnPopupMouseLeftButtonUp="True"
+                                                           Background="Transparent"
+                                                           BorderBrush="Transparent"
+                                                           helpers:ThemeHelper.MouseOverBrush="#000000"
+                                                           helpers:ThemeHelper.MouseOverBackgroundBrush="Transparent"
+                                                           helpers:ThemeHelper.CheckedBackgroundBrush="{telerik:Windows11Resource ResourceKey=AccentBrush}"
+                                                           helpers:ThemeHelper.CheckedBrush="{telerik:Windows11Resource ResourceKey=AccentBrush}"
+                                                           helpers:ThemeHelper.FocusBackgroundBrush="Transparent"
+                                                           helpers:ThemeHelper.FocusBrush="Transparent"
+                                                           Margin="5 0 0 2"
+                                                           Cursor="Hand"
+                                                           Template="{StaticResource AllMenuRadDropDownButtonTemplate}">
+                                    <telerik:RadDropDownButton.Content>
+                                        <icon:PackIconRemixIcon Margin="3" Width="16" Height="16">
+                                            <icon:PackIconRemixIcon.Style>
+                                                <Style TargetType="icon:PackIconRemixIcon">
+                                                    <Setter Property="Kind" Value="Menu2Fill"/>
+                                                    <Setter Property="Foreground" Value="#C4000000"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=IsOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadDropDownButton}}" Value="True">
+                                                            <Setter Property="Kind" Value="CloseFill"/>
+                                                            <Setter Property="Foreground" Value="#FFFFFFFF"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </icon:PackIconRemixIcon.Style>
+                                        </icon:PackIconRemixIcon>
+                                    </telerik:RadDropDownButton.Content>
+                                    <telerik:RadDropDownButton.DropDownContent>
+                                        <Grid Margin="5 20 5 5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="전체 메뉴" 
+                                                       Foreground="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}" 
+                                                       FontFamily="{StaticResource High1FontFamily}"
+                                                       FontSize="20"
+                                                       Margin="0 0 0 20"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" PanningMode="VerticalOnly" Padding="15">
+                                                <Grid>
+                                                    <Grid.Resources>
+                                                        <Style TargetType="telerik:RadRadioButton" BasedOn="{StaticResource SubMenuRadRadioButtonStyle}">
+                                                            <Setter Property="GroupName" Value="allmenu"/>
+                                                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                                            <Setter Property="Margin" Value="0 2"/>
+                                                            <Setter Property="Padding" Value="8 10"/>
+                                                            <Setter Property="BorderThickness" Value="1"/>
+                                                            <Setter Property="helpers:ThemeHelper.FocusBackgroundBrush" Value="Transparent"/>
+                                                            <Setter Property="helpers:ThemeHelper.FocusBrush" Value="Transparent"/>
+                                                            <Setter Property="helpers:ThemeHelper.FocusVisualMargin" Value="0"/>
+                                                        </Style>
+                                                        <Style TargetType="telerik:RadButton" BasedOn="{StaticResource RadButtonStyle}">
+                                                            <Setter Property="Cursor" Value="Hand"/>
+                                                            <Setter Property="Margin" Value="0 5"/>
+                                                            <Setter Property="Padding" Value="8 10"/>
+                                                            <Setter Property="BorderThickness" Value="1"/>
+                                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                            <Setter Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"/>
+                                                            <Setter Property="helpers:ThemeHelper.FocusBackgroundBrush" Value="Transparent"/>
+                                                            <Setter Property="helpers:ThemeHelper.FocusBrush" Value="Transparent"/>
+                                                            <Setter Property="helpers:ThemeHelper.FocusVisualMargin" Value="0"/>
+                                                            <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
+                                                            <Setter Property="helpers:ThemeHelper.PressedBackgroundBrush" Value="{telerik:Windows11Resource ResourceKey=SubtleBrush}"/>
+                                                        </Style>
+                                                        <Style x:Key="CaptionTextBlockStyle" TargetType="TextBlock">
+                                                            <Setter Property="FontFamily" Value="{StaticResource High1FontFamily}"/>
+                                                            <Setter Property="Margin" Value="5 0 0 0"/>
+                                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                                            <Setter Property="FontSize" Value="{StaticResource MainMenuFontSize}"/>
+                                                            <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
+                                                        </Style>
+                                                        <Style TargetType="Rectangle" BasedOn="{StaticResource HorizontalRectangleStyle}">
+                                                            <Setter Property="Margin" Value="0 7 0 5"/>
+                                                        </Style>
+                                                    </Grid.Resources>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="10"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="10"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="10"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="10"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <TextBlock Grid.Column="0" Grid.Row="0" Text="관리자" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                                    <Rectangle Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"/>
+                                                    <telerik:RadButton Grid.Column="0" Grid.Row="2" Click="LogoutButton_Click">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="로그아웃" Margin="0 0 5 0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                                            <icon:PackIconVaadinIcons Grid.Column="1" Kind="SignOut"  VerticalAlignment="Center" Foreground="{telerik:Windows11Resource ResourceKey=IconBrush}"/>
+                                                        </Grid>
+                                                    </telerik:RadButton>
+                                                    <telerik:RadButton Grid.Column="0" Grid.Row="3" Click="ScreenLockRadButton_Click">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="화면잠금" Margin="0 0 5 0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                                            <icon:PackIconMaterial Grid.Column="1" Kind="MonitorLock"  VerticalAlignment="Center" Foreground="{telerik:Windows11Resource ResourceKey=IconBrush}"/>
+                                                        </Grid>
+                                                    </telerik:RadButton>
+
+                                                    <TextBlock Grid.Column="2" Grid.Row="0" Text="홈" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                                    <Rectangle Grid.Column="2" Grid.Row="1" />
+                                                    <telerik:RadRadioButton Grid.Column="2" Grid.Row="2" Content="홈" IsChecked="{Binding Path=IsCheckedHome, Mode=TwoWay}" Tag="HomePage" Click="MenuItem_Click"/>
+
+                                                    <TextBlock Grid.Column="4" Grid.Row="0" Text="생물조사" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                                    <Rectangle Grid.Column="4" Grid.Row="1" />
+                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="2" Content="어류" IsChecked="{Binding Path=IsCheckedFish, Mode=TwoWay}" Tag="FishPage" Click="MenuItem_Click"/>
+                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="3" Content="저서동물" IsChecked="{Binding Path=IsCheckedBenthos, Mode=TwoWay}" Tag="BenthosPage" Click="MenuItem_Click"/>
+                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="4" Content="조류" IsChecked="{Binding Path=IsCheckedBird, Mode=TwoWay}" Tag="BirdPage" Click="MenuItem_Click"/>
+                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="5" Content="포유류" IsChecked="{Binding Path=IsCheckedMammal, Mode=TwoWay}" Tag="MammalPage" Click="MenuItem_Click"/>
+                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="6" Content="식생" IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click"/>
+                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="7" Content="식물" IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click"/>
+                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="8" Content="양서파충류" IsChecked="{Binding Path=IsCheckedAmphibianReptile, Mode=TwoWay}" Tag="AmphibianReptilePage" Click="MenuItem_Click"/>
+
+                                                    <TextBlock Grid.Column="6" Grid.Row="0" Text="환경자료" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                                    <Rectangle Grid.Column="6" Grid.Row="1"/>
+                                                    <telerik:RadRadioButton Grid.Column="6" Grid.Row="2" Content="서식수변" IsChecked="{Binding Path=IsCheckedHabitatWaterEdge, Mode=TwoWay}" Tag="HabitatWaterEdgePage" Click="MenuItem_Click"/>
+                                                    <telerik:RadRadioButton Grid.Column="6" Grid.Row="3" Content="수질" IsChecked="{Binding Path=IsCheckedWaterQuality, Mode=TwoWay}" Tag="WaterQualityPage"  Click="MenuItem_Click"/>
+
+                                                    <TextBlock Grid.Column="8" Grid.Row="0" Text="기타" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                                    <Rectangle Grid.Column="8" Grid.Row="1"/>
+                                                    <telerik:RadRadioButton Grid.Column="8" Grid.Row="2" Content="일괄등록" IsChecked="{Binding Path=IsCheckedBulkRegister, Mode=TwoWay}" Tag="BulkRegisterPage" Click="MenuItem_Click"/>
+                                                    <telerik:RadButton Grid.Column="8" Grid.Row="3" Command="{Binding Path=ManualWindowOpenCommand}">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="사용설명서" Margin="0 0 5 0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                                            <icon:PackIconFeatherIcons Grid.Column="1" Kind="ArrowUpRight"  VerticalAlignment="Center" Foreground="{telerik:Windows11Resource ResourceKey=IconBrush}" Width="12" Height="12"/>
+                                                        </Grid>
+                                                    </telerik:RadButton>
+
+                                                </Grid>
+                                            </ScrollViewer>
+                                        </Grid>
+                                    </telerik:RadDropDownButton.DropDownContent>
+                                </telerik:RadDropDownButton>
+
                             </Grid>
                         </Border>
 
@@ -681,15 +1077,47 @@
                 <!--하단-->
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition>
+                            <ColumnDefinition.Style>
+                                <Style TargetType="ColumnDefinition">
+                                    <Setter Property="Width" Value="Auto"/>
+                                </Style>
+                            </ColumnDefinition.Style>
+                        </ColumnDefinition>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
+                    <Rectangle x:Name="MenuDismissOverlay" Grid.Column="1" Panel.ZIndex="97" Fill="Transparent" Visibility="Collapsed" MouseDown="MenuDismissOverlay_MouseDown"/>
+                    
                     <Border x:Name="MenuRoot"
                             Background="{StaticResource MainPrimaryBrush}"
-                            Width="280"
                             Panel.ZIndex="98"
-                            HorizontalAlignment="Left">
+                            HorizontalAlignment="Left"
+                            CornerRadius="0 8 0 0">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Grid.Column" Value="0"/>
+                                <Setter Property="Width" Value="250"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Mode=Self}}" Value="Collapsed">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard SpeedRatio="2">
+                                                    <DoubleAnimation Storyboard.TargetProperty="Width" From="250" To="0" Duration="0:0:0.15"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard SpeedRatio="2">
+                                                    <DoubleAnimation Storyboard.TargetProperty="Width" From="0" To="250" Duration="0:0:0.15"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>

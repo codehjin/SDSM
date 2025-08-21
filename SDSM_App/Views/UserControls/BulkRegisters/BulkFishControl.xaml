@@ -277,7 +277,7 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyUnavailableReason}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Note}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=DECount}" MinWidth="80" Width="180" MaxWidth="180"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EFCount}" MinWidth="80" Width="260" MaxWidth="260"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EFCount}" MinWidth="80" Width="240" MaxWidth="240"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LECount}" MinWidth="80" Width="180" MaxWidth="180"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TUCount}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TotalIndividualCount}" MinWidth="80" Width="160" MaxWidth="160" />
@@ -413,7 +413,7 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyUnavailableReason}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Note}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=DECount}" MinWidth="80" Width="180" MaxWidth="180"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EFCount}" MinWidth="80" Width="260" MaxWidth="260"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EFCount}" MinWidth="80" Width="240" MaxWidth="240"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LECount}" MinWidth="80" Width="180" MaxWidth="180"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TUCount}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TotalIndividualCount}" MinWidth="80" Width="160" MaxWidth="160" />

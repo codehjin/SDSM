@@ -400,7 +400,8 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                 {
                     SearchCaptionCollection.Remove(caption);
 
-                    PointCollection.RemoveRange(PointCollection.Where(m => m.Caption == caption));
+                    var removeItems = PointCollection.Where(m => m.Caption == caption);
+                    PointCollection.RemoveRange(removeItems);
                 }
             }
         }

@@ -160,8 +160,8 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MigratoryType}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Category}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap" ColumnGroupName="habitat" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CategoryDetail}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap"  ColumnGroupName="habitat"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatType}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap"  ColumnGroupName="habitat"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatType}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap" ColumnGroupName="habitat"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Note}" MinWidth="80" Width="320" MaxWidth="320" TextWrapping="Wrap"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>

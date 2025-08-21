@@ -501,7 +501,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=PrimarySolidBorderBrush}"/>
         <Setter Property="BorderThickness" Value="0 0 0 1"/>
-        <Setter Property="MinHeight" Value="54"/>
+        <Setter Property="MinHeight" Value="50"/>
         <Setter Property="Template" Value="{StaticResource GridViewHeaderRowTemplate}"/>
     </Style>
 
@@ -512,7 +512,7 @@
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="AllowDrop" Value="True"/>
-        <Setter Property="MinHeight" Value="50"/>
+        <!--<Setter Property="MinHeight" Value="26"/>-->
     </Style>
 
     <Style x:Key="OriginalMinHeightGridViewRowStyle" TargetType="telerik:GridViewRow" BasedOn="{StaticResource GridViewRowStyle}">
@@ -648,11 +648,11 @@
             <Grid Margin="{TemplateBinding helpers:ThemeHelper.FocusVisualMargin}">
                 <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" MinHeight="{TemplateBinding MinHeight}" MinWidth="{TemplateBinding MinWidth}">
                     <Border x:Name="BorderVisual"
-                Background="{TemplateBinding Background}"
-                BorderBrush="{TemplateBinding BorderBrush}"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                CornerRadius="{TemplateBinding CornerRadius}"
-                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -666,17 +666,17 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <ContentPresenter x:Name="Content"
-                                  Grid.Row="1"
-                                  Grid.Column="1"
-                                  TextBlock.Foreground="{TemplateBinding Foreground}"
-                                  Margin="{TemplateBinding Padding}"
-                                  Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-                                  ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  RecognizesAccessKey="True"/>
+                                          Grid.Row="1"
+                                          Grid.Column="1"
+                                          TextBlock.Foreground="{TemplateBinding Foreground}"
+                                          Margin="{TemplateBinding Padding}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                          ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          RecognizesAccessKey="True"/>
                         <Grid x:Name="DropDownIndicator"
                               Grid.Column="1"
                               Grid.Row="2"
@@ -685,9 +685,9 @@
                               IsHitTestVisible="False"
                               Visibility="{TemplateBinding DropDownIndicatorVisibility}">
                             <telerik:RadGlyph x:Name="arrow"
-                                      FontSize="{telerik:Windows11Resource ResourceKey=GlyphFontSizeS}"
-                                      Foreground="{telerik:Windows11Resource ResourceKey=IconSecondaryBrush}"
-                                      Glyph="{StaticResource GlyphArrowChevronDown}"/>
+                                              FontSize="{telerik:Windows11Resource ResourceKey=GlyphFontSizeS}"
+                                              Foreground="{telerik:Windows11Resource ResourceKey=IconSecondaryBrush}"
+                                              Glyph="{StaticResource GlyphArrowChevronDown}"/>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -841,6 +841,74 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
+    <!--서브메뉴-->
+    <Style x:Key="SubMenuRadRadioButtonStyle" TargetType="telerik:RadRadioButton" BasedOn="{StaticResource RadRadioButtonStyle}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Margin" Value="0 0 10 0"/>
+        <Setter Property="Padding" Value="10 8"/>
+        <Setter Property="MinWidth" Value="120"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="GroupName" Value="subMenu"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="telerik:RadRadioButton">
+                    <Border x:Name="Border" 
+                            Cursor="Hand"
+                            Background="{telerik:Windows11Resource ResourceKey=PrimaryBackgroundBrush}" 
+                            BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            MinWidth="{TemplateBinding MinWidth}"
+                            MinHeight="{TemplateBinding MinHeight}"
+                            Height="{TemplateBinding Height}"
+                            Margin="{TemplateBinding Margin}"
+                            Padding="{TemplateBinding Padding}"
+                            CornerRadius="{telerik:Windows11Resource ResourceKey=CornerRadius}">
+                        <ContentPresenter x:Name="Content" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                            <ContentPresenter.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                </Style>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="False"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Border" Value="{telerik:Windows11Resource ResourceKey=MouseOverBackgroundBrush}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
+                            <Setter Property="BorderThickness" TargetName="Border" Value="1"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"/>
+                            <Setter Property="Background" TargetName="Border" Value="{telerik:Windows11Resource ResourceKey=PressedBackgroundBrush}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Background" TargetName="Border" Value="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
+                            <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=AccentControlForegroundBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Border" Property="Background" Value="{telerik:Windows11Resource ResourceKey=DisabledBackgroundBrush}"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=DisabledBorderBrush}"/>
+                            <Setter TargetName="Content" Property="TextBlock.Foreground" Value="{telerik:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
+                            <Setter TargetName="Content" Property="Opacity" Value="{telerik:Windows11Resource ResourceKey=DisabledOpacity}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <!--하위메뉴-->
     <ControlTemplate x:Key="SubMenuBorderThicknessRadRadioButtonTemplate" TargetType="telerik:RadRadioButton">
         <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">

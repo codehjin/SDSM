@@ -4,6 +4,7 @@ using SDSM_App.ViewModels;
 using SDSM_App.Views.UserControls;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Telerik.Windows.Controls;
 
 namespace SDSM_App;
@@ -27,8 +28,9 @@ public partial class MainWindow : Window, ISingletonService
 
         Loaded += Window_Loaded;
         StateChanged += Window_StateChanged;
-
         ContentFrame.NavigationService.Navigated += NavigationService_Navigated;
+
+        MenuRootStatus(Properties.Settings.Default.IsSideShow);
     }
 
     #region window
@@ -94,6 +96,89 @@ public partial class MainWindow : Window, ISingletonService
         if (WindowState == WindowState.Maximized)
         {
             WindowStyle = WindowStyle.SingleBorderWindow;
+        }
+    }
+
+    #endregion
+
+    #region Menu Overlay
+
+    private void ShowHideMenuButton_Checked(object sender, RoutedEventArgs e)
+    {
+        if (MenuRoot != null)
+        {
+            MenuRootStatus(true);
+
+            e.Handled = true;
+        }
+    }
+
+    private void ShowHideMenuButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+        if (MenuRoot != null)
+        {
+            MenuRootStatus(false);
+
+            e.Handled = true;
+        }
+    }
+
+    private void SlidingMenuButton_Checked(object sender, RoutedEventArgs e)
+    {
+        if (MenuRoot != null)
+        {
+            MenuRoot.Visibility = Visibility.Visible;
+            MenuDismissOverlay.Visibility = Visibility.Visible;
+
+            GB.IsMinimal = true;
+        }
+    }
+
+    private void SlidingMenuButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+        if (MenuRoot != null)
+        {
+            MenuRoot.Visibility = Visibility.Collapsed;
+            MenuDismissOverlay.Visibility = Visibility.Collapsed;
+
+            GB.IsMinimal = false;
+        }
+    }
+
+    //오버레이 Rectangle
+    private void MenuDismissOverlay_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        MenuOverlayHide();
+    }
+
+    //메뉴 오버레이
+    private void MenuOverlayHide()
+    {
+        if (MenuRoot != null)
+        {
+            MenuRoot.Visibility = Visibility.Collapsed;
+            SlidingMenuButton.IsChecked = false;
+            MenuDismissOverlay.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    //메뉴 보이기 감추기
+    private void MenuRootStatus(bool status)
+    {
+        if(SlidingMenuButton.IsChecked == true)
+            SlidingMenuButton.IsChecked = false;
+
+        if (status)
+        {
+            MenuRoot.Visibility = Visibility.Visible;
+            MenuRoot.SetValue(Grid.ColumnProperty, 0);
+            GB.IsMinimal = false;
+        }
+        else
+        {
+            MenuRoot.Visibility = Visibility.Collapsed;
+            MenuRoot.SetValue(Grid.ColumnProperty, 1);
+            GB.IsMinimal = true;
         }
     }
 
@@ -180,6 +265,17 @@ public partial class MainWindow : Window, ISingletonService
         if (page != null)
         {
             ContentFrame.Navigate(App.Current.Services.GetService(page));
+
+            //메뉴 오버레이인 경우
+            if (GB.IsMinimal)
+            {
+                MenuRoot.Visibility = Visibility.Collapsed;
+                MenuDismissOverlay.Visibility = Visibility.Collapsed;
+                GB.IsMinimal = false;
+
+                if (SlidingMenuButton.IsChecked == true)
+                    SlidingMenuButton.IsChecked = false;
+            }
         }
         else
         {

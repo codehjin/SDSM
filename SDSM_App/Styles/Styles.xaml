@@ -10,10 +10,10 @@
 
     <converter:StringToBoolConverter x:Key="StringToBoolConverter"/>
 
-    <FontFamily x:Key="DefaultFontFamily">application:,,,/Assets/Fonts/#Noto Sans KR</FontFamily>
+    <FontFamily x:Key="DefaultFontFamily">application:,,,/Assets/Fonts/#KoPubWorld돋움체</FontFamily>
     <FontFamily x:Key="High1FontFamily">application:,,,/Assets/Fonts/#하이원 제목 원추리체</FontFamily>
     <FontFamily x:Key="ROKGFontFamily">application:,,,/Assets/Fonts/#대한민국정부상징체 R</FontFamily>
-    <sys:Double x:Key="DefaultFontSize">16</sys:Double>
+    <sys:Double x:Key="DefaultFontSize">14.5</sys:Double>
 
     <!--너비-->
     <sys:Double x:Key="ContentMaxWidth">3120</sys:Double>

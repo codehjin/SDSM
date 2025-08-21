@@ -158,8 +158,8 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyAgency}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyAgency}" MinWidth="80" Width="200" MaxWidth="200" TextWrapping="Wrap" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap" ColumnGroupName="survey"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=PH}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="measurementItem"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BOD}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="measurementItem"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=COD}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="measurementItem"/>

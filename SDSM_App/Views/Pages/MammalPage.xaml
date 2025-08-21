@@ -153,7 +153,7 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" ColumnGroupName="species"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="480" MaxWidth="480" TextWrapping="Wrap" ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Feature}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Feature}" MinWidth="80" Width="280" MaxWidth="280" TextWrapping="Wrap" ColumnGroupName="species"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=ObservationSite}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap"/>
@@ -169,7 +169,7 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Trace10}" MinWidth="80" Width="120" MaxWidth="120" ColumnGroupName="trace"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Trace11}" MinWidth="80" Width="120" MaxWidth="120" ColumnGroupName="trace"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Trace12}" MinWidth="80" Width="140" MaxWidth="140" ColumnGroupName="trace"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Note}" MinWidth="80" Width="320" MaxWidth="320" TextWrapping="Wrap"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>

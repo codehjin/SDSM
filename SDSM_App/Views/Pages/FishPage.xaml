@@ -169,8 +169,8 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyAgency}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyAgency}" MinWidth="80" Width="200" MaxWidth="200" TextWrapping="Wrap" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap" ColumnGroupName="survey"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CollectionTime}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="collection"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CollectionTool}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="collection"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CollectionFlowState}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="collection"/>
@@ -210,7 +210,7 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyUnavailableReason}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" ColumnGroupName="etc"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Note}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" ColumnGroupName="etc"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=DECount}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="abnormal"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EFCount}" MinWidth="80" Width="260" MaxWidth="260" ColumnGroupName="abnormal"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EFCount}" MinWidth="80" Width="240" MaxWidth="240" ColumnGroupName="abnormal"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LECount}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="abnormal"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TUCount}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="abnormal"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TotalIndividualCount}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="cluster"/>

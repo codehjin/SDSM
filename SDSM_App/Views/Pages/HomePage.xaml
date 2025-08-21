@@ -486,15 +486,19 @@
                                 </Style>
                             </Grid.Resources>
 
-                            <DockPanel Margin="0 0 0 10">
-                                <telerik:RadToggleButton x:Name="SearchRadToggleButton" Cursor="Hand" Height="{StaticResource DefaultHeight}">
+                            <Grid Margin="0 0 0 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <telerik:RadToggleButton x:Name="SearchRadToggleButton" Cursor="Hand" Height="{StaticResource DefaultHeight}" HorizontalAlignment="Left" Margin="0 0 10 0">
                                     <StackPanel Orientation="Horizontal">
                                         <telerik:RadGlyph Glyph="{StaticResource GlyphZoom}" VerticalAlignment="Center"/>
-                                        <TextBlock Text="검색" Margin="5 0 0 0"/>
+                                        <TextBlock Text="검색" Margin="5 0 5 0"/>
                                     </StackPanel>
                                 </telerik:RadToggleButton>
-                                <telerik:RadButton Content="전체 선택해제" Height="{StaticResource DefaultHeight}" HorizontalAlignment="Right" Command="{Binding Path=AllPointUnCheckedExecutedCommand}"/>
-                            </DockPanel>
+                                <telerik:RadButton Grid.Column="1" Content="전체 선택해제" Height="{StaticResource DefaultHeight}" Command="{Binding Path=AllPointUnCheckedExecutedCommand}"/>
+                            </Grid>
 
                             <Border Grid.Row="1" Margin="0 0 0 15" Visibility="{Binding Path=IsChecked, ElementName=SearchRadToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Grid>

@@ -11,15 +11,9 @@
     <None Remove="Assets\Fonts\high1 Wonchuri Title B.ttf" />
     <None Remove="Assets\Fonts\high1 Wonchuri Title L.ttf" />
     <None Remove="Assets\Fonts\high1 Wonchuri Title M.ttf" />
-    <None Remove="Assets\Fonts\NotoSansKR-Black.ttf" />
-    <None Remove="Assets\Fonts\NotoSansKR-Bold.ttf" />
-    <None Remove="Assets\Fonts\NotoSansKR-ExtraBold.ttf" />
-    <None Remove="Assets\Fonts\NotoSansKR-ExtraLight.ttf" />
-    <None Remove="Assets\Fonts\NotoSansKR-Light.ttf" />
-    <None Remove="Assets\Fonts\NotoSansKR-Medium.ttf" />
-    <None Remove="Assets\Fonts\NotoSansKR-Regular.ttf" />
-    <None Remove="Assets\Fonts\NotoSansKR-SemiBold.ttf" />
-    <None Remove="Assets\Fonts\NotoSansKR-Thin.ttf" />
+    <None Remove="Assets\Fonts\KoPubWorld Dotum Bold.ttf" />
+    <None Remove="Assets\Fonts\KoPubWorld Dotum Light.ttf" />
+    <None Remove="Assets\Fonts\KoPubWorld Dotum Medium.ttf" />
     <None Remove="Assets\Fonts\ROKG_R.TTF" />
     <None Remove="Assets\Images\m.ico" />
     <None Remove="Assets\Images\m.png" />
@@ -38,6 +32,15 @@
     <Content Include="m.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Assets\Fonts\KoPubWorld Dotum Bold.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Fonts\KoPubWorld Dotum Light.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Fonts\KoPubWorld Dotum Medium.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\Images\m.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -80,33 +83,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\Fonts\high1 Wonchuri Title M.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Fonts\NotoSansKR-Black.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Fonts\NotoSansKR-Bold.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Fonts\NotoSansKR-ExtraBold.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Fonts\NotoSansKR-ExtraLight.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Fonts\NotoSansKR-Light.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Fonts\NotoSansKR-Medium.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Fonts\NotoSansKR-Regular.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Fonts\NotoSansKR-SemiBold.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Fonts\NotoSansKR-Thin.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\Fonts\ROKG_R.TTF">
