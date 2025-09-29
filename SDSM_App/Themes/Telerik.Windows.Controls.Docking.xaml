@@ -21,7 +21,8 @@
     <ResourceDictionary.MergedDictionaries>
         <telerik:Windows11ResourceDictionary/>
     </ResourceDictionary.MergedDictionaries>
-    <!--추가  GlyphFontSize => GlyphFontSize-->
+
+	<!--추가  GlyphFontSize => GlyphFontSize-->
     <telerik1:DragDropBooleanToVisibilityConverter x:Key="DragDropBooleanToVisibilityConverter"/>
     <telerik1:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <telerik1:InvertedBooleanConverter x:Key="InvertedBooleanConverter"/>
@@ -505,8 +506,9 @@
     <Style TargetType="telerik1:RadListBox" BasedOn="{StaticResource RadListBoxStyle}"/>
     <Style TargetType="telerik1:RadListBoxItem" BasedOn="{StaticResource RadListBoxItemStyle}"/>
     <Style TargetType="telerikDragDrop:ListBoxDragVisual" BasedOn="{StaticResource ListBoxDragVisualStyle}"/>
-    <!--추가 Cursor="Hand"-->
+	<!--추가 Cursor="Hand"-->
     <Style x:Key="RadPaneBaseButtonStyle" TargetType="ButtonBase">
+		<Setter Property="Cursor" Value="Hand"/>
         <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{telerik1:Windows11Resource ResourceKey=SubtleBrush}"/>
         <Setter Property="helpers:ThemeHelper.PressedBackgroundBrush" Value="{telerik1:Windows11Resource ResourceKey=SubtleSecondaryBrush}"/>
         <Setter Property="helpers:ThemeHelper.CornerRadius" Value="{telerik1:Windows11Resource ResourceKey=CornerRadius}"/>
@@ -521,7 +523,6 @@
         <Setter Property="Width" Value="22"/>
         <Setter Property="MinHeight" Value="0"/>
         <Setter Property="Margin" Value="{telerik:Windows11Resource ResourceKey=DockingPaneButtonBaseMargin}"/>
-        <Setter Property="Cursor" Value="Hand"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource Self}, Path=(helpers:ThemeHelper.FocusBrush), Mode=OneWay}"/>
@@ -548,10 +549,10 @@
             <telerik:RadGlyph x:Name="CloseIcon" Foreground="{TemplateBinding Foreground}" FontSize="{telerik1:Windows11Resource ResourceKey=GlyphFontSize}" Glyph="{StaticResource GlyphClose}"/>
         </Grid>
     </ControlTemplate>
-    <!--추가  <Setter Property="Cursor" Value="Hand"/>-->
+	<!--추가  <Setter Property="Cursor" Value="Hand"/>-->
     <Style x:Key="RadButtonCloseStyle" TargetType="telerik:RadButton" BasedOn="{StaticResource RadPaneBaseButtonStyle}">
         <Setter Property="Template" Value="{StaticResource RadButtonCloseControlTemplate}"/>
-        <Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="Cursor" Value="Hand"/>
     </Style>
     <ControlTemplate x:Key="RepeatButtonScrollLeftControlTemplate" TargetType="RepeatButton">
         <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -931,7 +932,7 @@
         <Setter Property="IsTabStop" Value="False"/>
     </Style>
     <ControlTemplate x:Key="RadPaneDocumentHostTemplate" TargetType="telerikDocking:RadPane">
-        <!--추가 Margin="2 0"-->
+		<!--추가 Margin="2 0"-->
         <Grid x:Name="wrapper" Margin="2 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -942,7 +943,7 @@
                     Background="{TemplateBinding Background}"
                     CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}"
                     ShadowDepth="{TemplateBinding mat:MaterialAssist.ShadowDepth}"/>
-            <!--추가 CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}" => 1 1 0 0-->
+			<!--추가 CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}" => 1 1 0 0-->
             <Border x:Name="BorderVisual"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     BorderBrush="{TemplateBinding BorderBrush}"
@@ -1574,7 +1575,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <dock:RadGridResizer x:Name="DockResizer" Placement="Left" ShowsPreview="True" Visibility="Collapsed"/>
-            <!--추가 Grid.Row="1" => 2 / {TemplateBinding helpers:ThemeHelper.CornerRadius} => 0 0 3 3-->
+			<!--추가 Grid.Row="1" =>2 / {TemplateBinding helpers:ThemeHelper.CornerRadius} => 0 0 3 3-->
             <mat:Shadow x:Name="Shadow"
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
@@ -1583,8 +1584,8 @@
                     ShadowDepth="{TemplateBinding mat:MaterialAssist.ShadowDepth}"
                     Background="{TemplateBinding Background}"
                     CornerRadius="0 0 3 3"/>
-            <!--추가 Grid.Row="1" => 2 / {TemplateBinding helpers:ThemeHelper.CornerRadius} => 0 0 3 3
-                     background {TemplateBinding Background} => Transparent -->
+			<!--추가 Grid.Row="1" => 2 / {TemplateBinding helpers:ThemeHelper.CornerRadius} => 0 0 3 3
+            background {TemplateBinding Background} => Transparent -->
             <Border
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
@@ -1594,18 +1595,18 @@
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     CornerRadius="0 0 3 3"/>
-            <!--추가 DocumentHost Header-->
-            <!--HorizontalAlignment="Left" 왼쪽으로 / background {telerik1:Windows11Resource ResourceKey=AlternativeBrush} => Transparent
-                BorderThickness {TemplateBinding BorderThickness} => 0-->
+			<!--추가 DocumentHost Header-->
+			<!--HorizontalAlignment="Left" 왼쪽으로 / background {telerik1:Windows11Resource ResourceKey=AlternativeBrush} => Transparent
+            BorderThickness {TemplateBinding BorderThickness} => 0-->
             <Border
                     Grid.Row="1"
                     Grid.Column="1"
                     CornerRadius="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CornerRadius), Converter={StaticResource CornerRadiusConverter}, ConverterParameter=TopLeftRight}"
                     telerik:CornerRadiusHelper.ClipRadius="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CornerRadius), Converter={StaticResource CornerRadiusConverter}, ConverterParameter=TopLeftRight}"
                     Background="Transparent"
-                    BorderThickness="0"
+                    BorderThickness="{TemplateBinding BorderThickness}"
                     BorderBrush="{TemplateBinding BorderBrush}"
-                    HorizontalAlignment="Left">
+					HorizontalAlignment="Left">
                 <Grid x:Name="ItemsContainer">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -1920,7 +1921,7 @@
                     CornerRadius="{TemplateBinding CornerRadius}">
                 <Grid telerik:CornerRadiusHelper.ClipRadius="{Binding ElementName=WindowOuterBorder, Path=CornerRadius}" telerik:CornerRadiusHelper.ClipRadiusOffset="{TemplateBinding telerik:CornerRadiusHelper.ClipRadiusOffset}">
                     <Grid.RowDefinitions>
-                        <!--추가 MinHeight 32 => 40-->
+						<!--추가 MinHeight 32 => 40-->
                         <RowDefinition x:Name="HeaderRow" Height="Auto" MinHeight="40"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
@@ -1967,12 +1968,12 @@
             </Border>
         </Grid>
         <ControlTemplate.Triggers>
-            <!--추가 WindowOuterBorder BorderBrush-->
+			<!--추가 WindowOuterBorder BorderBrush-->
             <Trigger Property="IsSelected" Value="True">
                 <Setter TargetName="HeaderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBackgroundBrush)}"/>
                 <Setter TargetName="CloseButton" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=AccentControlForegroundBrush}"/>
                 <Setter TargetName="Header" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=AccentControlForegroundBrush}"/>
-                <Setter TargetName="WindowOuterBorder" Property="BorderBrush" Value="#CC60CDFF"/>
+				<Setter TargetName="WindowOuterBorder" Property="BorderBrush" Value="#CC60CDFF"/>
             </Trigger>
             <Trigger Property="WindowState" Value="Maximized">
                 <Setter TargetName="LayoutRoot" Property="Margin" Value="0"/>
@@ -1992,8 +1993,8 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    <!--추가-->
-    <!--MinHeight 22 => 120-->
+	<!--추가-->
+	<!--MinHeight 22 => 120-->
     <Style x:Key="ToolWindowStyle" TargetType="dock:ToolWindow">
         <Setter Property="CornerRadius" Value="{telerik1:Windows11Resource ResourceKey=OverlayCornerRadius}"/>
         <Setter Property="helpers:ThemeHelper.CheckedBackgroundBrush" Value="{telerik1:Windows11Resource ResourceKey=AccentSelectedBrush}"/>

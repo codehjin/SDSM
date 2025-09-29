@@ -321,7 +321,7 @@
                             <Setter TargetName="FocusVisual" Property="Opacity" Value="1"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <!--추가 SecondaryBackgroundBrush => TertiarySmokeBackgroundBrush-->
+							<!--추가 SecondaryBackgroundBrush => TertiarySmokeBackgroundBrush-->
                             <Setter TargetName="PART_RootElement" Property="Background" Value="{telerik1:Windows11Resource ResourceKey=TertiarySmokeBackgroundBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
@@ -836,13 +836,11 @@
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"/>
             <Border x:Name="HeaderCellSeparator" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0 0 1 0"/>
-            <!--추가 GridViewColumnGroup 모두 대문자로 변환 적용 제거 
-     Content="{Binding Content, Converter={StaticResource UppercaseConverter}, RelativeSource={RelativeSource TemplatedParent}}" -> Converter={StaticResource UppercaseConverter} 제거-->
             <ContentPresenter x:Name="ContentPresenter"
                     TextBlock.Foreground="{TemplateBinding Foreground}"
                     TextBlock.FontSize="{TemplateBinding FontSize}"
                     TextBlock.FontFamily="{TemplateBinding FontFamily}"
-                    Content="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                    Content="{Binding Content, Converter={StaticResource UppercaseConverter}, RelativeSource={RelativeSource TemplatedParent}}"
                     ContentTemplate="{TemplateBinding ContentTemplate}"
                     Margin="{TemplateBinding Padding}"
                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -887,7 +885,9 @@
         <Grid>
             <ItemsPresenter/>
             <grid:FrozenColumnsSplitter x:Name="PART_FrozenColumnsSplitter" HorizontalAlignment="Left"/>
-            <grid:FrozenColumnsSplitterRightSide x:Name="PART_FrozenColumnsSplitterRight" HorizontalAlignment="Left"/>
+            <Canvas>
+                <grid:FrozenColumnsSplitterRightSide x:Name="PART_FrozenColumnsSplitterRight" Height="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"/>
+            </Canvas>
         </Grid>
     </ControlTemplate>
     <Style x:Key="DataCellsPresenterStyle" TargetType="grid:DataCellsPresenter">
@@ -941,23 +941,23 @@
                     </ControlTemplate>
                 </Button.Template>
                 <Grid Cursor="Hand" Background="Transparent">
-                    <!--추가  Border-->
-                    <Border x:Name="GlyphBorder" 
+					<!--추가  Border-->
+					<Border x:Name="GlyphBorder"
                             CornerRadius="{telerik:Windows11Resource ResourceKey=CornerRadius}"
                             BorderBrush="Transparent"
                             BorderThickness="1"
-                            Padding="5 0 5 0">                        
-                        <telerik:RadGlyph x:Name="FilterIcon" Glyph="{StaticResource GlyphFilter}" Foreground="{TemplateBinding Foreground}"/>
-                    </Border>
+                            Padding="5 0 5 0">
+						<telerik:RadGlyph x:Name="FilterIcon" Glyph="{StaticResource GlyphFilter}" Foreground="{TemplateBinding Foreground}"/>
+					</Border>
                 </Grid>
             </Button>
             <Popup x:Name="PART_DropDownPopup" VerticalOffset="{telerik1:Windows11Resource ResourceKey=PopupOffset}" StaysOpen="True" AllowsTransparency="True" PopupAnimation="Fade"/>
         </Grid>
         <ControlTemplate.Triggers>
-            <!--추가 IsMouseOver-->
-            <Trigger Property="IsMouseOver" Value="True ">
-                <Setter TargetName="GlyphBorder" Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
-            </Trigger>
+			<!--추가 IsMouseOver-->
+			<Trigger Property="IsMouseOver" Value="True ">
+				<Setter TargetName="GlyphBorder" Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
+			</Trigger>
             <Trigger Property="FunnelFillVisibility" Value="Visible">
                 <Setter TargetName="FilterIcon" Property="Foreground" Value="#FF00C2FF"/>
             </Trigger>
@@ -1123,7 +1123,7 @@
                             Margin="0 -1 -1 0"/>
                 </Grid>
             </Border>
-            <!--추가 {telerik1:Windows11Resource ResourceKey=FocusThickness} => 0-->
+			<!--추가 {telerik1:Windows11Resource ResourceKey=FocusThickness} => 0-->
             <Border x:Name="Background_Current"
                     Background="{x:Null}"
                     BorderBrush="{TemplateBinding CurrentBorderBrush}"
@@ -1142,7 +1142,7 @@
                     IsTabStop="{TemplateBinding IsTabStop}"/>
         </Grid>
         <ControlTemplate.Triggers>
-            <!--추가 PART_ContentPresenter {telerik1:Windows11Resource ResourceKey=DisabledOpacity} => 0.6-->
+			<!--추가 PART_ContentPresenter {telerik1:Windows11Resource ResourceKey=DisabledOpacity} => 0.6-->
             <Trigger Property="IsEnabled" Value="False">
                 <Setter TargetName="PART_ContentPresenter" Property="Opacity" Value="0.6"/>
                 <Setter TargetName="Background_Current" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
@@ -1179,10 +1179,9 @@
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="Background_Current" Property="Margin" Value="0"/>
             </MultiDataTrigger>
-            <!--추가 찾기 배경색 사용안함-->
-            <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsHighlighted}" Value="True">
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsHighlighted}" Value="True">
                 <Setter TargetName="PART_CellBorder" Property="Background" Value="{Binding HighlightedBackground, RelativeSource={RelativeSource TemplatedParent}}"/>
-            </DataTrigger>-->
+            </DataTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
     <Style x:Key="GridViewCellStyle" TargetType="grid:GridViewCell">
@@ -1375,7 +1374,7 @@
                     <Grid>
                         <Border x:Name="GridViewHeaderCell_Over" Background="{TemplateBinding helpers:ThemeHelper.MouseOverBackgroundBrush}" Visibility="Collapsed"/>
                         <Border x:Name="GridViewHeaderCell_Selected" Background="{TemplateBinding helpers:ThemeHelper.CheckedBackgroundBrush}" Visibility="Collapsed"/>
-                        <!--추가 BorderThickness 0 0 1 0 => 0 0 1 1-->
+						<!--추가 BorderThickness 0 0 1 0 => 0 0 1 1-->
                         <Border x:Name="HeaderCellSeparator" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0 0 1 1" Visibility="Collapsed"/>
                     </Grid>
                 </Border>
@@ -1460,7 +1459,7 @@
             </DataTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    <!--추가 Background Transparent=> TertiaryBackgroundBrush -->
+	<!--추가 Background Transparent=> TertiaryBackgroundBrush -->
     <Style x:Key="GridViewHeaderCellStyle" TargetType="grid:GridViewHeaderCell">
         <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{telerik1:Windows11Resource ResourceKey=SubtleSecondaryBrush}"/>
         <Setter Property="helpers:ThemeHelper.CheckedBackgroundBrush" Value="{telerik1:Windows11Resource ResourceKey=AccentSelectedBrush}"/>
@@ -1468,7 +1467,7 @@
         <Setter Property="FontFamily" Value="{telerik1:Windows11Resource ResourceKey=FontFamily}"/>
         <Setter Property="FontSize" Value="{telerik1:Windows11Resource ResourceKey=FontSize}"/>
         <Setter Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=SecondaryForegroundBrush}"/>
-        <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=TertiaryBackgroundBrush}"/>
+		<Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=TertiaryBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{telerik1:Windows11Resource ResourceKey=PrimarySolidBorderBrush}"/>
         <Setter Property="BorderThickness" Value="0 0 0 1"/>
         <Setter Property="MinHeight" Value="{telerik:Windows11Resource ResourceKey=GridViewCellMinHeight}"/>
@@ -1492,7 +1491,7 @@
                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
         </Border>
     </ControlTemplate>
-    <!--추가 Left -> Stretch-->
+	<!--추가 HorizontalContentAlignment = Left => Stretch-->
     <Style x:Key="GridViewFooterCellStyle" TargetType="grid:GridViewFooterCell">
         <Setter Property="Template" Value="{StaticResource GridViewFooterCellTemplate}"/>
         <Setter Property="FontSize" Value="{telerik1:Windows11Resource ResourceKey=FontSize}"/>
@@ -1501,7 +1500,7 @@
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="{telerik:Windows11Resource ResourceKey=GridViewCellPadding}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
     </Style>
     <Style TargetType="grid:GridViewFooterCell" BasedOn="{StaticResource GridViewFooterCellStyle}"/>
@@ -1727,9 +1726,10 @@
                         BorderBrush="{TemplateBinding HorizontalGridLinesBrush}"
                         BorderThickness="{Binding HorizontalGridLinesWidth, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource GridLineWidthToThicknessConverter}, ConverterParameter=Bottom}"/>
                 <Border x:Name="Background_Over" Grid.ColumnSpan="4" Background="{TemplateBinding MouseOverBackground}" Visibility="Collapsed" Margin="0 0 0 1"/>
+				<!--추가 SelectedUnfocusedBrush => SelectedBrush -->
                 <Border x:Name="Background_Selected_Unfocused"
                         Grid.ColumnSpan="4"
-                        Background="{telerik1:Windows11Resource ResourceKey=SelectedUnfocusedBrush}"
+                        Background="{telerik1:Windows11Resource ResourceKey=SelectedBrush}"
                         Visibility="Collapsed"
                         Margin="0 0 0 1"/>
                 <Border x:Name="Background_Selected" Grid.ColumnSpan="4" Background="{TemplateBinding SelectedBackground}" Visibility="Collapsed" Margin="0 0 0 1"/>
@@ -1745,7 +1745,7 @@
                     <Grid>
                         <Grid x:Name="GridIndicatorPresenter">
                             <Grid x:Name="NavigatorIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
-                                <!--추가 GlyphArrowChevronRight -> GlyphCheck  fontsize 24/ GlyphComment -> GlyphEdit> FontSize="24"-->
+								<!--추가 GlyphArrowChevronRight -> GlyphCheck  fontsize 24/ GlyphComment -> GlyphEdit> FontSize="24"-->
                                 <telerik:RadGlyph x:Name="IconRight" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}" Glyph="{StaticResource GlyphCheckCircle}" FontSize="24"/>
                             </Grid>
                             <Grid x:Name="EditIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
@@ -1940,7 +1940,7 @@
                     grid:SelectiveScrollingGrid.SelectiveScrollingClip="True"/>
             <grid:DetailsPresenter x:Name="PART_DetailsPresenter" Grid.Row="1" Grid.Column="3" DetailsProvider="{TemplateBinding DetailsProvider}"/>
             <Border x:Name="ValidationLayer" Grid.ColumnSpan="4" Background="{TemplateBinding Background}" Visibility="Collapsed"/>
-            <!--추가 BorderThickness="0 0 1 1" > 0 1 0 1-->
+			<!--추가 BorderThickness="0 0 1 1" > 0 1 0 1-->
             <Border x:Name="PART_IndicatorPresenter"
                     Grid.RowSpan="2"
                     Width="{telerik:Windows11Resource ResourceKey=GridViewIndentWidth}"
@@ -2542,7 +2542,7 @@
             </DataTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    <!--추가 BorderBrush PrimarySolidBorderBrush => SecondaryBorderBrush-->
+	<!--추가 BorderBrush PrimarySolidBorderBrush => SecondaryBorderBrush-->
     <Style x:Key="GridViewHeaderRowStyle" TargetType="grid:GridViewHeaderRow">
         <Setter Property="Template" Value="{StaticResource GridViewHeaderRowTemplate}"/>
         <Setter Property="MinHeight" Value="{telerik:Windows11Resource ResourceKey=GridViewCellMinHeight}"/>
@@ -2881,13 +2881,14 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    <!--추가 Cursor Height 28-->
+	<!--추가 Cursor Height 28-->
     <Style x:Key="GridViewToggleButtonStyle" TargetType="controls:GridViewToggleButton">
         <Setter Property="Template" Value="{StaticResource GridViewToggleButtonTemplate}"/>
         <Setter Property="PlusMinusTemplate" Value="{StaticResource GridViewToggleButtonTemplate}"/>
         <Setter Property="ArrowTemplate" Value="{StaticResource GridViewToggleButtonArrowTemplate}"/>
-        <Setter Property="Width" Value="28"/>
-        <Setter Property="Height" Value="28"/>
+		<Setter Property="Width" Value="28"/>
+		<Setter Property="Height" Value="28"/>
+		<Setter Property="Cursor" Value="Hand"/>
         <Setter Property="BorderBrush" Value="{telerik1:Windows11Resource ResourceKey=PrimarySolidBorderBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="0"/>
@@ -2895,24 +2896,20 @@
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="telerik:TouchManager.TouchMode" Value="None"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="Cursor" Value="Hand"/>
     </Style>
     <Style TargetType="controls:GridViewToggleButton" BasedOn="{StaticResource GridViewToggleButtonStyle}"/>
     <ControlTemplate x:Key="GridViewGroupPanelTemplate" TargetType="grid:GridViewGroupPanel">
         <Grid>
             <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"/>
-            <!--추가 Foreground="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}" FontStyle="Italic"-->
             <StackPanel Orientation="Horizontal">
                 <TextBlock x:Name="panelText"
-                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                           Margin="{TemplateBinding Padding}"
-                           FontSize="{telerik1:Windows11Resource ResourceKey=FontSize}"
-                           FontFamily="{telerik1:Windows11Resource ResourceKey=FontFamily}"
-                           telerik:LocalizationManager.ResourceKey="GridViewGroupPanelText"
-                           IsHitTestVisible="False"
-                           Foreground="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"
-                           FontStyle="Italic"/>
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Margin="{TemplateBinding Padding}"
+                        FontSize="{telerik1:Windows11Resource ResourceKey=FontSize}"
+                        FontFamily="{telerik1:Windows11Resource ResourceKey=FontFamily}"
+                        telerik:LocalizationManager.ResourceKey="GridViewGroupPanelText"
+                        IsHitTestVisible="False"/>
                 <TextBlock x:Name="panelTextGrouped"
                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -3078,7 +3075,6 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    <!--추가 MinHeight {telerik1:Windows11Resource ResourceKey=DefaultControlMinHeight} => 40-->
     <Style x:Key="GridViewGroupPanelCellStyle" TargetType="grid:GridViewGroupPanelCell">
         <Setter Property="helpers:ThemeHelper.CornerRadius" Value="{telerik1:Windows11Resource ResourceKey=CornerRadius}"/>
         <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{telerik1:Windows11Resource ResourceKey=MouseOverBackgroundBrush}"/>
@@ -3095,7 +3091,7 @@
         <Setter Property="BorderBrush" Value="{telerik1:Windows11Resource ResourceKey=ButtonBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="{telerik:Windows11Resource ResourceKey=GridViewPanelPadding}"/>
-        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="MinHeight" Value="{telerik1:Windows11Resource ResourceKey=DefaultControlMinHeight}"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -3275,16 +3271,12 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <!--추가 MinHeight="50"-->
             <grid:GridViewSearchPanel x:Name="PART_SearchPanel"
                     Grid.ColumnSpan="4"
                     Visibility="{Binding ShowSearchPanel, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Background="{TemplateBinding SearchPanelBackground}"
-                    Foreground="{TemplateBinding SearchPanelForeground}"
-                                      MinHeight="50"/>
-            <!--추가 MinHeight="50"-->
-            <grid:GridViewGroupPanel x:Name="PART_GroupPanel" Grid.Row="2" Grid.ColumnSpan="4" Background="{TemplateBinding GroupPanelBackground}" Foreground="{TemplateBinding GroupPanelForeground}"
-                                     MinHeight="50"/>
+                    Foreground="{TemplateBinding SearchPanelForeground}"/>
+            <grid:GridViewGroupPanel x:Name="PART_GroupPanel" Grid.Row="2" Grid.ColumnSpan="4" Background="{TemplateBinding GroupPanelBackground}" Foreground="{TemplateBinding GroupPanelForeground}"/>
             <telerik:RadDropDownButton x:Name="PART_GridViewColumnsSelectionButton"
                     Grid.Row="2"
                     Grid.Column="4"
@@ -3361,6 +3353,9 @@
                 <grid:GridViewScrollViewer.FooterRow>
                     <grid:GridViewFooterRow x:Name="PART_FooterRow" IndentLevel="{TemplateBinding GroupCount}"/>
                 </grid:GridViewScrollViewer.FooterRow>
+                <grid:GridViewScrollViewer.LightweightRenderingPanel>
+                    <grid:GridViewLightweightRenderingPanel/>
+                </grid:GridViewScrollViewer.LightweightRenderingPanel>
                 <grid:GridViewVirtualizingPanel x:Name="PART_GridViewVirtualizingPanel"/>
             </grid:GridViewScrollViewer>
             <grid:ScrollPositionIndicator x:Name="PART_ScrollPositionIndicator"
@@ -3585,6 +3580,9 @@
                 <grid:GridViewScrollViewer.FooterRow>
                     <grid:GridViewFooterRow x:Name="PART_FooterRow" IndentLevel="{TemplateBinding GroupCount}"/>
                 </grid:GridViewScrollViewer.FooterRow>
+                <grid:GridViewScrollViewer.LightweightRenderingPanel>
+                    <grid:GridViewLightweightRenderingPanel/>
+                </grid:GridViewScrollViewer.LightweightRenderingPanel>
                 <grid:GridViewVirtualizingPanel x:Name="PART_GridViewVirtualizingPanel"/>
             </grid:GridViewScrollViewer>
             <grid:ScrollPositionIndicator x:Name="PART_ScrollPositionIndicator"
@@ -3879,6 +3877,7 @@
         <Setter Property="AllowDrop" Value="True"/>
     </Style>
     <Style TargetType="treeList:TreeListViewRow" BasedOn="{StaticResource TreeListViewRowStyle}"/>
+	<!--추가 padding 5 0-->
     <Style x:Key="GridViewClearFilterButtonStyle" TargetType="telerik:RadButton">
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -3891,6 +3890,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="Width" Value="{telerik1:Windows11Resource ResourceKey=NestedButtonWidthHeight}"/>
         <Setter Property="Height" Value="{telerik1:Windows11Resource ResourceKey=NestedButtonWidthHeight}"/>
+		<Setter Property="Padding" Value="5 0"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="telerik:RadButton">
@@ -3974,21 +3974,22 @@
                     <Grid>
                         <StackPanel Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
                             <StackPanel x:Name="PART_DistinctFilter" Visibility="{TemplateBinding DistinctFiltersVisibility}">
-                                <!--추가   helpers:ThemeHelper.FocusBrush="{x:Null}" helpers:ThemeHelper.FocusBackgroundBrush="{x:Null}"-->
+								<!--추가   helpers:ThemeHelper.FocusBrush="{x:Null}"
+                                           helpers:ThemeHelper.FocusBackgroundBrush="{x:Null}"-->
                                 <CheckBox x:Name="PART_SelectAllCheckBox"
                                         AutomationProperties.Name="select all checkbox"
                                         IsChecked="{Binding SelectAll, Mode=TwoWay}"
                                         Margin="{telerik:Windows11Resource ResourceKey=GridViewFilteringControlSelectAllCheckBoxMargin}"
                                         telerik:LocalizationManager.ResourceKey="GridViewFilterSelectAll"
-                                          helpers:ThemeHelper.FocusBrush="{x:Null}"
+										  helpers:ThemeHelper.FocusBrush="{x:Null}"
                                           helpers:ThemeHelper.FocusBackgroundBrush="{x:Null}"/>
-                                <!--추가 MaxWidth-->
+								<!--추가 MaxWidth-->
                                 <telerik:RadWatermarkTextBox x:Name="PART_SearchBox"
-                                                             Margin="0 0 0 9"
-                                                             Visibility="{TemplateBinding DistinctValuesSearchBoxVisibility}"
-                                                             WatermarkContent="{telerik:LocalizableResource Key=GridViewFilterDistinctValueSearch}"
-                                                             CurrentText="{Binding SearchText, Mode=TwoWay, TargetNullValue=''}"
-                                                             MaxWidth="300">
+                                        Margin="0 0 0 9"
+                                        Visibility="{TemplateBinding DistinctValuesSearchBoxVisibility}"
+                                        WatermarkContent="{telerik:LocalizableResource Key=GridViewFilterDistinctValueSearch}"
+                                        CurrentText="{Binding SearchText, Mode=TwoWay, TargetNullValue=''}"
+															  MaxWidth="300">
                                     <telerik:RadWatermarkTextBox.AdditionalContent>
                                         <Grid MinWidth="{telerik1:Windows11Resource ResourceKey=DefaultControlMinHeight}">
                                             <telerik:RadButton x:Name="PART_ClearButton"
@@ -4014,8 +4015,8 @@
                                         grid:FilterListBoxExtensions.EnableKeyboardSelection="True">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <!--추가 MaxHeight="160" => 320-->
-                                            <VirtualizingStackPanel MaxHeight="380"/>
+											<!--추가 MaxHeight="160" => 320-->
+                                            <VirtualizingStackPanel MaxHeight="320"/>
                                         </ItemsPanelTemplate>
                                     </ListBox.ItemsPanel>
                                     <ListBox.ItemTemplate>
@@ -4129,18 +4130,19 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <!--추가 Cursor-->
+								<!--추가 Cursor-->
                                 <Button x:Name="PART_ApplyFilterButton"
                                         MinWidth="120"
                                         Visibility="{TemplateBinding FilterButtonVisibility}"
                                         Margin="0 5 0 0"
                                         telerik:LocalizationManager.ResourceKey="GridViewFilter"
-                                        Cursor="Hand"/>
+										Cursor="Hand"/>
+								<!--추가 Cursor-->
                                 <Button x:Name="PART_ClearFilterButton" Grid.Column="1" MinWidth="120" Margin="4 5 0 0" telerik:LocalizationManager.ResourceKey="GridViewClearFilter"
-                                        Cursor="Hand"/>
+										Cursor="Hand"/>
                             </Grid>
                         </StackPanel>
-                        <!--추가 helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
+						<!--추가 helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
                                  BorderThickness="0 -> 1" -->
                         <telerik:RadButton x:Name="PART_FilterCloseButton"
                                 Grid.Column="1"
@@ -4155,7 +4157,7 @@
                                 BorderThickness="1"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
-                                           helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}">
+										   helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}">
                             <telerik:RadGlyph Glyph="{StaticResource GlyphClose}" FontSize="{telerik1:Windows11Resource ResourceKey=GlyphFontSizeS}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </telerik:RadButton>
                     </Grid>
@@ -4488,10 +4490,11 @@
                     BorderThickness="{Binding VerticalGridLinesWidth, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource GridLineWidthToThicknessConverter}, ConverterParameter=Right}"
                     Margin="0 0 0 1"
                     Visibility="Collapsed"/>
+			<!--추가 {telerik1:Windows11Resource ResourceKey=FocusThickness} => 0-->
             <Border x:Name="Background_Current"
                     Background="{x:Null}"
                     BorderBrush="{TemplateBinding CurrentBorderBrush}"
-                    BorderThickness="{telerik1:Windows11Resource ResourceKey=FocusThickness}"
+                    BorderThickness="0"
                     Visibility="Collapsed"/>
             <ContentControl x:Name="PART_ContentPresenter"
                     IsTabStop="{TemplateBinding IsTabStop}"
@@ -5160,7 +5163,7 @@
                 BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}">
-            <!--추가 GlyphFontSizeS => GlyphFontSize-->
+			<!--추가 GlyphFontSizeS => GlyphFontSize-->
             <telerik:RadGlyph Foreground="{TemplateBinding Foreground}" FontSize="{telerik1:Windows11Resource ResourceKey=GlyphFontSize}" Glyph="{StaticResource GlyphClose}"/>
         </Border>
         <ControlTemplate.Triggers>
@@ -5173,7 +5176,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    <!--추가 Margin 9->3  <Setter Property="Cursor" Value="Hand"/>-->
+	<!--추가 Margin 9->3  <Setter Property="Cursor" Value="Hand"/>-->
     <Style x:Key="ClearSearchValueButtonStyle" TargetType="telerik:RadButton">
         <Setter Property="helpers:ThemeHelper.CornerRadius" Value="{telerik1:Windows11Resource ResourceKey=CornerRadius}"/>
         <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{telerik1:Windows11Resource ResourceKey=SubtleBrush}"/>
@@ -5188,12 +5191,11 @@
         <Setter Property="Height" Value="{telerik1:Windows11Resource ResourceKey=NestedButtonWidthHeight}"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="Cursor" Value="Hand"/>
     </Style>
     <Style x:Key="CloseSearchValueButtonStyle" TargetType="telerik:RadButton" BasedOn="{StaticResource ClearSearchValueButtonStyle}">
         <Setter Property="Margin" Value="0 5 5 5"/>
     </Style>
-   
     <ControlTemplate x:Key="GridViewSearchPanelTemplate" TargetType="grid:GridViewSearchPanel">
         <Border BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
             <Grid UseLayoutRounding="True">
@@ -5201,8 +5203,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <!--추가 HorizontalAlignment="center"-->
-                <Grid HorizontalAlignment="Center">
+				<!--추가 HorizontalAlignment="Left"-->
+                <Grid HorizontalAlignment="Left">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -5215,18 +5217,18 @@
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                             IsHitTestVisible="False"/>
                     <Grid Grid.Column="1" Margin="10 0" VerticalAlignment="Center">
-                        <!--추가 MinHeight="40" MinWidth 200/MaxWidth 260 -> 240-->
+					    <!--추가 MinHeight="40"-->
                         <TextBox x:Name="PART_SearchAsYouTypeTextBox"
                                 AutomationProperties.Name="search as you type textBox"
                                 Text="{Binding SearchText, Mode=TwoWay}"
-                                MinWidth="240"
-                                MaxWidth="240"
+                                MinWidth="200"
+                                MaxWidth="260"
                                 Padding="9 6 27 6"
                                 telerik:TextBoxBehavior.UpdateTextOnEnter="True"
                                 IsTabStop="{TemplateBinding IsTabStop}"
                                 FontSize="{TemplateBinding FontSize}"
                                 FontFamily="{TemplateBinding FontFamily}"
-                                 MinHeight="40" />
+								  MinHeight="40" />
                         <telerik:RadButton x:Name="ClearButton"
                                 IsTabStop="False"
                                 Visibility="Collapsed"

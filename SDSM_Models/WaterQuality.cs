@@ -36,19 +36,19 @@ public class WaterQuality
     [DisplayName("T-P")] public double? TP { get; set; }
     [DisplayName("생태독성")] public double? Ecotoxicity { get; set; }
     [DisplayName("대장균군")] public double? EColi { get; set; }
+    
     [DisplayName("T-N")] public double? TN { get; set; }
-    [DisplayName("EC")] public double? EC { get; set; }
-    [DisplayName("유량")] public double? Flow { get; set; }
-    [DisplayName("Cl-")] public double? Cl { get; set; }
-    [DisplayName("SO42-")] public double? SO42 { get; set; }
+    [DisplayName("염소이온")] public double? Cl { get; set; }
+    [DisplayName("황이온")] public double? SO42 { get; set; }
     [DisplayName("수온")] public double? WaterTemperature { get; set; }
+    [DisplayName("전기전도도")] public double? EC { get; set; }
     [DisplayName("Cu")] public double? Cu { get; set; }
     [DisplayName("Zn")] public double? Zn { get; set; }
     [DisplayName("Cr")] public double? Cr { get; set; }
-    [DisplayName("온도")] public double? Temperature { get; set; }
     [DisplayName("Chl-a")] public double? Chla { get; set; }
-    [DisplayName("전기전도도")] public double? ElectricalConductivity { get; set; }   
     [DisplayName("탁도")] public double? Turbidity { get; set; }   
+    [DisplayName("유량")] public double? Flow { get; set; }
+    
     [DisplayName("pH 등급")] public int? PHGrade { get; set; }   
     [DisplayName("BOD 등급")] public string? BODGrade { get; set; }   
     [DisplayName("COD 등급")] public string? CODGrade { get; set; }   

@@ -28,19 +28,19 @@ public class ImportWaterQuality
     [DisplayName("T-P")] public string? TP { get; set; }
     [DisplayName("생태독성")] public string? Ecotoxicity { get; set; }
     [DisplayName("대장균군")] public string? EColi { get; set; }
+
     [DisplayName("T-N")] public string? TN { get; set; }
-    [DisplayName("EC")] public string? EC { get; set; }
-    [DisplayName("유량")] public string? Flow { get; set; }
-    [DisplayName("Cl-")] public string? Cl { get; set; }
-    [DisplayName("SO42-")] public string? SO42 { get; set; }
+    [DisplayName("염소이온")] public string? Cl { get; set; }
+    [DisplayName("황이온")] public string? SO42 { get; set; }
     [DisplayName("수온")] public string? WaterTemperature { get; set; }
+    [DisplayName("전기전도도")] public string? EC { get; set; }
     [DisplayName("Cu")] public string? Cu { get; set; }
     [DisplayName("Zn")] public string? Zn { get; set; }
     [DisplayName("Cr")] public string? Cr { get; set; }
-    [DisplayName("온도")] public string? Temperature { get; set; }
     [DisplayName("Chl-a")] public string? Chla { get; set; }
-    [DisplayName("전기전도도")] public string? ElectricalConductivity { get; set; }   
     [DisplayName("탁도")] public string? Turbidity { get; set; }
+    [DisplayName("유량")] public string? Flow { get; set; }
+
     //자동계산
     [DisplayName("pH 등급")] public int? PHGrade { get; set; }
     //자동계산

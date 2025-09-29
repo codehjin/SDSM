@@ -168,19 +168,19 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=DO}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="measurementItem"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TP}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="measurementItem"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Ecotoxicity}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="measurementItem"/>
+                            
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TN}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EC}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Flow}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Cl}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SO42}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WaterTemperature}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EC}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Cu}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Zn}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Cr}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Temperature}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Chla}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=ElectricalConductivity}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Turbidity}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Flow}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="additem"/>
+
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=PHGrade}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="grade"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BODGrade}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="grade"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CODGrade}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="grade"/>

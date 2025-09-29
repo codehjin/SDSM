@@ -462,8 +462,6 @@
             <!-- General setters for IsMouseOver -->
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{telerik1:Windows11Resource ResourceKey=MouseOverBackgroundBrush}"/>
-                <!--추가-->
-                <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{telerik1:Windows11Resource ResourceKey=FocusBrush}"/>
             </Trigger>
 
             <!-- General setters for IsPressed -->
@@ -1190,7 +1188,7 @@
                                     Margin="{TemplateBinding BorderThickness}"
                                     Padding="{TemplateBinding Padding}"
                                     helpers:ThemeHelper.CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}"/>
-                            <!--WatermarkContent 추가 Opacity="0.5" Foreground SecondaryForegroundBrush-->
+							<!--WatermarkContent 추가 Opacity="0.5" Foreground SecondaryForegroundBrush-->
                             <ContentControl x:Name="WatermarkVisualElement"
                                     Grid.RowSpan="2"
                                     IsTabStop="False"
@@ -1201,9 +1199,9 @@
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                     IsHitTestVisible="False"
                                     Padding="{TemplateBinding Padding}"
-                                    Foreground="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"
+                                    Foreground="{TemplateBinding Foreground}"
                                     Visibility="Hidden"
-                                            Opacity="0.5">
+											 Opacity="0.5">
                                 <ContentControl.Template>
                                     <ControlTemplate TargetType="ContentControl">
                                         <ContentPresenter Margin="{TemplateBinding Padding}"/>
@@ -1219,19 +1217,20 @@
                         </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
-
+						<!--추가 {telerik:Windows11Resource ResourceKey=ReadOnlyOpacity} => 1-->
                         <!-- ReadOnly -->
                         <Trigger Property="IsReadOnly" Value="True">
-                            <Setter TargetName="PART_ContentHost" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=ReadOnlyOpacity}"/>
-                            <Setter TargetName="WatermarkVisualElement" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=ReadOnlyOpacity}"/>
+                            <Setter TargetName="PART_ContentHost" Property="Opacity" Value="1"/>
+                            <!--<Setter TargetName="WatermarkVisualElement" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=ReadOnlyOpacity}"/>-->
                             <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ReadOnlyBackground}"/>
                             <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.ReadOnlyBrush)}"/>
                         </Trigger>
-
+						<!--추가  <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/> -->
                         <!-- MouseOver -->
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush), Mode=OneWay}"/>
                             <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBrush), Mode=OneWay}"/>
+							<Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
                         </Trigger>
 
                         <!-- Disabled -->
@@ -1240,7 +1239,7 @@
                             <Setter TargetName="WatermarkVisualElement" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
                             <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DisabledBackground}"/>
                             <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledBrush)}"/>
-                            <Setter Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
+                            <!--<Setter Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>-->
                         </Trigger>
                         <Trigger Property="IsWatermarkVisible" Value="True">
                             <Setter TargetName="WatermarkVisualElement" Property="Visibility" Value="Visible"/>
@@ -2154,13 +2153,12 @@
                                         Margin="{TemplateBinding Padding}"
                                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                <!--추가  Cursor Arrow=> Hand/>-->
                                 <telerik:RadButton x:Name="RemoveItemButton"
                                         Grid.Column="1"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
                                         CommandParameter="{Binding}"
-                                        Cursor="Hand"
+                                        Cursor="Arrow"
                                         IsTabStop="False"
                                         Focusable="False"
                                         Command="{x:Static telerik:RadAutoCompleteBoxCommands.RemoveItem}"
@@ -2423,8 +2421,7 @@
                         TextAlignment="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=HorizontalContentAlignment, Converter={StaticResource HorizontalContentAlignmentToTextAlignmentConverter}}"
                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                         CaretBrush="{TemplateBinding telerik:CaretBrushHelper.CaretBrush}"
-                        Focusable="{TemplateBinding Focusable}"
-                         >
+                        Focusable="{TemplateBinding Focusable}">
                     <TextBox.Template>
                         <ControlTemplate TargetType="TextBox">
                             <ScrollViewer x:Name="PART_ContentHost"
@@ -2469,9 +2466,11 @@
                     <Condition Property="IsMouseOver" Value="True"/>
                     <Condition Property="ShowTextBox" Value="True"/>
                 </MultiTrigger.Conditions>
+				<!--추가  <Setter Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=PrimaryForegroundBrush}"-->
                 <Setter TargetName="textbox" Property="Opacity" Value="1"/>
                 <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush), Mode=OneWay}"/>
                 <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBrush), Mode=OneWay}"/>
+				<Setter Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -3203,6 +3202,7 @@
                                     FontFamily="{TemplateBinding FontFamily}"
                                     FontSize="{TemplateBinding FontSize}"
                                     Focusable="{TemplateBinding Focusable}"/>
+							<!--추가 Cursor="Hand"-->
                             <telerik:RadDropDownButton x:Name="PART_DropDownButton"
                                     Grid.Column="1"
                                     TabIndex="1"
@@ -3224,7 +3224,8 @@
                                     helpers:ThemeHelper.MouseOverBackgroundBrush="{telerik1:Windows11Resource ResourceKey=SubtleBrush}"
                                     helpers:ThemeHelper.PressedBackgroundBrush="{telerik1:Windows11Resource ResourceKey=SubtleSecondaryBrush}"
                                     controls:DateTimePickerExtensions.FocusContentOnOpen="True"
-                                    Focusable="False">
+                                    Focusable="False"
+													    Cursor="Hand">
                                 <telerik:RadDropDownButton.DropDownContent>
                                     <Grid>
                                         <Grid.RowDefinitions>
@@ -3394,9 +3395,11 @@
                         </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
+						<!--추가 ForegroundBrush-->
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush), Mode=OneWay}"/>
                             <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBrush), Mode=OneWay}"/>
+							<Setter Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
                         </Trigger>
                         <Trigger Property="IsReadOnly" Value="True">
                             <Setter TargetName="PART_DropDownButton" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=ReadOnlyOpacity}"/>
@@ -5661,11 +5664,9 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}"/>
-                <!--추가 cursor Padding="7"-->
-                <telerik:RadButton x:Name="PART_ClearButton"
+				<!--추가  Padding="7"  Cursor="Hand"-->
+				<telerik:RadButton x:Name="PART_ClearButton"
                         Grid.Column="1"
-                                   Cursor="Hand"
-                                   Padding="7"
                         AutomationProperties.Name="ClearButton"
                         KeyboardNavigation.IsTabStop="False"
                         Content="{TemplateBinding ClearButtonContent}"
@@ -5673,7 +5674,9 @@
                         Command="{TemplateBinding ClearButtonCommand}"
                         CommandTarget="{Binding ElementName=PART_TextBox}"
                         Visibility="{TemplateBinding ClearButtonVisibility}"
-                        Style="{StaticResource AutoSuggestBoxClearButtonStyle}"/>
+                        Style="{StaticResource AutoSuggestBoxClearButtonStyle}"
+								    Padding="7"
+                                   Cursor="Hand"/>
                 <telerik:RadButton x:Name="PART_QueryButton"
                         Grid.Column="2"
                         AutomationProperties.Name="QueryButton"

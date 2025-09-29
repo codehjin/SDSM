@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using Telerik.Windows.Controls;
 
-namespace SDSM_App.Converters;
+namespace SDSM_App.Behaviors;
 
 public class AutoCompleteBoxFilteringBehavior : FilteringBehavior
 {

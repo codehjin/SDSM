@@ -319,7 +319,7 @@
                             <Setter TargetName="FocusVisual" Property="Opacity" Value="1"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PART_RootElement" Property="Background" Value="{telerik1:Windows11Resource ResourceKey=SubtleBrush}"/>
+                            <Setter TargetName="PART_RootElement" Property="Background" Value="{telerik1:Windows11Resource ResourceKey=SecondaryBackgroundBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="PART_RootElement" Property="BorderBrush" Value="{telerik1:Windows11Resource ResourceKey=SecondaryBorderBrush}"/>
@@ -957,11 +957,11 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    <!--추가 CornerRadius 3->5 width 10 ->8 heigth 6->10-->
+	<!--추가 CornerRadius 3->5 width 10 ->8 heigth 6->10-->
     <Style x:Key="ThumbBaseStyle" TargetType="Thumb">
         <Setter Property="helpers:ThemeHelper.CornerRadius" Value="5"/>
         <Setter Property="helpers:ThemeHelper.DisabledBackgroundBrush" Value="{telerik1:Windows11Resource ResourceKey=DisabledBorderBrush}"/>
-        <!--스크롤바 색-->
+		<!--스크롤바 색-->
         <Setter Property="Background" Value="{telerik1:Windows11Resource ResourceKey=TertiaryForegroundBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="IsTabStop" Value="False"/>

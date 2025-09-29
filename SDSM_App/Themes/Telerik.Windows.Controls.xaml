@@ -991,8 +991,9 @@
         <Setter Property="FocusVisualStyle" Value="{StaticResource SystemFocusVisualStyle}"/>
         <Setter Property="Template">
             <Setter.Value>
+				<!--추가 Cursor, Margin={TemplateBinding Padding} => 0 Margin="{TemplateBinding Padding}"-->
                 <ControlTemplate TargetType="telerik1:RadToggleButton">
-                    <Grid x:Name="HeaderPanel" Background="Transparent" Margin="{TemplateBinding Padding}">
+                    <Grid x:Name="HeaderPanel" Background="Transparent" Margin="0" Cursor="Hand">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -1004,11 +1005,12 @@
                                 ContentStringFormat="{TemplateBinding ContentStringFormat}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+						<!--추가 Margin= => TemplateBinding Padding-->
                         <Grid
                                 Grid.Column="1"
                                 Width="{telerik1:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                 Height="{telerik1:Windows11Resource ResourceKey=DefaultControlMinHeight}"
-                                Margin="10 0 0 0">
+                                Margin="{TemplateBinding Padding}">
                             <Border x:Name="GlyphBorder"
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
@@ -1096,7 +1098,7 @@
             </Grid>
         </Grid>
         <ControlTemplate.Triggers>
-            <Trigger Property="IsExpanded" Value="False">
+            <!--<Trigger Property="IsExpanded" Value="False">
                 <Trigger.EnterActions>
                     <BeginStoryboard Name="FadeOutContentBorderStoryboard">
                         <Storyboard>
@@ -1119,7 +1121,7 @@
                 <Trigger.ExitActions>
                     <RemoveStoryboard BeginStoryboardName="FadeInContentBorderStoryboard"/>
                 </Trigger.ExitActions>
-            </Trigger>
+            </Trigger>-->
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsExpanded" Value="True"/>

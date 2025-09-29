@@ -297,18 +297,17 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                         TP = ((ICellValue)(worksheet.Cells[19, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[19, columnIndex].GetFormat().Value),
                         Ecotoxicity = ((ICellValue)(worksheet.Cells[20, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[20, columnIndex].GetFormat().Value),
                         EColi = ((ICellValue)(worksheet.Cells[21, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[21, columnIndex].GetFormat().Value),
-                        TN = FindCellPositionByText(worksheet, "T-N", 22, columnIndex),
+                        TN = FindCellPositionByText(worksheet, "TN", 22, columnIndex),
+                        Cl = FindCellPositionByText(worksheet, "Cl", 22, columnIndex),
+                        SO42 = FindCellPositionByText(worksheet, "SO42", 22, columnIndex),
+                        WaterTemperature = FindCellPositionByText(worksheet, "WaterTemperature", 22, columnIndex),
                         EC = FindCellPositionByText(worksheet, "EC", 22, columnIndex),
-                        Flow = FindCellPositionByText(worksheet, "유량", 22, columnIndex),
-                        Cl = FindCellPositionByText(worksheet, "Cl-", 22, columnIndex),
-                        SO42 = FindCellPositionByText(worksheet, "SO42-", 22, columnIndex),
-                        Cu = FindCellPositionByText(worksheet, "수온", 22, columnIndex),
+                        Cu = FindCellPositionByText(worksheet, "Cu", 22, columnIndex),
                         Zn = FindCellPositionByText(worksheet, "Zn", 22, columnIndex),
                         Cr = FindCellPositionByText(worksheet, "Cr", 22, columnIndex),
-                        Temperature = FindCellPositionByText(worksheet, "온도", 22, columnIndex),
-                        Chla = FindCellPositionByText(worksheet, "Chl-a", 22, columnIndex),
-                        ElectricalConductivity = FindCellPositionByText(worksheet, "전기전도도", 22, columnIndex),
-                        Turbidity = FindCellPositionByText(worksheet, "탁도", 22, columnIndex),
+                        Chla = FindCellPositionByText(worksheet, "Chla", 22, columnIndex),
+                        Turbidity = FindCellPositionByText(worksheet, "Turbidity", 22, columnIndex),
+                        Flow = FindCellPositionByText(worksheet, "Flow", 22, columnIndex),
                         PHGrade = GetPhGrade(worksheet, columnIndex),
                         BODGrade = GetBodGrade(worksheet, columnIndex),
                         CODGrade = GetCodGrade(worksheet, columnIndex),
@@ -676,9 +675,9 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                                      $"River, RiverType, Lat, Lng, Weather, " +
                                      $"SurveyAgency, Surveyor, PH, BOD, COD, " +
                                      $"TOC, SS, DO, TP, Ecotoxicity, " +
-                                     $"EColi, TN, EC, Flow, Cl, " +
-                                     $"SO42, WaterTemperature, Cu, Zn, Cr, " +
-                                     $"Temperature, Chla, ElectricalConductivity, Turbidity, PHGrade, " +
+                                     $"EColi, TN, Cl, SO42, WaterTemperature, " +
+                                     $"EC, Cu, Zn, Cr, " +
+                                     $"Chla, Turbidity, Flow, PHGrade, " +
                                      $"BODGrade, CODGrade, TOCGrade, SSGrade, DOGrade, " +
                                      $"TPGrade, EColiGrade) " +
                                      $"VALUES " +
@@ -686,9 +685,9 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                                      $"@River, @RiverType, @Lat, @Lng, @Weather, " +
                                      $"@SurveyAgency, @Surveyor, @PH, @BOD, @COD, " +
                                      $"@TOC, @SS, @DO, @TP, @Ecotoxicity, " +
-                                     $"@EColi, @TN, @EC, @Flow, @Cl, " +
-                                     $"@SO42, @WaterTemperature, @Cu, @Zn, @Cr, " +
-                                     $"@Temperature, @Chla, @ElectricalConductivity, @Turbidity, @PHGrade, " +
+                                     $"@EColi, @TN, @Cl, @SO42, @WaterTemperature, " +
+                                     $"@EC, @Cu, @Zn, @Cr, " +
+                                     $"@Chla, @Turbidity, @Flow, @PHGrade, " +
                                      $"@BODGrade, @CODGrade, @TOCGrade, @SSGrade, @DOGrade, " +
                                      $"@TPGrade, @EColiGrade)";
 
@@ -716,18 +715,16 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                     command.Parameters.AddWithValue("@Ecotoxicity", model.Ecotoxicity ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@EColi", model.EColi ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@TN", model.TN ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EC", model.EC ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Flow", model.Flow ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Cl", model.Cl ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@SO42", model.SO42 ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@WaterTemperature", model.WaterTemperature ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@EC", model.EC ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Cu", model.Cu ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Zn", model.Zn ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Cr", model.Cr ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Temperature", model.Temperature ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Chla", model.Chla ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@ElectricalConductivity", model.ElectricalConductivity ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Turbidity", model.Turbidity ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Flow", model.Flow ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@PHGrade", model.PHGrade ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@BODGrade", model.BODGrade ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@CODGrade", model.CODGrade ?? (object)DBNull.Value);
@@ -808,17 +805,39 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
     /// 워크시트에서 특정 문자열이 포함된 첫 번째 셀의 위치(행, 열)를 반환합니다.
     /// 찾지 못하면 null을 반환합니다.
     /// </summary>
-    private static string? FindCellPositionByText(Worksheet worksheet, string searchText, int startRowIndex, int columnIndex)
+    private static string? FindCellPositionByText(Worksheet worksheet, string name, int startRowIndex, int columnIndex)
     {
-        if (worksheet == null || string.IsNullOrWhiteSpace(searchText))
+        if (worksheet == null || string.IsNullOrWhiteSpace(name))
             return null;
+
+        // 항목별 이름 리스트 정의
+        var nameMap = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["TN"] = ["TN", "T-N"],
+            ["Cl"] = ["Cl", "Cl-", "염소이온"],
+            ["SO42"] = ["SO42", "SO42-", "황이온"],
+            ["WaterTemperature"] = ["수온", "온도"],
+            ["EC"] = ["EC", "전기전도도"],
+            ["Cu"] = ["Cu"],
+            ["Zn"] = ["Zn"],
+            ["Cr"] = ["Cr"],
+            ["Chla"] = ["Chla", "Chl-a"],
+            ["Turbidity"] = ["탁도"],
+            ["Flow"] = ["유량"]
+        };
+
+        if (!nameMap.TryGetValue(name, out var listName))
+            return null;
+
+        // 모든 비교 문자열을 소문자로 변환
+        var lowerNames = listName.Select(x => x.ToLower()).ToList();
 
         var usedRange = worksheet.UsedCellRange;
         for (int rowIndex = startRowIndex; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
         {
             //2 => 항목이름 열위치
             var cellValue = ((ICellValue)(worksheet.Cells[rowIndex, 2].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 2].GetFormat().Value).Replace(" ", "").ToLower();
-            if (!string.IsNullOrWhiteSpace(cellValue) && cellValue.StartsWith(searchText.ToLower()))
+            if (!string.IsNullOrWhiteSpace(cellValue) && lowerNames.Any(name => cellValue.StartsWith(name)))
             {
                 return ((ICellValue)(worksheet.Cells[rowIndex, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, columnIndex].GetFormat().Value);
             }

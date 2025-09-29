@@ -57,19 +57,19 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
     [ObservableProperty] private double? _tP;
     [ObservableProperty] private double? _ecotoxicity;
     [ObservableProperty] private double? _eColi;
+
     [ObservableProperty] private double? _tN;
-    [ObservableProperty] private double? _eC;
-    [ObservableProperty] private double? _flow;
     [ObservableProperty] private double? _cl;
     [ObservableProperty] private double? _sO42;
     [ObservableProperty] private double? _waterTemperature;
+    [ObservableProperty] private double? _eC;
     [ObservableProperty] private double? _cu;
     [ObservableProperty] private double? _zn;
     [ObservableProperty] private double? _cr;
-    [ObservableProperty] private double? _temperature;
     [ObservableProperty] private double? _chla;
-    [ObservableProperty] private double? _electricalConductivity;
     [ObservableProperty] private double? _turbidity;
+    [ObservableProperty] private double? _flow;
+
     [ObservableProperty] private int? _pHGrade;
     [ObservableProperty] private string? _bODGrade;
     [ObservableProperty] private string? _cODGrade;
@@ -173,18 +173,16 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
                 Ecotoxicity = Ecotoxicity,
                 EColi = EColi,
                 TN = TN,
-                EC = EC,
-                Flow = Flow,
                 Cl = Cl,
                 SO42 = SO42,
                 WaterTemperature = WaterTemperature,
+                EC = EC,
                 Cu = Cu,
                 Zn = Zn,
                 Cr = Cr,
-                Temperature = Temperature,
                 Chla = Chla,
-                ElectricalConductivity = ElectricalConductivity,
                 Turbidity = Turbidity,
+                Flow = Flow,
                 PHGrade = GetPhGrade(),
                 BODGrade = GetBodGrade(),
                 CODGrade = GetCodGrade(),
@@ -227,18 +225,16 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
             EditModel.Ecotoxicity = Ecotoxicity;
             EditModel.EColi = EColi;
             EditModel.TN = TN;
-            EditModel.EC = EC;
-            EditModel.Flow = Flow;
             EditModel.Cl = Cl;
             EditModel.SO42 = SO42;
             EditModel.WaterTemperature = WaterTemperature;
+            EditModel.EC = EC;
             EditModel.Cu = Cu;
             EditModel.Zn = Zn;
             EditModel.Cr = Cr;
-            EditModel.Temperature = Temperature;
             EditModel.Chla = Chla;
-            EditModel.ElectricalConductivity = ElectricalConductivity;
             EditModel.Turbidity = Turbidity;
+            EditModel.Flow = Flow;
             EditModel.PHGrade = GetPhGrade();
             EditModel.BODGrade = GetBodGrade();
             EditModel.CODGrade = GetCodGrade();
@@ -296,18 +292,16 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
         Ecotoxicity = EditModel.Ecotoxicity;
         EColi = EditModel.EColi;
         TN = EditModel.TN;
-        EC = EditModel.EC;
-        Flow = EditModel.Flow;
         Cl = EditModel.Cl;
         SO42 = EditModel.SO42;
         WaterTemperature = EditModel.WaterTemperature;
+        EC = EditModel.EC;
         Cu = EditModel.Cu;
         Zn = EditModel.Zn;
         Cr = EditModel.Cr;
-        Temperature = EditModel.Temperature;
         Chla = EditModel.Chla;
-        ElectricalConductivity = EditModel.ElectricalConductivity;
         Turbidity = EditModel.Turbidity;
+        Flow = EditModel.Flow;
         PHGrade = EditModel.PHGrade;
         BODGrade = EditModel.BODGrade;
         CODGrade = EditModel.CODGrade;
@@ -347,18 +341,16 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
         Ecotoxicity = null;
         EColi = null;
         TN = null;
-        EC = null;
-        Flow = null;
         Cl = null;
         SO42 = null;
         WaterTemperature = null;
+        EC = null;
         Cu = null;
         Zn = null;
         Cr = null;
-        Temperature = null;
         Chla = null;
-        ElectricalConductivity = null;
         Turbidity = null;
+        Flow = null;
         PHGrade = null;
         BODGrade = null;
         CODGrade = null;

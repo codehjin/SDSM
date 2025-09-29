@@ -12,7 +12,6 @@
         xmlns:telerikNavigation="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Navigation"
         xmlns:mat="clr-namespace:Telerik.Windows.Controls.MaterialControls;assembly=Telerik.Windows.Controls"
         xmlns:animation="clr-namespace:Telerik.Windows.Controls.Animation;assembly=Telerik.Windows.Controls"
-        xmlns:ext="clr-namespace:Telerik.Windows.Controls.MarkupExtensions;assembly=Telerik.Windows.Controls"
         xmlns:navigation="clr-namespace:Telerik.Windows.Controls.Navigation;assembly=Telerik.Windows.Controls.Navigation"
         xmlns:treeView="clr-namespace:Telerik.Windows.Controls.TreeView;assembly=Telerik.Windows.Controls.Navigation"
         xmlns:animationNavigation="clr-namespace:Telerik.Windows.Controls.Animation;assembly=Telerik.Windows.Controls.Navigation"
@@ -27,7 +26,6 @@
     <ResourceDictionary.MergedDictionaries>
         <telerik:Windows11ResourceDictionary/>
     </ResourceDictionary.MergedDictionaries>
-    <telerik1:ColorToBrushWithOpacityConverter x:Key="ColorToBrushWithOpacityConverter"/>
     <telerik1:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <telerik1:LocalizationManager x:Key="localizationManagerProvider"/>
     <localization:CultureToLocalizationStringConverter x:Key="cultureToStringConverter"/>
@@ -92,7 +90,6 @@
         <Setter Property="Opacity" Value="0"/>
         <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
     </Style>
-    <ext:DynamicResourceProxy x:Key="ValidationBrush230AlphaProxy" ProxyValue="{Binding Source={x:Static telerik1:Windows11Palette.Palette}, Path=ValidationColor, Converter={StaticResource ColorToBrushWithOpacityConverter}, ConverterParameter=230}"/>
     <ControlTemplate x:Key="ErrorTooltipTemplate" TargetType="ToolTip">
         <Grid x:Name="RootVisual" HorizontalAlignment="Right" RenderTransformOrigin="0 0" Opacity="0" SnapsToDevicePixels="True">
             <VisualStateManager.VisualStateGroups>
@@ -1191,16 +1188,41 @@
         </Setter>
     </Style>
     <Style x:Key="WindowCloseButtonStyle" TargetType="telerik:RadButton" BasedOn="{StaticResource WindowButtonStyle}">
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=AccentControlForegroundBrush}"/>
-                <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{telerik1:Windows11Resource ResourceKey=ValidationBrush}"/>
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=AccentControlForegroundBrush}"/>
-                <Setter Property="helpers:ThemeHelper.PressedBackgroundBrush" Value="{Binding Source={StaticResource ValidationBrush230AlphaProxy}, Path=ProxyValue}"/>
-            </Trigger>
-        </Style.Triggers>
+        <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{telerik1:Windows11Resource ResourceKey=ValidationBrush}"/>
+        <Setter Property="helpers:ThemeHelper.PressedBackgroundBrush" Value="{telerik1:Windows11Resource ResourceKey=ValidationBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="telerik:RadButton">
+                    <Grid>
+                        <Border x:Name="BorderVisual"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <ContentPresenter x:Name="Content" Margin="{TemplateBinding Padding}"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=telerikNavigation:RadWindow}, Path=WindowState}" Value="Minimized">
+                            <Setter Property="Width" Value="28"/>
+                            <Setter Property="Height" Value="28"/>
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=AccentControlForegroundBrush}"/>
+                            <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush)}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=AccentControlForegroundBrush}"/>
+                            <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.PressedBackgroundBrush)}"/>
+                            <Setter TargetName="BorderVisual" Property="Opacity" Value="0.9"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
+                            <Setter TargetName="Content" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
     <ControlTemplate x:Key="RadWindowTemplate" TargetType="telerikNavigation:RadWindow">
         <Grid x:Name="LayoutRoot">
@@ -1666,10 +1688,10 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Grid Margin="{telerik1:Windows11Resource ResourceKey=HeaderOffset}" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsDropPossible, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
-                                <telerik:RadGlyph Foreground="{telerik1:Windows11Resource ResourceKey=ValidationBrush}" Glyph="{StaticResource GlyphCancel}"/>
+                                <telerik:RadGlyph Foreground="{TemplateBinding Foreground}" Glyph="{StaticResource GlyphCancel}"/>
                             </Grid>
                             <Grid Margin="{telerik:Windows11Resource ResourceKey=TreeViewDragVisualMargin}" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsDropPossible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <telerik:RadGlyph Foreground="{telerik1:Windows11Resource ResourceKey=AccentSelectedBrush}" Glyph="{StaticResource GlyphCheck}"/>
+                                <telerik:RadGlyph Foreground="{TemplateBinding Foreground}" Glyph="{StaticResource GlyphCheck}"/>
                             </Grid>
                             <TextBlock
                                     Grid.Column="1"
@@ -1761,7 +1783,7 @@
             <Setter.Value>
                 <DataTemplate>
                     <Grid Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsDropPossible, Converter={StaticResource InvertedBooleanToVisibilityConverter}}" Margin="{telerik1:Windows11Resource ResourceKey=HeaderOffset}">
-                        <telerik:RadGlyph Foreground="{telerik1:Windows11Resource ResourceKey=ValidationBrush}" Glyph="{StaticResource GlyphCancel}"/>
+                        <telerik:RadGlyph Foreground="{telerik1:Windows11Resource ResourceKey=PrimaryForegroundBrush}" Glyph="{StaticResource GlyphCancel}"/>
                     </Grid>
                 </DataTemplate>
             </Setter.Value>
@@ -1771,7 +1793,7 @@
             <Setter.Value>
                 <DataTemplate>
                     <Grid Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsDropPossible, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="{telerik1:Windows11Resource ResourceKey=HeaderOffset}">
-                        <telerik:RadGlyph Foreground="{telerik1:Windows11Resource ResourceKey=AccentSelectedBrush}" Glyph="{StaticResource GlyphCheck}"/>
+                        <telerik:RadGlyph Foreground="{telerik1:Windows11Resource ResourceKey=PrimaryForegroundBrush}" Glyph="{StaticResource GlyphCheck}"/>
                     </Grid>
                 </DataTemplate>
             </Setter.Value>
@@ -2352,7 +2374,7 @@
             <telerik:RadDockPanel LastChildFill="True">
                 <telerikPrimitives:LayoutTransformControl x:Name="HeaderDockedElement" telerik:RadDockPanel.Dock="Top">
                     <Grid SnapsToDevicePixels="True">
-                        <!--추가 BorderThickness 0 0 0 1 - 0 0 0 0-->
+						<!--추가 BorderThickness 0 0 0 1 - 0 0 0 0-->
                         <Border x:Name="HeaderBackground"
                                 Background="{TemplateBinding HeaderBackground}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
@@ -2395,7 +2417,6 @@
                         </telerik:RadDockPanel>
                     </Grid>
                 </telerikPrimitives:LayoutTransformControl>
-               
                 <Border x:Name="ContentBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
                     <Grid Margin="{TemplateBinding Padding}">
                         <ContentPresenter x:Name="ContentElement"
@@ -3021,8 +3042,8 @@
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
-                
-                <!--
+
+				<!--
                 추가
                 AutoHideOverflowButton="True"
                 GripVisibility="Collapsed"
@@ -3032,12 +3053,13 @@
                 Padding="0 5" 
                 BorderThickness="0"
                 -->
+				
                 <ControlTemplate TargetType="fixedDocumentViewersUIControls:RadPdfViewerToolBar">
                     <telerik:RadToolBar x:Name="PART_ToolBar"
                                         AutomationProperties.Name="Action Panel"
                                         helpers:ThemeHelper.CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}"
                                         DataContext="{Binding Path=RadPdfViewer.CommandDescriptors, RelativeSource={RelativeSource TemplatedParent}}"
-                                        AutoHideOverflowButton="True"
+										AutoHideOverflowButton="True"
                                         GripVisibility="Collapsed"
                                         HorizontalAlignment="Center"
                                         Background="Transparent"
@@ -3046,9 +3068,17 @@
                                         BorderThickness="0"
                                         >
 
+						<!--
+                        추가
+                        helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
+                        Padding="1" 
+                        Cursor="Hand"
+                        Width="40"
+                        Height="40">
+                        -->
+						
                         <telerik:RadButton x:Name="PART_OpenButton"
                                            Command="{Binding OpenCommandDescriptor.Command}"
-                                           ToolTipService.ToolTip="열기"
                                            Visibility="{Binding OpenCommandDescriptor.IsEnabled, Converter={StaticResource BoolToVisibilityConverter}}"
                                            HorizontalAlignment="Left"
                                            VerticalAlignment="Center"
@@ -3056,8 +3086,8 @@
                                            VerticalContentAlignment="Center"
                                            MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                            Margin="1"
+                                           Padding="1"
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                                           Padding="1" 
                                            Cursor="Hand"
                                            Width="40"
                                            Height="40">
@@ -3074,17 +3104,19 @@
                                            MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                            Margin="1"
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                                           Padding="1" Cursor="Hand" Width="40" Height="40"
+                                           Cursor="Hand"
+                                           Width="40"
+                                           Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Bottom"
+                                           telerik:RadToolTipService.Placement ="Top"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
                                            telerik:RadToolTipService.ShowDuration ="30000">
                             <telerik:RadGlyph x:Name="GlyphSave" Glyph="{StaticResource GlyphSave}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
-                            <telerik:RadToolTipService.ToolTipContent>
-                                <telerik:RadCallout Content="다른이름으로 저장" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
-                            </telerik:RadToolTipService.ToolTipContent>
+							<telerik:RadToolTipService.ToolTipContent>
+								<telerik:RadCallout Content="다른이름으로 저장" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
+							</telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadButton>
                         <telerik:RadButton x:Name="PART_PrintButton"
                                            AutomationProperties.Name="Print"
@@ -3094,41 +3126,47 @@
                                            VerticalAlignment="Center"
                                            MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                            Margin="1"
+                                           Padding="1"
                                            HorizontalContentAlignment="Center"
                                            VerticalContentAlignment="Center"
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                                           Padding="1" Cursor="Hand" Width="40" Height="40"
+                                           Cursor="Hand"
+                                           Width="40"
+                                           Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Bottom"
+                                           telerik:RadToolTipService.Placement ="Top"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
                                            telerik:RadToolTipService.ShowDuration ="30000">
-                            <telerik:RadGlyph x:Name="GlyphPrint" Glyph="{StaticResource GlyphPrint}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
-                            <telerik:RadToolTipService.ToolTipContent>
-                                <telerik:RadCallout Content="인쇄" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
-                            </telerik:RadToolTipService.ToolTipContent>
+							<telerik:RadGlyph x:Name="GlyphPrint" Glyph="{StaticResource GlyphPrint}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
+							<telerik:RadToolTipService.ToolTipContent>
+								<telerik:RadCallout Content="인쇄" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
+							</telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadButton>
-                        <!--추가 Margin="10 0"-->
+						<!--추가 Margin="5 0"-->
                         <telerik:RadToolBarSeparator x:Name="PART_FirstSeparator" Margin="5 0"/>
                         <telerik:RadButton x:Name="PART_CounterclockwiseButton"
-                                          Command="{Binding RotateCounterClockwiseCommandDescriptor.Command}"
-                                          HorizontalAlignment="Left"
-                                          VerticalAlignment="Center"
-                                          MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
-                                          Margin="1"
-                                          helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                                          Padding="1" Cursor="Hand" Width="40" Height="40"
-                                          telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                          telerik:RadToolTipService.Placement ="Bottom"
-                                          telerik:RadToolTipService.HorizontalOffset ="-10"
-                                          telerik:RadToolTipService.VerticalOffset ="2"
-                                          telerik:RadToolTipService.InitialShowDelay ="0"
-                                          telerik:RadToolTipService.ShowDuration ="30000">
+                                           Command="{Binding RotateCounterClockwiseCommandDescriptor.Command}"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
+                                           Margin="1"
+                                           Padding="1"
+                                           helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
+                                           Cursor="Hand"
+                                           Width="40"
+                                           Height="40"
+                                           telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
+                                           telerik:RadToolTipService.Placement ="Top"
+                                           telerik:RadToolTipService.HorizontalOffset ="-10"
+                                           telerik:RadToolTipService.VerticalOffset ="2"
+                                           telerik:RadToolTipService.InitialShowDelay ="0"
+                                           telerik:RadToolTipService.ShowDuration ="30000">
                             <telerik:RadGlyph x:Name="GlyphReset" Glyph="{StaticResource GlyphReset}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
-                            <telerik:RadToolTipService.ToolTipContent>
-                                <telerik:RadCallout Content="왼쪽으로 회전" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
-                            </telerik:RadToolTipService.ToolTipContent>
+							<telerik:RadToolTipService.ToolTipContent>
+								<telerik:RadCallout Content="왼쪽으로 회전" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
+							</telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadButton>
                         <telerik:RadButton x:Name="PART_ClockwiseButton"
                                            Command="{Binding RotateClockwiseCommandDescriptor.Command}"
@@ -3136,19 +3174,23 @@
                                            VerticalAlignment="Center"
                                            MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                            Margin="1"
+                                           Padding="1"
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                                           Padding="1" Cursor="Hand" Width="40" Height="40"
+                                           Cursor="Hand"
+                                           Width="40"
+                                           Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Bottom"
+                                           telerik:RadToolTipService.Placement ="Top"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
                                            telerik:RadToolTipService.ShowDuration ="30000">
                             <telerik:RadGlyph x:Name="GlyphReload" Glyph="{StaticResource GlyphReload}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
-                            <telerik:RadToolTipService.ToolTipContent>
-                                <telerik:RadCallout Content="오른쪽으로 회전" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
-                            </telerik:RadToolTipService.ToolTipContent>
+							<telerik:RadToolTipService.ToolTipContent>
+								<telerik:RadCallout Content="오른쪽으로 회전" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
+							</telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadButton>
+						<!--추가 Margin="5 0"-->
                         <telerik:RadToolBarSeparator x:Name="PART_SecondSeparator" Margin="5 0"/>
                         <telerik:RadButton x:Name="PART_PageUpButton"
                                            Command="{Binding PageUpCommandDescriptor.Command}"
@@ -3157,20 +3199,23 @@
                                            VerticalAlignment="Center"
                                            HorizontalContentAlignment="Center"
                                            VerticalContentAlignment="Center"
-                                           MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"                               
+                                           MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                            Margin="1 1 5 1"
+                                           Padding="1"
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                                           Padding="1" Cursor="Hand" Width="40" Height="40"
+                                           Cursor="Hand"
+                                           Width="40"
+                                           Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Bottom"
+                                           telerik:RadToolTipService.Placement ="Top"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
                                            telerik:RadToolTipService.ShowDuration ="30000">
                             <telerik:RadGlyph x:Name="GlyphArrowChevronUp" Glyph="{StaticResource GlyphArrowChevronUp}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
-                            <telerik:RadToolTipService.ToolTipContent>
-                                <telerik:RadCallout Content="이전 페이지" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
-                            </telerik:RadToolTipService.ToolTipContent>
+							<telerik:RadToolTipService.ToolTipContent>
+								<telerik:RadCallout Content="이전 페이지" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
+							</telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadButton>
                         <telerik:RadButton x:Name="PART_PageDownButton"
                                            Command="{Binding PageDownCommandDescriptor.Command}"
@@ -3181,19 +3226,23 @@
                                            VerticalContentAlignment="Center"
                                            MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                            Margin="1 1 5 1"
+                                           Padding="1"
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                                           Padding="1" Cursor="Hand" Width="40" Height="40"
+                                           Cursor="Hand"
+                                           Width="40"
+                                           Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Bottom"
+                                           telerik:RadToolTipService.Placement ="Top"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
                                            telerik:RadToolTipService.ShowDuration ="30000">
                             <telerik:RadGlyph x:Name="GlyphArrowChevronDown" Glyph="{StaticResource GlyphArrowChevronDown}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
-                            <telerik:RadToolTipService.ToolTipContent>
-                                <telerik:RadCallout Content="다음 페이지" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
-                            </telerik:RadToolTipService.ToolTipContent>
+							<telerik:RadToolTipService.ToolTipContent>
+								<telerik:RadCallout Content="다음 페이지" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
+							</telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadButton>
+						<!--추가 Height="40"-->
                         <fixedDocumentViewersUI:CurrentPageTextBox x:Name="PART_CurrentPageNumberTextBox"
                                                                    AutomationProperties.Name="Current Page Number"
                                                                    Text="{Binding FixedDocumentViewer.CurrentPageNumber, Mode=TwoWay, ValidatesOnExceptions=True}"
@@ -3202,9 +3251,11 @@
                                                                    VerticalAlignment="Center"
                                                                    Width="70"
                                                                    Margin="1"
-                                                                   Height="40"/>
+																   Height="40"/>
+						<!--추가 Margin="1" => 5 1-->
                         <TextBlock x:Name="PART_PagesSlashTextBlock" VerticalAlignment="Center" Margin="5 1" Text="/" FontWeight="Light"/>
                         <TextBlock x:Name="PART_PagesCountTextBlock" VerticalAlignment="Center" Margin="1 1 4 1" Text="{Binding FixedDocumentViewer.PagesCount}" FontWeight="Light"/>
+						<!--추가 Margin="5 0"-->
                         <telerik:RadToolBarSeparator x:Name="PART_ThirdSeparator" Margin="5 0"/>
                         <telerik:RadButton x:Name="PART_ZoomInButton"
                                            Command="{Binding ZoomInCommandDescriptor.Command}"
@@ -3215,18 +3266,21 @@
                                            VerticalContentAlignment="Center"
                                            MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                            Margin="1"
+                                           Padding="1"
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                                           Padding="1" Cursor="Hand" Width="40" Height="40"
+                                           Cursor="Hand"
+                                           Width="40"
+                                           Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Bottom"
+                                           telerik:RadToolTipService.Placement ="Top"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
                                            telerik:RadToolTipService.ShowDuration ="30000">
                             <telerik:RadGlyph x:Name="GlyphZoomIn" Glyph="{StaticResource GlyphZoomIn}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
-                            <telerik:RadToolTipService.ToolTipContent>
-                                <telerik:RadCallout Content="확대" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
-                            </telerik:RadToolTipService.ToolTipContent>
+							<telerik:RadToolTipService.ToolTipContent>
+								<telerik:RadCallout Content="확대" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
+							</telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadButton>
                         <telerik:RadButton x:Name="PART_ZoomOutButton"
                                            Command="{Binding ZoomOutCommandDescriptor.Command}"
@@ -3237,86 +3291,99 @@
                                            VerticalContentAlignment="Center"
                                            MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                            Margin="1 1 5 1"
+                                           Padding="1"
                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                                           Padding="1" Cursor="Hand" Width="40" Height="40"
+                                           Cursor="Hand"
+                                           Width="40"
+                                           Height="40"
                                            telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                           telerik:RadToolTipService.Placement ="Bottom"
+                                           telerik:RadToolTipService.Placement ="Top"
                                            telerik:RadToolTipService.HorizontalOffset ="-10"
                                            telerik:RadToolTipService.VerticalOffset ="2"
                                            telerik:RadToolTipService.InitialShowDelay ="0"
                                            telerik:RadToolTipService.ShowDuration ="30000">
                             <telerik:RadGlyph x:Name="GlyphZoomOut" Glyph="{StaticResource GlyphZoomOut}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
-                            <telerik:RadToolTipService.ToolTipContent>
-                                <telerik:RadCallout Content="축소" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
-                            </telerik:RadToolTipService.ToolTipContent>
+							<telerik:RadToolTipService.ToolTipContent>
+								<telerik:RadCallout Content="축소" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
+							</telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadButton>
-                        <fixedDocumentViewersUI:PercentComboBox AutomationProperties.Name="Zoom Percent"
-                                                               x:Name="PART_PercentComboBox"
-                                                               Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=RadPdfViewer.ScaleFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                               RadPdfViewer="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=RadPdfViewer}"
-                                                               Margin="1 1 1 1"
-                                                               Height="40"/>
-                        <telerik:RadToolBarSeparator x:Name="PART_FourthSeparator" Margin="5 0"/>
+						<!--추가 Height="40"-->
+                        <fixedDocumentViewersUI:PercentComboBox
+                                AutomationProperties.Name="Zoom Percent"
+                                x:Name="PART_PercentComboBox"
+                                Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=RadPdfViewer.ScaleFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                RadPdfViewer="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=RadPdfViewer}"
+                                Margin="1 1 4 1"
+								Height="40"/>
+						<!--추가 Margin="5 0"-->
+                        <telerik:RadToolBarSeparator x:Name="PART_FourthSeparator"  Margin="5 0"/>
                         <telerik:RadToggleButton x:Name="PART_FitToWidthButton"
                                                  Command="{Binding FitToWidthFixedDocumentPagesPresenterCommandDescriptor.Command}"
                                                  IsEnabled="{Binding FitToWidthFixedDocumentPagesPresenterCommandDescriptor.IsEnabled, Converter={StaticResource InvertedBooleanConverter}, Mode=TwoWay}"
                                                  IsChecked="{Binding FitToWidthFixedDocumentPagesPresenterCommandDescriptor.IsEnabled, Mode=TwoWay}"
-                                                 helpers:ThemeHelper.CheckedBackgroundBrush="#FF60CDFF"
                                                  HorizontalAlignment="Left"
                                                  VerticalAlignment="Center"
                                                  MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                                  Margin="1"
-                                                 Padding="1" Cursor="Hand" Width="40" Height="40"
+                                                 Padding="1"
+                                                 Cursor="Hand"
+                                                 Width="40"
+                                                 Height="40"
                                                  telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                                 telerik:RadToolTipService.Placement ="Bottom"
+                                                 telerik:RadToolTipService.Placement ="Top"
                                                  telerik:RadToolTipService.HorizontalOffset ="-10"
                                                  telerik:RadToolTipService.VerticalOffset ="2"
                                                  telerik:RadToolTipService.InitialShowDelay ="0"
                                                  telerik:RadToolTipService.ShowDuration ="30000">
                             <telerik:RadGlyph x:Name="GlyphArrowsResizing" Glyph="{StaticResource GlyphArrowsResizing}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
-                            <telerik:RadToolTipService.ToolTipContent>
-                                <telerik:RadCallout Content="창 너비에 맞춤" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
-                            </telerik:RadToolTipService.ToolTipContent>
+							<telerik:RadToolTipService.ToolTipContent>
+								<telerik:RadCallout Content="창 너비에 맞춤" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
+							</telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadToggleButton>
                         <telerik:RadToggleButton x:Name="PART_FitToPageButton"
                                                  Command="{Binding FitToPageFixedDocumentSinglePageViewPresenterCommandDescriptor.Command}"
-                                                 IsEnabled="{Binding FitToPageFixedDocumentSinglePageViewPresenterCommandDescriptor.IsEnabled, Converter={StaticResource InvertedBooleanConverter},Mode=TwoWay}"
+                                                 IsEnabled="{Binding FitToPageFixedDocumentSinglePageViewPresenterCommandDescriptor.IsEnabled, Converter={StaticResource InvertedBooleanConverter}, Mode=TwoWay}"
                                                  IsChecked="{Binding FitToPageFixedDocumentSinglePageViewPresenterCommandDescriptor.IsEnabled, Mode=TwoWay}"
-                                                 helpers:ThemeHelper.CheckedBackgroundBrush="#FF60CDFF"
                                                  HorizontalAlignment="Left"
                                                  VerticalAlignment="Center"
                                                  MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                                  Margin="1"
-                                                 Padding="1" Cursor="Hand" Width="40" Height="40"
+                                                 Padding="1"
+                                                 Cursor="Hand"
+                                                 Width="40"
+                                                 Height="40"
                                                  telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                                 telerik:RadToolTipService.Placement ="Bottom"
+                                                 telerik:RadToolTipService.Placement ="Top"
                                                  telerik:RadToolTipService.HorizontalOffset ="-10"
                                                  telerik:RadToolTipService.VerticalOffset ="2"
                                                  telerik:RadToolTipService.InitialShowDelay ="0"
                                                  telerik:RadToolTipService.ShowDuration ="30000">
                             <telerik:RadGlyph x:Name="GlyphFullScreen" Glyph="{StaticResource GlyphFullScreen}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
-                            <telerik:RadToolTipService.ToolTipContent>
-                                <telerik:RadCallout Content="창 높이에 맞춤" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
-                            </telerik:RadToolTipService.ToolTipContent>
+							<telerik:RadToolTipService.ToolTipContent>
+								<telerik:RadCallout Content="창 높이에 맞춤" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
+							</telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadToggleButton>
-                        <telerik:RadToolBarSeparator x:Name="PART_FifthSeparator" Margin="5 0"/>
+                        <telerik:RadToolBarSeparator x:Name="PART_FifthSeparator"/>
                         <telerik:RadToggleButton x:Name="PART_PanButton"
                                                  IsChecked="{Binding FixedDocumentViewer.Mode, Mode=TwoWay, Converter={StaticResource ModeConverter}, ConverterParameter=Pan}"
                                                  HorizontalAlignment="Left"
                                                  VerticalAlignment="Center"
                                                  MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                                  Margin="1"
-                                                 Padding="1" Cursor="Hand" Width="40" Height="40"
+                                                 Padding="1"
+                                                 Cursor="Hand"
+                                                 Width="40"
+                                                 Height="40"
                                                  telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                                 telerik:RadToolTipService.Placement ="Bottom"
+                                                 telerik:RadToolTipService.Placement ="Top"
                                                  telerik:RadToolTipService.HorizontalOffset ="-10"
                                                  telerik:RadToolTipService.VerticalOffset ="2"
                                                  telerik:RadToolTipService.InitialShowDelay ="0"
                                                  telerik:RadToolTipService.ShowDuration ="30000">
-                            <telerik:RadGlyph x:Name="GlyphPan" Glyph="{StaticResource GlyphHand}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
-                            <telerik:RadToolTipService.ToolTipContent>
-                                <telerik:RadCallout Content="화면 이동" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
-                            </telerik:RadToolTipService.ToolTipContent>
+                            <telerik:RadGlyph x:Name="GlyphPan" Glyph="{StaticResource GlyphPan}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
+							<telerik:RadToolTipService.ToolTipContent>
+								<telerik:RadCallout Content="화면 이동" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
+							</telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadToggleButton>
                         <telerik:RadToggleButton x:Name="PART_TextSelectionButton"
                                                  IsChecked="{Binding FixedDocumentViewer.Mode, Mode=TwoWay, Converter={StaticResource ModeConverter}, ConverterParameter=TextSelection}"
@@ -3324,19 +3391,21 @@
                                                  VerticalAlignment="Center"
                                                  MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                                  Margin="1"
-                                                 Padding="1" Cursor="Hand" Width="40" Height="40"
+                                                 Padding="1"
+                                                 Cursor="Hand"
+                                                 Width="40"
+                                                 Height="40"
                                                  telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                                                 telerik:RadToolTipService.Placement ="Bottom"
+                                                 telerik:RadToolTipService.Placement ="Top"
                                                  telerik:RadToolTipService.HorizontalOffset ="-10"
                                                  telerik:RadToolTipService.VerticalOffset ="2"
                                                  telerik:RadToolTipService.InitialShowDelay ="0"
                                                  telerik:RadToolTipService.ShowDuration ="30000">
                             <telerik:RadGlyph x:Name="GlyphTxt" Glyph="{StaticResource GlyphTxt}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
-                            <telerik:RadToolTipService.ToolTipContent>
-                                <telerik:RadCallout Content="텍스트 선택" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
-                            </telerik:RadToolTipService.ToolTipContent>
+							<telerik:RadToolTipService.ToolTipContent>
+								<telerik:RadCallout Content="텍스트 선택" Style="{StaticResource RadPdfViewerTooltipRadCalloutStyle}"/>
+							</telerik:RadToolTipService.ToolTipContent>
                         </telerik:RadToggleButton>
-                        
                         <telerik:RadToggleButton x:Name="PART_SignatureButton"
                                                  AutomationProperties.Name="Signature"
                                                  ToolTipService.ToolTip="Signature Panel"
@@ -3346,7 +3415,10 @@
                                                  VerticalAlignment="Center"
                                                  MinWidth="{telerik:Windows11Resource ResourceKey=DefaultControlMinHeight}"
                                                  Margin="1"
-                                                 Padding="1" Cursor="Hand" Width="40" Height="40">
+                                                 Padding="1"
+                                                 Cursor="Hand"
+                                                 Width="40"
+                                                 Height="40">
                             <telerik:RadGlyph x:Name="GlyphEdit" Glyph="{StaticResource GlyphEdit}" Foreground="{telerik1:Windows11Resource ResourceKey=IconBrush}"/>
                         </telerik:RadToggleButton>
                     </telerik:RadToolBar>
@@ -3408,61 +3480,67 @@
                         <Trigger SourceName="PART_FitToWidthButton" Property="IsChecked" Value="True">
                             <Setter TargetName="GlyphArrowsResizing" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=AccentControlForegroundBrush}"/>
                         </Trigger>
-                        <Trigger SourceName="PART_SignatureButton" Property="IsEnabled" Value="False">
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition SourceName="PART_SignatureButton" Property="IsEnabled" Value="False"/>
+                                <Condition SourceName="PART_SignatureButton" Property="IsChecked" Value="False"/>
+                            </MultiTrigger.Conditions>
                             <Setter TargetName="GlyphEdit" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphEdit" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
-                        </Trigger>
-                        <Trigger SourceName="PART_TextSelectionButton" Property="IsEnabled" Value="False">
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition SourceName="PART_TextSelectionButton" Property="IsEnabled" Value="False"/>
+                                <Condition SourceName="PART_TextSelectionButton" Property="IsChecked" Value="False"/>
+                            </MultiTrigger.Conditions>
                             <Setter TargetName="GlyphTxt" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphTxt" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
-                        </Trigger>
-                        <Trigger SourceName="PART_PanButton" Property="IsEnabled" Value="False">
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition SourceName="PART_PanButton" Property="IsEnabled" Value="False"/>
+                                <Condition SourceName="PART_PanButton" Property="IsChecked" Value="False"/>
+                            </MultiTrigger.Conditions>
                             <Setter TargetName="GlyphPan" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphPan" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
-                        </Trigger>
-                        <Trigger SourceName="PART_FitToPageButton" Property="IsEnabled" Value="False">
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition SourceName="PART_FitToPageButton" Property="IsEnabled" Value="False"/>
+                                <Condition SourceName="PART_FitToPageButton" Property="IsChecked" Value="False"/>
+                            </MultiTrigger.Conditions>
                             <Setter TargetName="GlyphFullScreen" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphFullScreen" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
-                        </Trigger>
-                        <Trigger SourceName="PART_FitToWidthButton" Property="IsEnabled" Value="False">
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition SourceName="PART_FitToWidthButton" Property="IsEnabled" Value="False"/>
+                                <Condition SourceName="PART_FitToWidthButton" Property="IsChecked" Value="False"/>
+                            </MultiTrigger.Conditions>
                             <Setter TargetName="GlyphArrowsResizing" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphArrowsResizing" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
-                        </Trigger>
+                        </MultiTrigger>
                         <Trigger SourceName="PART_ZoomOutButton" Property="IsEnabled" Value="False">
                             <Setter TargetName="GlyphZoomOut" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphZoomOut" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
                         </Trigger>
                         <Trigger SourceName="PART_ZoomInButton" Property="IsEnabled" Value="False">
                             <Setter TargetName="GlyphZoomIn" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphZoomIn" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
                         </Trigger>
                         <Trigger SourceName="PART_PageDownButton" Property="IsEnabled" Value="False">
                             <Setter TargetName="GlyphArrowChevronDown" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphArrowChevronDown" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
                         </Trigger>
                         <Trigger SourceName="PART_PageUpButton" Property="IsEnabled" Value="False">
                             <Setter TargetName="GlyphArrowChevronUp" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphArrowChevronUp" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
                         </Trigger>
                         <Trigger SourceName="PART_ClockwiseButton" Property="IsEnabled" Value="False">
                             <Setter TargetName="GlyphReload" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphReload" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
                         </Trigger>
                         <Trigger SourceName="PART_CounterclockwiseButton" Property="IsEnabled" Value="False">
                             <Setter TargetName="GlyphReset" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphReset" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
                         </Trigger>
                         <Trigger SourceName="PART_PrintButton" Property="IsEnabled" Value="False">
                             <Setter TargetName="GlyphPrint" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphPrint" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
                         </Trigger>
                         <Trigger SourceName="PART_SaveButton" Property="IsEnabled" Value="False">
                             <Setter TargetName="GlyphSave" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphSave" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
                         </Trigger>
                         <Trigger SourceName="PART_OpenButton" Property="IsEnabled" Value="False">
                             <Setter TargetName="GlyphFolderOpen" Property="Foreground" Value="{telerik1:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
-                            <Setter TargetName="GlyphFolderOpen" Property="Opacity" Value="{telerik1:Windows11Resource ResourceKey=DisabledOpacity}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -68,7 +68,7 @@
     <PackageReference Include="System.ComponentModel.Composition" Version="9.0.7" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
     <PackageReference Include="Telerik.UI.for.Wpf.80.Xaml">
-      <Version>2025.2.707</Version>
+      <Version>2025.3.813</Version>
     </PackageReference>
     <PackageReference Include="WindowsAPICodePack" Version="8.0.6" />
   </ItemGroup>
