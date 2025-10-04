@@ -339,7 +339,38 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
 
                     var value = prop.GetValue(model);
 
-                    if (prop.Name == "YearChsu" || prop.Name == "River" || prop.Name == "SpeciesKo")
+                    if (prop.Name == "YearChsu")
+                    {
+                        //필수 문자
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            var v = ((string)value).Replace(" ", "");
+                            if (v.Length > 0)
+                            {
+                                if (int.TryParse(v.AsSpan(0, 4), out int year))
+                                {
+                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+
+                                    //연도
+                                    insertModel.SurveyYear = year;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                        }
+                    }
+                    else if (prop.Name == "River" || prop.Name == "SpeciesKo")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -766,18 +797,19 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                     GB.ProgressValue = (progressCount / progressCount) * 100;
 
                     string strSql = $"INSERT INTO Bird" +
-                                     $"(YearChsu, SurveyDate, Weather, River, Site, " +
+                                     $"(SurveyYear, YearChsu, SurveyDate, Weather, River, Site, " +
                                      $"SpeciesKo, SpeciesEn, Feature, Lat, Lng, " +
                                      $"IndividualCount, MigratoryType, Category, CategoryDetail, HabitatType, " +
                                      $"Surveyor, Note) " +
                                      $"VALUES " +
-                                     $"(@YearChsu, @SurveyDate, @Weather, @River, @Site, " +
+                                     $"(@SurveyYear, @YearChsu, @SurveyDate, @Weather, @River, @Site, " +
                                      $"@SpeciesKo, @SpeciesEn, @Feature, @Lat, @Lng, " +
                                      $"@IndividualCount, @MigratoryType, @Category, @CategoryDetail, @HabitatType, " +
                                      $"@Surveyor, @Note)";
 
                     using var command = new SQLiteCommand(strSql, conn);
 
+                    command.Parameters.AddWithValue("@SurveyYear", model.SurveyYear);
                     command.Parameters.AddWithValue("@YearChsu", model.YearChsu);
                     command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
                     command.Parameters.AddWithValue("@Weather", model.Weather ?? (object)DBNull.Value);

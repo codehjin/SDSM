@@ -10,4 +10,5 @@ public enum ErrorType
     Duplicate,
     DBDuplicate,
     SpeciesDuplicate,
+    YearError,
 }

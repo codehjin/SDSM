@@ -575,4 +575,103 @@
         <Setter Property="WatermarkContent" Value="최대 255자"/>
     </Style>
 
+    <!--보기/숨기기 UpDown 체크박스-->
+    <Style x:Key="UpDownVisibleCheckBoxStyle" TargetType="CheckBox">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Height" Value="{StaticResource DefaultHeight}"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="IsThreeState" Value="False"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Border Background="Transparent" CornerRadius="{telerik:Windows11Resource ResourceKey=CornerRadius}" Padding="{TemplateBinding Padding}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="Border" 
+                                    Background="{telerik:Windows11Resource ResourceKey=PrimaryBackgroundBrush}"
+                                    BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="16"
+                                    Width="32"
+                                    Height="32"
+                                    Margin="0 0 10 0">
+                                <telerik:RadGlyph x:Name="Icon" 
+                                                  Glyph="{StaticResource GlyphArrowChevronUp}" 
+                                                  Foreground="{telerik:Windows11Resource ResourceKey=IconBrush}"
+                                                  FontSize="16"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  RenderTransformOrigin="0.5,0.5">
+                                    <telerik:RadGlyph.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform x:Name="ArrowScaleTransform" ScaleX="1.0" ScaleY="1.0"/>
+                                            <ScaleTransform x:Name="ReverseArrowScaleTransform" ScaleX="1.0" ScaleY="1.0"/>
+                                        </TransformGroup>
+                                    </telerik:RadGlyph.RenderTransform>
+                                </telerik:RadGlyph>
+                            </Border>
+                            <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ArrowScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)" To="1.5" Duration="0:0:0.15"/>
+                                        <DoubleAnimation Storyboard.TargetName="ArrowScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" To="1.5" Duration="0:0:0.15"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ArrowScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)" To="1.0" Duration="0:0:0.15"/>
+                                        <DoubleAnimation Storyboard.TargetName="ArrowScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" To="1.0" Duration="0:0:0.15"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ReverseArrowScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" From="-1" To="1" Duration="0:0:0.15"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ReverseArrowScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" From="1" To="-1" Duration="0:0:0.15"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="False">
+                <Setter Property="Margin" Value="-20 -20 -20 -20"/>
+                <Setter Property="Padding" Value="20 0 0 0"/>
+                <Setter Property="Height" Value="80"/>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Margin" Value="-20 -20 -20 -10"/>
+                <Setter Property="Padding" Value="20 0 0 0"/>
+                <Setter Property="Height" Value="80"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

@@ -15,6 +15,7 @@ public class WaterQuality
     [Description("ID")]
     public int WaterQualityId { get; set; }
 
+    [DisplayName("연도")][Required] public int SurveyYear { get; set; }
     [DisplayName("연도차수")][Required] public string YearChsu { get; set; } = string.Empty;
     [DisplayName("지점명")][Required] public string Site { get; set; } = string.Empty;
     [DisplayName("조사일")] public DateTime? SurveyDate { get; set; }  //필수

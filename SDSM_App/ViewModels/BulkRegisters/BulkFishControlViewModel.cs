@@ -653,7 +653,38 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                             sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                         }
                     }
-                    else if (prop.Name == "YearChsu" || prop.Name == "Side")
+                    else if (prop.Name == "YearChsu")
+                    {
+                        //필수 문자
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            var v = ((string)value).Replace(" ", "");
+                            if (v.Length > 0)
+                            {
+                                if (int.TryParse(v.AsSpan(0, 4), out int year))
+                                {
+                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+
+                                    //연도
+                                    insertModel.SurveyYear = year;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                        }
+                    }
+                    else if (prop.Name == "Side")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))

@@ -343,7 +343,38 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
 
                     var value = prop.GetValue(model);
 
-                    if (prop.Name == "YearChsu" || prop.Name == "Side")
+                    if (prop.Name == "YearChsu")
+                    {
+                        //필수 문자
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            var v = ((string)value).Replace(" ", "");
+                            if (v.Length > 0)
+                            {
+                                if (int.TryParse(v.AsSpan(0, 4), out int year))
+                                {
+                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+
+                                    //연도
+                                    insertModel.SurveyYear = year;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                        }
+                    }
+                    else if (prop.Name == "Side")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -563,7 +594,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                             insertPropertyInfo?.SetValue(insertModel, null);
                         }
                     }
-                    else if ( prop.Name == "EvaluationScore")
+                    else if (prop.Name == "EvaluationScore")
                     {
                         //실수
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -650,13 +681,13 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                     GB.ProgressValue = (progressCount / progressCount) * 100;
 
                     string strSql = $"INSERT INTO HabitatWaterEdge" +
-                                     $"(YearChsu, Site, SurveyDate, MajorRegion, MiddleRegion, " +
+                                     $"(SurveyYear, YearChsu, Site, SurveyDate, MajorRegion, MiddleRegion, " +
                                      $"River, RiverType, Lat, Lng, Weather, " +
                                      $"SurveyAgency, Surveyor, SurveyUnavailableReason, Note, EvaluationItem1, " +
                                      $"EvaluationItem2, EvaluationItem3, EvaluationItem4, EvaluationItem5, EvaluationItem6, " +
                                      $"EvaluationItem7, EvaluationItem8, EvaluationItem9, EvaluationItem10, EvaluationScore, EvaluationGrade) " +
                                      $"VALUES " +
-                                     $"(@YearChsu, @Site, @SurveyDate, @MajorRegion, @MiddleRegion, " +
+                                     $"(@SurveyYear, @YearChsu, @Site, @SurveyDate, @MajorRegion, @MiddleRegion, " +
                                      $"@River, @RiverType, @Lat, @Lng, @Weather, " +
                                      $"@SurveyAgency, @Surveyor, @SurveyUnavailableReason, @Note, @EvaluationItem1, " +
                                      $"@EvaluationItem2, @EvaluationItem3, @EvaluationItem4, @EvaluationItem5, @EvaluationItem6, " +
@@ -664,6 +695,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
 
                     using var command = new SQLiteCommand(strSql, conn);
 
+                    command.Parameters.AddWithValue("@SurveyYear", model.SurveyYear);
                     command.Parameters.AddWithValue("@YearChsu", model.YearChsu);
                     command.Parameters.AddWithValue("@Site", model.Site);
                     command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
@@ -762,7 +794,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
     #region 등급계산
 
     //평가등급
-    private static (double? , string?) GetGrade(Worksheet worksheet, int columnIndex)
+    private static (double?, string?) GetGrade(Worksheet worksheet, int columnIndex)
     {
         string? grade = null;
         double total = 0;

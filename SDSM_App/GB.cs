@@ -372,8 +372,6 @@ public static class GB
 
         if (content == ErrorType.Unique)
             return $"[{fieldName}]필수누락";
-        else if (content == ErrorType.ParentNull)
-            return $"[조사NO없음]";
         else if (content == ErrorType.ListType)
             return $"[{fieldName}]목록없음";
         else if (content == ErrorType.Conversion)
@@ -382,6 +380,8 @@ public static class GB
             return $"[종명중복]";
         else if (content == ErrorType.Duplicate)
             return $"[자료중복]";
+        else if (content == ErrorType.YearError)
+            return $"[연도에러]";
         else
             return $"[기본정보없음]";
     }

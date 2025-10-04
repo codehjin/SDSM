@@ -973,4 +973,268 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
+    <!--다중선택-->
+    <DataTemplate x:Key="MultiSelectionBoxTemplate">
+        <TextBlock>
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Text" Value="{Binding Path=SelectedItems.Count, StringFormat='선택 : {0}', RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=SelectedItems.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="1">
+                            <Setter Property="Text" Value="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MultiCheckBoxItemTemplate">
+        <CheckBox Foreground="{Binding RelativeSource={RelativeSource AncestorType=telerik:RadComboBoxItem}, Path=Foreground}"
+                  IsChecked="{Binding RelativeSource={RelativeSource AncestorType=telerik:RadComboBoxItem}, Path=IsSelected}"
+                  telerik:TouchManager.ShouldSuspendMousePromotion="True">
+            <TextBlock Text="{Binding}"/>
+        </CheckBox>
+    </DataTemplate>
+
+    <ControlTemplate x:Key="MultiNonEditableComboBox" TargetType="controlsInput:RadComboBox">
+        <Grid>
+            <Border x:Name="FocusVisual" Style="{StaticResource FocusVisualBorderStyle}" CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}"/>
+            <Grid Margin="{TemplateBinding helpers:ThemeHelper.FocusVisualMargin}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                <Grid MinHeight="{TemplateBinding MinHeight}">
+                    <Border x:Name="BorderVisual"
+                            IsHitTestVisible="False"
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}"/>
+                    <telerik:RadToggleButton x:Name="PART_DropDownButton"
+                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                             Padding="{TemplateBinding Padding}"
+                                             Content="{TemplateBinding SelectionBoxItem}"
+                                             ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                             Style="{StaticResource NonEditableComboToggleButtonStyle}"
+                                             CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}"
+                                             FontFamily="{TemplateBinding FontFamily}"
+                                             FontSize="{TemplateBinding FontSize}"
+                                             Focusable="{TemplateBinding Focusable}"/>
+                    <Popup x:Name="PART_Popup" VerticalOffset="{telerik:Windows11Resource ResourceKey=PopupOffset}">
+                        <Grid x:Name="PopupRoot" Margin="{telerik:Windows11Resource ResourceKey=PopupMargin}">
+                            <mat:Shadow Background="{telerik:Windows11Resource ResourceKey=TertiaryBackgroundBrush}"
+                                        CornerRadius="{telerik:Windows11Resource ResourceKey=OverlayCornerRadius}"
+                                        ShadowDepth="{TemplateBinding mat:MaterialAssist.ShadowDepth}"
+                                        SnapsToDevicePixels="True"/>
+                            <Border x:Name="PART_ResizeBorder"
+                                    SnapsToDevicePixels="True"
+                                    Background="{telerik:Windows11Resource ResourceKey=TertiaryBackgroundBrush}"
+                                    BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"
+                                    BorderThickness="1"
+                                    MinWidth="{TemplateBinding MinDropDownWidth}"
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                    CornerRadius="{telerik:Windows11Resource ResourceKey=OverlayCornerRadius}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <telerik:RadButton x:Name="PART_ClearButton"
+                                                       Grid.Row="0"
+                                                       Margin="1"
+                                                       FontSize="{TemplateBinding FontSize}"
+                                                       FontFamily="{TemplateBinding FontFamily}"
+                                                       Visibility="{TemplateBinding ClearSelectionButtonVisibility}"
+                                                       Content="{TemplateBinding ClearSelectionButtonContent}"/>
+                                    <Grid Grid.Row="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <ScrollViewer x:Name="PART_ScrollViewer"
+                                                      BorderThickness="0"
+                                                      VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                                      HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                                      Foreground="{TemplateBinding Foreground}"
+                                                      CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}">
+                                            <ItemsPresenter Margin="2"/>
+                                        </ScrollViewer>
+                                        <Border x:Name="ControlBorder"
+                                                Grid.Row="1"
+                                                Padding="5" 
+                                                Margin="2"
+                                                BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"
+                                                BorderThickness="0 1 0 0">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=AllowMultipleSelection, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controlsInput:RadComboBox}}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <telerik:RadButton Visibility="Visible"
+                                                                   Content="전체선택"
+                                                                   BorderThickness="1"
+                                                                   Margin="0 0 3 0"
+                                                                   FontSize="14"
+                                                                   Command="{x:Static telerik:RadComboBoxCommands.SelectAll}"
+                                                                   CommandTarget="{Binding RelativeSource={RelativeSource Self}}"/>
+                                                <telerik:RadButton Grid.Column="1"
+                                                                   Visibility="Visible"
+                                                                   Content="선택해제"
+                                                                   BorderThickness="1"
+                                                                   FontSize="14"
+                                                                   Margin="3 0 0 0"
+                                                                   Command="{x:Static telerik:RadComboBoxCommands.UnselectAll}"
+                                                                   CommandTarget="{Binding RelativeSource={RelativeSource Self}}"/>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Popup>
+                </Grid>
+            </Grid>
+        </Grid>
+        <ControlTemplate.Triggers>
+
+            <!-- IsKeyboardFocusWithin -->
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsKeyboardFocusWithin" Value="True"/>
+                    <Condition Property="IsDropDownOpen" Value="False"/>
+                    <Condition Property="IsMouseOver" Value="False"/>
+                </MultiTrigger.Conditions>
+                <Setter TargetName="FocusVisual" Property="Opacity" Value="1"/>
+            </MultiTrigger>
+
+            <!-- IsMouseOver -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" TargetName="BorderVisual" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush), Mode=OneWay}"/>
+                <Setter Property="BorderBrush" TargetName="BorderVisual" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBrush), Mode=OneWay}"/>
+            </Trigger>
+
+            <!-- IsDropDownOpen -->
+            <Trigger Property="IsDropDownOpen" Value="True">
+                <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBackgroundBrush)}"/>
+                <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBrush)}"/>
+            </Trigger>
+
+            <!-- ReadOnly -->
+            <Trigger Property="IsReadOnly" Value="True">
+                <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.ReadOnlyBackgroundBrush)}"/>
+                <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.ReadOnlyBrush)}"/>
+                <Setter TargetName="PART_DropDownButton" Property="Opacity" Value="{telerik:Windows11Resource ResourceKey=ReadOnlyOpacity}"/>
+            </Trigger>
+
+            <!-- Disabled -->
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledBackgroundBrush)}"/>
+                <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledBrush)}"/>
+                <Setter TargetName="PART_DropDownButton" Property="Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledForegroundBrush)}"/>
+                <Setter TargetName="PART_DropDownButton" Property="Opacity" Value="{telerik:Windows11Resource ResourceKey=DisabledOpacity}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="MultiRadComboBoxItemStyle" TargetType="controlsInput:RadComboBoxItem">
+        <Setter Property="helpers:ThemeHelper.FocusBrush" Value="Transparent"/>
+        <Setter Property="helpers:ThemeHelper.CornerRadius" Value="{telerik:Windows11Resource ResourceKey=CornerRadius}"/>
+        <Setter Property="helpers:ThemeHelper.DisabledForegroundBrush" Value="{telerik:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
+        <Setter Property="Padding" Value="{telerik:Windows11Resource ResourceKey=ItemWithPillPadding}"/>
+        <Setter Property="MinHeight" Value="{telerik:Windows11Resource ResourceKey=DefaultItemMinHeight}"/>
+        <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
+        <Setter Property="FontFamily" Value="{telerik:Windows11Resource ResourceKey=FontFamily}"/>
+        <Setter Property="FontSize" Value="{telerik:Windows11Resource ResourceKey=FontSize}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controlsInput:RadComboBoxItem">
+                    <Grid>
+                        <Border x:Name="BorderVisual"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}"/>
+                        <Rectangle x:Name="Pill" Margin="{Binding BorderThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ThicknessToOrientedThicknessConverter}, ConverterParameter=Left}" Style="{StaticResource DefaultItemPillStyle}">
+                            <Rectangle.RenderTransform>
+                                <ScaleTransform ScaleY="{telerik:Windows11Resource ResourceKey=PillScale}"/>
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+                        <ContentPresenter x:Name="Content"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Content" Property="Opacity" Value="{telerik:Windows11Resource ResourceKey=DisabledOpacity}"/>
+                            <Setter TargetName="Content" Property="TextBlock.Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledForegroundBrush), Mode=OneWay}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="BorderVisual" Property="Background" Value="{telerik:Windows11Resource ResourceKey=SelectedUnfocusedBrush}"/>
+                            <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBrush), Mode=OneWay}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="BorderVisual" Property="Background" Value="Transparent"/>
+                            <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBrush), Mode=OneWay}"/>
+                            <Setter TargetName="Pill" Property="Opacity" Value="1"/>
+                        </Trigger>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBackgroundBrush), Mode=OneWay}"/>
+                            <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBrush), Mode=OneWay}"/>
+                        </Trigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controlsInput:RadComboBox}}, Path=AllowMultipleSelection}" Value="True"/>
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=Self}}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter TargetName="BorderVisual" Property="Background" Value="Transparent"/>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+
+                        <!-- Selected and MouseOver -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="BorderVisual" Property="Background" Value="{telerik:Windows11Resource ResourceKey=SelectedUnfocusedBrush}"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MultiRadComboBoxStyle" TargetType="telerik:RadComboBox" BasedOn="{StaticResource RadComboBoxStyle}">
+        <Setter Property="Template" Value="{StaticResource MultiNonEditableComboBox}"/>
+        <Setter Property="NonEditableTemplate" Value="{StaticResource MultiNonEditableComboBox}"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="AllowMultipleSelection" Value="True"/>
+        <Setter Property="Width" Value="160"/>
+        <Setter Property="Height" Value="{StaticResource DefaultHeight}"/>
+        <Setter Property="MaxDropDownHeight" Value="1200"/>
+        <Setter Property="DropDownButtonIconContent"  Value="&#xe006;"/>
+        <Setter Property="ItemContainerStyle"  Value="{StaticResource MultiRadComboBoxItemStyle}"/>
+    </Style>
+
 </ResourceDictionary>

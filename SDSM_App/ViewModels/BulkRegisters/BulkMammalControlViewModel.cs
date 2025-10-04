@@ -348,7 +348,38 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
 
                     var value = prop.GetValue(model);
 
-                    if (prop.Name == "YearChsu" || prop.Name == "River" || prop.Name == "SpeciesKo")
+                    if (prop.Name == "YearChsu")
+                    {
+                        //필수 문자
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            var v = ((string)value).Replace(" ", "");
+                            if (v.Length > 0)
+                            {
+                                if (int.TryParse(v.AsSpan(0, 4), out int year))
+                                {
+                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+
+                                    //연도
+                                    insertModel.SurveyYear = year;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                        }
+                    }
+                    else if (prop.Name == "River" || prop.Name == "SpeciesKo")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -756,13 +787,13 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                     GB.ProgressValue = (progressCount / progressCount) * 100;
 
                     string strSql = $"INSERT INTO Mammal" +
-                                     $"(YearChsu, SurveyDate, Weather, River, Site, " +
+                                     $"(SurveyYear, YearChsu, SurveyDate, Weather, River, Site, " +
                                      $"SpeciesKo, SpeciesEn, Feature, Lat, Lng, " +
                                      $"ObservationSite, Trace1, Trace2, Trace3, Trace4, " +
                                      $"Trace5, Trace6, Trace7, Trace8, Trace9, " +
                                      $"Trace10, Trace11, Trace12, Surveyor, Note) " +
                                      $"VALUES " +
-                                     $"(@YearChsu, @SurveyDate, @Weather, @River, @Site, " +
+                                     $"(@SurveyYear, @YearChsu, @SurveyDate, @Weather, @River, @Site, " +
                                      $"@SpeciesKo, @SpeciesEn, @Feature, @Lat, @Lng, " +
                                      $"@ObservationSite, @Trace1, @Trace2, @Trace3, @Trace4, " +
                                      $"@Trace5, @Trace6, @Trace7, @Trace8, @Trace9, " +
@@ -770,6 +801,7 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
 
                     using var command = new SQLiteCommand(strSql, conn);
 
+                    command.Parameters.AddWithValue("@SurveyYear", model.SurveyYear);
                     command.Parameters.AddWithValue("@YearChsu", model.YearChsu);
                     command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
                     command.Parameters.AddWithValue("@Weather", model.Weather ?? (object)DBNull.Value);

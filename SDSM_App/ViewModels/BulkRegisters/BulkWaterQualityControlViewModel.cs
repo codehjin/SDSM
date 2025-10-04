@@ -357,7 +357,38 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
                     var value = prop.GetValue(model);
 
-                    if (prop.Name == "YearChsu" || prop.Name == "Side")
+                    if (prop.Name == "YearChsu")
+                    {
+                        //필수 문자
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            var v = ((string)value).Replace(" ", "");
+                            if (v.Length > 0)
+                            {
+                                if (int.TryParse(v.AsSpan(0, 4), out int year))
+                                {
+                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+
+                                    //연도
+                                    insertModel.SurveyYear = year;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                        }
+                    }
+                    else if (prop.Name == "Side")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -671,7 +702,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                     GB.ProgressValue = (progressCount / progressCount) * 100;
 
                     string strSql = $"INSERT INTO WaterQuality" +
-                                     $"(YearChsu, Site, SurveyDate, MajorRegion, MiddleRegion, " +
+                                     $"(SurveyYear, YearChsu, Site, SurveyDate, MajorRegion, MiddleRegion, " +
                                      $"River, RiverType, Lat, Lng, Weather, " +
                                      $"SurveyAgency, Surveyor, PH, BOD, COD, " +
                                      $"TOC, SS, DO, TP, Ecotoxicity, " +
@@ -681,7 +712,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                                      $"BODGrade, CODGrade, TOCGrade, SSGrade, DOGrade, " +
                                      $"TPGrade, EColiGrade) " +
                                      $"VALUES " +
-                                     $"(@YearChsu, @Site, @SurveyDate, @MajorRegion, @MiddleRegion, " +
+                                     $"(@SurveyYear, @YearChsu, @Site, @SurveyDate, @MajorRegion, @MiddleRegion, " +
                                      $"@River, @RiverType, @Lat, @Lng, @Weather, " +
                                      $"@SurveyAgency, @Surveyor, @PH, @BOD, @COD, " +
                                      $"@TOC, @SS, @DO, @TP, @Ecotoxicity, " +
@@ -693,6 +724,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
                     using var command = new SQLiteCommand(strSql, conn);
 
+                    command.Parameters.AddWithValue("@SurveyYear", model.SurveyYear);
                     command.Parameters.AddWithValue("@YearChsu", model.YearChsu);
                     command.Parameters.AddWithValue("@Site", model.Site);
                     command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
@@ -941,7 +973,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         var value = ((ICellValue)(worksheet.Cells[21, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[21, columnIndex].GetFormat().Value);
         if (!double.TryParse(value, out double d))
             return null;
-        
+
         if (d <= 50) return "1a";
         if (d <= 500) return "1b";
         if (d <= 1000) return "2";

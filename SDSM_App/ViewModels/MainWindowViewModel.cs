@@ -28,19 +28,31 @@ public partial class MainWindowViewModel : ObservableObject, ISingletonService
     //주메뉴
     [ObservableProperty] private bool _isCheckedHome;
 
-    [ObservableProperty] private bool _isCheckedVegetation;
-    [ObservableProperty] private bool _isCheckedPlant;
-    [ObservableProperty] private bool _isCheckedAmphibianReptile;
+    //통계
+    [ObservableProperty] private bool _isCheckedStatsFish;
+    [ObservableProperty] private bool _isCheckedStatsBenthos;
+    [ObservableProperty] private bool _isCheckedStatsBird;
+    [ObservableProperty] private bool _isCheckedStatsMammal;
+    [ObservableProperty] private bool _isCheckedStatsVegetation;
+    [ObservableProperty] private bool _isCheckedStatsPlant;
+    [ObservableProperty] private bool _isCheckedStatsAmphibianReptile;
+    [ObservableProperty] private bool _isCheckedStatsHabitatWaterEdge;
+    [ObservableProperty] private bool _isCheckedStatsWaterQuality;
+
+    //생물조사
     [ObservableProperty] private bool _isCheckedFish;
     [ObservableProperty] private bool _isCheckedBenthos;
     [ObservableProperty] private bool _isCheckedBird;
     [ObservableProperty] private bool _isCheckedMammal;
+    [ObservableProperty] private bool _isCheckedVegetation;
+    [ObservableProperty] private bool _isCheckedPlant;
+    [ObservableProperty] private bool _isCheckedAmphibianReptile;
     
+    //환경자료
     [ObservableProperty] private bool _isCheckedHabitatWaterEdge;
     [ObservableProperty] private bool _isCheckedWaterQuality;
 
-    [ObservableProperty] private bool _isCheckedProtectedArea;
-
+    //일괄등록
     [ObservableProperty] private bool _IsCheckedBulkRegister;
 
     #endregion

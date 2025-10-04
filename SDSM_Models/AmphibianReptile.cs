@@ -15,6 +15,7 @@ public class AmphibianReptile
     [Description("ID")]
     public int AmphibianReptileId { get; set; }
 
+    [DisplayName("연도")][Required] public int SurveyYear { get; set; }
     [DisplayName("연도차수")][Required] public string YearChsu { get; set; } = string.Empty;
     [DisplayName("조사일")] public DateTime? SurveyDate { get; set; } //필수
     [DisplayName("날씨")] public string? Weather { get; set; }
@@ -45,7 +46,9 @@ public class AmphibianReptile
     [NotMapped][DisplayName("경도_분")] public int? Lng_Bun { get; set; }
     [NotMapped][DisplayName("경도_초")] public double? Lng_Cho { get; set; }
 
+    //일괄입력시 체크용으로 사용
     [NotMapped][DisplayName("년")] public int? YearValue { get; set; }
     [NotMapped][DisplayName("월")] public int? MonthValue { get; set; }
     [NotMapped][DisplayName("일")] public int? DayValue { get; set; }
+
 }

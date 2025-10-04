@@ -15,6 +15,7 @@ public class Bird
     [Description("ID")]
     public int BirdId { get; set; }
 
+    [DisplayName("연도")][Required] public int SurveyYear { get; set; }
     [DisplayName("연도차수")][Required] public string YearChsu { get; set; } = string.Empty;
     [DisplayName("조사일")] public DateTime? SurveyDate { get; set; }  //필수
     [DisplayName("날씨")] public string? Weather { get; set; }
