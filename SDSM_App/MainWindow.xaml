@@ -951,16 +951,8 @@
 
                                                     <TextBlock Grid.Column="4" Grid.Row="0" Text="통계" Style="{StaticResource CaptionTextBlockStyle}"/>
                                                     <Rectangle Grid.Column="4" Grid.Row="1" />
-                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="2" Content="어류" IsChecked="{Binding Path=IsCheckedStatsFish, Mode=TwoWay}" Tag="StatsFishPage" Click="MenuItem_Click"/>
-                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="3" Content="저서동물" IsChecked="{Binding Path=IsCheckedStatsBenthos, Mode=TwoWay}" Tag="StatsBenthosPage" Click="MenuItem_Click"/>
-                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="4" Content="조류" IsChecked="{Binding Path=IsCheckedStatsBird, Mode=TwoWay}" Tag="StatsBirdPage" Click="MenuItem_Click"/>
-                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="5" Content="포유류" IsChecked="{Binding Path=IsCheckedStatsMammal, Mode=TwoWay}" Tag="StatsMammalPage" Click="MenuItem_Click"/>
-                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="6" Content="식생" IsChecked="{Binding Path=IsCheckedStatsVegetation, Mode=TwoWay}" Tag="StatsVegetationPage" Click="MenuItem_Click" IsEnabled="False"/>
-                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="7" Content="식물" IsChecked="{Binding Path=IsCheckedStatsPlant, Mode=TwoWay}" Tag="StatsPlantPage" Click="MenuItem_Click" IsEnabled="False"/>
-                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="8" Content="양서파충류" IsChecked="{Binding Path=IsCheckedStatsAmphibianReptile, Mode=TwoWay}" Tag="StatsAmphibianReptilePage" Click="MenuItem_Click" IsEnabled="False"/>
-                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="9" Content="서식수변" IsChecked="{Binding Path=IsCheckedStatsHabitatWaterEdge, Mode=TwoWay}" Tag="StatsHabitatWaterEdgePage" Click="MenuItem_Click"/>
-                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="10" Content="수질" IsChecked="{Binding Path=IsCheckedStatsWaterQuality, Mode=TwoWay}" Tag="StatsWaterQualityPage"  Click="MenuItem_Click"/>
-                                                    
+                                                    <telerik:RadRadioButton Grid.Column="4" Grid.Row="2" Content="통계" IsChecked="{Binding Path=IsCheckedStats, Mode=TwoWay}" Tag="StatsPage" Click="MenuItem_Click"/>
+
                                                     <TextBlock Grid.Column="6" Grid.Row="0" Text="생물조사" Style="{StaticResource CaptionTextBlockStyle}"/>
                                                     <Rectangle Grid.Column="6" Grid.Row="1" />
                                                     <telerik:RadRadioButton Grid.Column="6" Grid.Row="2" Content="어류" IsChecked="{Binding Path=IsCheckedFish, Mode=TwoWay}" Tag="FishPage" Click="MenuItem_Click"/>
@@ -1302,108 +1294,12 @@
 
                                     <!--통계-->
                                     <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
-                                        <Expander BorderThickness="0" IsExpanded="True">
-                                            <Expander.Header>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <icon:PackIconPhosphorIcons>
-                                                        <icon:PackIconPhosphorIcons.Style>
-                                                            <Style TargetType="icon:PackIconPhosphorIcons" BasedOn="{StaticResource PackIconPhosphorIconsStyle}">
-                                                                <Setter Property="Kind" Value="PlusSquareLight"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Expander}}" Value="True">
-                                                                        <Setter Property="Kind" Value="MinusSquareLight"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedStatsFish}" Value="True">
-                                                                        <Setter Property="Kind" Value="CheckSquareLight"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedStatsBenthos}" Value="True">
-                                                                        <Setter Property="Kind" Value="CheckSquareLight"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedStatsBird}" Value="True">
-                                                                        <Setter Property="Kind" Value="CheckSquareLight"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedStatsMammal}" Value="True">
-                                                                        <Setter Property="Kind" Value="CheckSquareLight"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedStatsVegetation}" Value="True">
-                                                                        <Setter Property="Kind" Value="CheckSquareLight"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedStatsPlant}" Value="True">
-                                                                        <Setter Property="Kind" Value="CheckSquareLight"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedStatsAmphibianReptile}" Value="True">
-                                                                        <Setter Property="Kind" Value="CheckSquareLight"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedStatsWaterQuality}" Value="True">
-                                                                        <Setter Property="Kind" Value="CheckSquareLight"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsCheckedStatsHabitatWaterEdge}" Value="True">
-                                                                        <Setter Property="Kind" Value="CheckSquareLight"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </icon:PackIconPhosphorIcons.Style>
-                                                    </icon:PackIconPhosphorIcons>
-                                                    <TextBlock Text="통계" Style="{StaticResource MenuContentTextBlcokStyle}"/>
-                                                </StackPanel>
-                                            </Expander.Header>
-                                            <StackPanel>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedStatsFish, Mode=TwoWay}" Tag="StatsFishPage" Click="MenuItem_Click">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="어류"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedStatsBenthos, Mode=TwoWay}" Tag="StatsBenthosPage" Click="MenuItem_Click">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="저서동물"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedStatsBird, Mode=TwoWay}" Tag="StatsBirdPage" Click="MenuItem_Click">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="조류"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedStatsMammal, Mode=TwoWay}" Tag="StatsMammalPage" Click="MenuItem_Click">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="포유류"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedStatsVegetation, Mode=TwoWay}" Tag="StatsVegetationPage" Click="MenuItem_Click" IsEnabled="False">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="식생"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedStatsPlant, Mode=TwoWay}" Tag="StatsPlantPage" Click="MenuItem_Click" IsEnabled="False">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="식물"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedStatsAmphibianReptile, Mode=TwoWay}" Tag="StatsAmphibianReptilePage" Click="MenuItem_Click" IsEnabled="False">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="양서파충류"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedStatsHabitatWaterEdge, Mode=TwoWay}" Tag="StatsHabitatWaterEdgePage" Click="MenuItem_Click">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="서식수변"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedStatsWaterQuality, Mode=TwoWay}" Tag="StatsWaterQualityPage" Click="MenuItem_Click">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="수질"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
+                                        <telerik:RadRadioButton Tag="StatsPage" IsChecked="{Binding Path=IsCheckedStats, Mode=TwoWay}" Click="MenuItem_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <icon:PackIconPhosphorIcons Kind="ChartBarLight" Style="{StaticResource PackIconPhosphorIconsStyle}"/>
+                                                <TextBlock Text="통계" Style="{StaticResource MenuContentTextBlcokStyle}"/>
                                             </StackPanel>
-                                        </Expander>
+                                        </telerik:RadRadioButton>
                                     </Border>
                                     
                                     <!--생물조사-->

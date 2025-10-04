@@ -166,5 +166,17 @@ namespace SDSM_App.Properties {
                 this["WaterQualityColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("StatsFishControl")]
+        public string StatsControl {
+            get {
+                return ((string)(this["StatsControl"]));
+            }
+            set {
+                this["StatsControl"] = value;
+            }
+        }
     }
 }

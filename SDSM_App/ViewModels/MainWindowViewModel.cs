@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.InjectableServices;
 using SDSM_App.Views.Windows;
 using System.Windows;
-using System.Windows.Forms;
 
 namespace SDSM_App.ViewModels;
 
@@ -29,15 +28,7 @@ public partial class MainWindowViewModel : ObservableObject, ISingletonService
     [ObservableProperty] private bool _isCheckedHome;
 
     //통계
-    [ObservableProperty] private bool _isCheckedStatsFish;
-    [ObservableProperty] private bool _isCheckedStatsBenthos;
-    [ObservableProperty] private bool _isCheckedStatsBird;
-    [ObservableProperty] private bool _isCheckedStatsMammal;
-    [ObservableProperty] private bool _isCheckedStatsVegetation;
-    [ObservableProperty] private bool _isCheckedStatsPlant;
-    [ObservableProperty] private bool _isCheckedStatsAmphibianReptile;
-    [ObservableProperty] private bool _isCheckedStatsHabitatWaterEdge;
-    [ObservableProperty] private bool _isCheckedStatsWaterQuality;
+    [ObservableProperty] private bool _isCheckedStats;
 
     //생물조사
     [ObservableProperty] private bool _isCheckedFish;

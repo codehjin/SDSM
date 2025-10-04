@@ -8,27 +8,25 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
 using Telerik.Windows.Documents.Spreadsheet.Model;
 using Telerik.Windows.Documents.Spreadsheet.PropertySystem;
 using Telerik.Windows.Documents.Spreadsheet.Utilities;
 
-namespace SDSM_App.Views.Pages;
+namespace SDSM_App.Views.UserControls;
 
 /// <summary>
-/// 통계어류
+/// 통계포유류
 /// </summary>
-public partial class StatsFishPage : Page, ITransientService
+public partial class StatsMammalControl : UserControl, ITransientService
 {
-    private readonly StatsFishPageViewModel _vm;
+    private readonly StatsMammalControlViewModel _vm;
+    private readonly string _caption = "포유류";
 
-    private readonly string _caption = "어류";
-
-    public StatsFishPage(StatsFishPageViewModel vm)
+    public StatsMammalControl(StatsMammalControlViewModel vm)
     {
         InitializeComponent();
-
+        
         _vm = vm;
         DataContext = _vm;
     }
@@ -69,12 +67,14 @@ public partial class StatsFishPage : Page, ITransientService
             var date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
             ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_연도별자료_{date}.png"));
-            ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_출현종_{date}.png"));
+            ChartToPng(SpeciesChart, Path.Combine(folder, $"{_caption}_출현종_{date}.png"));
+            ChartToPng(FeatureChart, Path.Combine(folder, $"{_caption}_특징_{date}.png"));
 
             var gridViews = new Dictionary<string, RadGridView>
             {
                 { "연도별자료", YearDataRadGridView },
                 { "출현종", SpeciesDataRadGridView },
+                { "특징", FeatureDataRadGridView },
             };
 
             MultiExport(folder, date, gridViews);
@@ -121,6 +121,11 @@ public partial class StatsFishPage : Page, ITransientService
                                 ChartToPng(SpeciesChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
                             }
                             break;
+                        case "특징":
+                            {
+                                ChartToPng(FeatureChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
+                            }
+                            break;
                     }
                 }
             }
@@ -138,6 +143,9 @@ public partial class StatsFishPage : Page, ITransientService
                             break;
                         case "출현종":
                             gridViews.Add(item.Caption, SpeciesDataRadGridView);
+                            break;
+                        case "특징":
+                            gridViews.Add(item.Caption, FeatureDataRadGridView);
                             break;
                     }
                 }
@@ -225,7 +233,7 @@ public partial class StatsFishPage : Page, ITransientService
         }
     }
 
-    private void ChartToPng(RadCartesianChart chart, string path)
+    private void ChartToPng(FrameworkElement chart, string path)
     {
         try
         {

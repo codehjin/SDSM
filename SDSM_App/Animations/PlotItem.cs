@@ -6,6 +6,7 @@ public class PlotItem
     public string XCatText { get; set; } = string.Empty;
     public string XCatText2 { get; set; } = string.Empty;
     public string Number { get; set; } = string.Empty;
+    public int Count { get; set; }
     public double YVal1 { get; set; }
     public double YVal2 { get; set; }
     public double YVal3 { get; set; }

@@ -5,19 +5,11 @@ using SDSM_App.Animations;
 using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using Telerik.Windows.Controls.Map;
 using Telerik.Windows.Data;
-using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 
 namespace SDSM_App.ViewModels;
 
-public partial class StatsFishPageViewModel : ObservableObject, ITransientService
+public partial class StatsMammalControlViewModel : ObservableObject, ITransientService
 {
     #region 필드
 
@@ -25,7 +17,7 @@ public partial class StatsFishPageViewModel : ObservableObject, ITransientServic
 
     #region 생성자
 
-    public StatsFishPageViewModel()
+    public StatsMammalControlViewModel()
     {
         InitialLoad();
     }
@@ -34,13 +26,10 @@ public partial class StatsFishPageViewModel : ObservableObject, ITransientServic
 
     #region 속성
 
-    public List<Fish> Data { get; set; } = [];
-    public List<Fish> SearchData { get; set; } = [];
+    [ObservableProperty] private string _searchCondition = "전체";
 
-    public List<FishSpeciesView> SpeciesData { get; set; } = [];
-    public List<FishSpeciesView> SpeciesSearchData { get; set; } = [];
-
-    [ObservableProperty] private string _resultText = "전체";
+    public List<Mammal> Data { get; set; } = [];
+    public List<Mammal> SearchData { get; set; } = [];
 
     //출력
     [ObservableProperty] private RadObservableCollection<SearchItem> _exportCollection = [];
@@ -55,13 +44,8 @@ public partial class StatsFishPageViewModel : ObservableObject, ITransientServic
     //출현종
     [ObservableProperty] private RadObservableCollection<PlotItem> _speciesCollection = [];
 
-    //토양
-    [ObservableProperty] private RadObservableCollection<PlotItem> _soilCollection = [];
-    [ObservableProperty] private RadObservableCollection<PlotItem> _soilChartCollection = [];
-
-    //군락
-    [ObservableProperty] private RadObservableCollection<PlotItem> _colonyCollection = [];
-    [ObservableProperty] private RadObservableCollection<PlotItem> _colonyChartCollection = [];
+    //특징
+    [ObservableProperty] private RadObservableCollection<PlotItem> _featureCollection = [];
 
     #endregion
 
@@ -96,10 +80,10 @@ public partial class StatsFishPageViewModel : ObservableObject, ITransientServic
         [
             new(){ Caption = "연도별자료", IsCheckedTable = false, IsCheckedChart = false },
             new(){ Caption = "출현종", IsCheckedTable = false, IsCheckedChart = false },
+            new(){ Caption = "특징", IsCheckedTable = false, IsCheckedChart = false },
         ];
 
-        Data = await context.Fishs.ToListAsync();
-        SpeciesData = await context.FishSpeciesViews.ToListAsync();
+        Data = await context.Mammals.ToListAsync();
 
         var years = await GetSearchData(Data);
 
@@ -115,7 +99,7 @@ public partial class StatsFishPageViewModel : ObservableObject, ITransientServic
     }
 
     //검색목록
-    private async Task<List<int>> GetSearchData(List<Fish> data)
+    private async Task<List<int>> GetSearchData(List<Mammal> data)
     {
         return await Task.Run(() =>
         {
@@ -128,7 +112,6 @@ public partial class StatsFishPageViewModel : ObservableObject, ITransientServic
         await Task.Run(() =>
         {
             SearchData = [];
-            SpeciesSearchData = [];
 
             if (SearchSelectedItems.Count != 0)
             {
@@ -136,28 +119,18 @@ public partial class StatsFishPageViewModel : ObservableObject, ITransientServic
                 {
                     SearchData.AddRange(
                         Data.Where(m => m.SurveyYear == item)
-                            .Select(m => new Fish
+                            .Select(m => new Mammal
                             {
                                 SurveyYear = m.SurveyYear,
                                 YearChsu = m.YearChsu,
-                            })
-                    );
-
-                    SpeciesSearchData.AddRange(
-                        SpeciesData.Where(m => m.SurveyYear == item)
-                            .Select(m => new FishSpeciesView
-                            {
-                                SurveyYear = m.SurveyYear,
-                                ClassKo = m.ClassKo,
-                                OrderKo = m.OrderKo,
-                                FamilyKo = m.FamilyKo,
-                                SpeciesEn = m.SpeciesEn,
+                                SpeciesKo = m.SpeciesKo,
+                                Feature = m.Feature,
                             })
                     );
                 }
             }
 
-            ResultText = SearchCollection.Count == SearchSelectedItems.Count ? "전체" : $"{SearchSelectedItems.Count}개";
+            SearchCondition = SearchCollection.Count == SearchSelectedItems.Count ? "전체" : $"{SearchSelectedItems.Count}개";
         });
     }
 
@@ -166,7 +139,7 @@ public partial class StatsFishPageViewModel : ObservableObject, ITransientServic
         if (GB.IsBusy == false)
             GB.IsBusy = true;
 
-        var tasks = new[] { GetYearData(), GetSpeciesData() };
+        var tasks = new[] { GetYearData(), GetSpeciesData(), GetFeatureData() };
 
         try
         {
@@ -193,14 +166,14 @@ public partial class StatsFishPageViewModel : ObservableObject, ITransientServic
 
             await Task.Run(() =>
             {
-                var items = SearchData.GroupBy(m => m.SurveyYear).Select(m => new PlotItem { XCat = m.Key, YVal1 = m.Count() }).OrderBy(m => m.XCat).ToList();
+                var items = SearchData.GroupBy(m => m.SurveyYear).Select(m => new PlotItem { XCat = m.Key, Count = m.Count() }).OrderBy(m => m.XCat).ToList();
 
                 foreach (var item in items)
                 {
                     var model = new PlotItem
                     {
                         XCat = item.XCat,
-                        YVal1 = item.YVal1,
+                        YVal1 = item.Count,
                     };
                     models.Add(model);
                 }
@@ -225,24 +198,18 @@ public partial class StatsFishPageViewModel : ObservableObject, ITransientServic
 
             await Task.Run(() =>
             {
-                var items = SpeciesSearchData.GroupBy(m => m.SurveyYear).Select(m => new PlotItem { XCat = m.Key, YVal1 = m.Count() }).OrderBy(m => m.XCat).ToList();
+                var items = SearchData.GroupBy(m => m.SurveyYear).Select(m => new PlotItem { XCat = m.Key, Count = m.Count() }).OrderBy(m => m.XCat).ToList();
 
                 foreach (var item in items)
                 {
-                    var classItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.ClassKo).Count();
-                    var orderItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.OrderKo).Count();
-                    var familyItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.FamilyKo).Count();
-                    var speciesItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.SpeciesEn).Count();
+                    var speciesItem = SearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.SpeciesKo).Count();
 
-                    models.Add(new PlotItem { XCatText = $"{item.XCat}년", YVal1 = classItem, YVal2 = orderItem, YVal3 = familyItem, YVal4 = speciesItem });
+                    models.Add(new PlotItem { XCatText = $"{item.XCat}년", YVal1 = speciesItem });
                 }
 
-                var classs = SpeciesSearchData.GroupBy(m => m.ClassKo).Count();
-                var orders = SpeciesSearchData.GroupBy(m => m.OrderKo).Count();
-                var familys = SpeciesSearchData.GroupBy(m => m.FamilyKo).Count();
-                var speciess = SpeciesSearchData.GroupBy(m => m.SpeciesEn).Count();
+                var speciess = SearchData.GroupBy(m => m.SpeciesKo).Count();
 
-                models.Add(new PlotItem { XCatText = "젼체(년)", YVal1 = classs, YVal2 = orders, YVal3 = familys, YVal4 = speciess });
+                models.Add(new PlotItem { XCatText = "젼체(년)", YVal1 = speciess });
             });
 
             SpeciesCollection.AddRange(models);
@@ -250,6 +217,44 @@ public partial class StatsFishPageViewModel : ObservableObject, ITransientServic
         catch (Exception ex)
         {
             GB.LogWrite(GetType().Name, nameof(GetSpeciesData), ex.Message);
+        }
+    }
+
+    //특징
+    private async Task GetFeatureData()
+    {
+        try
+        {
+            FeatureCollection.Clear();
+
+            var models = new List<PlotItem>();
+
+            await Task.Run(() =>
+            {
+                var items = SearchData.Where(m => !string.IsNullOrWhiteSpace(m.Feature))
+                                       .GroupBy(m => m.Feature)
+                                       .Select(m => new PlotItem { XCatText = m.Key ?? "", Count = m.Count() })
+                                       .ToList();
+
+                //전체자료에서의 비율
+                var totalCount = SearchData.Count;
+
+                foreach (var item in items)
+                {
+                    models.Add(new PlotItem
+                    {
+                        XCatText = item.XCatText,
+                        YVal1 = item.Count,
+                        YVal2 = Math.Round(((double)item.Count / totalCount) * 100, 2),
+                    });
+                }
+            });
+
+            FeatureCollection.AddRange(models.OrderByDescending(m => m.YVal2));
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(GetFeatureData), ex.Message);
         }
     }
 
