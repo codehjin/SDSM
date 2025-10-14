@@ -1,4 +1,6 @@
-﻿using SDSM_App.Enums;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using MediaFoundation;
+using SDSM_App.Enums;
 using SDSM_App.Models;
 using SDSM_Models;
 using System.ComponentModel;
@@ -800,6 +802,106 @@ public static class GB
             grade = "Null";
 
         return (rounded, grade);
+    }
+
+    #endregion
+
+    #region 수질등급
+
+    public static int? GetPhGrade(double? value)
+    {
+        if (value != null)
+            return (value >= 6.5 && value <= 8.5) ? 1 : 4;
+        return 4;
+    }
+
+    public static string GetBodGrade(double? value)
+    {
+        if (value == null)
+            return "6";
+
+        if (value <= 1) return "1a";
+        if (value <= 2) return "1b";
+        if (value <= 3) return "2";
+        if (value <= 5) return "3";
+        if (value <= 8) return "4";
+        if (value <= 10) return "5";
+        return "6";
+    }
+
+    public static string GetCodGrade(double? value)
+    {
+        if (value == null)
+            return "6";
+
+        if (value <= 2) return "1a";
+        if (value <= 4) return "1b";
+        if (value <= 5) return "2";
+        if (value <= 7) return "3";
+        if (value <= 9) return "4";
+        if (value <= 11) return "5";
+        return "6";
+    }
+
+    public static string GetTocGrade(double? value)
+    {
+        if (value == null)
+            return "6";
+
+        if (value <= 2) return "1a";
+        if (value <= 3) return "1b";
+        if (value <= 4) return "2";
+        if (value <= 5) return "3";
+        if (value <= 6) return "4";
+        if (value <= 8) return "5";
+        return "6";
+    }
+
+    public static int? GetSsGrade(double? value)
+    {
+        if (value == null)
+            return 5;
+
+        if (value <= 25) return 1;
+        if (value <= 100) return 4;
+        return 5;
+    }
+
+    public static string GetDoGrade(double? value)
+    {
+        if (value == null)
+            return "6";
+
+        if (value >= 7.5) return "1a";
+        if (value >= 5) return "1b";
+        if (value >= 2) return "4";
+        return "6";
+    }
+
+    public static string GetTpGrade(double? value)
+    {
+        if (value == null)
+            return "6";
+
+        if (value <= 0.02) return "1a";
+        if (value <= 0.04) return "1b";
+        if (value <= 0.1) return "2";
+        if (value <= 0.2) return "3";
+        if (value <= 0.3) return "4";
+        if (value <= 0.5) return "5";
+        return "6";
+    }
+
+    public static string GetEColiGrade(double? value)
+    {
+        if (value == null)
+            return "4";
+
+        if (value <= 50) return "1a";
+        if (value <= 500) return "1b";
+        if (value <= 1000) return "2";
+        if (value <= 5000) return "3";
+        return "4";
     }
 
     #endregion

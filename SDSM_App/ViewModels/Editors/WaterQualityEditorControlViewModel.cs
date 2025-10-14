@@ -183,14 +183,14 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
                 Chla = Chla,
                 Turbidity = Turbidity,
                 Flow = Flow,
-                PHGrade = GetPhGrade(),
-                BODGrade = GetBodGrade(),
-                CODGrade = GetCodGrade(),
-                TOCGrade = GetTocGrade(),
-                SSGrade = GetSsGrade(),
-                DOGrade = GetDoGrade(),
-                TPGrade = GetTpGrade(),
-                EColiGrade = GetEColiGrade(),
+                PHGrade = GB.GetPhGrade(PH),
+                BODGrade = GB.GetBodGrade(BOD),
+                CODGrade = GB.GetCodGrade(COD),
+                TOCGrade = GB.GetTocGrade(TOC),
+                SSGrade = GB.GetSsGrade(SS),
+                DOGrade = GB.GetDoGrade(DO),
+                TPGrade = GB.GetTpGrade(TP),
+                EColiGrade = GB.GetEColiGrade(EColi),
             };
             return model;
 
@@ -235,14 +235,14 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
             EditModel.Chla = Chla;
             EditModel.Turbidity = Turbidity;
             EditModel.Flow = Flow;
-            EditModel.PHGrade = GetPhGrade();
-            EditModel.BODGrade = GetBodGrade();
-            EditModel.CODGrade = GetCodGrade();
-            EditModel.TOCGrade = GetTocGrade();
-            EditModel.SSGrade = GetSsGrade();
-            EditModel.DOGrade = GetDoGrade();
-            EditModel.TPGrade = GetTpGrade();
-            EditModel.EColiGrade = GetEColiGrade();
+            EditModel.PHGrade = GB.GetPhGrade(PH);
+            EditModel.BODGrade = GB.GetBodGrade(BOD);
+            EditModel.CODGrade = GB.GetCodGrade(COD);
+            EditModel.TOCGrade = GB.GetTocGrade(TOC);
+            EditModel.SSGrade = GB.GetSsGrade(SS);
+            EditModel.DOGrade = GB.GetDoGrade(DO);
+            EditModel.TPGrade = GB.GetTpGrade(TP);
+            EditModel.EColiGrade = GB.GetEColiGrade(EColi);
 
             return true;
         }
@@ -372,96 +372,4 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
 
     #endregion
 
-    #region 등급계산
-
-    private int? GetPhGrade()
-    {
-        if (PH != null)
-            return (PH >= 6.5 && PH <= 8.5) ? 1 : 4;
-        return 4;
-    }
-
-    private string GetBodGrade()
-    {
-        if (BOD == null)
-            return "6";
-        if (BOD <= 1) return "1a";
-        if (BOD <= 2) return "1b";
-        if (BOD <= 3) return "2";
-        if (BOD <= 5) return "3";
-        if (BOD <= 8) return "4";
-        if (BOD <= 10) return "5";
-        return "6";
-    }
-
-    private string GetCodGrade()
-    {
-        if (COD == null)
-            return "6";
-        if (COD <= 2) return "1a";
-        if (COD <= 4) return "1b";
-        if (COD <= 5) return "2";
-        if (COD <= 7) return "3";
-        if (COD <= 9) return "4";
-        if (COD <= 11) return "5";
-        return "6";
-    }
-
-    private string GetTocGrade()
-    {
-        if (TOC == null)
-            return "6";
-        if (TOC <= 2) return "1a";
-        if (TOC <= 3) return "1b";
-        if (TOC <= 4) return "2";
-        if (TOC <= 5) return "3";
-        if (TOC <= 6) return "4";
-        if (TOC <= 8) return "5";
-        return "6";
-    }
-
-    private int? GetSsGrade()
-    {
-        if (SS == null)
-            return 5;
-        if (SS <= 25) return 1;
-        if (SS <= 100) return 4;
-        return 5;
-    }
-
-    private string GetDoGrade()
-    {
-        if (DO == null)
-            return "6";
-        if (DO >= 7.5) return "1a";
-        if (DO >= 5) return "1b";
-        if (DO >= 2) return "4";
-        return "6";
-    }
-
-    private string GetTpGrade()
-    {
-        if (TP == null)
-            return "6";
-        if (TP <= 0.02) return "1a";
-        if (TP <= 0.04) return "1b";
-        if (TP <= 0.1) return "2";
-        if (TP <= 0.2) return "3";
-        if (TP <= 0.3) return "4";
-        if (TP <= 0.5) return "5";
-        return "6";
-    }
-
-    private string GetEColiGrade()
-    {
-        if (EColi == null)
-            return "4";
-        if (EColi <= 50) return "1a";
-        if (EColi <= 500) return "1b";
-        if (EColi <= 1000) return "2";
-        if (EColi <= 5000) return "3";
-        return "4";
-    }
-
-    #endregion
 }

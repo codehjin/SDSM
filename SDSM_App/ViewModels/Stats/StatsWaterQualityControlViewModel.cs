@@ -5,6 +5,8 @@ using SDSM_App.Animations;
 using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_Models;
+using System.Data;
+using System.Text;
 using Telerik.Windows.Data;
 
 namespace SDSM_App.ViewModels;
@@ -41,6 +43,9 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
     //연도별 자료수
     [ObservableProperty] private RadObservableCollection<PlotItem> _yearCollection = [];
 
+    //수질등급
+    [ObservableProperty] private DataTable _gradeCollection = new();
+
     #endregion
 
     #region ICommand 구현
@@ -73,6 +78,7 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
         ExportCollection =
         [
             new(){ Caption = "연도별자료", IsCheckedTable = false, IsCheckedChart = false },
+            new(){ Caption = "수질등급", IsCheckedTable = false, IsCheckedChart = false },
         ];
 
         Data = await context.WaterQualitys.ToListAsync();
@@ -115,6 +121,15 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
                             {
                                 SurveyYear = m.SurveyYear,
                                 YearChsu = m.YearChsu,
+                                River = m.River,
+                                PH = m.PH,
+                                BOD = m.BOD,
+                                COD = m.COD,
+                                TOC = m.TOC,
+                                SS = m.SS,
+                                DO = m.DO,
+                                TP = m.TP,
+                                EColi = m.EColi,
                             })
                     );
                 }
@@ -129,7 +144,7 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
         if (GB.IsBusy == false)
             GB.IsBusy = true;
 
-        var tasks = new[] { GetYearData()};
+        var tasks = new[] { GetYearData(), GetGradeData() };
 
         try
         {
@@ -176,6 +191,352 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
             GB.LogWrite(GetType().Name, nameof(GetYearData), ex.Message);
         }
     }
+
+    //수질등급
+    private async Task GetGradeData()
+    {
+        try
+        {
+            GradeCollection = new();
+            var dt = new DataTable();
+
+            await Task.Run(() =>
+            {
+                var years = SearchData.GroupBy(m => m.SurveyYear).Select(m => m.Key).OrderBy(m => m).ToList();
+                var rivers = SearchData.GroupBy(m => m.River).Select(m => m.Key).OrderBy(m => m).ToList();
+                string[] grades = ["pH", "BOD", "COD","TOC","SS","DO","T-P", "대장균군"];
+
+                dt.Columns.Add(new DataColumn("연도", typeof(string)));
+
+                //컬럼 추가 : 하천명
+                foreach (var river in rivers)
+                {
+                    foreach (var grade in grades)
+                    {
+                        var riverName = string.IsNullOrEmpty(river) ? "기타" : river;
+
+                        var column = new DataColumn($"{riverName}_{grade}", typeof(string)) { AllowDBNull = true };
+                        dt.Columns.Add(column);
+                    }
+                }
+
+                //기타 컬럼 목록 만들기
+                var etcColumns = new List<DataColumn>();    
+                foreach (DataColumn column in dt.Columns)
+                {
+                    if (column.ColumnName.Contains("기타"))
+                    {
+                        etcColumns.Add(column);
+                    }
+                }
+
+                //기타 컬럼 지우고 추가하기
+                foreach (var etcColumn in etcColumns)
+                {
+                    dt.Columns.Remove(etcColumn);
+                    dt.Columns.Add(etcColumn);
+                }
+
+                //데이터 추가 : 연도별, 하천명별
+                foreach (var year in years)
+                {
+                    var row = dt.NewRow();
+                    row["연도"] = $"{year}년";
+
+                    foreach (var river in rivers)
+                    {
+                        var riverName = string.IsNullOrEmpty(river) ? "기타" : river;
+                        var grade = string.Empty;
+                        var columnName = string.Empty;
+                        var data = new List<double?>();
+
+                        //PH
+                        columnName = $"{riverName}_pH";
+                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.PH != null).Select(m=>m.PH)];                        
+                        if (data.Count != 0)
+                        {
+                            var scoreSum = data.Sum(m => m) ?? 0;
+                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
+                            grade = GB.GetPhGrade(score).ToString();
+                            row[columnName] = grade;
+                        }
+                        else
+                            row[columnName] = "-";
+
+                        //BOD
+                        columnName = $"{riverName}_BOD";
+                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.BOD != null).Select(m => m.BOD)];
+                        if (data.Count != 0)
+                        {
+                            var scoreSum = data.Sum(m => m) ?? 0;
+                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
+                            grade = GB.GetBodGrade(score);
+                            row[columnName] = grade;
+                        }
+                        else
+                            row[columnName] = "-";
+
+                        //COD
+                        columnName = $"{riverName}_COD";
+                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.COD != null).Select(m => m.COD)];
+                        if (data.Count != 0)
+                        {
+                            var scoreSum = data.Sum(m => m) ?? 0;
+                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
+                            grade = GB.GetCodGrade(score);
+                            row[columnName] = grade;
+                        }
+                        else
+                            row[columnName] = "-";
+
+                        //TOC
+                        columnName = $"{riverName}_TOC";
+                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.TOC != null).Select(m => m.TOC)];
+                        if (data.Count != 0)
+                        {
+                            var scoreSum = data.Sum(m => m) ?? 0;
+                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
+                            grade = GB.GetTocGrade(score);
+                            row[columnName] = grade;
+                        }
+                        else
+                            row[columnName] = "-";
+
+                        //SS
+                        columnName = $"{riverName}_SS";
+                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.SS != null).Select(m => m.SS)];
+                        if (data.Count != 0)
+                        {
+                            var scoreSum = data.Sum(m => m) ?? 0;
+                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
+                            grade = GB.GetSsGrade(score).ToString();
+                            row[columnName] = grade;
+                        }
+                        else
+                            row[columnName] = "-";
+
+                        //SS
+                        columnName = $"{riverName}_SS";
+                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.SS != null).Select(m => m.SS)];
+                        if (data.Count != 0)
+                        {
+                            var scoreSum = data.Sum(m => m) ?? 0;
+                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
+                            grade = GB.GetSsGrade(score).ToString();
+                            row[columnName] = grade;
+                        }
+                        else
+                            row[columnName] = "-";
+
+                        //DO
+                        columnName = $"{riverName}_DO";
+                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.DO != null).Select(m => m.DO)];
+                        if (data.Count != 0)
+                        {
+                            var scoreSum = data.Sum(m => m) ?? 0;
+                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
+                            grade = GB.GetDoGrade(score);
+                            row[columnName] = grade;
+                        }
+                        else
+                            row[columnName] = "-";
+
+                        //T-P
+                        columnName = $"{riverName}_T-P";
+                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.TP != null).Select(m => m.TP)];
+                        if (data.Count != 0)
+                        {
+                            var scoreSum = data.Sum(m => m) ?? 0;
+                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
+                            grade = GB.GetTpGrade(score);
+                            row[columnName] = grade;
+                        }
+                        else
+                            row[columnName] = "-";
+
+                        //대장균군
+                        columnName = $"{riverName}_대장균군";
+                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.EColi != null).Select(m => m.EColi)];
+                        if (data.Count != 0)
+                        {
+                            var scoreSum = data.Sum(m => m) ?? 0;
+                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
+                            grade = GB.GetEColiGrade(score);
+                            row[columnName] = grade;
+                        }
+                        else
+                            row[columnName] = "-";
+
+                    }
+                    dt.Rows.Add(row);
+                }
+
+                GradeCollection = dt;
+            });
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(GetGradeData), ex.Message);
+        }
+    }
+
+    //private async Task GetGradeData()
+    //{
+    //    try
+    //    {
+    //        GradeCollection = new();
+    //        var dt = new DataTable();
+
+    //        await Task.Run(() =>
+    //        {
+    //            var years = SearchData.GroupBy(m => m.SurveyYear).Select(m => m.Key).OrderBy(m => m).ToList();
+    //            var rivers = SearchData.GroupBy(m => m.River).Select(m => m.Key).OrderBy(m => m).ToList();
+
+    //            dt.Columns.Add(new DataColumn("연도", typeof(string)));
+
+    //            //컬럼 추가 : 하천명
+    //            foreach (var river in rivers)
+    //            {
+    //                var riverName = string.IsNullOrEmpty(river) ? "기타" : river;
+
+    //                var column = new DataColumn(riverName, typeof(string))
+    //                {
+    //                    AllowDBNull = true
+    //                };
+    //                dt.Columns.Add(column);
+    //            }
+
+    //            //기타 컬럼 맨뒤로
+    //            var etcColumn = dt.Columns["기타"];
+    //            if (etcColumn != null)
+    //            {
+    //                dt.Columns.Remove(etcColumn);
+    //                dt.Columns.Add(etcColumn);
+    //            }
+
+    //            //데이터 추가 : 연도별, 하천명별
+    //            foreach (var year in years)
+    //            {
+    //                var row = dt.NewRow();
+    //                row["연도"] = $"{year}년";
+
+    //                foreach (var river in rivers)
+    //                {
+    //                    var riverName = string.IsNullOrEmpty(river) ? "기타" : river;
+    //                    var data = SearchData.Where(m => m.SurveyYear == year && m.River == river).ToList();
+
+    //                    if (data.Count != 0)
+    //                    {
+    //                        var sb = new StringBuilder();
+    //                        var grade = string.Empty;
+    //                        var items = new List<double?>();
+
+    //                        //PH
+    //                        items = [.. data.Where(m => m.PH != null).Select(m => m.PH)];
+    //                        if (items.Count != 0)
+    //                        {
+    //                            var scoreSum = items.Sum(m => m) ?? 0;
+    //                            var score = Math.Round((double)scoreSum / items.Count, 1, MidpointRounding.AwayFromZero);
+    //                            sb.Append($"pH({GB.GetPhGrade(score)})");
+    //                        }
+    //                        else
+    //                            sb.Append($"pH(-)");
+
+    //                        //BOD
+    //                        items = [.. data.Where(m => m.BOD != null).Select(m => m.BOD)];
+    //                        if (items.Count != 0)
+    //                        {
+    //                            var scoreSum = items.Sum(m => m) ?? 0;
+    //                            var score = Math.Round((double)scoreSum / items.Count, 1, MidpointRounding.AwayFromZero);
+    //                            sb.Append($", BOD({GB.GetBodGrade(score)})");
+    //                        }
+    //                        else
+    //                            sb.Append($", BOD(-)");
+
+    //                        //COD
+    //                        items = [.. data.Where(m => m.COD != null).Select(m => m.COD)];
+    //                        if (items.Count != 0)
+    //                        {
+    //                            var scoreSum = items.Sum(m => m) ?? 0;
+    //                            var score = Math.Round((double)scoreSum / items.Count, 1, MidpointRounding.AwayFromZero);
+    //                            sb.Append($", COD({GB.GetCodGrade(score)})");
+    //                        }
+    //                        else
+    //                            sb.Append($", COD(-)");
+
+    //                        //TOC
+    //                        items = [.. data.Where(m => m.TOC != null).Select(m => m.TOC)];
+    //                        if (items.Count != 0)
+    //                        {
+    //                            var scoreSum = items.Sum(m => m) ?? 0;
+    //                            var score = Math.Round((double)scoreSum / items.Count, 1, MidpointRounding.AwayFromZero);
+    //                            sb.Append($", TOC({GB.GetTocGrade(score)})");
+    //                        }
+    //                        else
+    //                            sb.Append($", TOC(-)");
+
+    //                        //SS
+    //                        items = [.. data.Where(m => m.SS != null).Select(m => m.SS)];
+    //                        if (items.Count != 0)
+    //                        {
+    //                            var scoreSum = items.Sum(m => m) ?? 0;
+    //                            var score = Math.Round((double)scoreSum / items.Count, 1, MidpointRounding.AwayFromZero);
+    //                            sb.Append($", SS({GB.GetSsGrade(score)})");
+    //                        }
+    //                        else
+    //                            sb.Append($", SS(-)");
+
+    //                        //DO
+    //                        items = [.. data.Where(m => m.DO != null).Select(m => m.DO)];
+    //                        if (items.Count != 0)
+    //                        {
+    //                            var scoreSum = items.Sum(m => m) ?? 0;
+    //                            var score = Math.Round((double)scoreSum / items.Count, 1, MidpointRounding.AwayFromZero);
+    //                            sb.Append($", DO({GB.GetDoGrade(score)})");
+    //                        }
+    //                        else
+    //                            sb.Append($", DO(-)");
+
+    //                        //TP
+    //                        items = [.. data.Where(m => m.TP != null).Select(m => m.TP)];
+    //                        if (items.Count != 0)
+    //                        {
+    //                            var scoreSum = items.Sum(m => m) ?? 0;
+    //                            var score = Math.Round((double)scoreSum / items.Count, 1, MidpointRounding.AwayFromZero);
+    //                            sb.Append($", T-P({GB.GetTpGrade(score)})");
+    //                        }
+    //                        else
+    //                            sb.Append($", T-P(-)");
+
+    //                        //EColi
+    //                        items = [.. data.Where(m => m.EColi != null).Select(m => m.EColi)];
+    //                        if (items.Count != 0)
+    //                        {
+    //                            var scoreSum = items.Sum(m => m) ?? 0;
+    //                            var score = Math.Round((double)scoreSum / items.Count, 1, MidpointRounding.AwayFromZero);
+    //                            sb.Append($", 대장균군({GB.GetEColiGrade(score)})");
+    //                        }
+    //                        else
+    //                            sb.Append($", 대장균군(-)");
+
+    //                        row[riverName] = sb.ToString();
+    //                    }
+    //                    else
+    //                    {
+    //                        row[riverName] = "-";
+    //                    }
+    //                }
+    //                dt.Rows.Add(row);
+    //            }
+
+    //            GradeCollection = dt;
+    //        });
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        GB.LogWrite(GetType().Name, nameof(GetGradeData), ex.Message);
+    //    }
+    //}
 
     #endregion 
 }

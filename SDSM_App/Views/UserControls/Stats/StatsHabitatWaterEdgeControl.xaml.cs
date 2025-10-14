@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Telerik.Windows.Controls;
+using Telerik.Windows.Data;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
 using Telerik.Windows.Documents.Spreadsheet.Model;
 using Telerik.Windows.Documents.Spreadsheet.PropertySystem;
@@ -48,6 +49,27 @@ public partial class StatsHabitatWaterEdgeControl : UserControl, ITransientServi
         }
     }
 
+    private void GradeDataRadGridView_AutoGeneratingColumn(object sender, GridViewAutoGeneratingColumnEventArgs e)
+    {
+        var column = (GridViewDataColumn)e.Column;
+
+        if (column != null)
+        {
+            switch (column.Header.ToString())
+            {
+                case "연도":
+                    column.MinWidth = 120;
+                    column.Width = 120;
+                    column.MaxWidth = 120;
+                    break;
+                default:
+                    column.Width = new GridViewLength(1, GridViewLengthUnitType.Star);
+                    column.DataType = typeof(string);
+                    break;
+            }
+        }
+    }
+
     //전체출력
     private void AllExportRadButton_Click(object sender, RoutedEventArgs e)
     {
@@ -71,6 +93,7 @@ public partial class StatsHabitatWaterEdgeControl : UserControl, ITransientServi
             var gridViews = new Dictionary<string, RadGridView>
             {
                 { "연도별자료", YearDataRadGridView },
+                { "평가등급", GradeDataRadGridView },
             };
 
             MultiExport(folder, date, gridViews);
@@ -112,6 +135,11 @@ public partial class StatsHabitatWaterEdgeControl : UserControl, ITransientServi
                                 ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
                             }
                             break;
+                        case "평가등급":
+                            {
+                                //그래프 없음
+                            }
+                            break;
                     }
                 }
             }
@@ -126,6 +154,9 @@ public partial class StatsHabitatWaterEdgeControl : UserControl, ITransientServi
                     {
                         case "연도별자료":
                             gridViews.Add(item.Caption, YearDataRadGridView);
+                            break;
+                        case "평가등급":
+                            gridViews.Add(item.Caption, GradeDataRadGridView);
                             break;
                     }
                 }

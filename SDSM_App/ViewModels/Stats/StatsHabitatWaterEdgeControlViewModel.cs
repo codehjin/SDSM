@@ -5,6 +5,7 @@ using SDSM_App.Animations;
 using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_Models;
+using System.Data;
 using Telerik.Windows.Data;
 
 namespace SDSM_App.ViewModels;
@@ -41,6 +42,9 @@ public partial class StatsHabitatWaterEdgeControlViewModel : ObservableObject, I
     //연도별 자료수
     [ObservableProperty] private RadObservableCollection<PlotItem> _yearCollection = [];
 
+    //평가등급
+    [ObservableProperty] private DataTable _gradeCollection = new();
+
     #endregion
 
     #region ICommand 구현
@@ -73,6 +77,7 @@ public partial class StatsHabitatWaterEdgeControlViewModel : ObservableObject, I
         ExportCollection =
         [
             new(){ Caption = "연도별자료", IsCheckedTable = false, IsCheckedChart = false },
+            new(){ Caption = "평가등급", IsCheckedTable = false, IsCheckedChart = false },
         ];
 
         Data = await context.HabitatWaterEdges.ToListAsync();
@@ -115,6 +120,8 @@ public partial class StatsHabitatWaterEdgeControlViewModel : ObservableObject, I
                             {
                                 SurveyYear = m.SurveyYear,
                                 YearChsu = m.YearChsu,
+                                River = m.River,
+                                EvaluationScore = m.EvaluationScore,
                             })
                     );
                 }
@@ -129,7 +136,7 @@ public partial class StatsHabitatWaterEdgeControlViewModel : ObservableObject, I
         if (GB.IsBusy == false)
             GB.IsBusy = true;
 
-        var tasks = new[] { GetYearData()};
+        var tasks = new[] { GetYearData(), GetGradeData() };
 
         try
         {
@@ -177,5 +184,126 @@ public partial class StatsHabitatWaterEdgeControlViewModel : ObservableObject, I
         }
     }
 
-    #endregion 
+    //평가등급
+    private async Task GetGradeData()
+    {
+        try
+        {
+            GradeCollection = new();
+            var dt = new DataTable();
+
+            await Task.Run(() =>
+            {
+                var years = SearchData.GroupBy(m => m.SurveyYear).Select(m => m.Key).OrderBy(m => m).ToList();
+                var rivers = SearchData.GroupBy(m => m.River).Select(m => m.Key).OrderBy(m => m).ToList();
+
+                dt.Columns.Add(new DataColumn("연도", typeof(string)));
+
+                //컬럼 추가 : 하천명
+                foreach (var river in rivers)
+                {
+                    var riverName = string.IsNullOrEmpty(river) ? "기타" : river;
+
+                    var column = new DataColumn(riverName, typeof(string))
+                    {
+                        AllowDBNull = true
+                    };
+                    dt.Columns.Add(column);
+                }
+
+                //기타 컬럼 맨뒤로
+                var etcColumn = dt.Columns["기타"];
+                if (etcColumn != null)
+                {
+                    dt.Columns.Remove(etcColumn);
+                    dt.Columns.Add(etcColumn);
+                }
+
+                //데이터 추가 : 연도별, 하천명별
+                foreach (var year in years)
+                {
+                    var row = dt.NewRow();
+                    row["연도"] = $"{year}년";
+
+                    foreach (var river in rivers)
+                    {
+                        var riverName = string.IsNullOrEmpty(river) ? "기타" : river;
+                        var data = SearchData.Where(m => m.SurveyYear == year && m.River == river).ToList();
+
+                        if (data.Count != 0)
+                        {
+                            var grade = string.Empty;
+                            var scoreSum = data.Sum(m => m.EvaluationScore) ?? 0;
+
+                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
+
+                            if (score >= 80) grade = "A";
+                            else if (score >= 60) grade = "B";
+                            else if (score >= 40) grade = "C";
+                            else if (score >= 20) grade = "D";
+                            else if (score >= 0) grade = "E";
+
+                            row[riverName] = $"{grade}({score:00.0})";
+                        }
+                        else
+                        {
+                            row[riverName] = "-";
+                        }
+                    }
+                    dt.Rows.Add(row);
+                }
+
+                GradeCollection = dt;
+            });
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(GetGradeData), ex.Message);
+        }
+    }
+
+    //private async Task GetGradeData()
+    //{
+    //    try
+    //    {
+    //        GradeCollection.Clear();
+
+    //        var models = new List<PlotItem>();
+
+    //        await Task.Run(() =>
+    //        {
+    //            var items = SearchData.Where(m => !string.IsNullOrEmpty(m.EvaluationGrade))
+    //                                  .GroupBy(m => m.EvaluationGrade)
+    //                                  .Select(m => new PlotItem { XCatText = m.Key ?? "", Count = m.Count() })
+    //                                  .OrderBy(m => m.XCatText)
+    //                                  .ToList();
+
+    //            //전체자료에서의 비율
+    //            var totalCount = SearchData.Count;
+    //            string[] grades = ["A", "B", "C", "D", "E"];
+
+    //            foreach (var grade in grades)
+    //            {
+    //                var data = items.Where(m => m.XCatText == grade).ToList();
+    //                var count = data.Sum(m => m.Count);
+
+    //                models.Add(new PlotItem 
+    //                { 
+    //                    XCatText = grade, 
+    //                    YVal1 = count,
+    //                    YRatio1 = Math.Round(((double)count / totalCount) * 100, 2), 
+    //                });
+    //            }
+    //        });
+
+    //        //A~E 등급으로 정렬
+    //        GradeCollection.AddRange(models.OrderBy(m=>m.XCatText));
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        GB.LogWrite(GetType().Name, nameof(GetGradeData), ex.Message);
+    //    }
+    //}
+
+    #endregion
 }

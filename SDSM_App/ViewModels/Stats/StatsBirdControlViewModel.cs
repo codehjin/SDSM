@@ -245,11 +245,12 @@ public partial class StatsBirdControlViewModel : ObservableObject, ITransientSer
                     {
                         XCatText = item.XCatText,
                         YVal1 = item.Count,
-                        YVal2 = Math.Round(((double)item.Count / totalCount) * 100, 2),
+                        YRatio1 = Math.Round(((double)item.Count / totalCount) * 100, 2),
                     });
                 }
             });
 
+            //비율로 내림차순 정렬
             FeatureCollection.AddRange(models.OrderByDescending(m => m.YVal2));
         }
         catch (Exception ex)

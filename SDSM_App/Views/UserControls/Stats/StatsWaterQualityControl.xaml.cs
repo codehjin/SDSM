@@ -3,6 +3,8 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.ViewModels;
+using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,6 +35,30 @@ public partial class StatsWaterQualityControl : UserControl, ITransientService
 
     #region Control 이벤트
 
+    private void GradeDataRadGridView_Loaded(object sender, RoutedEventArgs e)
+    {
+        var dt = _vm.GradeCollection;
+        if (dt == null || dt.Rows.Count == 0)
+            return;
+
+        var rivers = new List<string>();
+
+        foreach (DataColumn column in dt.Columns)
+        {
+            var header = column.ColumnName ?? "";
+            if (header.Contains('_'))
+            {
+                // "_" 다음 문자열만 남김
+                rivers.Add(header[..(header.IndexOf('_'))]);
+            }
+        }
+
+        foreach (var river in rivers.Distinct())
+        {
+            GradeDataRadGridView.ColumnGroups.Add(new GridViewColumnGroup { Name = river, Header = river });
+        }
+    }
+
     private void RadGridView_ElementExportingToDocument(object sender, GridViewElementExportingToDocumentEventArgs e)
     {
         if (e.Element == ExportElement.Cell && e.Value != null)
@@ -44,6 +70,38 @@ public partial class StatsWaterQualityControl : UserControl, ITransientService
             else if (double.TryParse(e.Value.ToString(), out var d))
             {
                 e.Value = d;
+            }
+        }
+    }
+
+    private void GradeDataRadGridView_AutoGeneratingColumn(object sender, GridViewAutoGeneratingColumnEventArgs e)
+    {
+        var column = (GridViewDataColumn)e.Column;
+
+        if (column != null)
+        {
+            switch (column.Header.ToString())
+            {
+                case "연도":
+                    column.MinWidth = 120;
+                    column.Width = 120;
+                    column.MaxWidth = 120;
+                    break;
+                default:
+                    var header = column.Header.ToString() ?? "";
+                    if (header.Contains('_'))
+                    {
+                        //컬럼 그룹
+                        column.ColumnGroupName = header[..(header.IndexOf('_'))];
+
+                        // 컬럼명
+                        column.Header = header[(header.IndexOf('_') + 1)..];
+                    }
+                    column.MinWidth = 52;
+                    column.Width = 52;
+                    column.MaxWidth = 52;
+                    column.DataType = typeof(string);
+                    break;
             }
         }
     }
@@ -71,6 +129,7 @@ public partial class StatsWaterQualityControl : UserControl, ITransientService
             var gridViews = new Dictionary<string, RadGridView>
             {
                 { "연도별자료", YearDataRadGridView },
+                { "수질등급", GradeDataRadGridView },
             };
 
             MultiExport(folder, date, gridViews);
@@ -112,6 +171,11 @@ public partial class StatsWaterQualityControl : UserControl, ITransientService
                                 ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
                             }
                             break;
+                        case "수질등급":
+                            {
+                                //그래프 없음
+                            }
+                            break;
                     }
                 }
             }
@@ -126,6 +190,9 @@ public partial class StatsWaterQualityControl : UserControl, ITransientService
                     {
                         case "연도별자료":
                             gridViews.Add(item.Caption, YearDataRadGridView);
+                            break;
+                        case "수질등급":
+                            gridViews.Add(item.Caption, GradeDataRadGridView);
                             break;
                     }
                 }
@@ -191,7 +258,22 @@ public partial class StatsWaterQualityControl : UserControl, ITransientService
 
                     ColumnSelection columnSelection = ws.Columns[0, ws.UsedCellRange.ColumnCount];
                     double columnWidth = columnSelection.GetWidth().Value.Value;
-                    columnSelection.SetWidth(new ColumnWidth(columnWidth + 160, true));
+
+                    if (gridView.Key == "수질등급")
+                    {
+                        columnSelection.SetWidth(new ColumnWidth(columnWidth + 40, true));
+
+                        var columnCount = ws.UsedCellRange.ColumnCount;
+                        for (int i = 1; i < columnCount; i += 8)
+                        {
+                            Debug.WriteLine(i);
+                            ws.Cells[new CellIndex(0, i), new CellIndex(0, i + 7)].Merge();
+                        }
+                    }
+                    else
+                    {
+                        columnSelection.SetWidth(new ColumnWidth(columnWidth + 160, true));
+                    }
                 }
                 using Stream output = new FileStream(Path.Combine(folder, $"{excelFileName}"), FileMode.Create);
                 formatProvider.Export(workbook, output, null);

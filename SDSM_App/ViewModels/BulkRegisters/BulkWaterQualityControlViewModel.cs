@@ -881,103 +881,71 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
     {
         var value = ((ICellValue)(worksheet.Cells[13, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[13, columnIndex].GetFormat().Value);
         if (double.TryParse(value, out double d))
-            return (d >= 6.5 && d <= 8.5) ? 1 : 4;
+            return GB.GetPhGrade(d);
 
-        return null;
+        return 4;
     }
 
     private static string? GetBodGrade(Worksheet worksheet, int columnIndex)
     {
         var value = ((ICellValue)(worksheet.Cells[14, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[14, columnIndex].GetFormat().Value);
-        if (!double.TryParse(value, out double d))
-            return null;
+        if (double.TryParse(value, out double d))
+            return GB.GetBodGrade(d);
 
-        if (d <= 1) return "1a";
-        if (d <= 2) return "1b";
-        if (d <= 3) return "2";
-        if (d <= 5) return "3";
-        if (d <= 8) return "4";
-        if (d <= 10) return "5";
         return "6";
     }
 
     private static string? GetCodGrade(Worksheet worksheet, int columnIndex)
     {
-        var bodValue = ((ICellValue)(worksheet.Cells[15, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[15, columnIndex].GetFormat().Value);
-        if (!double.TryParse(bodValue, out double d))
-            return null;
+        var value = ((ICellValue)(worksheet.Cells[15, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[15, columnIndex].GetFormat().Value);
+        if (double.TryParse(value, out double d))
+            return GB.GetCodGrade(d);
 
-        if (d <= 2) return "1a";
-        if (d <= 4) return "1b";
-        if (d <= 5) return "2";
-        if (d <= 7) return "3";
-        if (d <= 9) return "4";
-        if (d <= 11) return "5";
         return "6";
     }
 
     private static string? GetTocGrade(Worksheet worksheet, int columnIndex)
     {
         var value = ((ICellValue)(worksheet.Cells[16, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[16, columnIndex].GetFormat().Value);
-        if (!double.TryParse(value, out double d))
-            return null;
-        if (d <= 2) return "1a";
-        if (d <= 3) return "1b";
-        if (d <= 4) return "2";
-        if (d <= 5) return "3";
-        if (d <= 6) return "4";
-        if (d <= 8) return "5";
+        if (double.TryParse(value, out double d))
+            return GB.GetTocGrade(d);
+
         return "6";
     }
 
     private static int? GetSsGrade(Worksheet worksheet, int columnIndex)
     {
         var value = ((ICellValue)(worksheet.Cells[17, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[17, columnIndex].GetFormat().Value);
-        if (!double.TryParse(value, out double d))
-            return null;
+        if (double.TryParse(value, out double d))
+            return GB.GetSsGrade(d);
 
-        if (d <= 25) return 1;
-        if (d <= 100) return 4;
         return 5;
     }
 
     private static string? GetDoGrade(Worksheet worksheet, int columnIndex)
     {
         var value = ((ICellValue)(worksheet.Cells[18, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[18, columnIndex].GetFormat().Value);
-        if (!double.TryParse(value, out double d))
-            return null;
+        if (double.TryParse(value, out double d))
+            return GB.GetDoGrade(d);
 
-        if (d >= 7.5) return "1a";
-        if (d >= 5) return "1b";
-        if (d >= 2) return "4";
         return "6";
     }
 
     private static string? GetTpGrade(Worksheet worksheet, int columnIndex)
     {
         var value = ((ICellValue)(worksheet.Cells[19, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[19, columnIndex].GetFormat().Value);
-        if (!double.TryParse(value, out double d))
-            return null;
+        if (double.TryParse(value, out double d))
+            return GB.GetTpGrade(d);
 
-        if (d <= 0.02) return "1a";
-        if (d <= 0.04) return "1b";
-        if (d <= 0.1) return "2";
-        if (d <= 0.2) return "3";
-        if (d <= 0.3) return "4";
-        if (d <= 0.5) return "5";
         return "6";
     }
 
     private static string? GetEColiGrade(Worksheet worksheet, int columnIndex)
     {
         var value = ((ICellValue)(worksheet.Cells[21, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[21, columnIndex].GetFormat().Value);
-        if (!double.TryParse(value, out double d))
-            return null;
-
-        if (d <= 50) return "1a";
-        if (d <= 500) return "1b";
-        if (d <= 1000) return "2";
-        if (d <= 5000) return "3";
+        if (double.TryParse(value, out double d))
+            return GB.GetEColiGrade(d);
+       
         return "4";
     }
 

@@ -46,7 +46,27 @@
                                              Style="{StaticResource MultiRadComboBoxStyle}">
                             <telerik:RadComboBox.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <UniformGrid Columns="2"/>
+                                    <UniformGrid>
+                                        <UniformGrid.Style>
+                                            <Style TargetType="UniformGrid">
+                                                <Setter Property="Columns" Value="5"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="1">
+                                                        <Setter Property="Columns" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="2">
+                                                        <Setter Property="Columns" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="3">
+                                                        <Setter Property="Columns" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="4">
+                                                        <Setter Property="Columns" Value="1"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </UniformGrid.Style>
+                                    </UniformGrid>
                                 </ItemsPanelTemplate>
                             </telerik:RadComboBox.ItemsPanel>
                             <i:Interaction.Behaviors>
@@ -523,7 +543,7 @@
                                                 <TextBlock Grid.ColumnSpan="3" Text="{Binding DataItem.XCatText}" FontSize="14" FontWeight="Bold"/>
                                                 <TextBlock Grid.Column="0" Grid.Row="2" Text="비율(%)" FontSize="14"/>
                                                 <TextBlock Grid.Column="1" Grid.Row="2" Text=":" FontSize="14" Margin="0 0 3 0"/>
-                                                <TextBlock Grid.Column="2" Grid.Row="2" Text="{Binding DataItem.YVal2, StringFormat={}{0:F2}}" FontSize="14" FontWeight="Bold"/>
+                                                <TextBlock Grid.Column="2" Grid.Row="2" Text="{Binding DataItem.YRatio1, StringFormat={}{0:F2}}" FontSize="14" FontWeight="Bold"/>
                                                 <TextBlock Grid.Column="0" Grid.Row="4" Text="개수" FontSize="14"/>
                                                 <TextBlock Grid.Column="1" Grid.Row="4" Text=":" FontSize="14" Margin="0 0 3 0"/>
                                                 <TextBlock Grid.Column="2" Grid.Row="4" Text="{Binding DataItem.YVal1, StringFormat={}{0:N0}}" FontSize="14" FontWeight="Bold"/>
@@ -545,7 +565,7 @@
                                             <telerik:DataPointLegendSettings TitleBinding="XCatText"/>
                                         </telerik:PieSeries.LegendSettings>
                                         <telerik:PieSeries.AngleRange>
-                                            <telerik:AngleRange StartAngle="0" />
+                                            <telerik:AngleRange StartAngle="-90"/>
                                         </telerik:PieSeries.AngleRange>
                                         <telerik:PieSeries.LabelDefinitions>
                                             <telerik:ChartSeriesLabelDefinition>
@@ -566,7 +586,7 @@
                                                             </StackPanel.Resources>
                                                             <TextBlock Text="{Binding Path=DataItem.XCatText}"/>
                                                             <TextBlock Text=", "/>
-                                                            <TextBlock Text="{Binding Path=DataItem.YVal2, StringFormat={}{0:F2}%}"/>
+                                                            <TextBlock Text="{Binding Path=DataItem.YRatio1, StringFormat={}{0:F2}%}"/>
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </telerik:ChartSeriesLabelDefinition.Template>
@@ -605,7 +625,7 @@
                                             <telerik:CountFunction ResultFormatString="{}{0:N0}건"/>
                                         </telerik:GridViewDataColumn.AggregateFunctions>
                                     </telerik:GridViewDataColumn>
-                                    <telerik:GridViewDataColumn Header="비율(%)" DataMemberBinding="{Binding Path=YVal2}" DataFormatString="{}{0:F2}" MinWidth="80" Width="*" TextWrapping="Wrap" FooterTextAlignment="Center">
+                                    <telerik:GridViewDataColumn Header="비율(%)" DataMemberBinding="{Binding Path=YRatio1}" DataFormatString="{}{0:F2}" MinWidth="80" Width="*" TextWrapping="Wrap" FooterTextAlignment="Center">
                                         <telerik:GridViewDataColumn.AggregateFunctions>
                                             <telerik:SumFunction ResultFormatString="{}{0:F2}"/>
                                         </telerik:GridViewDataColumn.AggregateFunctions>

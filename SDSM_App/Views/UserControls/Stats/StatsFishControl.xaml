@@ -46,7 +46,27 @@
                                              Style="{StaticResource MultiRadComboBoxStyle}">
                             <telerik:RadComboBox.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <UniformGrid Columns="2"/>
+                                    <UniformGrid>
+                                        <UniformGrid.Style>
+                                            <Style TargetType="UniformGrid">
+                                                <Setter Property="Columns" Value="5"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="1">
+                                                        <Setter Property="Columns" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="2">
+                                                        <Setter Property="Columns" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="3">
+                                                        <Setter Property="Columns" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="4">
+                                                        <Setter Property="Columns" Value="1"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </UniformGrid.Style>
+                                    </UniformGrid>
                                 </ItemsPanelTemplate>
                             </telerik:RadComboBox.ItemsPanel>
                             <i:Interaction.Behaviors>

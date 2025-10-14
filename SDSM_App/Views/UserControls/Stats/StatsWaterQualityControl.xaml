@@ -46,7 +46,27 @@
                                              Style="{StaticResource MultiRadComboBoxStyle}">
                             <telerik:RadComboBox.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <UniformGrid Columns="2"/>
+                                    <UniformGrid>
+                                        <UniformGrid.Style>
+                                            <Style TargetType="UniformGrid">
+                                                <Setter Property="Columns" Value="5"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="1">
+                                                        <Setter Property="Columns" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="2">
+                                                        <Setter Property="Columns" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="3">
+                                                        <Setter Property="Columns" Value="1"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadComboBox}}" Value="4">
+                                                        <Setter Property="Columns" Value="1"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </UniformGrid.Style>
+                                    </UniformGrid>
                                 </ItemsPanelTemplate>
                             </telerik:RadComboBox.ItemsPanel>
                             <i:Interaction.Behaviors>
@@ -96,7 +116,18 @@
                                                 <RowDefinition Height="40"/>
                                             </Grid.RowDefinitions>
                                             <TextBlock Grid.Column="0" Text="{Binding Path=Caption}" VerticalAlignment="Center" />
-                                            <CheckBox Grid.Column="1" Content="그래프" Cursor="Hand" IsChecked="{Binding Path=IsCheckedChart}" Margin="0 0 10 0"/>
+                                            <CheckBox Grid.Column="1" Content="그래프" Cursor="Hand" IsChecked="{Binding Path=IsCheckedChart}" Margin="0 0 10 0">
+                                                <CheckBox.Style>
+                                                    <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}">
+                                                        <Setter Property="IsEnabled" Value="True"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="수질등급">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </CheckBox.Style>
+                                            </CheckBox>
                                             <CheckBox Grid.Column="2" Content="통계표" Cursor="Hand" IsChecked="{Binding Path=IsCheckedTable}"/>
                                         </Grid>
                                     </DataTemplate>
@@ -296,6 +327,33 @@
                                         </telerik:GridViewDataColumn.AggregateFunctions>
                                     </telerik:GridViewDataColumn>
                                 </telerik:RadGridView.Columns>
+                            </telerik:RadGridView>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!--수질등급-->
+                <Border Style="{StaticResource ContentBoxStyle}" Margin="0 0 0 10">
+                    <StackPanel>
+                        <CheckBox x:Name="GradeCheckBox" IsChecked="True" Style="{StaticResource UpDownVisibleCheckBoxStyle}">
+                            <TextBlock Text="수질등급" Style="{StaticResource SubTitleTextBlcokStyle}"/>
+                        </CheckBox>
+                        <Grid Margin="0 20 0 0" Visibility="{Binding Path=IsChecked, ElementName=GradeCheckBox, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <!--통계표-->
+                            <telerik:RadGridView x:Name="GradeDataRadGridView"
+                                                 ItemsSource="{Binding Path=GradeCollection.DefaultView}"
+                                                 HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
+                                                 BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
+                                                 BusyIndicatorIsIndeterminate="False"
+                                                 FrozenColumnsSplitterVisibility="Collapsed"
+                                                 LeftFrozenColumnCount="0"
+                                                 RowIndicatorVisibility="Collapsed"
+                                                 IsFilteringAllowed="False"
+                                                 IsSynchronizedWithCurrentItem="{x:Null}"
+                                                 AutoGenerateColumns="True"
+                                                 Loaded="GradeDataRadGridView_Loaded"
+                                                 AutoGeneratingColumn="GradeDataRadGridView_AutoGeneratingColumn"
+                                                 ElementExportingToDocument="RadGridView_ElementExportingToDocument"                                                 >
                             </telerik:RadGridView>
                         </Grid>
                     </StackPanel>
