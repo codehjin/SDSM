@@ -4,7 +4,6 @@ using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.ViewModels;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -266,7 +265,6 @@ public partial class StatsWaterQualityControl : UserControl, ITransientService
                         var columnCount = ws.UsedCellRange.ColumnCount;
                         for (int i = 1; i < columnCount; i += 8)
                         {
-                            Debug.WriteLine(i);
                             ws.Cells[new CellIndex(0, i), new CellIndex(0, i + 7)].Merge();
                         }
                     }

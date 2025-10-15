@@ -337,13 +337,6 @@
                     <Style.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadWatermarkTextBox}}" Value="True"/>
-                                <Condition Binding="{Binding Path=Text, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadWatermarkTextBox}, Converter={StaticResource StringToBoolConverter}}" Value="True"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding Path=IsFocused, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadWatermarkTextBox}}" Value="True"/>
                                 <Condition Binding="{Binding Path=Text, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=telerik:RadWatermarkTextBox}, Converter={StaticResource StringToBoolConverter}}" Value="True"/>
                             </MultiDataTrigger.Conditions>
