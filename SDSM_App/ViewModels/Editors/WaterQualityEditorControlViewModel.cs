@@ -59,16 +59,19 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
     [ObservableProperty] private double? _eColi;
 
     [ObservableProperty] private double? _tN;
+    [ObservableProperty] private double? _eC;
     [ObservableProperty] private double? _cl;
     [ObservableProperty] private double? _sO42;
-    [ObservableProperty] private double? _waterTemperature;
-    [ObservableProperty] private double? _eC;
     [ObservableProperty] private double? _cu;
     [ObservableProperty] private double? _zn;
     [ObservableProperty] private double? _cr;
-    [ObservableProperty] private double? _chla;
     [ObservableProperty] private double? _turbidity;
-    [ObservableProperty] private double? _flow;
+    [ObservableProperty] private double? _chla;
+    [ObservableProperty] private double? _waterTemperature;
+    [ObservableProperty] private double? _waterDepth;
+    [ObservableProperty] private double? _flowVelocity;
+    [ObservableProperty] private double? _flowSec;
+    [ObservableProperty] private double? _flowDay;
 
     [ObservableProperty] private int? _pHGrade;
     [ObservableProperty] private string? _bODGrade;
@@ -172,17 +175,21 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
                 TP = TP,
                 Ecotoxicity = Ecotoxicity,
                 EColi = EColi,
+               
                 TN = TN,
+                EC = EC,
                 Cl = Cl,
                 SO42 = SO42,
-                WaterTemperature = WaterTemperature,
-                EC = EC,
                 Cu = Cu,
                 Zn = Zn,
                 Cr = Cr,
-                Chla = Chla,
                 Turbidity = Turbidity,
-                Flow = Flow,
+                Chla = Chla,
+                WaterTemperature = WaterTemperature,
+                WaterDepth = WaterDepth,
+                FlowVelocity = FlowVelocity,
+                FlowSec = FlowSec,
+                FlowDay = FlowDay,
                 PHGrade = GB.GetPhGrade(PH),
                 BODGrade = GB.GetBodGrade(BOD),
                 CODGrade = GB.GetCodGrade(COD),
@@ -225,16 +232,19 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
             EditModel.Ecotoxicity = Ecotoxicity;
             EditModel.EColi = EColi;
             EditModel.TN = TN;
+            EditModel.EC = EC;
             EditModel.Cl = Cl;
             EditModel.SO42 = SO42;
-            EditModel.WaterTemperature = WaterTemperature;
-            EditModel.EC = EC;
             EditModel.Cu = Cu;
             EditModel.Zn = Zn;
             EditModel.Cr = Cr;
-            EditModel.Chla = Chla;
             EditModel.Turbidity = Turbidity;
-            EditModel.Flow = Flow;
+            EditModel.Chla = Chla;
+            EditModel.WaterTemperature = WaterTemperature;
+            EditModel.WaterDepth = WaterDepth;
+            EditModel.FlowVelocity = FlowVelocity;
+            EditModel.FlowSec = FlowSec;
+            EditModel.FlowDay = FlowDay;            
             EditModel.PHGrade = GB.GetPhGrade(PH);
             EditModel.BODGrade = GB.GetBodGrade(BOD);
             EditModel.CODGrade = GB.GetCodGrade(COD);
@@ -292,16 +302,19 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
         Ecotoxicity = EditModel.Ecotoxicity;
         EColi = EditModel.EColi;
         TN = EditModel.TN;
+        EC = EditModel.EC;
         Cl = EditModel.Cl;
         SO42 = EditModel.SO42;
-        WaterTemperature = EditModel.WaterTemperature;
-        EC = EditModel.EC;
         Cu = EditModel.Cu;
         Zn = EditModel.Zn;
         Cr = EditModel.Cr;
-        Chla = EditModel.Chla;
         Turbidity = EditModel.Turbidity;
-        Flow = EditModel.Flow;
+        Chla = EditModel.Chla;
+        WaterTemperature = EditModel.WaterTemperature;
+        WaterDepth = EditModel.WaterDepth;
+        FlowVelocity = EditModel.FlowVelocity;
+        FlowSec = EditModel.FlowSec;
+        FlowDay = EditModel.FlowDay;
         PHGrade = EditModel.PHGrade;
         BODGrade = EditModel.BODGrade;
         CODGrade = EditModel.CODGrade;
@@ -341,16 +354,19 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
         Ecotoxicity = null;
         EColi = null;
         TN = null;
+        EC = null;
         Cl = null;
         SO42 = null;
-        WaterTemperature = null;
-        EC = null;
         Cu = null;
         Zn = null;
         Cr = null;
-        Chla = null;
         Turbidity = null;
-        Flow = null;
+        Chla = null;
+        WaterTemperature = null;
+        WaterDepth = null;
+        FlowVelocity = null;
+        FlowSec = null;
+        FlowDay = null;
         PHGrade = null;
         BODGrade = null;
         CODGrade = null;

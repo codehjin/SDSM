@@ -298,16 +298,19 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                         Ecotoxicity = ((ICellValue)(worksheet.Cells[20, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[20, columnIndex].GetFormat().Value),
                         EColi = ((ICellValue)(worksheet.Cells[21, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[21, columnIndex].GetFormat().Value),
                         TN = FindCellPositionByText(worksheet, "TN", 22, columnIndex),
+                        EC = FindCellPositionByText(worksheet, "EC", 22, columnIndex),
                         Cl = FindCellPositionByText(worksheet, "Cl", 22, columnIndex),
                         SO42 = FindCellPositionByText(worksheet, "SO42", 22, columnIndex),
-                        WaterTemperature = FindCellPositionByText(worksheet, "WaterTemperature", 22, columnIndex),
-                        EC = FindCellPositionByText(worksheet, "EC", 22, columnIndex),
                         Cu = FindCellPositionByText(worksheet, "Cu", 22, columnIndex),
                         Zn = FindCellPositionByText(worksheet, "Zn", 22, columnIndex),
                         Cr = FindCellPositionByText(worksheet, "Cr", 22, columnIndex),
-                        Chla = FindCellPositionByText(worksheet, "Chla", 22, columnIndex),
                         Turbidity = FindCellPositionByText(worksheet, "Turbidity", 22, columnIndex),
-                        Flow = FindCellPositionByText(worksheet, "Flow", 22, columnIndex),
+                        Chla = FindCellPositionByText(worksheet, "Chla", 22, columnIndex),
+                        WaterTemperature = FindCellPositionByText(worksheet, "WaterTemperature", 22, columnIndex),
+                        WaterDepth = FindCellPositionByText(worksheet, "WaterDepth", 22, columnIndex),
+                        FlowVelocity = FindCellPositionByText(worksheet, "FlowVelocity", 22, columnIndex),
+                        FlowSec = FindCellPositionByText(worksheet, "FlowSec", 22, columnIndex),
+                        FlowDay = FindCellPositionByText(worksheet, "FlowDay", 22, columnIndex),
                         PHGrade = GetPhGrade(worksheet, columnIndex),
                         BODGrade = GetBodGrade(worksheet, columnIndex),
                         CODGrade = GetCodGrade(worksheet, columnIndex),
@@ -613,10 +616,10 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                         }
                     }
                     else if (prop.Name == "PH" || prop.Name == "BOD" || prop.Name == "COD" || prop.Name == "TOC" || prop.Name == "SS"
-                        || prop.Name == "DO" || prop.Name == "TP" || prop.Name == "Ecotoxicity" || prop.Name == "EColi" || prop.Name == "TN"
-                        || prop.Name == "EC" || prop.Name == "Flow" || prop.Name == "Cl" || prop.Name == "SO42" || prop.Name == "WaterTemperature"
-                        || prop.Name == "Cu" || prop.Name == "Zn" || prop.Name == "Cr" || prop.Name == "Temperature" || prop.Name == "Chla"
-                        || prop.Name == "ElectricalConductivity" || prop.Name == "Turbidity" || prop.Name == "Cr" || prop.Name == "Temperature" || prop.Name == "Chla")
+                        || prop.Name == "DO" || prop.Name == "TP" || prop.Name == "Ecotoxicity" || prop.Name == "EColi" 
+                        || prop.Name == "TN" || prop.Name == "EC" || prop.Name == "Cl" || prop.Name == "SO42" || prop.Name == "Cu" || prop.Name == "Zn"
+                        || prop.Name == "Cr" || prop.Name == "Turbidity" || prop.Name == "Chla" || prop.Name == "WaterTemperature" || prop.Name == "WaterDepth"
+                        || prop.Name == "FlowVelocity" || prop.Name == "FlowSec" || prop.Name == "FlowDay" )
                     {
                         //실수
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -624,7 +627,21 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                             if (double.TryParse(value.ToString(), out double d))
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, d);
+                                
+                                if(prop.Name == "TP" || prop.Name == "Cu" || prop.Name == "Zn" || prop.Name == "Cr" || prop.Name == "TN" || prop.Name == "FlowSec")
+                                {
+                                    //소수점 3자리
+                                    insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 3, MidpointRounding.AwayFromZero));
+                                }
+                                else if(prop.Name == "BOD" || prop.Name == "COD" || prop.Name == "TOC" || prop.Name == "DO" || prop.Name == "TN" || prop.Name == "FlowVelocity")
+                                {
+                                    //소수점 2자리
+                                    insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 2, MidpointRounding.AwayFromZero));
+                                }
+                                else
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 1, MidpointRounding.AwayFromZero));
+                                }
                             }
                             else
                             {
@@ -705,22 +722,20 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                                      $"(SurveyYear, YearChsu, Site, SurveyDate, MajorRegion, MiddleRegion, " +
                                      $"River, RiverType, Lat, Lng, Weather, " +
                                      $"SurveyAgency, Surveyor, PH, BOD, COD, " +
-                                     $"TOC, SS, DO, TP, Ecotoxicity, " +
-                                     $"EColi, TN, Cl, SO42, WaterTemperature, " +
-                                     $"EC, Cu, Zn, Cr, " +
-                                     $"Chla, Turbidity, Flow, PHGrade, " +
-                                     $"BODGrade, CODGrade, TOCGrade, SSGrade, DOGrade, " +
-                                     $"TPGrade, EColiGrade) " +
+                                     $"TOC, SS, DO, TP, Ecotoxicity, EColi, " +
+                                     $"TN, EC, Cl, SO42, Cu, " +
+                                     $"Zn, Cr, Turbidity, Chla, " +
+                                     $"WaterTemperature, WaterDepth, FlowVelocity, FlowSec, FlowDay," +
+                                     $"PHGrade, BODGrade, CODGrade, TOCGrade, SSGrade, DOGrade, TPGrade, EColiGrade) " +
                                      $"VALUES " +
                                      $"(@SurveyYear, @YearChsu, @Site, @SurveyDate, @MajorRegion, @MiddleRegion, " +
                                      $"@River, @RiverType, @Lat, @Lng, @Weather, " +
                                      $"@SurveyAgency, @Surveyor, @PH, @BOD, @COD, " +
-                                     $"@TOC, @SS, @DO, @TP, @Ecotoxicity, " +
-                                     $"@EColi, @TN, @Cl, @SO42, @WaterTemperature, " +
-                                     $"@EC, @Cu, @Zn, @Cr, " +
-                                     $"@Chla, @Turbidity, @Flow, @PHGrade, " +
-                                     $"@BODGrade, @CODGrade, @TOCGrade, @SSGrade, @DOGrade, " +
-                                     $"@TPGrade, @EColiGrade)";
+                                     $"@TOC, @SS, @DO, @TP, @Ecotoxicity, @EColi, " +
+                                     $"@TN, @EC, @Cl, @SO42, @Cu, " +
+                                     $"@Zn, @Cr, @Turbidity, @Chla, " +
+                                     $"@WaterTemperature, @WaterDepth, @FlowVelocity, @FlowSec, @FlowDay," +
+                                     $"@PHGrade, @BODGrade, @CODGrade, @TOCGrade, @SSGrade, @DOGrade, @TPGrade, @EColiGrade)";
 
                     using var command = new SQLiteCommand(strSql, conn);
 
@@ -746,17 +761,22 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                     command.Parameters.AddWithValue("@TP", model.TP ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Ecotoxicity", model.Ecotoxicity ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@EColi", model.EColi ?? (object)DBNull.Value);
+                    
                     command.Parameters.AddWithValue("@TN", model.TN ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@EC", model.EC ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Cl", model.Cl ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@SO42", model.SO42 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@WaterTemperature", model.WaterTemperature ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EC", model.EC ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Cu", model.Cu ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Zn", model.Zn ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Cr", model.Cr ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Chla", model.Chla ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Turbidity", model.Turbidity ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Flow", model.Flow ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Chla", model.Chla ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@WaterTemperature", model.WaterTemperature ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@WaterDepth", model.WaterDepth ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@FlowVelocity", model.FlowVelocity ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@FlowSec", model.FlowSec ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@FlowDay", model.FlowDay ?? (object)DBNull.Value);
+                    
                     command.Parameters.AddWithValue("@PHGrade", model.PHGrade ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@BODGrade", model.BODGrade ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@CODGrade", model.CODGrade ?? (object)DBNull.Value);
@@ -846,16 +866,19 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         var nameMap = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase)
         {
             ["TN"] = ["TN", "T-N"],
+            ["EC"] = ["EC", "전기전도도", "ElectricalConductivity", "Electrical"],
             ["Cl"] = ["Cl", "Cl-", "염소이온"],
             ["SO42"] = ["SO42", "SO42-", "황이온"],
-            ["WaterTemperature"] = ["수온", "온도"],
-            ["EC"] = ["EC", "전기전도도"],
-            ["Cu"] = ["Cu"],
-            ["Zn"] = ["Zn"],
-            ["Cr"] = ["Cr"],
-            ["Chla"] = ["Chla", "Chl-a"],
+            ["Cu"] = ["구리","Cu"],
+            ["Zn"] = ["아연","Zn"],
+            ["Cr"] = ["크롬","Cr"],
             ["Turbidity"] = ["탁도"],
-            ["Flow"] = ["유량"]
+            ["Chla"] = ["클로로필a", "클로로필", "Chla", "Chl-a"],
+            ["WaterTemperature"] = ["수온", "온도"],
+            ["WaterDepth"] = ["수심"],
+            ["FlowVelocity"] = ["유속"],
+            ["FlowSec"] = ["m3/sec", "㎥/sec"],
+            ["FlowDay"] = ["m3/day", "㎥/day"],
         };
 
         if (!nameMap.TryGetValue(name, out var listName))
@@ -867,9 +890,13 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         var usedRange = worksheet.UsedCellRange;
         for (int rowIndex = startRowIndex; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
         {
-            //2 => 항목이름 열위치
-            var cellValue = ((ICellValue)(worksheet.Cells[rowIndex, 2].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 2].GetFormat().Value).Replace(" ", "").ToLower();
-            if (!string.IsNullOrWhiteSpace(cellValue) && lowerNames.Any(name => cellValue.StartsWith(name)))
+            //2와3 열위치를 합쳐서 포함
+            var cell2Value = ((ICellValue)(worksheet.Cells[rowIndex, 2].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 2].GetFormat().Value).Replace(" ", "").ToLower();
+            var cell3Value = ((ICellValue)(worksheet.Cells[rowIndex, 3].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 3].GetFormat().Value).Replace(" ", "").ToLower();
+            var cellValue = cell2Value + cell3Value;
+
+            //2 열위치 값이 비어있지 않고
+            if (!string.IsNullOrWhiteSpace(cell2Value) && lowerNames.Any(name => cellValue.Contains(name)))
             {
                 return ((ICellValue)(worksheet.Cells[rowIndex, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, columnIndex].GetFormat().Value);
             }

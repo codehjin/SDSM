@@ -20,26 +20,29 @@ public class ImportWaterQuality
     [DisplayName("조사기관")] public string? SurveyAgency { get; set; }
     [DisplayName("조사자")] public string? Surveyor { get; set; }
     [DisplayName("pH")] public string? PH { get; set; }
-    [DisplayName("BOD")] public string? BOD { get; set; }
-    [DisplayName("COD")] public string? COD { get; set; }
-    [DisplayName("TOC")] public string? TOC { get; set; }
-    [DisplayName("SS")] public string? SS { get; set; }
-    [DisplayName("DO")] public string? DO { get; set; }
-    [DisplayName("T-P")] public string? TP { get; set; }
+    [DisplayName("BOD(mg/L)")] public string? BOD { get; set; }
+    [DisplayName("COD(mg/L)")] public string? COD { get; set; }
+    [DisplayName("TOC(mg/L)")] public string? TOC { get; set; }
+    [DisplayName("SS(mg/L)")] public string? SS { get; set; }
+    [DisplayName("DO(mg/L)")] public string? DO { get; set; }
+    [DisplayName("T-P(mg/L)")] public string? TP { get; set; }
     [DisplayName("생태독성")] public string? Ecotoxicity { get; set; }
-    [DisplayName("대장균군")] public string? EColi { get; set; }
+    [DisplayName("대장균군(군수/100mL)")] public string? EColi { get; set; }
 
-    [DisplayName("T-N")] public string? TN { get; set; }
-    [DisplayName("염소이온")] public string? Cl { get; set; }
-    [DisplayName("황이온")] public string? SO42 { get; set; }
-    [DisplayName("수온")] public string? WaterTemperature { get; set; }
+    [DisplayName("T-N(mg/L)")] public string? TN { get; set; }
     [DisplayName("전기전도도")] public string? EC { get; set; }
-    [DisplayName("Cu")] public string? Cu { get; set; }
-    [DisplayName("Zn")] public string? Zn { get; set; }
-    [DisplayName("Cr")] public string? Cr { get; set; }
-    [DisplayName("Chl-a")] public string? Chla { get; set; }
-    [DisplayName("탁도")] public string? Turbidity { get; set; }
-    [DisplayName("유량")] public string? Flow { get; set; }
+    [DisplayName("염소이온(mg/L)")] public string? Cl { get; set; }
+    [DisplayName("황이온(mg/L)")] public string? SO42 { get; set; }
+    [DisplayName("구리(mg/L)")] public string? Cu { get; set; }
+    [DisplayName("아연(mg/L)")] public string? Zn { get; set; }
+    [DisplayName("크롬(mg/L)")] public string? Cr { get; set; }
+    [DisplayName("탁도(NTU)")] public string? Turbidity { get; set; }
+    [DisplayName("클로로필a(mg/m3)")] public string? Chla { get; set; }
+    [DisplayName("수온")] public string? WaterTemperature { get; set; }
+    [DisplayName("수심(cm)")] public string? WaterDepth { get; set; } 
+    [DisplayName("유속(cm/s)")] public string? FlowVelocity { get; set; }
+    [DisplayName("유량(m3/sec)")] public string? FlowSec { get; set; }
+    [DisplayName("유량(m3/day)")] public string? FlowDay { get; set; }
 
     //자동계산
     [DisplayName("pH 등급")] public int? PHGrade { get; set; }
