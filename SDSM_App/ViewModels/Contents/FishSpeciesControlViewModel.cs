@@ -11,7 +11,7 @@ using Telerik.Windows.Data;
 namespace SDSM_App.ViewModels;
 
 /// <summary>
-/// 서식수변
+/// 어류출현종
 /// </summary>
 public partial class FishSpeciesControlViewModel : ObservableObject, ITransientService
 {

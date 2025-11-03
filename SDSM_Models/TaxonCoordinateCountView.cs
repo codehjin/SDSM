@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SDSM_Models;
 
 /// <summary>
-/// 분류군별 좌표 개수 뷰
+/// 분류군별 좌표 개수 뷰로 자료수와 좌표수를 홈에서 표시
 /// </summary>
 [Table("View_TaxonCoordinateCount")]
 public class TaxonCoordinateCountView

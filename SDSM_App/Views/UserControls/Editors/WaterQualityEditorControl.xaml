@@ -6,7 +6,6 @@
              mc:Ignorable="d"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             xmlns:culture="clr-namespace:System.Globalization;assembly=mscorlib"
              xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
              xmlns:main="clr-namespace:SDSM_App"
              xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"             
@@ -485,7 +484,7 @@
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="유량(m3/sec)" Style="{StaticResource FormLabelStyle}" />
+                                            <TextBlock Text="초당유량(m3/sec)" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
                                         <telerik:RadNumericUpDown Value="{Binding Path=FlowSec, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                                   UpdateValueEvent="PropertyChanged"
@@ -497,7 +496,7 @@
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="유량(m3/day)" Style="{StaticResource FormLabelStyle}" />
+                                            <TextBlock Text="일당유량(m3/day)" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
                                         <telerik:RadNumericUpDown Value="{Binding Path=FlowDay, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                                   UpdateValueEvent="PropertyChanged"

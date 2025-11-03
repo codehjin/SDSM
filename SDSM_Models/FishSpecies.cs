@@ -34,6 +34,7 @@ public class FishSpecies
 
     //조사자료
     [Description("ID")]
+    [Required]
     public int FishId { get; set; }
 
     [ForeignKey(nameof(FishId))]

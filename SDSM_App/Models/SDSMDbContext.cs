@@ -23,6 +23,8 @@ public class SDSMDbContext : DbContext, ITransientService
         modelBuilder.Entity<BenthosSpeciesView>(m => { m.HasNoKey(); });
         modelBuilder.Entity<FishView>(m => { m.HasNoKey(); });
         modelBuilder.Entity<FishSpeciesView>(m => { m.HasNoKey(); });
+        modelBuilder.Entity<VegetationENVView>(m => { m.HasNoKey(); });
+        modelBuilder.Entity<VegetationENVSpeciesView>(m => { m.HasNoKey(); });
         
         modelBuilder.Entity<TaxonCoordinateCountView>(m => { m.HasNoKey(); });
 
@@ -33,17 +35,12 @@ public class SDSMDbContext : DbContext, ITransientService
         //modelBuilder.Entity<VeSurveyH>().Navigation(e => e.VeSurvey).AutoInclude();
     }
 
-    //포유류
-    public DbSet<Mammal> Mammals { get; set; }
-
-    //조류
-    public DbSet<Bird> Birds { get; set; }
-
-    //서식수변
-    public DbSet<HabitatWaterEdge> HabitatWaterEdges { get; set; }
-
-    //수질
-    public DbSet<WaterQuality> WaterQualitys { get; set; }
+    //어류
+    public DbSet<Fish> Fishs { get; set; }
+    public DbSet<FishSpecies> FishSpeciess { get; set; }
+    public DbSet<FishSpeciesList> FishSpeciesLists { get; set; }
+    public DbSet<FishView> FishViews { get; set; }
+    public DbSet<FishSpeciesView> FishSpeciesViews { get; set; }
 
     //저서동물
     public DbSet<Benthos> Benthoss { get; set; }
@@ -52,12 +49,30 @@ public class SDSMDbContext : DbContext, ITransientService
     public DbSet<BenthosView> BenthosViews { get; set; }
     public DbSet<BenthosSpeciesView> BenthosSpeciesViews { get; set; }
 
-    //어류
-    public DbSet<Fish> Fishs { get; set; }
-    public DbSet<FishSpecies> FishSpeciess { get; set; }
-    public DbSet<FishSpeciesList> FishSpeciesLists { get; set; }
-    public DbSet<FishView> FishViews { get; set; }
-    public DbSet<FishSpeciesView> FishSpeciesViews { get; set; }
+    //조류
+    public DbSet<Bird> Birds { get; set; }
+
+    //포유류
+    public DbSet<Mammal> Mammals { get; set; }
+
+    //식생의 식생도
+    public DbSet<Vegetation> Vegetations { get; set; }
+    //식생의 식생단면 환경
+    public DbSet<VegetationENV> VegetationENVs { get; set; }
+    //식생의 식생단면 군락
+    public DbSet<VegetationENVSpecies> VegetationENVSpeciess { get; set; }
+    public DbSet<VegetationENVView> VegetationENVViews { get; set; }
+    public DbSet<VegetationENVSpeciesView> VegetationENVSpeciesViews { get; set; }
+
+    //식물상
+    public DbSet<Plant> Plants { get; set; }
+
+    //서식수변
+    public DbSet<HabitatWaterEdge> HabitatWaterEdges { get; set; }
+
+    //수질
+    public DbSet<WaterQuality> WaterQualitys { get; set; }
+
 
     //양서파충류
     public DbSet<AmphibianReptile> AmphibianReptiles { get; set; }

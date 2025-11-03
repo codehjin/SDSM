@@ -6,7 +6,6 @@
              mc:Ignorable="d"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             xmlns:culture="clr-namespace:System.Globalization;assembly=mscorlib"
              xmlns:main="clr-namespace:SDSM_App"
              xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
              xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"             

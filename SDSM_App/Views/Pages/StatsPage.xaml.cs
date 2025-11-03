@@ -1,19 +1,8 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.InjectableServices;
-using SDSM_App.Messengers;
-using SDSM_App.ViewModels;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using System.Xml.Linq;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
-using Telerik.Windows.Documents.Spreadsheet.Model;
-using Telerik.Windows.Documents.Spreadsheet.PropertySystem;
-using Telerik.Windows.Documents.Spreadsheet.Utilities;
 
 namespace SDSM_App.Views.Pages;
 

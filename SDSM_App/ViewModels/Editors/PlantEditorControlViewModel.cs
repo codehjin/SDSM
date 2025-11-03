@@ -1,0 +1,250 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
+using SDSM_App.Enums;
+using SDSM_App.InjectableServices;
+using SDSM_App.Messengers;
+using SDSM_App.Models.Repositories.Interfases;
+using SDSM_Models;
+
+namespace SDSM_App.ViewModels;
+
+public partial class PlantEditorControlViewModel : ObservableObject, ITransientService
+{
+    #region 필드
+
+    #endregion
+
+    #region 생성자
+
+    public PlantEditorControlViewModel()
+    {
+        //수정모델 받기
+        WeakReferenceMessenger.Default.Register<ModelMessage<Plant>>(this, (r, m) =>
+        {
+            ModelRecevice(m);
+        });
+    }
+
+    #endregion
+
+    #region 속성
+
+    [ObservableProperty] private string _formTitle = "신규";
+    [ObservableProperty] private EditStatusType _editStatus = EditStatusType.Add;
+
+    [ObservableProperty] private Plant _editModel = new();
+
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private int? _surveyYear;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _chsu = string.Empty;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private DateTime? _surveyDate;
+    [ObservableProperty] private string? _weather;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _site = string.Empty;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _river = string.Empty;
+    [ObservableProperty] private string? _surveyor;
+    [ObservableProperty] private double? _lat;
+    [ObservableProperty] private double? _lng;
+    [ObservableProperty] private string? _surveyLocation;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _speciesKo = string.Empty;
+    [ObservableProperty] private string? _speciesEn;
+    [ObservableProperty] private string? _alienPlant;
+    [ObservableProperty] private string? _invasiveSpecies;
+
+    #endregion
+
+    #region ICommand 구현
+
+    private bool CanSave()
+    {
+        return SurveyYear != null
+            && !string.IsNullOrWhiteSpace(Chsu)
+            && SurveyDate != null
+            && !string.IsNullOrWhiteSpace(River)
+            && !string.IsNullOrWhiteSpace(Site)
+            && !string.IsNullOrWhiteSpace(SpeciesKo);
+    }
+
+    //수정
+    [RelayCommand(CanExecute = nameof(CanSave))]
+    private void SaveExecuted()
+    {
+        if (EditStatus == EditStatusType.Add)
+        {
+            AddSave();
+        }
+        else
+        {
+            EditSave();
+        }
+    }
+
+    #endregion
+
+    #region 매서드
+
+    //신규저장
+    private async void AddSave()
+    {
+        var model = AddItemToModel();
+        if (model != null)
+        {
+            var repository = App.Current.Services.GetRequiredService<IPlantRepository>();
+            var addModel = await repository.InsertAsync(model);
+            if (addModel != null)
+            {
+                var toast = (GB.SaveMessage, true);
+                WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
+                ClearProperty();
+
+                WeakReferenceMessenger.Default.Send(new EditorMessage<Plant>(addModel, EditStatusType.Add));
+            }
+        }
+    }
+
+    //수정저장
+    private async void EditSave()
+    {
+        if (IsEditItemToModel())
+        {
+            var repository = App.Current.Services.GetRequiredService<IPlantRepository>();
+            var isEdit = await repository.UpdateAsync(EditModel);
+            if (isEdit)
+            {
+                var toast = (GB.EditMessage, true);
+                WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
+
+                WeakReferenceMessenger.Default.Send(new EditorMessage<Plant>(EditModel, EditStatusType.Edit));
+            }
+        }
+    }
+
+    //신규 항목값
+    private Plant? AddItemToModel()
+    {
+        try
+        {
+            if(SurveyYear is not int year)
+                return null;
+
+            var model = new Plant
+            {
+                SurveyYear = year,
+                Chsu = Chsu,
+                SurveyDate = SurveyDate,
+                Weather = Weather,
+                Site = Site,
+                River = River,
+                Surveyor = Surveyor,
+                Lat = Lat,
+                Lng = Lng,
+                SurveyLocation = SurveyLocation,
+                SpeciesKo = SpeciesKo,
+                SpeciesEn = SpeciesEn,
+                AlienPlant = AlienPlant,
+                InvasiveSpecies = InvasiveSpecies
+            };
+            return model;
+
+        }
+        catch { return null; }
+    }
+
+    //수정 항목값
+    private bool IsEditItemToModel()
+    {
+        try
+        {
+            if(SurveyYear is not int year)
+                return false;
+
+            EditModel.SurveyYear = year;
+            EditModel.Chsu = Chsu;
+            EditModel.SurveyDate = SurveyDate;
+            EditModel.Weather = Weather;
+            EditModel.Site = Site;
+            EditModel.River = River;
+            EditModel.Surveyor = Surveyor;
+            EditModel.Lat = Lat;
+            EditModel.Lng = Lng;
+            EditModel.SurveyLocation = SurveyLocation;
+            EditModel.SpeciesKo = SpeciesKo;
+            EditModel.SpeciesEn = SpeciesEn;
+            EditModel.AlienPlant = AlienPlant;
+            EditModel.InvasiveSpecies = InvasiveSpecies;
+
+            return true;
+        }
+        catch { return false; }
+    }
+
+    //신규, 수정 세팅
+    private void SettingProperties(Plant model)
+    {
+        if (model.PlantId > 0)
+        {
+            EditModelToProperty(model);
+        }
+        else
+        {
+            ClearProperty();
+        }
+
+    }
+    //목록에서 선택한 항목값
+    private void EditModelToProperty(Plant model)
+    {
+        EditModel = model;
+
+        FormTitle = "수정";
+        EditStatus = EditStatusType.Edit;
+
+        SurveyYear = model.SurveyYear;
+        Chsu = model.Chsu;
+        SurveyDate = model.SurveyDate;
+        Weather = model.Weather;
+        Site = model.Site;
+        River = model.River;
+        Surveyor = model.Surveyor;
+        Lat = model.Lat;
+        Lng = model.Lng;
+        SurveyLocation = model.SurveyLocation;
+        SpeciesKo = model.SpeciesKo;
+        SpeciesEn = model.SpeciesEn;
+        AlienPlant = model.AlienPlant;
+        InvasiveSpecies = model.InvasiveSpecies;    }
+
+    //항목초기화
+    private void ClearProperty()
+    {
+        FormTitle = "신규";
+        EditStatus = EditStatusType.Add;
+        EditModel = new();
+
+        SurveyYear = null;
+        Chsu = string.Empty;
+        SurveyDate = null;
+        Weather = null;
+        Site = string.Empty;
+        River = string.Empty;
+        Surveyor = null;
+        Lat = null;
+        Lng = null;
+        SurveyLocation = null;
+        SpeciesKo = string.Empty;
+        SpeciesEn = null;
+        AlienPlant = null;
+        InvasiveSpecies = null;
+    }
+
+    #endregion 
+
+    #region Messages
+
+    private void ModelRecevice(ModelMessage<Plant> message)
+    {
+        SettingProperties(message.Model);
+    }
+
+    #endregion
+}

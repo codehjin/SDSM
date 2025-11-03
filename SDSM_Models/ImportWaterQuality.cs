@@ -41,8 +41,8 @@ public class ImportWaterQuality
     [DisplayName("수온")] public string? WaterTemperature { get; set; }
     [DisplayName("수심(cm)")] public string? WaterDepth { get; set; } 
     [DisplayName("유속(cm/s)")] public string? FlowVelocity { get; set; }
-    [DisplayName("유량(m3/sec)")] public string? FlowSec { get; set; }
-    [DisplayName("유량(m3/day)")] public string? FlowDay { get; set; }
+    [DisplayName("초당유량(m3/sec)")] public string? FlowSec { get; set; }
+    [DisplayName("일당유량(m3/day)")] public string? FlowDay { get; set; }
 
     //자동계산
     [DisplayName("pH 등급")] public int? PHGrade { get; set; }

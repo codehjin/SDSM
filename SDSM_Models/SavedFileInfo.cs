@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SDSM_Models;
 
 /// <summary>
-/// 일괄저장된 파일이름 정보
+/// 일괄입력시 일괄저장이된 파일이름 정보
 /// </summary>
 [Table("SavedFileInfo")]
 public class SavedFileInfo

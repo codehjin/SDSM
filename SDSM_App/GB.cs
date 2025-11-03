@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using MediaFoundation;
-using SDSM_App.Enums;
+﻿using SDSM_App.Enums;
 using SDSM_App.Models;
 using SDSM_Models;
 using System.ComponentModel;

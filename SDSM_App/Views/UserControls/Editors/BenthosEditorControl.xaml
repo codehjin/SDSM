@@ -7,7 +7,6 @@
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
              xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             xmlns:culture="clr-namespace:System.Globalization;assembly=mscorlib"
              xmlns:main="clr-namespace:SDSM_App"
              xmlns:uc="clr-namespace:SDSM_App.Views.UserControls"
              xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"             
@@ -609,7 +608,7 @@
                                         Padding="20">
                                     <Grid>
                                         <telerik:RadGridView x:Name="SpeciesRadGridView"
-                                                             ItemsSource="{Binding Path=AddSpeciesColleciton}"
+                                                             ItemsSource="{Binding Path=AddSpeciesCollection}"
                                                              SelectedItem="{Binding Path=AddSpeciesSelectedItem, Mode=TwoWay}"
                                                              HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
                                                              BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
@@ -665,7 +664,7 @@
                                                     <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}"/>
                                                 </StackPanel.Resources>
                                                 <TextBlock Text="목록" Margin="0 0 5 0"/>
-                                                <TextBlock Text="{Binding Path=AddSpeciesColleciton.Count, Mode=OneWay, StringFormat={}{0:N0}}"/>
+                                                <TextBlock Text="{Binding Path=AddSpeciesCollection.Count, Mode=OneWay, StringFormat={}{0:N0}}"/>
                                                 <TextBlock Text="건" Margin="0 0 5 0"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="2" Orientation="Horizontal">

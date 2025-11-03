@@ -5203,8 +5203,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-				<!--추가 HorizontalAlignment="Left"-->
-                <Grid HorizontalAlignment="Left">
+                <!--추가 HorizontalAlignment="Center"-->
+                <Grid HorizontalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>

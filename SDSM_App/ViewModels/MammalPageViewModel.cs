@@ -17,7 +17,7 @@ using Telerik.Windows.Data;
 namespace SDSM_App.ViewModels;
 
 /// <summary>
-/// 포유류조사
+/// 포유류
 /// </summary>
 public partial class MammalPageViewModel : ObservableObject, ITransientService
 {

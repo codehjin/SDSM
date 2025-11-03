@@ -30,8 +30,8 @@ public class BenthosSpecies
     [DisplayName("개체수")] public double? IndividualCount { get; set; }
 
     //조사자료
-    [Required]
     [Description("ID")]
+    [Required]
     public int BenthosId { get; set; }
 
     [ForeignKey(nameof(BenthosId))]

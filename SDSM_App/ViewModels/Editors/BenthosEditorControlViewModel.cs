@@ -95,7 +95,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
 
     #region 생물종 속성, ICommand
 
-    [ObservableProperty] private RadObservableCollection<BenthosSpeciesList> _addSpeciesColleciton = [];
+    [ObservableProperty] private RadObservableCollection<BenthosSpeciesList> _addSpeciesCollection = [];
     [ObservableProperty] private BenthosSpeciesList? _addSpeciesSelectedItem;
 
     [ObservableProperty] private int _addSpeciesCount;
@@ -104,8 +104,8 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     [RelayCommand]
     private void IndividualCountValueChangedExecuted()
     {
-        AddSpeciesCount = AddSpeciesColleciton.Count(m => m.IndividualCount > 0);
-        AddIndividualCountSum = AddSpeciesColleciton.Sum(m => m.IndividualCount) ?? 0;
+        AddSpeciesCount = AddSpeciesCollection.Count(m => m.IndividualCount > 0);
+        AddIndividualCountSum = AddSpeciesCollection.Sum(m => m.IndividualCount) ?? 0;
     }
 
     #endregion
@@ -148,7 +148,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
             var addModel = await repository.InsertAsync(model);
             if (addModel != null)
             {
-                var speciess = AddSpeciesColleciton.Where(m => m.IndividualCount > 0).ToList();
+                var speciess = AddSpeciesCollection.Where(m => m.IndividualCount > 0).ToList();
                 if (speciess.Count != 0)
                 {
                     await Task.Run(() => SubBatchSave(addModel.BenthosId, speciess, true));
@@ -172,7 +172,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
             var isEdit = await repository.UpdateAsync(EditModel);
             if (isEdit)
             {
-                var speciess = AddSpeciesColleciton.Where(m => m.IndividualCount > 0).ToList();
+                var speciess = AddSpeciesCollection.Where(m => m.IndividualCount > 0).ToList();
 
                 await Task.Run(() => SubBatchSave(EditModel.BenthosId, speciess, false));
 
@@ -442,7 +442,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         foreach (var sub in EditModel.Subs.ToList())
         {
             var speciesKoEn = $"{sub.SpeciesKo} {sub.SpeciesEn}";
-            foreach (var item in AddSpeciesColleciton)
+            foreach (var item in AddSpeciesCollection)
             {
                 if (item.SearchText == speciesKoEn)
                 {
@@ -453,8 +453,8 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         }
 
         AddSpeciesSelectedItem = null;
-        AddSpeciesCount = AddSpeciesColleciton.Count(m => m.IndividualCount > 0);
-        AddIndividualCountSum = AddSpeciesColleciton.Sum(m => m.IndividualCount) ?? 0;
+        AddSpeciesCount = AddSpeciesCollection.Count(m => m.IndividualCount > 0);
+        AddIndividualCountSum = AddSpeciesCollection.Sum(m => m.IndividualCount) ?? 0;
     }
 
     //항목초기화
@@ -527,10 +527,10 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         {
             using var context = new SDSMDbContext();
 
-            AddSpeciesColleciton.Clear();
+            AddSpeciesCollection.Clear();
 
             //종목록
-            AddSpeciesColleciton.AddRange(await context.BenthosSpeciesLists.ToListAsync());
+            AddSpeciesCollection.AddRange(await context.BenthosSpeciesLists.ToListAsync());
         }
         catch (Exception ex)
         {
@@ -544,7 +544,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         try
         {
             //종목록
-            var speciesData = AddSpeciesColleciton.Where(m => m.IndividualCount > 0).Select(m => new ImportBenthosSpecies
+            var speciesData = AddSpeciesCollection.Where(m => m.IndividualCount > 0).Select(m => new ImportBenthosSpecies
             {
                 SaprobicValue = m.SaprobicValue.ToString(),
                 IndicatorWeight = m.IndicatorWeight.ToString(),

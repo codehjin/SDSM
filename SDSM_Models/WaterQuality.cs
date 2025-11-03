@@ -50,8 +50,8 @@ public class WaterQuality
     [DisplayName("수온")] public double? WaterTemperature { get; set; }
     [DisplayName("수심(cm)")] public double? WaterDepth { get; set; } 
     [DisplayName("유속(cm/s)")] public double? FlowVelocity { get; set; } 
-    [DisplayName("유량(m3/sec)")] public double? FlowSec { get; set; }
-    [DisplayName("유량(m3/day)")] public double? FlowDay { get; set; }
+    [DisplayName("초당유량(m3/sec)")] public double? FlowSec { get; set; }
+    [DisplayName("일당유량(m3/day)")] public double? FlowDay { get; set; }
     
     [DisplayName("pH 등급")] public int? PHGrade { get; set; }   
     [DisplayName("BOD 등급")] public string? BODGrade { get; set; }   

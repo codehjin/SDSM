@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
 using NinjaNye.SearchExtensions;
 using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
@@ -12,7 +11,7 @@ using Telerik.Windows.Data;
 namespace SDSM_App.ViewModels;
 
 /// <summary>
-/// 서식수변
+/// 저서동물 출현종
 /// </summary>
 public partial class BenthosSpeciesControlViewModel : ObservableObject, ITransientService
 {

@@ -1,0 +1,300 @@
+﻿<UserControl x:Class="SDSM_App.Views.UserControls.BulkPlantControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:helpers="clr-namespace:Telerik.Windows.Controls.Theming.Helpers;assembly=Telerik.Windows.Controls"
+             xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"
+             d:DataContext="{d:DesignInstance Type={x:Type viewmodel:BulkPlantControlViewModel}}"
+             x:Name="_this">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--엑셀 설정값-->
+        <Border x:Name="SettingLayout" Style="{StaticResource ContentBoxStyle}" HorizontalAlignment="Left" Padding="20 20 20 15">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" PanningMode="HorizontalOnly" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                <StackPanel Margin="0 0 0 5" Orientation="Horizontal" Height="{StaticResource DefaultHeight}">
+                    <telerik:RadButton BorderBrush="Transparent" Command="{Binding Path=SheetNameResetExecutedCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="시트명" Margin="0 0 10 0"/>
+                            <telerik:RadGlyph Glyph="{StaticResource GlyphReset}"/>
+                        </StackPanel>
+                    </telerik:RadButton>
+                    <telerik:RadWatermarkTextBox Text="{Binding Path=SheetName, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5 0 0 0" Style="{StaticResource FormWatermarkTextBoxStyle}"/>
+                    <Rectangle Margin="20 0" Style="{StaticResource VerticalRectangleStyle}"/>
+                    <TextBlock Text="입력자료 시작 위치" Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 10 0"/>
+                    <TextBlock Text="{Binding Path=FirstRowNumber}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                    <TextBlock Text="행" Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 5 0"/>
+                    <TextBlock Text="{Binding Path=FirstColumnNumber}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                    <TextBlock Text="열," Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 10 0"/>
+                    <telerik:RadDropDownButton Content="항목 열 번호"
+                                               Cursor="Hand"
+                                               helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
+                                               helpers:ThemeHelper.CheckedBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}">
+                        <telerik:RadDropDownButton.DropDownContent>
+                            <StackPanel>
+                                <Grid Margin="15 5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="50"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="항목명"/>
+                                    <TextBlock Grid.Column="1" Text="열 번호" TextAlignment="Right"/>
+                                </Grid>
+                                <ScrollViewer Padding="5" MaxHeight="720">
+                                    <ItemsControl ItemsSource="{Binding Path=ColumnNumbers}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Margin="0 2 0 2" Padding="15 0" Height="32" CornerRadius="16">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="Transparent"/>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=SubtleBrush}"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <Grid VerticalAlignment="Center">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="150"/>
+                                                            <ColumnDefinition Width="50"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="{Binding Path=ColumnName}"/>
+                                                        <TextBlock Grid.Column="1" Text="{Binding Path=Value}" TextAlignment="Right"/>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </StackPanel>
+                        </telerik:RadDropDownButton.DropDownContent>
+                    </telerik:RadDropDownButton>
+                    <Rectangle Margin="20 0" Style="{StaticResource VerticalRectangleStyle}"/>
+                    <telerik:RadButton Content="엑셀자료 가져오기" Command="{Binding Path=DataImportExecutedCommand}" Style="{StaticResource DarkButtonStyle}"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!--자료 선택-->
+        <Grid Grid.Row="1" Margin="0 20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" >
+                <telerik:RadToggleButton x:Name="ImportRadToggleButton" Content="가져온 자료" IsChecked="True"  Width="150" Height="44" Margin="0 0 5 0" Cursor="Hand"/>
+                <telerik:RadToggleButton x:Name="ConvertedRadToggleButton" Content="변환된 자료" IsChecked="True" Width="150" Height="44" Cursor="Hand"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <telerik:RadButton Content="변환된 자료 일괄 저장" Command="{Binding Path=SaveExecutedCommand}" Style="{StaticResource AccentButtonStyle}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition>
+                    <ColumnDefinition.Style>
+                        <Style TargetType="ColumnDefinition">
+                            <Setter Property="Width" Value="*"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsChecked, ElementName=ImportRadToggleButton}" Value="False">
+                                    <Setter Property="Width" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ColumnDefinition.Style>
+                </ColumnDefinition>
+                <ColumnDefinition>
+                    <ColumnDefinition.Style>
+                        <Style TargetType="ColumnDefinition">
+                            <Setter Property="Width" Value="*"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsChecked, ElementName=ConvertedRadToggleButton}" Value="False">
+                                    <Setter Property="Width" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ColumnDefinition.Style>
+                </ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <!--가져온 자료-->
+            <Border>
+                <Border.Style>
+                    <Style TargetType="Border" BasedOn="{StaticResource ContentBoxStyle}">
+                        <Setter Property="Margin" Value="0 0 0 0"/>
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsChecked, ElementName=ConvertedRadToggleButton}" Value="True">
+                                <Setter Property="Margin" Value="0 0 5 0"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsChecked, ElementName=ImportRadToggleButton}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 10" VerticalAlignment="Center">
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}"/>
+                        </StackPanel.Resources>
+                        <TextBlock Text="가져온 자료"/>
+                        <TextBlock Text="총" Margin="20 0 5 0"/>
+                        <TextBlock Text="{Binding Path=ModelCollection.Count, Mode=OneWay, StringFormat={}{0:N0}건}"/>
+                        <TextBlock Text="오류" Margin="10 0 5 0"/>
+                        <TextBlock Text="{Binding Path=ErrorCount, StringFormat={}{0:N0}}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                        <TextBlock Text="건"/>
+                    </StackPanel>
+                    <telerik:RadButton Grid.Column="1" Margin="0 0 0 10" Tag="import" Click="DataExportButton_Click">
+                        <telerik:RadButton.Style>
+                            <Style TargetType="telerik:RadButton" BasedOn="{StaticResource ExportButtonBaseStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Items.Count, Mode=OneWay, ElementName=DataRadGridView}" Value="0">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </telerik:RadButton.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <icon:PackIconModern Kind="OfficeExcel" VerticalAlignment="Center" Width="14" Height="14"/>
+                            <TextBlock Text="목록 출력" Margin="5 0 0 0"/>
+                        </StackPanel>
+                    </telerik:RadButton>
+                    <telerik:RadGridView x:Name="DataRadGridView"
+                                         Grid.Column="0"
+                                         Grid.Row="1"
+                                         Grid.ColumnSpan="2"
+                                         ItemsSource="{Binding Path=ModelCollection}"
+                                         HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
+                                         BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
+                                         FrozenColumnsSplitterVisibility="Collapsed"
+                                         LeftFrozenColumnCount="0"
+                                         RowIndicatorVisibility="Collapsed"
+                                         IsFilteringAllowed="False">
+                        <telerik:RadGridView.Columns>
+                            <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyYear}" MinWidth="80" Width="120" MaxWidth="120"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Chsu}" MinWidth="80" Width="120" MaxWidth="120"/>
+                            <telerik:GridViewDataColumn Header="조사일&#13;(2000-01-01~오늘)" DataMemberBinding="{Binding Path=SurveyDate}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyLocation}" MinWidth="80" Width="280" MaxWidth="280" TextWrapping="Wrap"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="480" MaxWidth="480" TextWrapping="Wrap"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=AlienPlant}" MinWidth="80" Width="180" MaxWidth="180"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=InvasiveSpecies}" MinWidth="80" Width="180" MaxWidth="180"/>
+                        </telerik:RadGridView.Columns>
+                    </telerik:RadGridView>
+                </Grid>
+            </Border>
+
+            <!--변환된 자료-->
+            <Border Grid.Column="1">
+                <Border.Style>
+                    <Style TargetType="Border" BasedOn="{StaticResource ContentBoxStyle}">
+                        <Setter Property="Margin" Value="0 0 0 0"/>
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsChecked, ElementName=ImportRadToggleButton}" Value="True">
+                                <Setter Property="Margin" Value="5 0 0 0"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsChecked, ElementName=ConvertedRadToggleButton}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 10" VerticalAlignment="Center">
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}"/>
+                        </StackPanel.Resources>
+                        <TextBlock Text="변환된 자료"/>
+                        <TextBlock Text="총" Margin="20 0 5 0"/>
+                        <TextBlock Text="{Binding Path=ConvertedCollection.Count, Mode=OneWay, StringFormat={}{0:N0}건}"/>
+                        <TextBlock Text="오류" Margin="10 0 5 0"/>
+                        <TextBlock Text="{Binding Path=ErrorCount, StringFormat={}{0:N0}}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                        <TextBlock Text="건"/>
+                    </StackPanel>
+                    <telerik:RadButton Grid.Column="1" Margin="0 0 0 10" Tag="converted" Click="DataExportButton_Click">
+                        <telerik:RadButton.Style>
+                            <Style TargetType="telerik:RadButton" BasedOn="{StaticResource ExportButtonBaseStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Items.Count, Mode=OneWay, ElementName=ConvertedDataRadGridView}" Value="0">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </telerik:RadButton.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <icon:PackIconModern Kind="OfficeExcel" VerticalAlignment="Center" Width="14" Height="14"/>
+                            <TextBlock Text="목록 출력" Margin="5 0 0 0"/>
+                        </StackPanel>
+                    </telerik:RadButton>
+                    <telerik:RadGridView x:Name="ConvertedDataRadGridView"
+                                         Grid.Column="0"
+                                         Grid.Row="1"
+                                         Grid.ColumnSpan="2"
+                                         ItemsSource="{Binding Path=ConvertedCollection}"
+                                         HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
+                                         BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
+                                         FrozenColumnsSplitterVisibility="Collapsed"
+                                         LeftFrozenColumnCount="0"
+                                         RowIndicatorVisibility="Collapsed"
+                                         IsFilteringAllowed="False">
+                        <telerik:RadGridView.Columns>
+                            <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyYear}" MinWidth="80" Width="120" MaxWidth="120"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Chsu}" MinWidth="80" Width="120" MaxWidth="120"/>
+                            <telerik:GridViewDataColumn Header="조사일&#13;(2000-01-01~오늘)" DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyLocation}" MinWidth="80" Width="280" MaxWidth="280" TextWrapping="Wrap"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="480" MaxWidth="480" TextWrapping="Wrap"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=AlienPlant}" MinWidth="80" Width="180" MaxWidth="180"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=InvasiveSpecies}" MinWidth="80" Width="180" MaxWidth="180"/>
+                        </telerik:RadGridView.Columns>
+                    </telerik:RadGridView>
+                </Grid>
+            </Border>
+        </Grid>
+
+    </Grid>
+</UserControl>

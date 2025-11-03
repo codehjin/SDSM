@@ -959,8 +959,8 @@
                                                     <telerik:RadRadioButton Grid.Column="6" Grid.Row="3" Content="저서동물" IsChecked="{Binding Path=IsCheckedBenthos, Mode=TwoWay}" Tag="BenthosPage" Click="MenuItem_Click"/>
                                                     <telerik:RadRadioButton Grid.Column="6" Grid.Row="4" Content="조류" IsChecked="{Binding Path=IsCheckedBird, Mode=TwoWay}" Tag="BirdPage" Click="MenuItem_Click"/>
                                                     <telerik:RadRadioButton Grid.Column="6" Grid.Row="5" Content="포유류" IsChecked="{Binding Path=IsCheckedMammal, Mode=TwoWay}" Tag="MammalPage" Click="MenuItem_Click"/>
-                                                    <telerik:RadRadioButton Grid.Column="6" Grid.Row="6" Content="식생" IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click" IsEnabled="False"/>
-                                                    <telerik:RadRadioButton Grid.Column="6" Grid.Row="7" Content="식물" IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click" IsEnabled="False"/>
+                                                    <telerik:RadRadioButton Grid.Column="6" Grid.Row="6" Content="식물상" IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click"/>
+                                                    <telerik:RadRadioButton Grid.Column="6" Grid.Row="7" Content="식생" IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click"/>
                                                     <telerik:RadRadioButton Grid.Column="6" Grid.Row="8" Content="양서파충류" IsChecked="{Binding Path=IsCheckedAmphibianReptile, Mode=TwoWay}" Tag="AmphibianReptilePage" Click="MenuItem_Click" IsEnabled="False"/>
 
                                                     <TextBlock Grid.Column="8" Grid.Row="0" Text="환경자료" Style="{StaticResource CaptionTextBlockStyle}"/>
@@ -1099,13 +1099,16 @@
                     <Border x:Name="MenuRoot"
                             Background="{StaticResource MainPrimaryBrush}"
                             Panel.ZIndex="98"
-                            HorizontalAlignment="Left"
-                            CornerRadius="0 8 0 0">
+                            HorizontalAlignment="Left">
                         <Border.Style>
                             <Style TargetType="Border">
                                 <Setter Property="Grid.Column" Value="0"/>
                                 <Setter Property="Width" Value="250"/>
+                                <Setter Property="CornerRadius" Value="0"/>
                                 <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=IsSideShow}" Value="False">
+                                        <Setter Property="CornerRadius" Value="0 8 0 0"/>
+                                    </DataTrigger>
                                     <DataTrigger Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Mode=Self}}" Value="Collapsed">
                                         <DataTrigger.EnterActions>
                                             <BeginStoryboard>
@@ -1368,16 +1371,16 @@
                                                         <TextBlock Text="포유류"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click" IsEnabled="False">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
+                                                        <TextBlock Text="식물상"/>
+                                                    </StackPanel>
+                                                </telerik:RadRadioButton>
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="식생"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click" IsEnabled="False">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="식물"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
                                                 <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedAmphibianReptile, Mode=TwoWay}" Tag="AmphibianReptilePage" Click="MenuItem_Click" IsEnabled="False">
@@ -1433,46 +1436,7 @@
                                         </Expander>
                                     </Border>
 
-                                    <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0" Visibility="Collapsed">
-                                        <Expander BorderThickness="0">
-                                            <Expander.Style>
-                                                <Style TargetType="Expander" BasedOn="{StaticResource MenuExpanderStyle}">
-                                                    <Setter Property="Padding" Value="25 25 25 25"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=MenuScrollViewer}" Value="Visible">
-                                                            <Setter Property="Padding" Value="25 25 11 25"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Expander.Style>
-                                            <Expander.Header>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <icon:PackIconPhosphorIcons Style="{StaticResource ExpanderPackIconPhosphorIconsStyle}"/>
-                                                    <TextBlock Text="설정" Style="{StaticResource MenuContentTextBlcokStyle}"/>
-                                                </StackPanel>
-                                            </Expander.Header>
-                                            <StackPanel>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedProtectedArea, Mode=TwoWay}" Tag="SettingInsttPage" Click="MenuItem_Click">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
-                                                        <TextBlock Text="설정1"/>
-                                                    </StackPanel>
-                                                </telerik:RadRadioButton>
-                                            </StackPanel>
-                                        </Expander>
-                                    </Border>
-
                                     <Border Grid.Row="0" BorderBrush="{StaticResource MainSelectedBrush}" Margin="0 0 0 0" Padding="0 12 0 0">
-                                        <!--<Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="BorderThickness" Value="0 1 0 0"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=IsExpanded, ElementName=LastExpander}" Value="True">
-                                                        <Setter Property="BorderThickness" Value="0 0 0 0"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>-->
                                         <telerik:RadRadioButton Tag="BulkRegisterPage" IsChecked="{Binding Path=IsCheckedBulkRegister, Mode=TwoWay}" Click="MenuItem_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <icon:PackIconPhosphorIcons Kind="ListPlusLight" Style="{StaticResource PackIconPhosphorIconsStyle}"/>

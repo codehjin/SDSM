@@ -38,7 +38,7 @@
                             </ContentPresenter.RenderTransform>
                             <ContentPresenter.RenderTransformOrigin>0.5,0.5</ContentPresenter.RenderTransformOrigin>
                         </ContentPresenter>
-                        <Border x:Name="LinkBorder" HorizontalAlignment="Center" VerticalAlignment="Bottom" Background="#99000000" Height="36" Padding="30 0" CornerRadius="18" Margin="0 0 0 10" Opacity="0">
+                        <Border x:Name="LinkBorder" HorizontalAlignment="Center" VerticalAlignment="Bottom" Background="#99000000" Height="32" Padding="30 0" CornerRadius="16" Margin="0 0 0 10" Opacity="0">
                             <Border.RenderTransform>
                                 <TranslateTransform x:Name="LinkBorderTranslate" Y="10"/>
                             </Border.RenderTransform>
@@ -78,8 +78,8 @@
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetName="ContentScale" Storyboard.TargetProperty="ScaleX" To="1.2" Duration="0:0:0.3" />
-                                <DoubleAnimation Storyboard.TargetName="ContentScale" Storyboard.TargetProperty="ScaleY" To="1.2" Duration="0:0:0.3" />
+                                <DoubleAnimation Storyboard.TargetName="ContentScale" Storyboard.TargetProperty="ScaleX" To="1.2" Duration="0:0:0.15" />
+                                <DoubleAnimation Storyboard.TargetName="ContentScale" Storyboard.TargetProperty="ScaleY" To="1.2" Duration="0:0:0.15" />
                                 <DoubleAnimation Storyboard.TargetName="LinkBorderTranslate" Storyboard.TargetProperty="Y" To="0" Duration="0:0:0.4" />
                                 <DoubleAnimation Storyboard.TargetName="LinkBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.4" />
                             </Storyboard>
@@ -88,9 +88,9 @@
                     <Trigger.ExitActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetName="ContentScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.2" />
-                                <DoubleAnimation Storyboard.TargetName="ContentScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.2" />
-                                <DoubleAnimation Storyboard.TargetName="LinkBorderTranslate" Storyboard.TargetProperty="Y" To="20" Duration="0:0:0.2" />
+                                <DoubleAnimation Storyboard.TargetName="ContentScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15" />
+                                <DoubleAnimation Storyboard.TargetName="ContentScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15" />
+                                <DoubleAnimation Storyboard.TargetName="LinkBorderTranslate" Storyboard.TargetProperty="Y" To="10" Duration="0:0:0.2" />
                                 <DoubleAnimation Storyboard.TargetName="LinkBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2" />
                             </Storyboard>
                         </BeginStoryboard>
@@ -145,7 +145,7 @@
                             <Setter Property="Cursor" Value="Hand"/>
                             <Setter Property="Margin" Value="3"/>
                             <Setter Property="MinWidth" Value="180"/>
-                            <Setter Property="MinHeight" Value="160"/>
+                            <Setter Property="MinHeight" Value="140"/>
                             <Setter Property="FontFamily" Value="{StaticResource High1FontFamily}"/>
                             <Setter Property="FontSize" Value="24"/>
                             <Setter Property="helpers:ThemeHelper.MouseOverBrush" Value="{telerik:Windows11Resource ResourceKey=FocusBrush}"/>
@@ -160,9 +160,10 @@
                         <telerik:RadButton Content="조류" Tag="BulkBirdControl" Click="OpenRadButton_Click"/>
                         <telerik:RadButton Content="포유류" Tag="BulkMammalControl" Click="OpenRadButton_Click"/>
                     </UniformGrid>
-                    <UniformGrid Columns="3">
-                        <telerik:RadButton Content="식생" Click="OpenRadButton_Click" IsEnabled="False"/>
-                        <telerik:RadButton Content="식물" Click="OpenRadButton_Click" IsEnabled="False"/>
+                    <UniformGrid Columns="4">
+                        <telerik:RadButton Content="식물상" Tag="BulkPlantControl" Click="OpenRadButton_Click"/>
+                        <telerik:RadButton Content="식생도" Tag="BulkVegetationControl" Click="OpenRadButton_Click"/>
+                        <telerik:RadButton Content="식생단면" Tag="BulkVegetationENVControl" Click="OpenRadButton_Click"/>
                         <telerik:RadButton Content="양서파충류" Tag="BulkAmphibianReptileControl" Click="OpenRadButton_Click" IsEnabled="False"/>
                     </UniformGrid>
                     <TextBlock Text="환경자료" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="5 40 0 10"/>

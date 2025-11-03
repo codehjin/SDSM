@@ -877,8 +877,8 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
             ["WaterTemperature"] = ["수온", "온도"],
             ["WaterDepth"] = ["수심"],
             ["FlowVelocity"] = ["유속"],
-            ["FlowSec"] = ["m3/sec", "㎥/sec"],
-            ["FlowDay"] = ["m3/day", "㎥/day"],
+            ["FlowSec"] = ["초당유량", "m3/sec", "㎥/sec"],
+            ["FlowDay"] = ["일당유량", "m3/day", "㎥/day"],
         };
 
         if (!nameMap.TryGetValue(name, out var listName))
