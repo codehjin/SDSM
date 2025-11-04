@@ -16,21 +16,21 @@ public class Fish
     public int FishId { get; set; }
 
     [DisplayName("연도")][Required] public int SurveyYear { get; set; }
-    [DisplayName("연도차수")][Required] public string YearChsu { get; set; } = string.Empty;
-    [DisplayName("지점명")][Required] public string Site { get; set; } = string.Empty;
+    [DisplayName("연도차수")][Required] public string YearChsu { get; set; } = string.Empty; // 빈값없음
+    [DisplayName("지점명")][Required] public string Site { get; set; } = string.Empty; // 빈값없음
     [DisplayName("조사일")][Required] public DateTime? SurveyDate { get; set; }    // 필수
-    [DisplayName("대권역명")] public string? MajorRegion { get; set; }
+    [DisplayName("대권역명")] public string? MajorRegion { get; set; } 
     [DisplayName("중권역명")] public string? MiddleRegion { get; set; }
-    [DisplayName("하천명")] public string? River { get; set; }
-    [DisplayName("하천유형")] public string? RiverType { get; set; }
-    [DisplayName("위도")] public double? Lat { get; set; }
-    [DisplayName("경도")] public double? Lng { get; set; }
-    [DisplayName("날씨")] public string? Weather { get; set; }
+    [DisplayName("하천명")][Required] public string River { get; set; } = string.Empty; // 빈값없음
+    [DisplayName("하천유형")] public string? RiverType { get; set; }// 빈값없음
+    [DisplayName("위도")] public double? Lat { get; set; } //소수점 6자리
+    [DisplayName("경도")] public double? Lng { get; set; }    //소수점 6자리
+    [DisplayName("날씨")] public string? Weather { get; set; } // 빈값없음
     [DisplayName("조사기관")] public string? SurveyAgency { get; set; }
     [DisplayName("조사자")] public string? Surveyor { get; set; }
     [DisplayName("채집소요시간(분)")] public int? CollectionTime { get; set; }
-    [DisplayName("채집도구")] public string? CollectionTool { get; set; }
-    [DisplayName("흐름상태")] public string? CollectionFlowState { get; set; }
+    [DisplayName("채집도구")] public string? CollectionTool { get; set; }// 빈값없음
+    [DisplayName("흐름상태")] public string? CollectionFlowState { get; set; }// 빈값없음
     [DisplayName("하천차수")] public int? AutoRiverChasu { get; set; }
     [DisplayName("유역형태")] public string? WatershedType { get; set; }
     [DisplayName("수계형태")] public string? DrainageSystemType { get; set; }
@@ -62,9 +62,9 @@ public class Fish
     [DisplayName("자갈(16-64mm)")] public int? Gravel { get; set; }
     [DisplayName("작은돌(64-256mm)")] public int? SmallStone { get; set; }
     [DisplayName("큰돌(>256mm)")] public int? BigStone { get; set; }
-    [DisplayName("하천형태")] public string? HabitatRiverType { get; set; }
-    [DisplayName("흐름상태")] public string? HabitatFlowState { get; set; }
-    [DisplayName("특이사항")] public string? SurveyUnavailableReason { get; set; }
+    [DisplayName("하천형태")] public string? HabitatRiverType { get; set; }// 빈값없음
+    [DisplayName("흐름상태")] public string? HabitatFlowState { get; set; }// 빈값없음
+    [DisplayName("특이사항")] public string? SurveyUnavailableReason { get; set; }// 빈값없음
     [DisplayName("비고")] public string? Note { get; set; }
     [DisplayName("기형(deformity) DE 종명(개체수)")] public int? DECount { get; set; }
     [DisplayName("지느러미손상(erosion of fin) EF 종명(개체수)")] public int? EFCount { get; set; }    
@@ -75,12 +75,12 @@ public class Fish
     [DisplayName("국내종 총 종수")] public int? M1Value { get; set; }
     [DisplayName("어울성 저서 종수")] public int? M2Value { get; set; }
     [DisplayName("민감 종수")] public int? M3Value { get; set; }
-    [DisplayName("내성종 개체수 비율(%)")] public double? M4Value { get; set; }
-    [DisplayName("잡식종 개체수 비율(%)")] public double? M5Value { get; set; }
-    [DisplayName("충식종 개체수 비율(%)")] public double? M6Value { get; set; }
+    [DisplayName("내성종 개체수 비율(%)")] public double? M4Value { get; set; } //소수점 1자리
+    [DisplayName("잡식종 개체수 비율(%)")] public double? M5Value { get; set; } //소수점 1자리
+    [DisplayName("충식종 개체수 비율(%)")] public double? M6Value { get; set; } //소수점 1자리
     [DisplayName("국내종 총 개체수")] public int? M7Value { get; set; }
-    [DisplayName("FAI 점수")] public double? FAIScore { get; set; }
-    [DisplayName("FAI 등급")] public string? FAIGrade { get; set; }
+    [DisplayName("FAI 점수")] public double? FAIScore { get; set; } //소수점 1자리
+    [DisplayName("FAI 등급")] public string? FAIGrade { get; set; } 
     [NotMapped][DisplayName("종수")] public int SpeciesCount { get; set; }
     [NotMapped][DisplayName("개체수")] public int IndividualCount { get; set; }
 

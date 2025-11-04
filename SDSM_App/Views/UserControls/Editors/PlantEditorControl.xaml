@@ -84,7 +84,7 @@
                                                          Width="{StaticResource FormControlWidth}"
                                                          Height="{StaticResource FormControlHeight}"
                                                          Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                         LostFocus="EmptyClear_LostFocus"/>
+                                                         LostFocus="Trim_LostFocus"/>
                         </StackPanel>
                         <StackPanel Style="{StaticResource FormStackPanelStyle}">
                             <StackPanel Orientation="Horizontal">
@@ -119,7 +119,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <Border Style="{StaticResource FormLabelBorderStyle}">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="지점명" Style="{StaticResource FormLabelStyle}" />
+                                        <TextBlock Text="조사지점" Style="{StaticResource FormLabelStyle}" />
                                         <TextBlock Text="*" Style="{StaticResource FormLabelRequiredStyle}" />
                                     </StackPanel>
                                 </Border>
@@ -146,7 +146,7 @@
                         <StackPanel Style="{StaticResource FormStackPanelStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <Border Style="{StaticResource FormLabelBorderStyle}">
-                                    <TextBlock Text="출현 위도" Style="{StaticResource FormLabelStyle}" />
+                                    <TextBlock Text="위도" Style="{StaticResource FormLabelStyle}" />
                                 </Border>
                                 <telerik:RadNumericUpDown Value="{Binding Path=Lat, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                           UpdateValueEvent="PropertyChanged"
@@ -155,11 +155,12 @@
                                                           Height="{StaticResource FormControlHeight}"
                                                           NumberDecimalDigits="6"
                                                           ShowButtons="False"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Border Style="{StaticResource FormLabelBorderStyle}">
-                                    <TextBlock Text="출현 경도" Style="{StaticResource FormLabelStyle}" />
+                                    <TextBlock Text="경도" Style="{StaticResource FormLabelStyle}" />
                                 </Border>
                                 <telerik:RadNumericUpDown Value="{Binding Path=Lng, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                           UpdateValueEvent="PropertyChanged"
@@ -168,7 +169,8 @@
                                                           Height="{StaticResource FormControlHeight}"
                                                           NumberDecimalDigits="6"
                                                           ShowButtons="False"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Style="{StaticResource FormStackPanelStyle}">

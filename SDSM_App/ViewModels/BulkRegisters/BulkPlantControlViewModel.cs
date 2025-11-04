@@ -20,6 +20,7 @@ using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
 using Telerik.Windows.Documents.Spreadsheet.Model;
+
 namespace SDSM_App.ViewModels;
 
 /// <summary>
@@ -319,6 +320,10 @@ public partial class BulkPlantControlViewModel : ObservableObject, ITransientSer
 
                 var insertModel = new Plant();
 
+                // 날짜 범위 체크
+                var minDate = GB.MinDate;
+                var maxDate = DateTime.Today;
+
                 //다시 검수 때문에 초기화
                 model.ErrorContent = string.Empty;
 
@@ -333,23 +338,32 @@ public partial class BulkPlantControlViewModel : ObservableObject, ITransientSer
 
                     if (prop.Name == "SurveyYear")
                     {
-                        //필수 정수
+                        //필수 정수 (4자리)
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (int.TryParse(value.ToString(), out int i))
+                            var v = ((string)value).Replace(" ", "");
+                            if (v.Length > 0)
                             {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, i);
-                            }
-                            else if (double.TryParse(value.ToString(), out double d))
-                            {
-                                //소수점이 있는 경우 잘라내기
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, (int)Math.Truncate(d));
+                                if (int.TryParse(v.AsSpan(0, 4), out int year))
+                                {
+                                    if (year >= minDate.Year || year <= maxDate.Year)
+                                    {
+                                        //연도
+                                        insertModel.SurveyYear = year;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                }
                             }
                             else
                             {
-                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                             }
                         }
                         else
@@ -362,10 +376,11 @@ public partial class BulkPlantControlViewModel : ObservableObject, ITransientSer
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (((string)value).Replace(" ", "").Length > 0)
+                            var v = ((string)value).Replace(" ", "");
+                            if (v.Length > 0)
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ",""));
+                                insertPropertyInfo?.SetValue(insertModel, v);
                             }
                             else
                             {
@@ -382,10 +397,18 @@ public partial class BulkPlantControlViewModel : ObservableObject, ITransientSer
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (((string)value).Replace(" ", "").Length > 0)
+                            var v = ((string)value).Replace(" ", "");
+                            if (v.Length > 0)
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                if(prop.Name == "SpeciesKo")
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                }
+                                else
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, v);
+                                }
                             }
                             else
                             {
@@ -402,10 +425,6 @@ public partial class BulkPlantControlViewModel : ObservableObject, ITransientSer
                         //형식은 Null - DB입력은 필수 날짜
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            // 날짜 범위 체크
-                            var minDate = GB.MinDate;
-                            var maxDate = DateTime.Today;
-
                             if (DateTime.TryParse(value.ToString(), out DateTime dt))
                             {
                                 if (dt < minDate || dt > maxDate)

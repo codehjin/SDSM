@@ -606,6 +606,10 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                 sb.Clear();
 
                 var insertModel = new Fish();
+                
+                // 날짜 범위 체크
+                var minDate = GB.MinDate;
+                var maxDate = DateTime.Today;
 
                 //다시 검수 때문에 초기화
                 model.ErrorContent = string.Empty;
@@ -664,10 +668,17 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                                 if (int.TryParse(v.AsSpan(0, 4), out int year))
                                 {
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                    insertPropertyInfo?.SetValue(insertModel, v);
 
-                                    //연도
-                                    insertModel.SurveyYear = year;
+                                    if (year >= minDate.Year || year <= maxDate.Year)
+                                    {
+                                        //연도
+                                        insertModel.SurveyYear = year;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                    }
                                 }
                                 else
                                 {
@@ -684,15 +695,17 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                             sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                         }
                     }
-                    else if (prop.Name == "Side")
+                    else if (prop.Name == "Side" || prop.Name == "River")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (((string)value).Replace(" ", "").Length > 0)
+                            var v = ((string)value).Replace(" ", "");
+
+                            if (v.Length > 0)
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                insertPropertyInfo?.SetValue(insertModel, v);
                             }
                             else
                             {
@@ -709,10 +722,6 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                         //형식은 Null - DB입력은 필수 날짜
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            // 날짜 범위 체크
-                            var minDate = GB.MinDate;
-                            var maxDate = DateTime.Today;
-
                             if (DateTime.TryParse(value.ToString(), out DateTime dt))
                             {
                                 if (dt < minDate || dt > maxDate)
@@ -915,6 +924,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                     }
                     else if (prop.Name == "CollectionTool" || prop.Name == "CollectionFlowState" || prop.Name == "HabitatRiverType" || prop.Name == "HabitatFlowState")
                     {
+                        //목록자료
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             if (prop.Name == "CollectionTool")
@@ -1030,7 +1040,15 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                            
+                            if(prop.Name == "RiverType" || prop.Name == "SurveyUnavailableReason")
+                            {
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ",""));
+                            }
+                            else
+                            {
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                            }
                         }
                         else
                         {

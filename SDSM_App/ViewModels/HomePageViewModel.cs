@@ -83,7 +83,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
 
             if (SearchValueSelectionCollection.Count != 0)
             {
-                /// 검색어 목록 추가 및 하위 자료 필터링 (어류, 저서동물은 하위 종목으로 필터링)
+                /// 검색어 목록 추가 및 하위 자료 필터링 (어류, 저서동물, 식생단면은 하위 종목으로 필터링)
                 var items = PointData
                     .Where(m => m.Caption == SearchCaptionSelectedItem && SearchValueSelectionCollection.Any(x => m.SearchText.Contains(x.SearchText ?? "")))
                     .Select(m =>
@@ -110,7 +110,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                             Data = [.. m.Data]
                         };
 
-                        if (SearchCaptionSelectedItem == "어류" || SearchCaptionSelectedItem == "저서동물")
+                        if (SearchCaptionSelectedItem == "어류" || SearchCaptionSelectedItem == "저서동물" || SearchCaptionSelectedItem == "식생단면")
                         {
                             clone.Data = [.. clone.Data.Where(d => SearchValueSelectionCollection.Any(x => d.SubSpecies != null && d.SubSpecies.Contains(x.SearchText ?? "")))];
                         }
@@ -290,6 +290,22 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                             mammal.Lng = AfterLng;
                         }
                         break;
+                    case "식물상":
+                        var plantList = context.Plants.Where(m => group.Ids.Contains(m.PlantId)).ToList();
+                        foreach (var plant in plantList)
+                        {
+                            plant.Lat = AfterLat;
+                            plant.Lng = AfterLng;
+                        }
+                        break;
+                    case "식생단면":
+                        var veENVList = context.VegetationENVs.Where(m => group.Ids.Contains(m.VegetationENVId)).ToList();
+                        foreach (var veENV in veENVList)
+                        {
+                            veENV.StartLat = AfterLat;
+                            veENV.StartLng = AfterLng;
+                        }
+                        break;
                     case "서식수변":
                         var habitatList = context.HabitatWaterEdges.Where(h => group.Ids.Contains(h.HabitatWaterEdgeId)).ToList();
                         foreach (var habitat in habitatList)
@@ -464,8 +480,8 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
             SurveyDataCollection.Add(new MapModel { Caption = "저서동물", Count = taxonCoordinateCount?.BenthosCount ?? 0, PointCount = taxonCoordinateCount?.BenthosDistinctCount ?? 0, IsSearch = true });
             SurveyDataCollection.Add(new MapModel { Caption = "조류", Count = taxonCoordinateCount?.BirdCount ?? 0, PointCount = taxonCoordinateCount?.BirdDistinctCount ?? 0, IsSearch = true });
             SurveyDataCollection.Add(new MapModel { Caption = "포유류", Count = taxonCoordinateCount?.MammalCount ?? 0, PointCount = taxonCoordinateCount?.MammalDistinctCount ?? 0, IsSearch = true });
-            SurveyDataCollection.Add(new MapModel { Caption = "식생" });
-            SurveyDataCollection.Add(new MapModel { Caption = "식물" });
+            SurveyDataCollection.Add(new MapModel { Caption = "식물상", Count = taxonCoordinateCount?.PlantCount ?? 0, PointCount = taxonCoordinateCount?.PlantDistinctCount ?? 0, IsSearch = true });
+            SurveyDataCollection.Add(new MapModel { Caption = "식생단면", Count = taxonCoordinateCount?.VegetationENVCount ?? 0, PointCount = taxonCoordinateCount?.VegetationENVDistinctCount ?? 0, IsSearch = true });
             SurveyDataCollection.Add(new MapModel { Caption = "양서파충류" });
             SurveyDataCollection.Add(new MapModel { Caption = "서식수변", Count = taxonCoordinateCount?.HabitatWaterEdgeCount ?? 0, PointCount = taxonCoordinateCount?.HabitatWaterEdgeDistinctCount ?? 0, });
             SurveyDataCollection.Add(new MapModel { Caption = "수질", Count = taxonCoordinateCount?.WaterQualityCount ?? 0, PointCount = taxonCoordinateCount?.WaterQualityDistinctCount ?? 0, });
@@ -826,6 +842,145 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                 PointData.Add(model);
             }
 
+            //식물상
+            var plantGroups = await context.Plants.Where(m => m.Lat != null && m.Lng != null)
+                                                    .GroupBy(m => new { m.Lat, m.Lng })
+                                                    .Select(g => new
+                                                    {
+                                                        Items = g.OrderBy(m => m.Chsu).ToList()
+                                                    }).ToListAsync();
+
+            foreach (var group in plantGroups)
+            {
+                var items = group.Items;
+                string? label = null;
+                var lat = items.FirstOrDefault()?.Lat ?? 0;
+                var lng = items.FirstOrDefault()?.Lng ?? 0;
+                var mapData = new List<MapData>();
+                StringBuilder sb = new();
+
+                if (items.Count > 1)
+                {
+                    var firstValue = $"{ProcessSurveyYear(items.First().SurveyYear):00}";
+                    var lastValue = $"{ProcessSurveyYear(items.Last().SurveyYear):00}";
+
+                    label = firstValue == lastValue ? $"식({firstValue})" : $"식({firstValue}~{lastValue})";
+                }
+                else
+                {
+                    label = $"식({ProcessSurveyYear(items.First().SurveyYear):00})";
+                }
+
+                foreach (var item in items)
+                {
+                    var data = new MapData
+                    {
+                        Id = item.PlantId,
+                        Caption = "식물상",
+                        YearChsu = item.Chsu,
+                        SurveyDate = item.SurveyDate,
+                        River = item.River,
+                        Site = item.Site,
+                        Lat = item.Lat,
+                        Lng = item.Lng,
+                        Surveyor = item.Surveyor,
+                        SpeciesKo = item.SpeciesKo,
+                        SpeciesEn = item.SpeciesEn,
+                    };
+                    sb.Append(item.SpeciesKo);
+                    mapData.Add(data);
+                }
+
+                var model = new MapModel
+                {
+                    Location = new Location(lat, lng),
+                    Caption = "식물상",
+                    Label = label,
+                    MarkerFill = Application.Current.FindResource("PlantBrush") as Brush,
+                    Data = mapData,
+                    IsSpecies = true,
+                    SearchText = sb.ToString(),
+                };
+
+                PointData.Add(model);
+            }
+
+            //식생단면
+            var veENVGroups = await context.VegetationENVs.Where(m => m.StartLat != null && m.StartLng != null)
+                                                             .Include(m => m.Subs)
+                                                             .GroupBy(m => new { m.StartLat, m.StartLng })
+                                                             .Select(g => new
+                                                             {
+                                                                 Items = g.OrderBy(m => m.Chsu).ToList()
+                                                             }).ToListAsync();
+
+            foreach (var group in veENVGroups)
+            {
+                var items = group.Items;
+                string? label = null;
+                var lat = items.FirstOrDefault()?.StartLat ?? 0;
+                var lng = items.FirstOrDefault()?.StartLng ?? 0;
+                var mapData = new List<MapData>();
+                StringBuilder sb = new();
+
+                if (items.Count > 1)
+                {
+                    var firstValue = $"{ProcessSurveyYear(items.First().SurveyYear):00}";
+                    var lastValue = $"{ProcessSurveyYear(items.Last().SurveyYear):00}";
+
+                    label = firstValue == lastValue ? $"식단({firstValue})" : $"식단({firstValue}~{lastValue})";
+                }
+                else
+                {
+                    label = $"식단({ProcessSurveyYear(items.First().SurveyYear):00})";
+                }
+
+                foreach (var item in items)
+                {
+                    var subs = item.Subs.GroupBy(m => m.SpeciesKo)
+                                         .Select(g => new NameValue { Name = g.Key ?? "", Value = g.Count() })
+                                         .OrderByDescending(m => m.Value)
+                                         .ThenBy(m => m.Name)
+                                         .ToList();
+
+                    var subSpecies = string.Join(",", subs.Select(s => s.Name));
+
+                    var data = new MapData
+                    {
+                        Id = item.VegetationENVId,
+                        Caption = "식생단면",
+                        YearChsu = item.Chsu,
+                        SurveyDate = item.SurveyDate,
+                        River = item.River,
+                        Site = item.Site,
+                        Lat = item.StartLat,
+                        Lng = item.StartLng,
+                        Surveyor = item.Surveyor,
+                        SpeciesCount = subs.Count, // subs 개수
+                        IndividualCount = item.Subs.Count, // item의 Subs 개수
+                        SubSpecies = subSpecies,
+                        SubSpeciesData = subs,
+                    };
+                    sb.Append(subSpecies);
+                    mapData.Add(data);
+                }
+
+                var model = new MapModel
+                {
+                    Location = new Location(lat, lng),
+                    Caption = "식생단면",
+                    Label = label,
+                    MarkerFill = Application.Current.FindResource("VegetationBrush") as Brush,
+                    Data = mapData,
+                    IsSpeciesCount = true,
+                    IsIndividualCount = true,
+                    IsSubSpecies = true,
+                    SearchText = sb.ToString(),
+                };
+
+                PointData.Add(model);
+            }
+
             //서식수변
             var habitatWaterEdgeGroups = await context.HabitatWaterEdges.Where(m => m.Lat != null && m.Lng != null)
                                                                             .GroupBy(m => new { m.Lat, m.Lng })
@@ -996,10 +1151,28 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                                                  .Select(s => new SearchItem { Caption = "포유류", SearchText = s })
                                                  .ToListAsync();
 
+            // 식물상
+            var plants = await context.Plants.Where(m => m.Lat != null && m.Lng != null && !string.IsNullOrEmpty(m.SpeciesKo))
+                                               .Select(m => m.SpeciesKo)
+                                               .Distinct()
+                                               .OrderBy(s => s)
+                                               .Select(s => new SearchItem { Caption = "식물상", SearchText = s })
+                                               .ToListAsync();
+
+            // 식생단면
+            var veENVs = await context.VegetationENVSpeciesViews.Where(m => m.StartLat != null && m.StartLng != null && !string.IsNullOrEmpty(m.SpeciesKo))
+                                                                  .Select(m => m.SpeciesKo)
+                                                                  .Distinct()
+                                                                  .OrderBy(s => s)
+                                                                  .Select(s => new SearchItem { Caption = "식생단면", SearchText = s })
+                                                                  .ToListAsync();
+
             SearchValueData.AddRange(fishs);
             SearchValueData.AddRange(benthos);
             SearchValueData.AddRange(birds);
             SearchValueData.AddRange(mammals);
+            SearchValueData.AddRange(plants);
+            SearchValueData.AddRange(veENVs);
         }
         catch (Exception ex)
         {
@@ -1008,7 +1181,16 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
         }
     }
 
-    //연도차수에서 연도(2자리) 추출
+    //연도에서 뒤 2자리 추출
+    private static int ProcessSurveyYear(int year)
+    {
+        if (year <= 0)
+            return 0;
+
+        return Math.Abs(year) % 100;
+    }
+
+    //연도차수에서 연도의 뒤 2자리 추출
     private static int ProcessYearChsu(string? yearChsu)
     {
         if (string.IsNullOrEmpty(yearChsu) || yearChsu.Length < 2)

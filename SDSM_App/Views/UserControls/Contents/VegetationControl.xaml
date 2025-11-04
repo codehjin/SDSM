@@ -139,7 +139,7 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180" TextWrapping="Wrap"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Colony}" MinWidth="80" Width="320" MaxWidth="320" TextWrapping="Wrap"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Area}" MinWidth="80" Width="200" MaxWidth="200"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Area}" DataFormatString="{}{0:N4}" MinWidth="80" Width="200" MaxWidth="200"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>

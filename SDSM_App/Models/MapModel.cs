@@ -39,7 +39,7 @@ public class MapData
     [DisplayName("하천명")] public string? River { get; set; }
     [DisplayName("지점명")] public string? Site { get; set; }
 
-    [DisplayName("일반명")] public string? SpeciesKo { get; set; }
+    [DisplayName("국명")] public string? SpeciesKo { get; set; }
     [DisplayName("학명")] public string? SpeciesEn { get; set; }
     [DisplayName("위도")] public double? Lat { get; set; }
     [DisplayName("경도")] public double? Lng { get; set; }

@@ -436,6 +436,10 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
                 var insertModel = new Benthos();
 
+                // 날짜 범위 체크
+                var minDate = GB.MinDate;
+                var maxDate = DateTime.Today;
+
                 //다시 검수 때문에 초기화
                 model.ErrorContent = string.Empty;
 
@@ -467,10 +471,17 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                                 if (int.TryParse(v.AsSpan(0, 4), out int year))
                                 {
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                    insertPropertyInfo?.SetValue(insertModel, v);
 
-                                    //연도
-                                    insertModel.SurveyYear = year;
+                                    if (year >= minDate.Year || year <= maxDate.Year)
+                                    {
+                                        //연도
+                                        insertModel.SurveyYear = year;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                    }
                                 }
                                 else
                                 {
@@ -487,15 +498,17 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                             sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                         }
                     }
-                    else if (prop.Name == "Side")
+                    else if (prop.Name == "Side" || prop.Name == "River")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (((string)value).Replace(" ", "").Length > 0)
+                            var v = ((string)value).Replace(" ", "");
+
+                            if (v.Length > 0)
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                insertPropertyInfo?.SetValue(insertModel, v);
                             }
                             else
                             {
@@ -512,10 +525,6 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                         //형식은 Null - DB입력은 필수 날짜
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            // 날짜 범위 체크
-                            var minDate = GB.MinDate;
-                            var maxDate = DateTime.Today;
-
                             if (DateTime.TryParse(value.ToString(), out DateTime dt))
                             {
                                 if (dt < minDate || dt > maxDate)
@@ -713,8 +722,8 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                             insertPropertyInfo?.SetValue(insertModel, null);
                         }
                     }
-                    else if (prop.Name == "RiverWidth" || prop.Name == "WaterWidth" || prop.Name == "AverageDepth" || prop.Name == "AverageVelocity" || prop.Name == "Temperature"
-                        || prop.Name == "WaterTemperature" || prop.Name == "IndexDI" || prop.Name == "IndexH" || prop.Name == "IndexR1" || prop.Name == "IndexJ")
+                    else if (prop.Name == "RiverWidth" || prop.Name == "WaterWidth" || prop.Name == "AverageDepth"
+                        || prop.Name == "AverageVelocity" || prop.Name == "Temperature" || prop.Name == "WaterTemperature")
                     {
                         //실수
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -722,7 +731,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                             if (double.TryParse(value.ToString(), out double d))
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, d);
+                                insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 1, MidpointRounding.AwayFromZero));
                             }
                             else
                             {
@@ -853,7 +862,15 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+
+                            if (prop.Name == "RiverType" || prop.Name == "SurveyUnavailableReason")
+                            {
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ", ""));
+                            }
+                            else
+                            {
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                            }
                         }
                         else
                         {
@@ -965,7 +982,14 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                            if (prop.Name == "Endangered1" || prop.Name == "Endangered2" || prop.Name == "Endemic")
+                            {
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ", ""));
+                            }
+                            else
+                            {
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                            }
                         }
                         else
                         {
@@ -1034,7 +1058,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                 using var context = new SDSMDbContext();
                 context.BenthosSpeciesLists.AddRange(newSpecies);
                 await context.SaveChangesAsync();
-            }            
+            }
 
             return true;
         }
@@ -1234,7 +1258,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                 string? speciesEn = ((ICellValue)(worksheet.Cells[rowIndex, 9].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 9].GetFormat().Value);
                 string? speciesKo = ((ICellValue)(worksheet.Cells[rowIndex, 10].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 10].GetFormat().Value);
 
-                if(!string.IsNullOrWhiteSpace(speciesEn) && !string.IsNullOrWhiteSpace(speciesKo))
+                if (!string.IsNullOrWhiteSpace(speciesEn) && !string.IsNullOrWhiteSpace(speciesKo))
                 {
                     var species = new BenthosSpeciesList
                     {
@@ -1251,7 +1275,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                         SpeciesKo = speciesKo,
                     };
 
-                    data.Add(species);               
+                    data.Add(species);
                 }
             }
 
@@ -1271,12 +1295,12 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         var newSpecies = ImportSpeciesListData
             .Where(import =>
                 !SpeciesListData.Any(existing =>
-                    import.SpeciesKo?.Replace(" ","").ToLower() == existing.SpeciesKo?.Replace(" ","").ToLower() &&
+                    import.SpeciesKo?.Replace(" ", "").ToLower() == existing.SpeciesKo?.Replace(" ", "").ToLower() &&
                     import.SpeciesEn?.Replace(" ", "").ToLower() == existing.SpeciesEn?.Replace(" ", "").ToLower()
                 )
             )
             .ToList();
-        
+
         return newSpecies;
     }
 

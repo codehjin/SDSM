@@ -214,13 +214,13 @@ public partial class StatsBenthosControlViewModel : ObservableObject, ITransient
 
                 foreach (var item in items)
                 {
-                    var phylumItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.PhylumKo).Count();
-                    var classItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.ClassKo).Count();
-                    var orderItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.OrderKo).Count();
-                    var familyItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.FamilyKo).Count();
-                    var speciesItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.SpeciesKo).Count();
+                    var phylumCount = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.PhylumKo).Count();
+                    var classCount = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.ClassKo).Count();
+                    var orderCount = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.OrderKo).Count();
+                    var familyCount = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.FamilyKo).Count();
+                    var speciesCount = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.SpeciesKo).Count();
 
-                    models.Add(new PlotItem { XCatText = $"{item.XCat}년", YVal1 = phylumItem, YVal2 = classItem, YVal3 = orderItem, YVal4 = familyItem, YVal5 = speciesItem });
+                    models.Add(new PlotItem { XCatText = $"{item.XCat}년", YVal1 = phylumCount, YVal2 = classCount, YVal3 = orderCount, YVal4 = familyCount, YVal5 = speciesCount });
                 }
 
                 var phylums = SpeciesSearchData.GroupBy(m => m.PhylumKo).Count();

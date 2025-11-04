@@ -97,6 +97,18 @@ public partial class BirdEditorControl : UserControl, ITransientService
         }
     }
 
+    //실수값 소수점 1자리
+    private void DoubleValueToRound_LostFocus(object sender, RoutedEventArgs e)
+    {
+        if (sender is RadNumericUpDown upDown && upDown.Value != null)
+        {
+            if (double.TryParse(upDown.Value.ToString(), out double value))
+            {
+                upDown.Value = Math.Round(value, upDown.NumberDecimalDigits, MidpointRounding.AwayFromZero);
+            }
+        }
+    }
+
     #endregion
 
     #region Drag

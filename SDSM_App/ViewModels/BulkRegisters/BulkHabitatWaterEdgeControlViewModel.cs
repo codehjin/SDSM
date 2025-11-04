@@ -331,6 +331,10 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
 
                 var insertModel = new HabitatWaterEdge();
 
+                // 날짜 범위 체크
+                var minDate = GB.MinDate;
+                var maxDate = DateTime.Today;
+
                 //다시 검수 때문에 초기화
                 model.ErrorContent = string.Empty;
 
@@ -343,7 +347,12 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
 
                     var value = prop.GetValue(model);
 
-                    if (prop.Name == "YearChsu")
+                    if (prop.Name == "EvaluationScore" || prop.Name == "EvaluationGrade")
+                    {
+                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                        insertPropertyInfo?.SetValue(insertModel, value);
+                    }
+                    else if (prop.Name == "YearChsu")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -354,10 +363,17 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                                 if (int.TryParse(v.AsSpan(0, 4), out int year))
                                 {
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                    insertPropertyInfo?.SetValue(insertModel, v);
 
-                                    //연도
-                                    insertModel.SurveyYear = year;
+                                    if (year >= minDate.Year || year <= maxDate.Year)
+                                    {
+                                        //연도
+                                        insertModel.SurveyYear = year;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                    }
                                 }
                                 else
                                 {
@@ -374,15 +390,16 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                             sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                         }
                     }
-                    else if (prop.Name == "Side")
+                    else if (prop.Name == "Side" || prop.Name == "River")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (((string)value).Replace(" ", "").Length > 0)
+                            var v = ((string)value).Replace(" ", "");
+                            if (v.Length > 0)
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                insertPropertyInfo?.SetValue(insertModel, v);
                             }
                             else
                             {
@@ -399,9 +416,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                         //형식은 Null - DB입력은 필수 날짜
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            // 날짜 범위 체크
-                            var minDate = GB.MinDate;
-                            var maxDate = DateTime.Today;
+
 
                             if (DateTime.TryParse(value.ToString(), out DateTime dt))
                             {
@@ -572,8 +587,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                         }
                     }
                     else if (prop.Name == "EvaluationItem1" || prop.Name == "EvaluationItem2" || prop.Name == "EvaluationItem3" || prop.Name == "EvaluationItem4" || prop.Name == "EvaluationItem5"
-                        || prop.Name == "EvaluationItem6" || prop.Name == "EvaluationItem7" || prop.Name == "EvaluationItem8" || prop.Name == "EvaluationItem9" || prop.Name == "EvaluationItem10"
-                        || prop.Name == "EvaluationScore")
+                        || prop.Name == "EvaluationItem6" || prop.Name == "EvaluationItem7" || prop.Name == "EvaluationItem8" || prop.Name == "EvaluationItem9" || prop.Name == "EvaluationItem10")
                     {
                         //실수
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -581,33 +595,11 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                             if (double.TryParse(value.ToString(), out double d))
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, d);
+                                insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 1, MidpointRounding.AwayFromZero));
                             }
                             else
                             {
                                 sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
-                            }
-                        }
-                        else
-                        {
-                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            insertPropertyInfo?.SetValue(insertModel, null);
-                        }
-                    }
-                    else if (prop.Name == "EvaluationScore")
-                    {
-                        //실수
-                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
-                        {
-                            if (double.TryParse(value.ToString(), out double d))
-                            {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, d);
-                            }
-                            else
-                            {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, null);
                             }
                         }
                         else
@@ -622,7 +614,14 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                            if (prop.Name == "RiverType" || prop.Name == "SurveyUnavailableReason")
+                            {
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ", ""));
+                            }
+                            else
+                            {
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                            }
                         }
                         else
                         {

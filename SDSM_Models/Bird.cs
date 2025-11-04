@@ -16,16 +16,16 @@ public class Bird
     public int BirdId { get; set; }
 
     [DisplayName("연도")][Required] public int SurveyYear { get; set; }
-    [DisplayName("연도차수")][Required] public string YearChsu { get; set; } = string.Empty;
+    [DisplayName("연도차수")][Required] public string YearChsu { get; set; } = string.Empty;// 빈값없음
     [DisplayName("조사일")] public DateTime? SurveyDate { get; set; }  //필수
-    [DisplayName("날씨")] public string? Weather { get; set; }
-    [DisplayName("하천명")][Required] public string River { get; set; } = string.Empty;
-    [DisplayName("지점명")] public string? Site { get; set; }
+    [DisplayName("날씨")] public string? Weather { get; set; }// 빈값없음
+    [DisplayName("하천명")][Required] public string River { get; set; } = string.Empty;// 빈값없음
+    [DisplayName("지점명")][Required] public string Site { get; set; } = string.Empty;// 빈값없음
     [DisplayName("일반명")][Required] public string SpeciesKo { get; set; } = string.Empty;
     [DisplayName("학명")] public string? SpeciesEn { get; set; }
     [DisplayName("특징")] public string? Feature { get; set; }
-    [DisplayName("위도")] public double? Lat { get; set; }
-    [DisplayName("경도")] public double? Lng { get; set; }
+    [DisplayName("위도")] public double? Lat { get; set; }//소수점 6자리
+    [DisplayName("경도")] public double? Lng { get; set; }//소수점 6자리
     [DisplayName("개체수")] public int? IndividualCount { get; set; }
     [DisplayName("도래유형")] public string? MigratoryType { get; set; }
     [DisplayName("대항목")] public string? Category { get; set; }

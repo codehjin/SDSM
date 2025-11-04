@@ -41,7 +41,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private DateTime? _surveyDate;
     [ObservableProperty] private string? _majorRegion;
     [ObservableProperty] private string? _middleRegion;
-    [ObservableProperty] private string? _river;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _river = string.Empty;
     [ObservableProperty] private string? _riverType;
     [ObservableProperty] private double? _lat;
     [ObservableProperty] private double? _lng;
@@ -71,6 +71,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
     {
         return !string.IsNullOrWhiteSpace(YearChsu)
             && !string.IsNullOrWhiteSpace(Site)
+            && !string.IsNullOrWhiteSpace(River)
             && SurveyDate != null;
     }
 
@@ -270,7 +271,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
         SurveyDate = null;
         MajorRegion = null;
         MiddleRegion = null;
-        River = null;
+        River = string.Empty;
         RiverType = null;
         Lat = null;
         Lng = null;

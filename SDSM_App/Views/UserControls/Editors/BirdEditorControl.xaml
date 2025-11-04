@@ -83,7 +83,7 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -133,7 +133,7 @@
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="지점명" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
-                                        <telerik:RadWatermarkTextBox Text="{Binding Path=Site}"
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=Site, UpdateSourceTrigger=PropertyChanged}"
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
@@ -192,7 +192,8 @@
                                                                   Height="{StaticResource FormControlHeight}"
                                                                   NumberDecimalDigits="6"
                                                                   ShowButtons="False"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -205,7 +206,8 @@
                                                                   Height="{StaticResource FormControlHeight}"
                                                                   NumberDecimalDigits="6"
                                                                   ShowButtons="False"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">

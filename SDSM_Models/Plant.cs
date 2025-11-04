@@ -16,14 +16,14 @@ public class Plant
     public int PlantId { get; set; }
 
     [DisplayName("연도")][Required] public int SurveyYear { get; set; }
-    [DisplayName("차수")][Required] public string Chsu { get; set; } = string.Empty;
+    [DisplayName("차수")][Required] public string Chsu { get; set; } = string.Empty;// 빈값없음
     [DisplayName("조사일")] public DateTime? SurveyDate { get; set; }  //필수
-    [DisplayName("날씨")] public string? Weather { get; set; }
-    [DisplayName("조사지점")][Required] public string Site { get; set; } = string.Empty;
-    [DisplayName("하천명")][Required] public string River { get; set; } = string.Empty;
+    [DisplayName("날씨")] public string? Weather { get; set; }// 빈값없음
+    [DisplayName("조사지점")][Required] public string Site { get; set; } = string.Empty;// 빈값없음
+    [DisplayName("하천명")][Required] public string River { get; set; } = string.Empty;// 빈값없음
     [DisplayName("조사자")] public string? Surveyor { get; set; }
-    [DisplayName("위도")] public double? Lat { get; set; }
-    [DisplayName("경도")] public double? Lng { get; set; }
+    [DisplayName("위도")] public double? Lat { get; set; }//소수점 6자리
+    [DisplayName("경도")] public double? Lng { get; set; }//소수점 6자리
     [DisplayName("위치")] public string? SurveyLocation { get; set; }
     [DisplayName("종명")][Required] public string SpeciesKo { get; set; } = string.Empty;   
     [DisplayName("학명")] public string? SpeciesEn { get; set; }

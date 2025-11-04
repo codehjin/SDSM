@@ -15,9 +15,9 @@ public class VegetationENVSpecies
     [Description("ID")]
     public int VegetationENVSpeciesId { get; set; }
 
-    [DisplayName("계층")] public string Layer { get; set; } = string.Empty;
+    [DisplayName("계층")] public string Layer { get; set; } = string.Empty;// 빈값없음
     [DisplayName("종명")] public string SpeciesKo { get; set; } = string.Empty;
-    [DisplayName("피도")] public double? CoverDegree { get; set; }
+    [DisplayName("피도")] public double? CoverDegree { get; set; }// 소수점 1자리
 
     //식생단면환경
     [DisplayName("ID")]

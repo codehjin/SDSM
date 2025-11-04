@@ -277,7 +277,7 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                     {
                         YearChsu = firstValue,
                         SurveyDate = ((ICellValue)(worksheet.Cells[rowIndex, 2].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 2].GetFormat().Value),
-                        Weather =   ((ICellValue)(worksheet.Cells[rowIndex, 3].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 3].GetFormat().Value),
+                        Weather = ((ICellValue)(worksheet.Cells[rowIndex, 3].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 3].GetFormat().Value),
                         River = ((ICellValue)(worksheet.Cells[rowIndex, 4].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 4].GetFormat().Value),
                         Site = ((ICellValue)(worksheet.Cells[rowIndex, 5].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 5].GetFormat().Value),
                         SpeciesKo = ((ICellValue)(worksheet.Cells[rowIndex, 6].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 6].GetFormat().Value),
@@ -327,6 +327,10 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
 
                 var insertModel = new Bird();
 
+                // 날짜 범위 체크
+                var minDate = GB.MinDate;
+                var maxDate = DateTime.Today;
+
                 //다시 검수 때문에 초기화
                 model.ErrorContent = string.Empty;
 
@@ -352,8 +356,15 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                                     insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
 
-                                    //연도
-                                    insertModel.SurveyYear = year;
+                                    if (year >= minDate.Year || year <= maxDate.Year)
+                                    {
+                                        //연도
+                                        insertModel.SurveyYear = year;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                    }
                                 }
                                 else
                                 {
@@ -370,15 +381,24 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                             sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                         }
                     }
-                    else if (prop.Name == "River" || prop.Name == "SpeciesKo")
+                    else if (prop.Name == "Site" || prop.Name == "River" || prop.Name == "SpeciesKo")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (((string)value).Replace(" ", "").Length > 0)
+                            var v = ((string)value).Replace(" ", "");
+
+                            if (v.Length > 0)
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                if (prop.Name == "SpeciesKo")
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                }
+                                else
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, v);
+                                }
                             }
                             else
                             {
@@ -395,10 +415,6 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                         //형식은 Null - DB입력은 필수 날짜
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            // 날짜 범위 체크
-                            var minDate = GB.MinDate;
-                            var maxDate = DateTime.Today;
-
                             if (DateTime.TryParse(value.ToString(), out DateTime dt))
                             {
                                 if (dt < minDate || dt > maxDate)
@@ -643,7 +659,7 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                             {
                                 //문자
                                 var (latDo, latBun, latCho) = GB.ParseDmsString(value.ToString());
-                                if(latDo != null && latBun != null && latCho != null)
+                                if (latDo != null && latBun != null && latCho != null)
                                 {
                                     var lat = GB.DmsToDegress(latDo.Value, latBun.Value, latCho.Value);
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);

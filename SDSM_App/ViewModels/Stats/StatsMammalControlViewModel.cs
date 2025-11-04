@@ -202,9 +202,9 @@ public partial class StatsMammalControlViewModel : ObservableObject, ITransientS
 
                 foreach (var item in items)
                 {
-                    var speciesItem = SearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.SpeciesKo).Count();
+                    var speciesCount = SearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.SpeciesKo).Count();
 
-                    models.Add(new PlotItem { XCatText = $"{item.XCat}년", YVal1 = speciesItem });
+                    models.Add(new PlotItem { XCatText = $"{item.XCat}년", YVal1 = speciesCount });
                 }
 
                 var speciess = SearchData.GroupBy(m => m.SpeciesKo).Count();

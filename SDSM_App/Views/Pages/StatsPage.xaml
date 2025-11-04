@@ -21,7 +21,7 @@
             <TextBlock Text="통계" Style="{StaticResource TitleTextBlockStyle}"/>
         </StackPanel>
 
-        <UniformGrid x:Name="MenuUniformGrid" Grid.Row="1" Columns="9" Margin="30 30 30 10" MaxWidth="{StaticResource ContentMaxWidth}">
+        <UniformGrid x:Name="MenuUniformGrid" Grid.Row="1" Columns="10" Margin="30 30 30 10" MaxWidth="{StaticResource ContentMaxWidth}">
             <UniformGrid.Resources>
                 <Style TargetType="telerik:RadRadioButton">
                     <Setter Property="Template" Value="{StaticResource SubMenuBorderThicknessRadRadioButtonTemplate}"/>
@@ -37,8 +37,9 @@
             <telerik:RadRadioButton Content="저서동물" Tag="StatsBenthosControl" Click="RadRadioButton_Click"/>
             <telerik:RadRadioButton Content="조류" Tag="StatsBirdControl" Click="RadRadioButton_Click"/>
             <telerik:RadRadioButton Content="포유류" Tag="StatsMammalControl" Click="RadRadioButton_Click"/>
-            <telerik:RadRadioButton Content="식생" Click="RadRadioButton_Click" IsEnabled="False"/>
-            <telerik:RadRadioButton Content="식물" Click="RadRadioButton_Click" IsEnabled="False"/>
+            <telerik:RadRadioButton Content="식물상" Tag="StatsPlantControl" Click="RadRadioButton_Click"/>
+            <telerik:RadRadioButton Content="식생도" Tag="StatsVegetationControl" Click="RadRadioButton_Click"/>
+            <telerik:RadRadioButton Content="식생단면" Tag="StatsVegetationENVControl" Click="RadRadioButton_Click"/>
             <telerik:RadRadioButton Content="양서파충류" Click="RadRadioButton_Click" IsEnabled="False"/>
             <telerik:RadRadioButton Content="서식수변" Tag="StatsHabitatWaterEdgeControl" Click="RadRadioButton_Click"/>
             <telerik:RadRadioButton Content="수질" Tag="StatsWaterQualityControl" Click="RadRadioButton_Click"/>

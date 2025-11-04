@@ -15,15 +15,15 @@ public class FishSpecies
     [Description("ID")]
     public int FishSpeciesId { get; set; }
 
-    [DisplayName("어류특성확정")] public string? FishTrait { get; set; }
-    [DisplayName("내성도 길드")] public string? ToleranceGuild { get; set; }
-    [DisplayName("섭식 길드")] public string? FeedingGuild { get; set; }
-    [DisplayName("서식지 길드")] public string? HabitatGuild { get; set; }
-    [DisplayName("외래종")] public string? Exotic { get; set; }
-    [DisplayName("고유종")] public string? Endemic { get; set; }
-    [DisplayName("멸종위기 I급")] public string? Endangered1 { get; set; }
-    [DisplayName("멸종위기 II급")] public string? Endangered2 { get; set; }
-    [DisplayName("천연기념물")] public string? NaturalMonument { get; set; }
+    [DisplayName("어류특성확정")] public string? FishTrait { get; set; }// 빈값없음
+    [DisplayName("내성도 길드")] public string? ToleranceGuild { get; set; }// 빈값없음
+    [DisplayName("섭식 길드")] public string? FeedingGuild { get; set; }// 빈값없음
+    [DisplayName("서식지 길드")] public string? HabitatGuild { get; set; }// 빈값없음
+    [DisplayName("외래종")] public string? Exotic { get; set; }// 빈값없음
+    [DisplayName("고유종")] public string? Endemic { get; set; }// 빈값없음
+    [DisplayName("멸종위기 I급")] public string? Endangered1 { get; set; }// 빈값없음
+    [DisplayName("멸종위기 II급")] public string? Endangered2 { get; set; }// 빈값없음
+    [DisplayName("천연기념물")] public string? NaturalMonument { get; set; }// 빈값없음
     [DisplayName("계통별 순서")] public int? LineageOrder { get; set; }
     [DisplayName("강")] public string? ClassKo { get; set; }
     [DisplayName("목")] public string? OrderKo { get; set; }

@@ -128,7 +128,7 @@
                                                          Width="{StaticResource FormControlBigWidth}"
                                                          Height="{StaticResource FormControlHeight}"
                                                          Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                         LostFocus="EmptyClear_LostFocus"/>
+                                                         LostFocus="Trim_LostFocus"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -153,11 +153,7 @@
                                                       Width="{StaticResource FormControlBigWidth}"
                                                       Height="{StaticResource FormControlHeight}"
                                                       Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                      LostFocus="DoubleValueToRound_LostFocus">
-                                <telerik:RadNumericUpDown.NumberFormatInfo>
-                                    <globalization:NumberFormatInfo NumberGroupSeparator=""/>
-                                </telerik:RadNumericUpDown.NumberFormatInfo>
-                            </telerik:RadNumericUpDown>
+                                                      LostFocus="DoubleValueToRound_LostFocus"/>
                         </StackPanel>
 
                     </StackPanel>

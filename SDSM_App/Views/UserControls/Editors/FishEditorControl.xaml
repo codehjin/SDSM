@@ -201,7 +201,7 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -211,13 +211,16 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="하천명" Style="{StaticResource FormLabelStyle}" />
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="하천명" Style="{StaticResource FormLabelStyle}" />
+                                                <TextBlock Text="*" Style="{StaticResource FormLabelRequiredStyle}" />
+                                            </StackPanel>
                                         </Border>
-                                        <telerik:RadWatermarkTextBox Text="{Binding Path=River}"
+                                        <telerik:RadWatermarkTextBox Text="{Binding Path=River, UpdateSourceTrigger=PropertyChanged}"
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
@@ -227,7 +230,7 @@
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="하천유명" Style="{StaticResource FormLabelStyle}" />
+                                            <TextBlock Text="하천유형" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
                                         <telerik:RadWatermarkTextBox Text="{Binding Path=RiverType}"
                                                                      Width="{StaticResource FormControlWidth}"
@@ -246,7 +249,8 @@
                                                                   Height="{StaticResource FormControlHeight}"
                                                                   NumberDecimalDigits="6"
                                                                   ShowButtons="False"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -259,7 +263,8 @@
                                                                   Height="{StaticResource FormControlHeight}"
                                                                   NumberDecimalDigits="6"
                                                                   ShowButtons="False"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -292,7 +297,7 @@
                                                                          Width="{StaticResource FormControlWidth}"
                                                                          Height="{StaticResource FormControlHeight}"
                                                                          Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                         LostFocus="EmptyClear_LostFocus"/>
+                                                                         LostFocus="Trim_LostFocus"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
@@ -358,7 +363,7 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -368,7 +373,7 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                         <StackPanel Orientation="Horizontal">
@@ -379,7 +384,7 @@
                                                                          Width="{StaticResource FormControlWidth}"
                                                                          Height="{StaticResource FormControlHeight}"
                                                                          Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                         LostFocus="EmptyClear_LostFocus"/>
+                                                                         LostFocus="Trim_LostFocus"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
@@ -392,7 +397,7 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -402,7 +407,7 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                 </StackPanel>
 
@@ -415,7 +420,7 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -425,7 +430,7 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                         <StackPanel Orientation="Horizontal">
@@ -436,7 +441,7 @@
                                                                          Width="{StaticResource FormControlWidth}"
                                                                          Height="{StaticResource FormControlHeight}"
                                                                          Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                         LostFocus="EmptyClear_LostFocus"/>
+                                                                         LostFocus="Trim_LostFocus"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
@@ -547,7 +552,7 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -557,7 +562,7 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                 </StackPanel>
 
@@ -570,7 +575,7 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -580,7 +585,7 @@
                                                                       Width="{StaticResource FormControlWidth}"
                                                                       Height="{StaticResource FormControlHeight}"
                                                                       Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                      LostFocus="EmptyClear_LostFocus"/>
+                                                                      LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">

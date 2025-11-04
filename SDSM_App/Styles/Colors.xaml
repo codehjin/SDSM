@@ -97,15 +97,6 @@
     <!--포인트 테두리-->
     <Color x:Key="PointBorderColor">#44000000</Color>
     <SolidColorBrush x:Key="PointBorderBrush" Color="{StaticResource PointBorderColor}"/>
-    <!--식생-->
-    <Color x:Key="VegetationColor">#007200</Color>
-    <SolidColorBrush x:Key="VegetationBrush" Color="{StaticResource VegetationColor}"/>
-    <!--식물-->
-    <Color x:Key="PlantColor">#00B200</Color>
-    <SolidColorBrush x:Key="PlantBrush" Color="{StaticResource PlantColor}"/>
-    <!--양서파충류-->
-    <Color x:Key="AmphibianReptileColor">#CC33FF</Color>
-    <SolidColorBrush x:Key="AmphibianReptileBrush" Color="{StaticResource AmphibianReptileColor}"/>
     <!--어류-->
     <Color x:Key="FishColor">#00B8D4</Color>
     <SolidColorBrush x:Key="FishBrush" Color="{StaticResource FishColor}"/>
@@ -118,6 +109,15 @@
     <!--포유류-->
     <Color x:Key="MammalColor">#FE9900</Color>
     <SolidColorBrush x:Key="MammalBrush" Color="{StaticResource MammalColor}"/>
+    <!--식물상-->
+    <Color x:Key="PlantColor">#00B200</Color>
+    <SolidColorBrush x:Key="PlantBrush" Color="{StaticResource PlantColor}"/>
+    <!--식생단면-->
+    <Color x:Key="VegetationColor">#007200</Color>
+    <SolidColorBrush x:Key="VegetationBrush" Color="{StaticResource VegetationColor}"/>
+    <!--양서파충류-->
+    <Color x:Key="AmphibianReptileColor">#CC33FF</Color>
+    <SolidColorBrush x:Key="AmphibianReptileBrush" Color="{StaticResource AmphibianReptileColor}"/>
     <!--서식수변-->
     <Color x:Key="HabitatWaterEdgeColor">#37474F</Color>
     <SolidColorBrush x:Key="HabitatWaterEdgeBrush" Color="{StaticResource HabitatWaterEdgeColor}"/>

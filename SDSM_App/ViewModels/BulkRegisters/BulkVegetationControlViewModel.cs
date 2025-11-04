@@ -313,6 +313,10 @@ public partial class BulkVegetationControlViewModel : ObservableObject, ITransie
 
                 var insertModel = new Vegetation();
 
+                // 날짜 범위 체크
+                var minDate = GB.MinDate;
+                var maxDate = DateTime.Today;
+
                 //다시 검수 때문에 초기화
                 model.ErrorContent = string.Empty;
 
@@ -336,10 +340,17 @@ public partial class BulkVegetationControlViewModel : ObservableObject, ITransie
                                 if (int.TryParse(v.AsSpan(0, 4), out int year))
                                 {
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                    insertPropertyInfo?.SetValue(insertModel, v);
 
-                                    //연도
-                                    insertModel.SurveyYear = year;
+                                    if (year >= minDate.Year || year <= maxDate.Year)
+                                    {
+                                        //연도
+                                        insertModel.SurveyYear = year;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                    }
                                 }
                                 else
                                 {
@@ -361,10 +372,18 @@ public partial class BulkVegetationControlViewModel : ObservableObject, ITransie
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (((string)value).Replace(" ", "").Length > 0)
+                            var v = ((string)value).Replace(" ", "");
+                            if (v.Length > 0)
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                if (prop.Name == "Colony")
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                }
+                                else
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ", ""));
+                                }
                             }
                             else
                             {
@@ -381,10 +400,6 @@ public partial class BulkVegetationControlViewModel : ObservableObject, ITransie
                         //형식은 Null - DB입력은 필수 날짜
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            // 날짜 범위 체크
-                            var minDate = GB.MinDate;
-                            var maxDate = DateTime.Today;
-
                             if (DateTime.TryParse(value.ToString(), out DateTime dt))
                             {
                                 if (dt < minDate || dt > maxDate)

@@ -40,7 +40,7 @@ public partial class BirdEditorControlViewModel : ObservableObject, ITransientSe
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private DateTime? _surveyDate;
     [ObservableProperty] private string? _weather;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _river = string.Empty;
-    [ObservableProperty] private string? _site;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _site = string.Empty;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _speciesKo = string.Empty;
     [ObservableProperty] private string? _speciesEn;
     [ObservableProperty] private string? _feature;
@@ -63,6 +63,7 @@ public partial class BirdEditorControlViewModel : ObservableObject, ITransientSe
         return !string.IsNullOrWhiteSpace(YearChsu)
             && SurveyDate != null
             && !string.IsNullOrWhiteSpace(River)
+            && !string.IsNullOrWhiteSpace(Site)
             && !string.IsNullOrWhiteSpace(SpeciesKo);
     }
 
@@ -230,7 +231,7 @@ public partial class BirdEditorControlViewModel : ObservableObject, ITransientSe
         SurveyDate = null;
         Weather = null;
         River = string.Empty;
-        Site = null;
+        Site = string.Empty;
         SpeciesKo = string.Empty;
         SpeciesEn = null;
         Feature = null;

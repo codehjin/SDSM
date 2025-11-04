@@ -126,7 +126,7 @@
                                 <Border Style="{StaticResource FormLabelBorderStyle}">
                                     <TextBlock Text="하천명" Style="{StaticResource FormLabelStyle}" />
                                 </Border>
-                                <telerik:RadWatermarkTextBox Text="{Binding Path=River}"
+                                <telerik:RadWatermarkTextBox Text="{Binding Path=River, UpdateSourceTrigger=PropertyChanged}"
                                                              Width="{StaticResource FormControlWidth}"
                                                              Height="{StaticResource FormControlHeight}"
                                                              Style="{StaticResource FormWatermarkTextBoxStyle}"
@@ -142,7 +142,7 @@
                                                          Width="{StaticResource FormControlWidth}"
                                                          Height="{StaticResource FormControlHeight}"
                                                          Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                         LostFocus="EmptyClear_LostFocus"/>
+                                                         LostFocus="Trim_LostFocus"/>
                         </StackPanel>
 
                         <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -157,7 +157,8 @@
                                                           Height="{StaticResource FormControlHeight}"
                                                           NumberDecimalDigits="6"
                                                           ShowButtons="False"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -170,7 +171,8 @@
                                                           Height="{StaticResource FormControlHeight}"
                                                           NumberDecimalDigits="6"
                                                           ShowButtons="False"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                         </StackPanel>
 
@@ -197,7 +199,8 @@
                                                           Height="{StaticResource FormControlHeight}"
                                                           NumberDecimalDigits="6"
                                                           ShowButtons="False"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -210,7 +213,8 @@
                                                           Height="{StaticResource FormControlHeight}"
                                                           NumberDecimalDigits="6"
                                                           ShowButtons="False"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                         </StackPanel>
 
@@ -223,7 +227,8 @@
                                                       Minimum="0"
                                                       Width="{StaticResource FormControlWidth}"
                                                       Height="{StaticResource FormControlHeight}"
-                                                      Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                      Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                      LostFocus="DoubleValueToRound_LostFocus"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
@@ -280,10 +285,10 @@
                                 <telerik:RadNumericUpDown Value="{Binding Path=Distance, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                           UpdateValueEvent="PropertyChanged"
                                                           Minimum="0"
-                                                          NumberDecimalDigits="1"
                                                           Width="{StaticResource FormControlWidth}"
                                                           Height="{StaticResource FormControlHeight}"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -293,10 +298,10 @@
                                                           UpdateValueEvent="PropertyChanged"
                                                           Minimum="0"
                                                           Maximum="360"
-                                                          NumberDecimalDigits="1"
                                                           Width="{StaticResource FormControlWidth}"
                                                           Height="{StaticResource FormControlHeight}"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                         </StackPanel>
 
@@ -308,10 +313,10 @@
                                 <telerik:RadNumericUpDown Value="{Binding Path=DepthWater, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                           UpdateValueEvent="PropertyChanged"
                                                           Minimum="0"
-                                                          NumberDecimalDigits="1"
                                                           Width="{StaticResource FormControlWidth}"
                                                           Height="{StaticResource FormControlHeight}"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                             <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                 <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -343,10 +348,10 @@
                                 <telerik:RadNumericUpDown Value="{Binding Path=T1Height, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                           UpdateValueEvent="PropertyChanged"
                                                           Minimum="0"
-                                                          NumberDecimalDigits="1"
                                                           Width="{StaticResource FormControlWidth}"
                                                           Height="{StaticResource FormControlHeight}"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -355,10 +360,10 @@
                                 <telerik:RadNumericUpDown Value="{Binding Path=T1CoverDegree, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                           UpdateValueEvent="PropertyChanged"
                                                           Minimum="0"
-                                                          NumberDecimalDigits="1"
                                                           Width="{StaticResource FormControlWidth}"
                                                           Height="{StaticResource FormControlHeight}"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                         </StackPanel>
 
@@ -370,10 +375,10 @@
                                 <telerik:RadNumericUpDown Value="{Binding Path=T2Height, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                           UpdateValueEvent="PropertyChanged"
                                                           Minimum="0"
-                                                          NumberDecimalDigits="1"
                                                           Width="{StaticResource FormControlWidth}"
                                                           Height="{StaticResource FormControlHeight}"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -382,10 +387,10 @@
                                 <telerik:RadNumericUpDown Value="{Binding Path=T2CoverDegree, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                           UpdateValueEvent="PropertyChanged"
                                                           Minimum="0"
-                                                          NumberDecimalDigits="1"
                                                           Width="{StaticResource FormControlWidth}"
                                                           Height="{StaticResource FormControlHeight}"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                         </StackPanel>
 
@@ -398,10 +403,10 @@
                                 <telerik:RadNumericUpDown Value="{Binding Path=SHeight, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                           UpdateValueEvent="PropertyChanged"
                                                           Minimum="0"
-                                                          NumberDecimalDigits="1"
                                                           Width="{StaticResource FormControlWidth}"
                                                           Height="{StaticResource FormControlHeight}"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -410,10 +415,10 @@
                                 <telerik:RadNumericUpDown Value="{Binding Path=SCoverDegree, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                           UpdateValueEvent="PropertyChanged"
                                                           Minimum="0"
-                                                          NumberDecimalDigits="1"
                                                           Width="{StaticResource FormControlWidth}"
                                                           Height="{StaticResource FormControlHeight}"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                         </StackPanel>
 
@@ -425,10 +430,10 @@
                                 <telerik:RadNumericUpDown Value="{Binding Path=HHeight, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                           UpdateValueEvent="PropertyChanged"
                                                           Minimum="0"
-                                                          NumberDecimalDigits="1"
                                                           Width="{StaticResource FormControlWidth}"
                                                           Height="{StaticResource FormControlHeight}"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -437,10 +442,10 @@
                                 <telerik:RadNumericUpDown Value="{Binding Path=HCoverDegree, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                           UpdateValueEvent="PropertyChanged"
                                                           Minimum="0"
-                                                          NumberDecimalDigits="1"
                                                           Width="{StaticResource FormControlWidth}"
                                                           Height="{StaticResource FormControlHeight}"
-                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                          Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                          LostFocus="DoubleValueToRound_LostFocus"/>
                             </StackPanel>
                         </StackPanel>
 
@@ -495,7 +500,6 @@
                                             <telerik:RadNumericUpDown Value="{Binding Path=SpeciesCoverDegree, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                                       UpdateValueEvent="PropertyChanged"
                                                                       Minimum="0"
-                                                                      NumberDecimalDigits="1"
                                                                       ShowButtons="False"
                                                                       HorizontalContentAlignment="Center"
                                                                       Width="70"
@@ -610,11 +614,11 @@
                                             <telerik:RadNumericUpDown Value="{Binding Path=EditSpeciesCoverDegree, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                                       UpdateValueEvent="PropertyChanged"
                                                                       Minimum="0"
-                                                                      NumberDecimalDigits="1"
                                                                       ShowButtons="False"
                                                                       Width="{StaticResource FormControlWidth}"
                                                                       Height="{StaticResource FormControlHeight}"
-                                                                      Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
+                                                                      Style="{StaticResource FormDoubleNumericUpDownStyle}"
+                                                                      LostFocus="DoubleValueToRound_LostFocus"/>
                                         </StackPanel>
 
                                         <telerik:RadButton Grid.Column="1" Content="수정" Margin="5 10 0 0" Padding="30 0" HorizontalAlignment="Right" 

@@ -471,12 +471,12 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
 
                 var insertModel = new VegetationENV();
 
-                //다시 검수 때문에 초기화
-                model.ErrorContent = string.Empty;
-
                 // 날짜 범위 체크
                 var minDate = GB.MinDate;
                 var maxDate = DateTime.Today;
+
+                //다시 검수 때문에 초기화
+                model.ErrorContent = string.Empty;
 
                 //import model
                 PropertyInfo[] props = model.GetType().GetProperties();
@@ -487,12 +487,12 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
 
                     var value = prop.GetValue(model);
 
-                    if (prop.Name == "MacthNumber" || prop.Name == "SpeciesCount" || prop.Name == "IndividualCount")
+                    if (prop.Name == "SpeciesCount" || prop.Name == "IndividualCount")
                     {
                         PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                         insertPropertyInfo?.SetValue(insertModel, value);
                     }
-                    else if (prop.Name == "ID" && prop.Name == "Chsu" && prop.Name == "Site")
+                    else if (prop.Name == "ID" && prop.Name == "Chsu" && prop.Name == "Site" && prop.Name == "River")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -501,8 +501,6 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
                             if (v.Length > 0)
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-
-                                //매칭번호는 공백제거
                                 insertPropertyInfo?.SetValue(insertModel, v);
                             }
                             else
@@ -525,7 +523,7 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
                             {
                                 if (int.TryParse(v.AsSpan(0, 4), out int year))
                                 {
-                                    if (year >= GB.MinDate.Year || year <= DateTime.Now.Year)
+                                    if (year >= minDate.Year || year <= maxDate.Year)
                                     {
                                         //연도
                                         insertModel.SurveyYear = year;
@@ -819,7 +817,7 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
                             if (double.TryParse(value.ToString(), out double d))
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, d);
+                                insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 1, MidpointRounding.AwayFromZero));
                             }
                             else
                             {

@@ -348,6 +348,10 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
                 var insertModel = new WaterQuality();
 
+                // 날짜 범위 체크
+                var minDate = GB.MinDate;
+                var maxDate = DateTime.Today;
+
                 //다시 검수 때문에 초기화
                 model.ErrorContent = string.Empty;
 
@@ -360,7 +364,13 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
                     var value = prop.GetValue(model);
 
-                    if (prop.Name == "YearChsu")
+                    if (prop.Name == "PHGrade" || prop.Name == "BODGrade" || prop.Name == "CODGrade" || prop.Name == "TOCGrade" || prop.Name == "SSGrade"
+                        || prop.Name == "DOGrade" || prop.Name == "TPGrade" || prop.Name == "EColiGrade")
+                    {
+                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                        insertPropertyInfo?.SetValue(insertModel, value);
+                    }
+                    else if (prop.Name == "YearChsu")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -371,10 +381,17 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                                 if (int.TryParse(v.AsSpan(0, 4), out int year))
                                 {
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                    insertPropertyInfo?.SetValue(insertModel, v);
 
-                                    //연도
-                                    insertModel.SurveyYear = year;
+                                    if (year >= minDate.Year || year <= maxDate.Year)
+                                    {
+                                        //연도
+                                        insertModel.SurveyYear = year;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                    }
                                 }
                                 else
                                 {
@@ -396,10 +413,11 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (((string)value).Replace(" ", "").Length > 0)
+                            var v = ((string)value).Replace(" ", "");
+                            if (v.Length > 0)
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                insertPropertyInfo?.SetValue(insertModel, v);
                             }
                             else
                             {
@@ -416,10 +434,6 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                         //형식은 Null - DB입력은 필수 날짜
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            // 날짜 범위 체크
-                            var minDate = GB.MinDate;
-                            var maxDate = DateTime.Today;
-
                             if (DateTime.TryParse(value.ToString(), out DateTime dt))
                             {
                                 if (dt < minDate || dt > maxDate)
@@ -588,33 +602,6 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                             insertPropertyInfo?.SetValue(insertModel, null);
                         }
                     }
-                    else if (prop.Name == "PHGrade" || prop.Name == "SSGrade")
-                    {
-                        //정수
-                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
-                        {
-                            if (int.TryParse(value.ToString(), out int i))
-                            {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, i);
-                            }
-                            else if (double.TryParse(value.ToString(), out double d))
-                            {
-                                //소수점이 있는 경우 잘라내기
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, (int)Math.Truncate(d));
-                            }
-                            else
-                            {
-                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
-                            }
-                        }
-                        else
-                        {
-                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            insertPropertyInfo?.SetValue(insertModel, null);
-                        }
-                    }
                     else if (prop.Name == "PH" || prop.Name == "BOD" || prop.Name == "COD" || prop.Name == "TOC" || prop.Name == "SS"
                         || prop.Name == "DO" || prop.Name == "TP" || prop.Name == "Ecotoxicity" || prop.Name == "EColi" 
                         || prop.Name == "TN" || prop.Name == "EC" || prop.Name == "Cl" || prop.Name == "SO42" || prop.Name == "Cu" || prop.Name == "Zn"
@@ -628,7 +615,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                                 
-                                if(prop.Name == "TP" || prop.Name == "Cu" || prop.Name == "Zn" || prop.Name == "Cr" || prop.Name == "TN" || prop.Name == "FlowSec")
+                                if(prop.Name == "TP" || prop.Name == "Cu" || prop.Name == "Zn" || prop.Name == "Cr"  || prop.Name == "FlowSec")
                                 {
                                     //소수점 3자리
                                     insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 3, MidpointRounding.AwayFromZero));
@@ -660,7 +647,14 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                            if(prop.Name == "River" || prop.Name == "RiverType")
+                            {
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ",""));
+                            }
+                            else
+                            {
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                            }
                         }
                         else
                         {

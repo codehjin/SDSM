@@ -36,7 +36,7 @@ public partial class StatsHabitatWaterEdgeControl : UserControl, ITransientServi
 
     private void RadGridView_ElementExportingToDocument(object sender, GridViewElementExportingToDocumentEventArgs e)
     {
-        if (e.Element == ExportElement.Cell && e.Value != null)
+        if ((e.Element == ExportElement.Cell && e.Value != null) || (e.Element == ExportElement.FooterCell && e.Value != null))
         {
             if (int.TryParse(e.Value.ToString(), out var i))
             {

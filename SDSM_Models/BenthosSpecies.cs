@@ -16,18 +16,18 @@ public class BenthosSpecies
     [Description("ID")]
     public int BenthosSpeciesId { get; set; }
 
-    [DisplayName("오탁치(s)")] public double? SaprobicValue { get; set; }
+    [DisplayName("오탁치(s)")] public double? SaprobicValue { get; set; } //소수점 1자리
     [DisplayName("지표가중치(g)")] public int? IndicatorWeight { get; set; }
-    [DisplayName("멸종위기 I급")] public string? Endangered1 { get; set; }
-    [DisplayName("멸종위기 II급")] public string? Endangered2 { get; set; }
-    [DisplayName("한국고유종")] public string? Endemic { get; set; }
+    [DisplayName("멸종위기 I급")] public string? Endangered1 { get; set; } //빈값없음
+    [DisplayName("멸종위기 II급")] public string? Endangered2 { get; set; }//빈값없음
+    [DisplayName("한국고유종")] public string? Endemic { get; set; }//빈값없음
     [DisplayName("문")] public string? PhylumKo { get; set; }
     [DisplayName("강")] public string? ClassKo { get; set; }
     [DisplayName("목")] public string? OrderKo { get; set; }
     [DisplayName("과")] public string? FamilyKo { get; set; }
     [DisplayName("국명")] public string? SpeciesKo { get; set; }
     [DisplayName("학명")] public string? SpeciesEn { get; set; }
-    [DisplayName("개체수")] public double? IndividualCount { get; set; }
+    [DisplayName("개체수")] public double? IndividualCount { get; set; } //소수점 1자리
 
     //조사자료
     [Description("ID")]

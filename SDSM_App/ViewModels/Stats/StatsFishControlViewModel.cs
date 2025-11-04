@@ -213,12 +213,12 @@ public partial class StatsFishControlViewModel : ObservableObject, ITransientSer
 
                 foreach (var item in items)
                 {
-                    var classItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.ClassKo).Count();
-                    var orderItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.OrderKo).Count();
-                    var familyItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.FamilyKo).Count();
-                    var speciesItem = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.SpeciesKo).Count();
+                    var classCount = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.ClassKo).Count();
+                    var orderCount = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.OrderKo).Count();
+                    var familyCount = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.FamilyKo).Count();
+                    var speciesCount = SpeciesSearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.SpeciesKo).Count();
 
-                    models.Add(new PlotItem { XCatText = $"{item.XCat}년", YVal1 = classItem, YVal2 = orderItem, YVal3 = familyItem, YVal4 = speciesItem });
+                    models.Add(new PlotItem { XCatText = $"{item.XCat}년", YVal1 = classCount, YVal2 = orderCount, YVal3 = familyCount, YVal4 = speciesCount });
                 }
 
                 var classs = SpeciesSearchData.GroupBy(m => m.ClassKo).Count();

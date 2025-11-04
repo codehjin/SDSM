@@ -47,7 +47,7 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private DateTime? _surveyDate;
     [ObservableProperty] private string? _weather;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _site = string.Empty;
-    [ObservableProperty] private string? _river;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _river = string.Empty;
     [ObservableProperty] private string? _surveyor;
     [ObservableProperty] private double? _startLat;
     [ObservableProperty] private double? _startLng;
@@ -78,27 +78,27 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
     #region 생물종 속성, ICommand
 
     [ObservableProperty] private RadObservableCollection<VegetationENVSpecies> _speciesCollection = [];
-    [ObservableProperty] 
+    [ObservableProperty]
     private VegetationENVSpecies? _speciesSelectedItem;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SpeciesAddSaveExecutedCommand))]
     private string _speciesLayer = string.Empty;
-    
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SpeciesAddSaveExecutedCommand))]
     private string _speciesSpeciesKo = string.Empty;
-    
+
     [ObservableProperty] private double? _speciesCoverDegree;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SpeciesEditSaveExecutedCommand))]
     private string _editSpeciesLayer = string.Empty;
-    
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SpeciesEditSaveExecutedCommand))]
     private string _editSpeciesSpeciesKo = string.Empty;
-    
+
     [ObservableProperty] private double? _editSpeciesCoverDegree;
 
     [ObservableProperty] private Visibility _speciesEditorVisibility = Visibility.Collapsed;
@@ -106,7 +106,7 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
     [RelayCommand]
     private void SpeciesEditExecuted(object obj)
     {
-        if(obj != null && obj is VegetationENVSpecies model)
+        if (obj != null && obj is VegetationENVSpecies model)
         {
             SpeciesSelectedItem = model;
 
@@ -123,18 +123,25 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
     {
         if (obj != null && obj is VegetationENVSpecies model)
         {
-            SpeciesSelectedItem = model;
-
-            var message = $"계층 : {SpeciesSelectedItem.Layer}{Environment.NewLine}" +
-                           $"종명 : {SpeciesSelectedItem.SpeciesKo}{Environment.NewLine}{Environment.NewLine}" +
-                           $"출현종 목록에서 제거됩니다.{Environment.NewLine}" +
-                           $"제거하시겠습니까?{Environment.NewLine}";
-
-            SystemSounds.Beep.Play();
-            var result = MessageBox.Show(message, "출현종 제거", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
-            if(result == MessageBoxResult.Yes)
+            if (SpeciesCollection.Count > 1)
             {
-                SpeciesCollection.Remove(SpeciesSelectedItem);
+                SpeciesSelectedItem = model;
+
+                var message = $"계층 : {SpeciesSelectedItem.Layer}{Environment.NewLine}" +
+                               $"종명 : {SpeciesSelectedItem.SpeciesKo}{Environment.NewLine}{Environment.NewLine}" +
+                               $"출현종 목록에서 제거됩니다.{Environment.NewLine}" +
+                               $"제거하시겠습니까?{Environment.NewLine}";
+
+                SystemSounds.Beep.Play();
+                var result = MessageBox.Show(message, "출현종 제거", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+                if (result == MessageBoxResult.Yes)
+                {
+                    SpeciesCollection.Remove(SpeciesSelectedItem);
+                }
+            }
+            else
+            {
+                MessageBox.Show("출현종은 최소 1건이상 존재해야합니다.", "출현종 제거 오류", MessageBoxButton.OK, MessageBoxImage.Warning );
             }
         }
     }
@@ -155,7 +162,7 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
             && !string.IsNullOrWhiteSpace(EditSpeciesSpeciesKo);
     }
 
-    [RelayCommand(CanExecute =nameof(CanSpeciesEditSave))]
+    [RelayCommand(CanExecute = nameof(CanSpeciesEditSave))]
     private void SpeciesEditSaveExecuted()
     {
         // 사용유무만
@@ -170,7 +177,7 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
     [RelayCommand(CanExecute = nameof(CanSpeciesAddSave))]
     private void SpeciesAddSaveExecuted()
     {
-       // 사용유무만
+        // 사용유무만
     }
 
     #endregion
@@ -202,7 +209,7 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
     #endregion
 
     #region 매서드
-    
+
 
     //신규저장
     private async void AddSave()
@@ -307,7 +314,7 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
     {
         try
         {
-            if(SurveyYear is not int year)
+            if (SurveyYear is not int year)
                 return null;
 
             var model = new VegetationENV
@@ -341,7 +348,7 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
                 SHeight = SHeight,
                 SCoverDegree = SCoverDegree,
                 HHeight = HHeight,
-                HCoverDegree = HCoverDegree,                
+                HCoverDegree = HCoverDegree,
             };
             return model;
 
@@ -461,7 +468,7 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
         SurveyDate = null;
         Weather = null;
         Site = string.Empty;
-        River = null;
+        River = string.Empty;
         Surveyor = null;
         StartLat = null;
         StartLng = null;

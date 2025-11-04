@@ -97,6 +97,18 @@ public partial class HabitatWaterEdgeEditorControl : UserControl, ITransientServ
         }
     }
 
+    //실수값 소수점 1자리
+    private void DoubleValueToRound_LostFocus(object sender, RoutedEventArgs e)
+    {
+        if (sender is RadNumericUpDown upDown && upDown.Value != null)
+        {
+            if (double.TryParse(upDown.Value.ToString(), out double value))
+            {
+                upDown.Value = Math.Round(value, upDown.NumberDecimalDigits, MidpointRounding.AwayFromZero);
+            }
+        }
+    }
+
     #endregion
 
     #region Drag
@@ -149,15 +161,4 @@ public partial class HabitatWaterEdgeEditorControl : UserControl, ITransientServ
     }
 
     #endregion
-
-    private void Upper_LostFocus(object sender, RoutedEventArgs e)
-    {
-        if(sender is RadWatermarkTextBox textBox)
-        {
-            if (!string.IsNullOrEmpty(textBox.Text))
-            {
-                textBox.Text = textBox.Text.ToUpper();
-            }
-        }
-    }
 }
