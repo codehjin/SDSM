@@ -1,5 +1,4 @@
 ﻿namespace SDSM_App.Models;
-
 public class ClusterModel
 {
     public int? TotalIndividualCount { get; set; }
