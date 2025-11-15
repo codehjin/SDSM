@@ -45,10 +45,4 @@ public class AmphibianReptile
     [NotMapped][DisplayName("경도_도")] public int? Lng_Do { get; set; }
     [NotMapped][DisplayName("경도_분")] public int? Lng_Bun { get; set; }
     [NotMapped][DisplayName("경도_초")] public double? Lng_Cho { get; set; }
-
-    //일괄입력시 체크용으로 사용
-    [NotMapped][DisplayName("년")] public int? YearValue { get; set; }
-    [NotMapped][DisplayName("월")] public int? MonthValue { get; set; }
-    [NotMapped][DisplayName("일")] public int? DayValue { get; set; }
-
 }

@@ -21,6 +21,9 @@ public partial class BulkVegetationENVControl : UserControl, ITransientService
     private ScrollViewer? _importSpeciesScrollViewer;
     private ScrollViewer? _convertedSpeciesScrollViewer;
 
+    // 선택 동기화 중복 호출 방지 플래그
+    private bool _isSyncingSelection = false;
+
     public BulkVegetationENVControl(BulkVegetationENVControlViewModel vm)
     {
         InitializeComponent();
@@ -266,6 +269,160 @@ public partial class BulkVegetationENVControl : UserControl, ITransientService
                        ConvertedSpeciesDataRadGridView.BusyIndicatorProgressValue = 0;
                    }
                );
+            }
+        }
+    }
+
+    #endregion
+
+    #region 동기화
+
+    //동기화 - 선택위치
+    private void DataRadGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
+    {
+        // 두 그리드의 선택된 행 인덱스를 동기화(선택한 로우 위치 기준)
+        if (sender is RadGridView gridView)
+        {
+            if (_isSyncingSelection) return;
+
+            try
+            {
+                _isSyncingSelection = true;
+
+                int index = -1;
+
+                // 선택 항목이 있으면 인덱스 계산
+                if (gridView.SelectedItem != null)
+                {
+                    index = gridView.Items.IndexOf(gridView.SelectedItem);
+                }
+
+                // 유효한 인덱스인 경우 변환된 그리드에 동일 인덱스로 선택
+                if (index >= 0 && index < ConvertedDataRadGridView.Items.Count)
+                {
+                    var targetItem = ConvertedDataRadGridView.Items[index];
+                    ConvertedDataRadGridView.SelectedItem = targetItem;
+                }
+                else
+                {
+                    // 범위를 벗어나면 선택 해제
+                    ConvertedDataRadGridView.SelectedItem = null;
+                }
+            }
+            finally
+            {
+                _isSyncingSelection = false;
+            }
+        }
+    }
+
+    //동기화 - 선택위치
+    private void ConvertedDataRadGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
+    {
+        // 반대 방향 동기화
+        if (sender is RadGridView gridView)
+        {
+            if (_isSyncingSelection) return;
+
+            try
+            {
+                _isSyncingSelection = true;
+
+                int index = -1;
+
+                if (gridView.SelectedItem != null)
+                {
+                    index = gridView.Items.IndexOf(gridView.SelectedItem);
+                }
+
+                if (index >= 0 && index < DataRadGridView.Items.Count)
+                {
+                    var targetItem = DataRadGridView.Items[index];
+                    DataRadGridView.SelectedItem = targetItem;
+                }
+                else
+                {
+                    DataRadGridView.SelectedItem = null;
+                }
+            }
+            finally
+            {
+                _isSyncingSelection = false;
+            }
+        }
+    }
+
+    //동기화 - 선택위치
+    private void SpeciesDataRadGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
+    {
+        // 두 그리드의 선택된 행 인덱스를 동기화(선택한 로우 위치 기준)
+        if (sender is RadGridView gridView)
+        {
+            if (_isSyncingSelection) return;
+
+            try
+            {
+                _isSyncingSelection = true;
+
+                int index = -1;
+
+                // 선택 항목이 있으면 인덱스 계산
+                if (gridView.SelectedItem != null)
+                {
+                    index = gridView.Items.IndexOf(gridView.SelectedItem);
+                }
+
+                // 유효한 인덱스인 경우 변환된 그리드에 동일 인덱스로 선택
+                if (index >= 0 && index < ConvertedSpeciesDataRadGridView.Items.Count)
+                {
+                    var targetItem = ConvertedSpeciesDataRadGridView.Items[index];
+                    ConvertedSpeciesDataRadGridView.SelectedItem = targetItem;
+                }
+                else
+                {
+                    // 범위를 벗어나면 선택 해제
+                    ConvertedSpeciesDataRadGridView.SelectedItem = null;
+                }
+            }
+            finally
+            {
+                _isSyncingSelection = false;
+            }
+        }
+    }
+
+    //동기화 - 선택위치
+    private void ConvertedSpeciesDataRadGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
+    {
+        // 반대 방향 동기화
+        if (sender is RadGridView gridView)
+        {
+            if (_isSyncingSelection) return;
+
+            try
+            {
+                _isSyncingSelection = true;
+
+                int index = -1;
+
+                if (gridView.SelectedItem != null)
+                {
+                    index = gridView.Items.IndexOf(gridView.SelectedItem);
+                }
+
+                if (index >= 0 && index < SpeciesDataRadGridView.Items.Count)
+                {
+                    var targetItem = SpeciesDataRadGridView.Items[index];
+                    SpeciesDataRadGridView.SelectedItem = targetItem;
+                }
+                else
+                {
+                    SpeciesDataRadGridView.SelectedItem = null;
+                }
+            }
+            finally
+            {
+                _isSyncingSelection = false;
             }
         }
     }

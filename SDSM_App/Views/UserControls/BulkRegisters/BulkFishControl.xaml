@@ -83,20 +83,7 @@
                         </telerik:RadDropDownButton.DropDownContent>
                     </telerik:RadDropDownButton>
                     <Rectangle Margin="20 0" Style="{StaticResource VerticalRectangleStyle}"/>
-                    <CheckBox IsChecked="{Binding Path=IsContainHabitat}"
-                              Content="하천 서식환경 항목 포함" 
-                              Cursor="Hand"
-                              telerik:RadToolTipService.ToolTipContentTemplate ="{x:Null}"
-                              telerik:RadToolTipService.Placement ="Bottom"
-                              telerik:RadToolTipService.HorizontalOffset ="-10"
-                              telerik:RadToolTipService.InitialShowDelay ="0"
-                              telerik:RadToolTipService.ShowDuration ="30000"
-                              Command="{Binding Path=ContainHabitatExecutedCommand}">
-                        <telerik:RadToolTipService.ToolTipContent>
-                            <telerik:RadCallout Content="하천 서식환경 24개 항목이 추가된 엑셀" Style="{StaticResource TooltipRadCalloutStyle}"/>
-                        </telerik:RadToolTipService.ToolTipContent>
-                    </CheckBox>
-                    <Rectangle Margin="20 0" Style="{StaticResource VerticalRectangleStyle}"/>
+                    <CheckBox IsChecked="{Binding Path=IsContainHabitat}" Content="하천 서식환경 24개 항목이 포함된 엑셀" Cursor="Hand" Margin="0 0 10 0" Command="{Binding Path=ContainHabitatExecutedCommand}"/>
                     <telerik:RadButton Content="엑셀자료 가져오기" Command="{Binding Path=DataImportExecutedCommand}" Style="{StaticResource DarkButtonStyle}"/>
                 </StackPanel>
             </ScrollViewer>
@@ -223,7 +210,8 @@
                                          FrozenColumnsSplitterVisibility="Collapsed"
                                          LeftFrozenColumnCount="0"
                                          RowIndicatorVisibility="Collapsed"
-                                         IsFilteringAllowed="False">
+                                         IsFilteringAllowed="False"
+                                         SelectionChanged="DataRadGridView_SelectionChanged">
                         <telerik:RadGridView.Columns>
                             <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="160" MaxWidth="160"/>
@@ -359,7 +347,8 @@
                                          FrozenColumnsSplitterVisibility="Collapsed"
                                          LeftFrozenColumnCount="0"
                                          RowIndicatorVisibility="Collapsed"
-                                         IsFilteringAllowed="False">
+                                         IsFilteringAllowed="False"
+                                         SelectionChanged="ConvertedDataRadGridView_SelectionChanged">
                         <telerik:RadGridView.Columns>
                             <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="160" MaxWidth="160"/>
@@ -512,7 +501,8 @@
                                              FrozenColumnsSplitterVisibility="Collapsed"
                                              LeftFrozenColumnCount="0"
                                              RowIndicatorVisibility="Collapsed"
-                                             IsFilteringAllowed="False">
+                                             IsFilteringAllowed="False"
+                                             SelectionChanged="SpeciesDataRadGridView_SelectionChanged">
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FishTrait}" MinWidth="80" Width="160" MaxWidth="160"/>
@@ -586,7 +576,8 @@
                                              FrozenColumnsSplitterVisibility="Collapsed"
                                              LeftFrozenColumnCount="0"
                                              RowIndicatorVisibility="Collapsed"
-                                             IsFilteringAllowed="False">
+                                             IsFilteringAllowed="False"
+                                             SelectionChanged="ConvertedSpeciesDataRadGridView_SelectionChanged">
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FishTrait}" MinWidth="80" Width="160" MaxWidth="160"/>

@@ -276,33 +276,31 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                     var model = new ImportAmphibianReptile
                     {
                         YearChsu = firstValue,
-                        YearValue = ((ICellValue)(worksheet.Cells[rowIndex, 2].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 2].GetFormat().Value),
-                        MonthValue = ((ICellValue)(worksheet.Cells[rowIndex, 3].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 3].GetFormat().Value),
-                        DayValue = ((ICellValue)(worksheet.Cells[rowIndex, 4].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 4].GetFormat().Value),
-                        Weather = ((ICellValue)(worksheet.Cells[rowIndex, 5].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 5].GetFormat().Value),
-                        River = ((ICellValue)(worksheet.Cells[rowIndex, 6].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 6].GetFormat().Value),
-                        Site = ((ICellValue)(worksheet.Cells[rowIndex, 7].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 7].GetFormat().Value),
-                        SpeciesKo = ((ICellValue)(worksheet.Cells[rowIndex, 8].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 8].GetFormat().Value),
-                        SpeciesEn = ((ICellValue)(worksheet.Cells[rowIndex, 9].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 9].GetFormat().Value),
-                        Feature = ((ICellValue)(worksheet.Cells[rowIndex, 10].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 10].GetFormat().Value),
-                        Trace1 = ((ICellValue)(worksheet.Cells[rowIndex, 11].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 11].GetFormat().Value),
-                        Trace2 = ((ICellValue)(worksheet.Cells[rowIndex, 12].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 12].GetFormat().Value),
-                        Trace3 = ((ICellValue)(worksheet.Cells[rowIndex, 13].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 13].GetFormat().Value),
-                        Trace4 = ((ICellValue)(worksheet.Cells[rowIndex, 14].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 14].GetFormat().Value),
-                        Trace5 = ((ICellValue)(worksheet.Cells[rowIndex, 15].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 15].GetFormat().Value),
-                        Trace6 = ((ICellValue)(worksheet.Cells[rowIndex, 16].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 16].GetFormat().Value),
-                        Lat_Do = ((ICellValue)(worksheet.Cells[rowIndex, 17].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 17].GetFormat().Value),
-                        Lat_Bun = ((ICellValue)(worksheet.Cells[rowIndex, 18].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 18].GetFormat().Value),
-                        Lat_Cho = ((ICellValue)(worksheet.Cells[rowIndex, 19].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 19].GetFormat().Value),
-                        Lng_Do = ((ICellValue)(worksheet.Cells[rowIndex, 20].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 20].GetFormat().Value),
-                        Lng_Bun = ((ICellValue)(worksheet.Cells[rowIndex, 21].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 21].GetFormat().Value),
-                        Lng_Cho = ((ICellValue)(worksheet.Cells[rowIndex, 22].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 22].GetFormat().Value),
-                        Lat = ((ICellValue)(worksheet.Cells[rowIndex, 23].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 23].GetFormat().Value),
-                        Lng = ((ICellValue)(worksheet.Cells[rowIndex, 24].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 24].GetFormat().Value),
-                        MajorCategory = ((ICellValue)(worksheet.Cells[rowIndex, 26].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 26].GetFormat().Value),
-                        MiddleCategory = ((ICellValue)(worksheet.Cells[rowIndex, 27].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 27].GetFormat().Value),
-                        Surveyor = ((ICellValue)(worksheet.Cells[rowIndex, 28].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 28].GetFormat().Value),
-                        Note = ((ICellValue)(worksheet.Cells[rowIndex, 29].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 29].GetFormat().Value),
+                        SurveyDate = ((ICellValue)(worksheet.Cells[rowIndex, 2].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 2].GetFormat().Value),
+                        Weather = ((ICellValue)(worksheet.Cells[rowIndex, 3].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 3].GetFormat().Value),
+                        River = ((ICellValue)(worksheet.Cells[rowIndex, 4].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 4].GetFormat().Value),
+                        Site = ((ICellValue)(worksheet.Cells[rowIndex, 5].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 5].GetFormat().Value),
+                        SpeciesKo = ((ICellValue)(worksheet.Cells[rowIndex, 6].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 6].GetFormat().Value),
+                        SpeciesEn = ((ICellValue)(worksheet.Cells[rowIndex, 7].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 7].GetFormat().Value),
+                        Feature = ((ICellValue)(worksheet.Cells[rowIndex, 8].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 8].GetFormat().Value),
+                        Trace1 = ((ICellValue)(worksheet.Cells[rowIndex, 9].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 9].GetFormat().Value),
+                        Trace2 = ((ICellValue)(worksheet.Cells[rowIndex, 10].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 10].GetFormat().Value),
+                        Trace3 = ((ICellValue)(worksheet.Cells[rowIndex, 11].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 11].GetFormat().Value),
+                        Trace4 = ((ICellValue)(worksheet.Cells[rowIndex, 12].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 12].GetFormat().Value),
+                        Trace5 = ((ICellValue)(worksheet.Cells[rowIndex, 13].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 13].GetFormat().Value),
+                        Trace6 = ((ICellValue)(worksheet.Cells[rowIndex, 14].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 14].GetFormat().Value),
+                        Lat_Do = ((ICellValue)(worksheet.Cells[rowIndex, 15].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 15].GetFormat().Value),
+                        Lat_Bun = ((ICellValue)(worksheet.Cells[rowIndex, 16].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 16].GetFormat().Value),
+                        Lat_Cho = ((ICellValue)(worksheet.Cells[rowIndex, 17].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 17].GetFormat().Value),
+                        Lng_Do = ((ICellValue)(worksheet.Cells[rowIndex, 18].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 18].GetFormat().Value),
+                        Lng_Bun = ((ICellValue)(worksheet.Cells[rowIndex, 19].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 19].GetFormat().Value),
+                        Lng_Cho = ((ICellValue)(worksheet.Cells[rowIndex, 20].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 20].GetFormat().Value),
+                        Lat = ((ICellValue)(worksheet.Cells[rowIndex, 21].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 21].GetFormat().Value),
+                        Lng = ((ICellValue)(worksheet.Cells[rowIndex, 22].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 22].GetFormat().Value),
+                        MajorCategory = ((ICellValue)(worksheet.Cells[rowIndex, 24].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 24].GetFormat().Value),
+                        MiddleCategory = ((ICellValue)(worksheet.Cells[rowIndex, 25].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 25].GetFormat().Value),
+                        Surveyor = ((ICellValue)(worksheet.Cells[rowIndex, 26].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 26].GetFormat().Value),
+                        Note = ((ICellValue)(worksheet.Cells[rowIndex, 27].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 27].GetFormat().Value),
                     };
 
                     importModels.Add(model);
@@ -332,6 +330,10 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
 
                 var insertModel = new AmphibianReptile();
 
+                // 날짜 범위 체크
+                var minDate = GB.MinDate;
+                var maxDate = DateTime.Today;
+
                 //다시 검수 때문에 초기화
                 model.ErrorContent = string.Empty;
 
@@ -357,8 +359,15 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                                     insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
 
-                                    //연도
-                                    insertModel.SurveyYear = year;
+                                    if (year >= minDate.Year || year <= maxDate.Year)
+                                    {
+                                        //연도
+                                        insertModel.SurveyYear = year;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.YearError));
+                                    }
                                 }
                                 else
                                 {
@@ -395,15 +404,69 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                             sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                         }
                     }
-                    else if (prop.Name == "YearValue" || prop.Name == "MonthValue" || prop.Name == "DayValue")
+                    else if (prop.Name == "SurveyDate")
                     {
-                        //정수 : 날짜
+                        //형식은 Null - DB입력은 필수 날짜
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (int.TryParse(value.ToString(), out int i))
+                            if (DateTime.TryParse(value.ToString(), out DateTime dt))
                             {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, i);
+                                if (dt < minDate || dt > maxDate)
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                }
+                                else
+                                {
+                                    PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                    insertPropertyInfo?.SetValue(insertModel, dt);
+                                }
+                            }
+                            else if (int.TryParse(value.ToString(), out int i))
+                            {
+                                if (i.ToString().Length == 8)
+                                {
+                                    var yyyymmdd = GB.ToDateFromInt(i);
+                                    if (yyyymmdd != null)
+                                    {
+                                        if (yyyymmdd < minDate || yyyymmdd > maxDate)
+                                        {
+                                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                        }
+                                        else
+                                        {
+                                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                            insertPropertyInfo?.SetValue(insertModel, yyyymmdd);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                    }
+                                }
+                                else if (i.ToString().Length == 6)
+                                {
+                                    var yymmdd = GB.ToDateFrom6Int(i);
+                                    if (yymmdd != null)
+                                    {
+                                        if (yymmdd < minDate || yymmdd > maxDate)
+                                        {
+                                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                        }
+                                        else
+                                        {
+                                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                                            insertPropertyInfo?.SetValue(insertModel, yymmdd);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
+                                }
                             }
                             else
                             {
@@ -412,9 +475,9 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                         }
                         else
                         {
-                            PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            insertPropertyInfo?.SetValue(insertModel, null);
+                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                         }
+
                     }
                     else if (prop.Name == "Weather")
                     {
@@ -673,33 +736,6 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                     }
                 }
 
-                PropertyInfo? dateProp = insertModel.GetType().GetProperty("SurveyDate");
-
-                //조사일
-                if (insertModel.YearValue != null && insertModel.MonthValue != null && insertModel.DayValue != null)
-                {
-                    // 날짜 범위 체크
-                    var minDate = GB.MinDate;
-                    var maxDate = DateTime.Today;
-
-                    var date = new DateTime(insertModel.YearValue.Value, insertModel.MonthValue.Value, insertModel.DayValue.Value);
-
-                    if (date < minDate || date > maxDate)
-                    {
-                        sb.Append(GB.GetImportErrorText(dateProp, ErrorType.Conversion));
-                    }
-                    else
-                    {
-                        //가져온값, 변환된값 둘다 대입
-                        insertModel.SurveyDate = date;
-                        model.SurveyDate = date;
-                    }
-                }
-                else
-                {
-                    sb.Append(GB.GetImportErrorText(dateProp, ErrorType.Unique));
-                }
-
                 if (sb.Length > 0)
                 {
                     model.ErrorContent = sb.ToString();
@@ -818,33 +854,31 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
     private void GetColumnNumbers()
     {
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "연도차수", Value = 2 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "년", Value = 3 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "월", Value = 4 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "일", Value = 5 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "날씨", Value = 6 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천명", Value = 7 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "지점명", Value = 8 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "일반명", Value = 9 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "학명", Value = 10 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특징", Value = 11 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "성체", Value = 12 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "유생", Value = 13 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "알", Value = 14 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "울음소리", Value = 15 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "로드킬", Value = 16 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "기타", Value = 17 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_도", Value = 18 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_분", Value = 19 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_초", Value = 20 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_도", Value = 21 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_분", Value = 22 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_초", Value = 23 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도", Value = 24 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도", Value = 25 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "대뷴류", Value = 27 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "중분류", Value = 28 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", Value = 29 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특이사항", Value = 30 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사일", Value = 3 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "날씨", Value = 4 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천명", Value = 5 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "지점명", Value = 6 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "일반명", Value = 7 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "학명", Value = 8 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특징", Value = 9 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "성체", Value = 10 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "유생", Value = 11 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "알", Value = 12 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "울음소리", Value = 13 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "로드킬", Value = 14 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "기타", Value = 15 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_도", Value = 16 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_분", Value = 17 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_초", Value = 18 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_도", Value = 19 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_분", Value = 20 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_초", Value = 21 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도", Value = 22 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도", Value = 23 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "대뷴류", Value = 25 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "중분류", Value = 26 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", Value = 27 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특이사항", Value = 28 });
     }
 
     private void GetSavedFileInfos()

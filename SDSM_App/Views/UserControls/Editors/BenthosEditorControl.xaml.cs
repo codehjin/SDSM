@@ -102,7 +102,7 @@ public partial class BenthosEditorControl : UserControl, ITransientService
         }
     }
 
-    //실수값 소수점 1자리
+    //실수값 소수점 자리맞춤
     private void DoubleValueToRound_LostFocus(object sender, RoutedEventArgs e)
     {
         if (sender is RadNumericUpDown upDown && upDown.Value != null)

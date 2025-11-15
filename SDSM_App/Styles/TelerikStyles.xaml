@@ -512,7 +512,15 @@
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="AllowDrop" Value="True"/>
-        <!--<Setter Property="MinHeight" Value="26"/>-->
+    </Style>
+
+    <Style x:Key="SelectedBackgroundNullRowStyle" TargetType="telerik:GridViewRow" BasedOn="{StaticResource GridViewRowStyle}">
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="AllowDrop" Value="True"/>
+        <Setter Property="SelectedBackground" Value="{x:Null}"/>
     </Style>
 
     <Style x:Key="OriginalMinHeightGridViewRowStyle" TargetType="telerik:GridViewRow" BasedOn="{StaticResource GridViewRowStyle}">
