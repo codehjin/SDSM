@@ -342,7 +342,7 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
 
                 foreach (var prop in props)
                 {
-                    if (prop.Name == "ErrorContent" || prop.Name == "SurveyDate") continue;
+                    if (prop.Name == "ErrorContent") continue;
 
                     var value = prop.GetValue(model);
 
@@ -354,7 +354,7 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                             var v = ((string)value).Replace(" ", "");
                             if (v.Length > 0)
                             {
-                                if(int.TryParse(v.AsSpan(0,4), out int year))
+                                if (v.Length >= 4 && int.TryParse(v[..4], out int year))
                                 {
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                                     insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());

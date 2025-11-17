@@ -381,7 +381,7 @@ public static class GB
         else if (content == ErrorType.Duplicate)
             return $"[자료중복]";
         else if (content == ErrorType.YearError)
-            return $"[연도에러]";
+            return $"[연도차수]연도오류";
         else
             return $"[기본정보없음]";
     }

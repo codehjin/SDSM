@@ -344,7 +344,7 @@ public partial class BulkPlantControlViewModel : ObservableObject, ITransientSer
                             var v = ((string)value).Replace(" ", "");
                             if (v.Length > 0)
                             {
-                                if (int.TryParse(v.AsSpan(0, 4), out int year))
+                                if (v.Length >= 4 && int.TryParse(v[..4], out int year))
                                 {
                                     if (year >= minDate.Year || year <= maxDate.Year)
                                     {

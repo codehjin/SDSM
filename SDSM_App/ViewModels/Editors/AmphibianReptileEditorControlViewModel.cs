@@ -64,7 +64,6 @@ public partial class AmphibianReptileEditorControlViewModel : ObservableObject, 
     private bool CanSave()
     {
         return !string.IsNullOrWhiteSpace(YearChsu)
-            && int.TryParse(YearChsu.AsSpan(0,4), out int _)
             && SurveyDate != null
             && !string.IsNullOrWhiteSpace(River)
             && !string.IsNullOrWhiteSpace(SpeciesKo);
