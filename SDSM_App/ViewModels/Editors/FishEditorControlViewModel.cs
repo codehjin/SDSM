@@ -10,11 +10,8 @@ using SDSM_App.Messengers;
 using SDSM_App.Models;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
-using System.ComponentModel;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.Windows;
-using System.Windows.Data;
 using Telerik.Windows.Data;
 
 namespace SDSM_App.ViewModels;

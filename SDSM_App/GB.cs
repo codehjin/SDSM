@@ -382,9 +382,17 @@ public static class GB
             return $"[자료중복]";
         else if (content == ErrorType.YearError)
             return $"[연도차수]연도오류";
+        else if (content == ErrorType.SiteError)
+            return $"[{fieldName}]목록없음";
         else
             return $"[기본정보없음]";
     }
+
+    #region 프로젝트 사업장 지점명 목록
+
+    public static List<SiteDivision> ProjectSiteNames { get; set; } = [];  
+
+    #endregion
 
     #region 저서동물 등급계산
 

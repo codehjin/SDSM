@@ -29,10 +29,13 @@ public class SDSMDbContext : DbContext, ITransientService
         modelBuilder.Entity<TaxonCoordinateCountView>(m => { m.HasNoKey(); });
 
         //Foregin Include
-        //modelBuilder.Entity<FishSurveySpecies>().Navigation(e => e.FishSurvey).AutoInclude();
-        //modelBuilder.Entity<BenthosSpecies>().Navigation(e => e.Benthos).AutoInclude();
-        //modelBuilder.Entity<VeSurveyS>().Navigation(e => e.VeSurvey).AutoInclude();
-        //modelBuilder.Entity<VeSurveyH>().Navigation(e => e.VeSurvey).AutoInclude();
+        modelBuilder.Entity<Bird>().Navigation(e => e.SiteDivision).AutoInclude();
+        modelBuilder.Entity<Mammal>().Navigation(e => e.SiteDivision).AutoInclude();
+        modelBuilder.Entity<AmphibianReptile>().Navigation(e => e.SiteDivision).AutoInclude();
+        modelBuilder.Entity<Vegetation>().Navigation(e => e.SiteDivision).AutoInclude();
+        modelBuilder.Entity<Plant>().Navigation(e => e.SiteDivision).AutoInclude();
+        modelBuilder.Entity<HabitatWaterEdge>().Navigation(e => e.SiteDivision).AutoInclude();
+        modelBuilder.Entity<WaterQuality>().Navigation(e => e.SiteDivision).AutoInclude();
     }
 
     //어류
@@ -55,6 +58,9 @@ public class SDSMDbContext : DbContext, ITransientService
     //포유류
     public DbSet<Mammal> Mammals { get; set; }
 
+    //양서파충류
+    public DbSet<AmphibianReptile> AmphibianReptiles { get; set; }
+
     //식생의 식생도
     public DbSet<Vegetation> Vegetations { get; set; }
     //식생의 식생단면 환경
@@ -73,12 +79,9 @@ public class SDSMDbContext : DbContext, ITransientService
     //수질
     public DbSet<WaterQuality> WaterQualitys { get; set; }
 
-
-    //양서파충류
-    public DbSet<AmphibianReptile> AmphibianReptiles { get; set; }
-
     public  DbSet<TaxonCoordinateCountView> TaxonCoordinateCountViews { get; set; }
 
+    public  DbSet<SiteDivision> SiteDivisions { get; set; }
     public  DbSet<SelfUser> SelfUsers { get; set; }
     public  DbSet<SavedFileInfo> SavedFileInfos { get; set; }
 }

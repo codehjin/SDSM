@@ -5,6 +5,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SDSM_App.Enums;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
@@ -31,6 +32,10 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
 
     private readonly (int, string)[] _weathers = [(1, "맑음"), (2, "흐림"), (3, "비(눈)")];
     private string _loadedFileName = string.Empty;
+
+    // null : 생태현황, 방류하천 없음
+    // tryue : 생태현황 / false : 방류하천
+    private bool? _isEcology = null;
 
     #endregion
 
@@ -104,6 +109,18 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
         if (!File.Exists(fileName))
         {
             return;
+        }
+
+        //생태현황, 방류하천 포함여부 체크
+        (bool? isEcology, string? message) checkResult = SiteDivisionHelper.CheckFileNameByKeywords(Path.GetFileName(fileName));
+        if (checkResult.isEcology == null)
+        {
+            MessageBox.Show(checkResult.message, "파일명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        else
+        {
+            _isEcology = checkResult.isEcology;
         }
 
         _loadedFileName = fileName;
@@ -258,7 +275,7 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
     private void InitialLoad()
     {
         GetColumnNumbers();
-        GetSavedFileInfos();
+        GetSavedFileInfoAndSiteDivisions();
     }
 
     //엑셀->모델
@@ -357,7 +374,7 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                                 if (v.Length >= 4 && int.TryParse(v[..4], out int year))
                                 {
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                    insertPropertyInfo?.SetValue(insertModel, v);
 
                                     if (year >= minDate.Year || year <= maxDate.Year)
                                     {
@@ -389,10 +406,50 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            if (((string)value).Replace(" ", "").Length > 0)
+                            var v = ((string)value).Replace(" ", "");
+                            if (v.Length > 0)
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+
+                                if (prop.Name == "River")
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, v);
+                                }
+                                else
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                        }
+                    }
+                    else if (prop.Name == "Site")
+                    {
+                        //필수, 생태현황, 방류하천 체크
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            var v = ((string)value).Replace(" ", "").ToUpper();
+                            if (v.Length > 0)
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
+                                if(siteDivisionId != null)
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, v);
+                                    insertModel.SiteDivisionId = siteDivisionId;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                }
                             }
                             else
                             {
@@ -789,12 +846,12 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                                      $"(SurveyYear, YearChsu, SurveyDate, Weather, River, Site, " +
                                      $"SpeciesKo, SpeciesEn, Feature, " +
                                      $"Trace1, Trace2, Trace3, Trace4, Trace5, Trace5, Lat, Lng, " +
-                                     $"MajorCategory, MiddleCategory, Surveyor, Note) " +
+                                     $"MajorCategory, MiddleCategory, Surveyor, Note, SiteDivisionId) " +
                                      $"VALUES " +
                                      $"(@SurveyYear, @YearChsu, @SurveyDate, @Weather, @River, @Site, " +
                                      $"@SpeciesKo, @SpeciesEn, @Feature, " +
                                      $"@Trace1, @Trace2, @Trace3, @Trace4, @Trace5, @Trace5, @Lat, @Lng, " +
-                                     $"@MajorCategory, @MiddleCategory, @Surveyor, @Note)";
+                                     $"@MajorCategory, @MiddleCategory, @Surveyor, @Note, @SiteDivisionId)";
 
                     using var command = new SQLiteCommand(strSql, conn);
 
@@ -819,6 +876,7 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
                     command.Parameters.AddWithValue("@MiddleCategory", model.MiddleCategory ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Surveyor", model.Surveyor ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Note", model.Note ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@SiteDivisionId", model.SiteDivisionId ?? (object)DBNull.Value);
 
                     command.ExecuteNonQuery();
                 }
@@ -881,7 +939,8 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "특이사항", Value = 28 });
     }
 
-    private void GetSavedFileInfos()
+    //저장된 파일명과 프로젝트 사업장 지점명
+    private void GetSavedFileInfoAndSiteDivisions()
     {
         using var context = new SDSMDbContext();
 

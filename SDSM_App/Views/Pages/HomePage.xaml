@@ -569,8 +569,8 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Margin="0 10 0 5">
-                                        <Run Text="("/>
+                                    <TextBlock Margin="0 10 0 10" Style="{StaticResource PrimaryTitleTextBlcokStyle}">
+                                        <Run Text="분류군("/>
                                         <Run Text="자료 개수"/>
                                         <Run Text="/"/>
                                         <Run Text="포인트 개수"/>

@@ -60,7 +60,13 @@ public class WaterQuality
     [DisplayName("SS 등급")] public int? SSGrade { get; set; }   
     [DisplayName("DO 등급")] public string? DOGrade { get; set; }   
     [DisplayName("T-P 등급")] public string? TPGrade { get; set; }   
-    [DisplayName("대장균군 등급")] public string? EColiGrade { get; set; }   
+    [DisplayName("대장균군 등급")] public string? EColiGrade { get; set; }
+
+    //프로젝트 사업장 지점명과 매칭
+    [Description("ID")] public int? SiteDivisionId { get; set; }
+
+    [ForeignKey(nameof(SiteDivisionId))]
+    public virtual SiteDivision SiteDivision { get; set; } = null!;
 
     [NotMapped][DisplayName("오류내용")] public string ErrorContent { get; set; } = string.Empty;
 }

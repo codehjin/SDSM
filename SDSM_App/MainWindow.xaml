@@ -266,7 +266,7 @@
                                     Background="Transparent"
                                     BorderBrush="{StaticResource MainSelectedBrush}"
                                     BorderThickness="0"
-                                    Padding="0 0 0 12"
+                                    Padding="0 0 0 8"
                                     CornerRadius="0">
                                 <ContentPresenter />
                             </Border>
@@ -971,7 +971,8 @@
                                                     <TextBlock Grid.Column="10" Grid.Row="0" Text="기타" Style="{StaticResource CaptionTextBlockStyle}"/>
                                                     <Rectangle Grid.Column="10" Grid.Row="1"/>
                                                     <telerik:RadRadioButton Grid.Column="10" Grid.Row="2" Content="일괄등록" IsChecked="{Binding Path=IsCheckedBulkRegister, Mode=TwoWay}" Tag="BulkRegisterPage" Click="MenuItem_Click"/>
-                                                    <telerik:RadButton Grid.Column="10" Grid.Row="3" Command="{Binding Path=ManualWindowOpenCommand}">
+                                                    <telerik:RadRadioButton Grid.Column="10" Grid.Row="3" Content="설정" IsChecked="{Binding Path=IsCheckedSetting, Mode=TwoWay}" Tag="SettingPage" Click="MenuItem_Click"/>
+                                                    <telerik:RadButton Grid.Column="10" Grid.Row="4" Command="{Binding Path=ManualWindowOpenCommand}">
                                                         <Grid>
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="*"/>
@@ -1134,7 +1135,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0" Padding="12 12 12 6">
+                            <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0" Padding="12 12 12 2">
                                 <Grid>
                                     <!--관리자-->
                                     <telerik:RadDropDownButton x:Name="UserDropDownButton"
@@ -1276,7 +1277,7 @@
                                 <StackPanel Margin="0 0 0 20" >
                                     <StackPanel.Resources>
                                         <Style TargetType="Expander" BasedOn="{StaticResource MenuExpanderStyle}">
-                                            <Setter Property="Padding" Value="25 25 25 25"/>
+                                            <Setter Property="Padding" Value="25 18 25 18"/>
                                         </Style>
                                         <Style TargetType="telerik:RadRadioButton" BasedOn="{StaticResource MainMenuRadRadioButtonStyle}">
                                             <Setter Property="Margin" Value="10 2 10 2"/>
@@ -1286,7 +1287,7 @@
                                     </StackPanel.Resources>
 
                                     <!--홈-->
-                                    <Border Grid.Row="0" BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0" Margin="0 12 0 0" Padding="0 0 0 6">
+                                    <Border Grid.Row="0" BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0" Margin="0 4 0 0" Padding="0 0 0 4">
                                         <telerik:RadRadioButton x:Name="FirstButton" Tag="HomePage" IsChecked="{Binding Path=IsCheckedHome, Mode=TwoWay}" Click="MenuItem_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <icon:PackIconPhosphorIcons Kind="HouseLight" Style="{StaticResource PackIconPhosphorIconsStyle}"/>
@@ -1436,7 +1437,7 @@
                                         </Expander>
                                     </Border>
 
-                                    <Border Grid.Row="0" BorderBrush="{StaticResource MainSelectedBrush}" Margin="0 0 0 0" Padding="0 12 0 0">
+                                    <Border Grid.Row="0" BorderBrush="{StaticResource MainSelectedBrush}" Margin="0 0 0 0" Padding="0 8 0 0">
                                         <telerik:RadRadioButton Tag="BulkRegisterPage" IsChecked="{Binding Path=IsCheckedBulkRegister, Mode=TwoWay}" Click="MenuItem_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <icon:PackIconPhosphorIcons Kind="ListPlusLight" Style="{StaticResource PackIconPhosphorIconsStyle}"/>
@@ -1445,7 +1446,16 @@
                                         </telerik:RadRadioButton>
                                     </Border>
 
-                                    <Border Padding="0 15" BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
+                                    <Border Grid.Row="0" BorderBrush="{StaticResource MainSelectedBrush}" Margin="0 0 0 0" Padding="0 4 0 0">
+                                        <telerik:RadRadioButton Tag="SettingPage" IsChecked="{Binding Path=IsCheckedSetting, Mode=TwoWay}" Click="MenuItem_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <icon:PackIconPhosphorIcons Kind="GearSixLight" Style="{StaticResource PackIconPhosphorIconsStyle}"/>
+                                                <TextBlock Text="설정" Style="{StaticResource MenuContentTextBlcokStyle}"/>
+                                            </StackPanel>
+                                        </telerik:RadRadioButton>
+                                    </Border>
+
+                                    <Border Padding="0 4" BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
                                         <StackPanel>
                                             <StackPanel.Resources>
                                                 <Style TargetType="icon:PackIconFeatherIcons">

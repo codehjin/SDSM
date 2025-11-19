@@ -19,8 +19,8 @@ public class AmphibianReptile
     [DisplayName("연도차수")][Required] public string YearChsu { get; set; } = string.Empty;
     [DisplayName("조사일")] public DateTime? SurveyDate { get; set; } //필수
     [DisplayName("날씨")] public string? Weather { get; set; }
-    [DisplayName("하천명")][Required] public string River { get; set; } = string.Empty;
-    [DisplayName("지점명")] public string? Site { get; set; }
+    [DisplayName("하천명")][Required] public string River { get; set; } = string.Empty;//빈값없음
+    [DisplayName("지점명")][Required] public string Site { get; set; } = string.Empty;//빈값없음
     [DisplayName("일반명")][Required] public string SpeciesKo { get; set; } = string.Empty;
     [DisplayName("학명")] public string? SpeciesEn { get; set; }
     [DisplayName("특징")] public string? Feature { get; set; }
@@ -36,6 +36,12 @@ public class AmphibianReptile
     [DisplayName("중분류")] public string? MiddleCategory { get; set; }
     [DisplayName("조사자")] public string? Surveyor { get; set; }
     [DisplayName("특이사항")] public string? Note { get; set; }
+
+    //프로젝트 사업장 지점명과 매칭
+    [Description("ID")] public int? SiteDivisionId { get; set; }
+
+    [ForeignKey(nameof(SiteDivisionId))]
+    public virtual SiteDivision SiteDivision { get; set; } = null!;
 
     [NotMapped][DisplayName("오류내용")] public string ErrorContent { get; set; } = string.Empty;
 

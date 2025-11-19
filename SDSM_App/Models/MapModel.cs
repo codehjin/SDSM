@@ -8,6 +8,7 @@ namespace SDSM_App.Models;
 public partial class MapModel : ObservableObject
 {
     [ObservableProperty] private Location _location;
+    [ObservableProperty] private string _division = string.Empty;
     [ObservableProperty] private string _caption = string.Empty;
     [ObservableProperty] private string _label = string.Empty;
     [ObservableProperty] private bool _isSelected;

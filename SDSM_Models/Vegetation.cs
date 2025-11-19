@@ -24,8 +24,15 @@ public class Vegetation
     [DisplayName("하천명")][Required] public string River { get; set; } = string.Empty;// 빈값없음
     [DisplayName("조사자")] public string? Surveyor { get; set; }
     [DisplayName("군락명")][Required] public string Colony { get; set; } = string.Empty;
+    
     //면적 소수점 4자리
     [DisplayName("군락 면적")] public double? Area { get; set; }
 
+    //프로젝트 사업장 지점명과 매칭
+    [Description("ID")] public int? SiteDivisionId { get; set; }
+
+    [ForeignKey(nameof(SiteDivisionId))]
+
+    public virtual SiteDivision SiteDivision { get; set; } = null!;
     [NotMapped][DisplayName("오류내용")] public string ErrorContent { get; set; } = string.Empty;
 }

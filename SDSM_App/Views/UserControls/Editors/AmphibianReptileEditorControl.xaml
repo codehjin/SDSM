@@ -92,7 +92,7 @@
                                                                      Width="{StaticResource FormControlWidth}"
                                                                      Height="{StaticResource FormControlHeight}"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}"
-                                                                     LostFocus="EmptyClear_LostFocus"/>
+                                                                     LostFocus="Trim_LostFocus"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">

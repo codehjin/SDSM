@@ -67,6 +67,12 @@ public class Benthos
     [NotMapped][DisplayName("종수")] public int SpeciesCount { get; set; }
     [NotMapped][DisplayName("개체수")] public double IndividualCount { get; set; }//소수점 1자리
 
+    //프로젝트 사업장 지점명과 매칭
+    [Description("ID")] public int? SiteDivisionId { get; set; }
+
+    [ForeignKey(nameof(SiteDivisionId))]
+    public virtual SiteDivision SiteDivision { get; set; } = null!;
+
     public ICollection<BenthosSpecies> Subs { get; set; } = [];
 
     [NotMapped][DisplayName("오류내용")] public string ErrorContent { get; set; } = string.Empty;

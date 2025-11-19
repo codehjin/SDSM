@@ -43,5 +43,11 @@ public class HabitatWaterEdge
     [DisplayName("평가점수")] public double? EvaluationScore { get; set; }//소수점 1자리
     [DisplayName("평가등급")] public string? EvaluationGrade { get; set; }
 
+    //프로젝트 사업장 지점명과 매칭
+    [Description("ID")] public int? SiteDivisionId { get; set; }
+
+    [ForeignKey(nameof(SiteDivisionId))]
+    public virtual SiteDivision SiteDivision { get; set; } = null!;
+
     [NotMapped][DisplayName("오류내용")] public string ErrorContent { get; set; } = string.Empty;
 }

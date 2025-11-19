@@ -42,6 +42,12 @@ public class Mammal
     [DisplayName("조사자")] public string? Surveyor { get; set; }
     [DisplayName("특이사항")] public string? Note { get; set; }
 
+    //프로젝트 사업장 지점명과 매칭
+    [Description("ID")] public int? SiteDivisionId { get; set; }
+
+    [ForeignKey(nameof(SiteDivisionId))]
+    public virtual SiteDivision SiteDivision { get; set; } = null!;
+
     [NotMapped][DisplayName("오류내용")] public string ErrorContent { get; set; } = string.Empty;
     [NotMapped][DisplayName("위도_도")] public int? Lat_Do { get; set; }
     [NotMapped][DisplayName("위도_분")] public int? Lat_Bun { get; set; }

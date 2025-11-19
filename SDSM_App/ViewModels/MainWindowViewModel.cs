@@ -2,7 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.InjectableServices;
+using SDSM_App.Models;
 using SDSM_App.Views.Windows;
+using SDSM_Models;
 using System.Windows;
 
 namespace SDSM_App.ViewModels;
@@ -17,7 +19,7 @@ public partial class MainWindowViewModel : ObservableObject, ISingletonService
 
     public MainWindowViewModel()
     {
-        
+        SetProjectSiteNames();
     }
 
     #endregion
@@ -45,6 +47,9 @@ public partial class MainWindowViewModel : ObservableObject, ISingletonService
 
     //일괄등록
     [ObservableProperty] private bool _IsCheckedBulkRegister;
+
+    //설정
+    [ObservableProperty] private bool _isCheckedSetting;
 
     #endregion
 
@@ -75,6 +80,13 @@ public partial class MainWindowViewModel : ObservableObject, ISingletonService
 
     #region 메서드
 
+    private void SetProjectSiteNames()
+    {
+        using var context = new SDSMDbContext();
+
+        //전역변수에 저장
+        GB.ProjectSiteNames = [.. context.SiteDivisions];
+    }
 
     #endregion
 
