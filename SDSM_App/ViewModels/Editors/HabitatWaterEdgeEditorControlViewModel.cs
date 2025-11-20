@@ -3,10 +3,12 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.Enums;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
+using System.Windows;
 
 namespace SDSM_App.ViewModels;
 
@@ -35,6 +37,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
     [ObservableProperty] private EditStatusType _editStatus = EditStatusType.Add;
 
     [ObservableProperty] private HabitatWaterEdge _editModel = new();
+    [ObservableProperty] private string _project = "방류하천";
 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _yearChsu = string.Empty;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _site = string.Empty;
@@ -62,6 +65,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
     [ObservableProperty] private double? _evaluationItem10;
     [ObservableProperty] private double? _evaluationScore;
     [ObservableProperty] private string? _evaluationGrade;
+    [ObservableProperty] private int? _siteDivisionId;
 
     #endregion
 
@@ -75,10 +79,21 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
             && SurveyDate != null;
     }
 
-    //수정
+    //저장
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveExecuted()
     {
+        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site);
+        if (siteDivisionId != null)
+        {
+            SiteDivisionId = siteDivisionId;
+        }
+        else
+        {
+            MessageBox.Show($"지점명 : {Site}\n\n프로젝트 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         if (EditStatus == EditStatusType.Add)
         {
             AddSave();
@@ -164,6 +179,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
                 EvaluationItem10 = EvaluationItem10,
                 EvaluationScore = score,
                 EvaluationGrade = grade,
+                SiteDivisionId = SiteDivisionId
             };
             return model;
 
@@ -204,6 +220,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
             EditModel.EvaluationItem10 = EvaluationItem10;
             EditModel.EvaluationScore = score;
             EditModel.EvaluationGrade = grade;
+            EditModel.SiteDivisionId = SiteDivisionId;
 
             return true;
         }
@@ -230,6 +247,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
 
         FormTitle = "수정";
         EditStatus = EditStatusType.Edit;
+        Project = EditModel.SiteDivision.Project;
 
         YearChsu = EditModel.YearChsu;
         Site = EditModel.Site;
@@ -257,6 +275,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
         EvaluationItem10 = EditModel.EvaluationItem10;
         EvaluationScore = EditModel.EvaluationScore;
         EvaluationGrade = EditModel.EvaluationGrade;
+        SiteDivisionId = EditModel.SiteDivisionId;
     }
 
     //항목초기화
@@ -292,6 +311,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
         EvaluationItem10 = null;
         EvaluationScore = null;
         EvaluationGrade = null;
+        SiteDivisionId = null;
     }
 
     //평가등급

@@ -29,6 +29,11 @@ public class SDSMDbContext : DbContext, ITransientService
         modelBuilder.Entity<TaxonCoordinateCountView>(m => { m.HasNoKey(); });
 
         //Foregin Include
+        //뷰를 가진 엔티티
+        modelBuilder.Entity<Fish>().Navigation(e => e.SiteDivision).AutoInclude();
+        modelBuilder.Entity<Benthos>().Navigation(e => e.SiteDivision).AutoInclude();
+        modelBuilder.Entity<VegetationENV>().Navigation(e => e.SiteDivision).AutoInclude();
+
         modelBuilder.Entity<Bird>().Navigation(e => e.SiteDivision).AutoInclude();
         modelBuilder.Entity<Mammal>().Navigation(e => e.SiteDivision).AutoInclude();
         modelBuilder.Entity<AmphibianReptile>().Navigation(e => e.SiteDivision).AutoInclude();

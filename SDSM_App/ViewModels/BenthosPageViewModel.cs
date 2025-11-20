@@ -392,8 +392,11 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
                                                             m => m.IndexR1.ToString(),
                                                             m => m.IndexJ.ToString(),
                                                             m => m.SpeciesCount.ToString(),
-                                                            m => m.IndividualCount.ToString()
-                                                           );
+                                                            m => m.IndividualCount.ToString(),
+                                                            m => m.Project,
+                                                            m => m.Workplace,
+                                                            m => m.WorkplaceRiver
+                                                            );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)
                     {

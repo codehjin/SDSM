@@ -126,32 +126,59 @@
                     <Style TargetType="Border">
                         <Setter Property="Background" Value="Transparent"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=Caption}" Value="어류">
-                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="방_어">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=Caption}" Value="저서동물">
-                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="방_저">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=Caption}" Value="조류">
-                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="방_조">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=Caption}" Value="포유류">
-                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="방_포">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=Caption}" Value="식물상">
-                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="방_양">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=Caption}" Value="식생단면">
-                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="방_식물">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=Caption}" Value="양서파충류">
-                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="방_식생">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=Caption}" Value="서식수변">
-                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="방_서">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=Caption}" Value="수질">
-                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="방_수">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="생_어">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="생_저">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="생_조">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="생_포">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="생_양">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="생_식물">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="생_식생">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="생_서">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Division}" Value="생_수">
+                                <Setter Property="Background" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -161,32 +188,59 @@
                         <Style TargetType="TextBlock">
                             <Setter Property="Foreground" Value="#FFFFFF"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Caption}" Value="어류">
-                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="방_어">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishDischargeColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Caption}" Value="저서동물">
-                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="방_저">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosDischargeColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Caption}" Value="조류">
-                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="방_조">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdDischargeColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Caption}" Value="포유류">
-                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="방_포">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalDischargeColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Caption}" Value="식물상">
-                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="방_식물">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantDischargeColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Caption}" Value="식생단면">
-                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="방_식생">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationDischargeColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Caption}" Value="양서파충류">
-                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="방_양">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileDischargeColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Caption}" Value="서식수변">
-                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="방_서">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeDischargeColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Caption}" Value="수질">
-                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="방_수">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityDischargeColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="생_어">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishEcologyColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="생_저">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosEcologyColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="생_조">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdEcologyColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="생_포">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalEcologyColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="생_식물">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantEcologyColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="생_식생">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationEcologyColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="생_양">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileEcologyColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="생_서">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeEcologyColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Division}" Value="생_수">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityEcologyColor, Converter={StaticResource BackgroundStringToForegroundConverter}}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -356,7 +410,10 @@
                                         </Style>
                                     </telerik:RadGridView.Resources>
                                     <telerik:RadGridView.Columns>
-                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Caption}" MinWidth="80" Width="130" MaxWidth="130"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Caption}" MinWidth="80" Width="120" MaxWidth="120"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Project}" MinWidth="80" Width="120" MaxWidth="120" TextTrimming="CharacterEllipsis"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Workplace}" MinWidth="80" Width="120" MaxWidth="120" TextTrimming="CharacterEllipsis"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WorkplaceRiver}" MinWidth="80" Width="120" MaxWidth="120" TextTrimming="CharacterEllipsis"/>
                                         <telerik:GridViewDataColumn Header="(연도)차수" DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="140" MaxWidth="140"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="140" MaxWidth="140"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="140" MaxWidth="140" TextTrimming="CharacterEllipsis"/>
@@ -431,7 +488,7 @@
                                         ItemsSource="{Binding Path=PointCollection}"
                                         ClusteringEnabled="True"
                                         AutoCalculateClusteringThreshold="False"
-                                        ClusteringEnabledThreshold ="13"
+                                        ClusteringEnabledThreshold ="15"
                                         ClusterItemTemplate="{StaticResource ClusterTemplate}"                                        
                                         ItemTemplate="{StaticResource PointDataTemplate}"/>
         </telerik:RadMap>
@@ -514,15 +571,16 @@
 
                                     <TextBlock Text="선택" VerticalAlignment="Top" Margin="0 8 0 0" Style="{StaticResource PrimaryTextBlcokStyle}"/>
                                     <telerik:RadComboBox Grid.Column="1"
-                                                         ItemsSource="{Binding Path=SearchCaptionCollection}"
-                                                         SelectedItem="{Binding Path=SearchCaptionSelectedItem}"
+                                                         ItemsSource="{Binding Path=SearchCollection}"
+                                                         SelectedItem="{Binding Path=SearchSelectedItem}"
+                                                         DisplayMemberPath="Caption"
                                                          Cursor="Hand"
                                                          MaxDropDownHeight="600"
                                                          Height="{StaticResource DefaultHeight}"
                                                          helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
                                                          helpers:ThemeHelper.CheckedBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}">
                                         <telerik:EventToCommandBehavior.EventBindings>
-                                            <telerik:EventBinding EventName="SelectionChanged" Command="{Binding Path=SearchCaptionSelectionChangedExecutedCommand}"/>
+                                            <telerik:EventBinding EventName="SelectionChanged" Command="{Binding Path=SearchSelectionChangedExecutedCommand}"/>
                                         </telerik:EventToCommandBehavior.EventBindings>
                                     </telerik:RadComboBox>
                                     <telerik:RadAutoCompleteBox Grid.Column="0"
@@ -551,158 +609,234 @@
                                     </telerik:RadAutoCompleteBox>
                                 </Grid>
                             </Border>
-
-                            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly" Margin="0 0 -14 0">
-                                <ScrollViewer.Style>
-                                    <Style TargetType="ScrollViewer">
-                                        <Setter Property="Padding" Value="0 0 14 0"/>
-                                        <Style.Triggers>
-                                            <Trigger Property="ComputedVerticalScrollBarVisibility" Value="Visible">
-                                                <Setter Property="Padding" Value="0 0 0 0"/>
-                                            </Trigger>
-                                        </Style.Triggers>
+                           
+                            <Grid Grid.Row="2">
+                                <Grid.Resources>
+                                    <Style TargetType="telerik:RadListBoxItem" BasedOn="{StaticResource NonFillRadListBoxItemStyle}">
+                                        <Setter Property="Margin" Value="10 3 3 3"/>
+                                        <Setter Property="Padding" Value="0 2"/>
+                                        <Setter Property="helpers:ThemeHelper.CheckedBackgroundBrush" Value="Transparent"/>
+                                        <Setter Property="helpers:ThemeHelper.FocusBrush" Value="Transparent"/>
+                                        <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="{telerik:Windows11Resource ResourceKey=TertiaryBackgroundBrush}"/>
                                     </Style>
-                                </ScrollViewer.Style>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
+                                </Grid.Resources>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
 
-                                    <TextBlock Margin="0 10 0 10" Style="{StaticResource PrimaryTitleTextBlcokStyle}">
+                                <StackPanel Orientation="Horizontal" Margin="0 10 0 10" HorizontalAlignment="Right">
+                                    <TextBlock  Style="{StaticResource PrimaryTitleTextBlcokStyle}">
                                         <Run Text="분류군("/>
                                         <Run Text="자료 개수"/>
                                         <Run Text="/"/>
                                         <Run Text="포인트 개수"/>
                                         <Run Text=")"/>
                                     </TextBlock>
+                                </StackPanel>
 
-                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Path=SurveyDataCollection}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="80"/>
-                                                    </Grid.ColumnDefinitions>
+                                <telerik:RadListBox Grid.Row="1" 
+                                                    ItemsSource="{Binding Path=SurveyDataView.View}"
+                                                    IsSynchronizedWithCurrentItem="False"
+                                                    IsScrollIntoViewEnabled="False"
+                                                    BorderThickness="0"
+                                                    Margin="0 0 -10 0"
+                                                    Padding="0 0 10 0"
+                                                    Background="Transparent"
+                                                    ScrollViewer.CanContentScroll="False">
+                                    <telerik:RadListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="80"/>
+                                                </Grid.ColumnDefinitions>
 
-                                                    <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"
-                                                              Margin="0 0 0 5"
-                                                              Command="{Binding Path=DataContext.AddAndRemovePointExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" 
-                                                              CommandParameter="{Binding}">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="180"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
+                                                <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"                                                              
+                                                            Command="{Binding Path=DataContext.AddAndRemovePointExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" 
+                                                            CommandParameter="{Binding}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="75"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
 
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding Path=Caption}" TextTrimming="CharacterEllipsis"/>
-                                                                <TextBlock>
-                                                                    <Run Text="("/>
-                                                                    <Run Text="{Binding Path=Count, StringFormat={}{0:N0}}"/>
-                                                                    <Run Text="/"/>
-                                                                    <Run Text="{Binding Path=PointCount, StringFormat={}{0:N0}}"/>
-                                                                    <Run Text=")"/>
-                                                                </TextBlock>
-                                                            </StackPanel>
+                                                        <TextBlock Text="{Binding Path=Caption}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>                                                       
+                                                        <TextBlock Grid.Column="1" Margin="10 0 20 0">
+                                                            <Run Text="("/>
+                                                            <Run Text="{Binding Path=Count, StringFormat={}{0:N0}}"/>
+                                                            <Run Text="/"/>
+                                                            <Run Text="{Binding Path=PointCount, StringFormat={}{0:N0}}"/>
+                                                            <Run Text=")"/>
+                                                        </TextBlock>                                                      
 
-                                                            <Rectangle Grid.Column="1" Width="20" Height="18" Margin="10 0 0 0" RadiusX="3" RadiusY="3">
-                                                                <Rectangle.Style>
-                                                                    <Style TargetType="Rectangle">
-                                                                        <Setter Property="Fill" Value="Transparent"/>
-                                                                        <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="어류">
-                                                                                <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="저서동물">
-                                                                                <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="조류">
-                                                                                <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="포유류">
-                                                                                <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="식물상">
-                                                                                <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="식생단면">
-                                                                                <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="양서파충류">
-                                                                                <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="서식수변">
-                                                                                <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="수질">
-                                                                                <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                            </DataTrigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </Rectangle.Style>
-                                                            </Rectangle>
-                                                        </Grid>
-                                                    </CheckBox>
+                                                        <Rectangle Grid.Column="2" Width="20" Height="18" RadiusX="3" RadiusY="3" HorizontalAlignment="Right">
+                                                            <Rectangle.Style>
+                                                                <Style TargetType="Rectangle">
+                                                                    <Setter Property="Fill" Value="Transparent"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_어">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_저">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_조">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_포">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_식물">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_식생">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_양">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_서">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_수">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityDischargeColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_어">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_저">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_조">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_포">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_식물">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_식생">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_양">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_서">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_수">
+                                                                            <Setter Property="Fill" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityEcologyColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Rectangle.Style>
+                                                        </Rectangle>
+                                                    </Grid>
+                                                </CheckBox>
 
-                                                    <telerik:RadDropDownButton Grid.Column="1"
-                                                                               Margin="3 0 0 0" 
-                                                                               Cursor="Hand" 
-                                                                               Height="36" 
-                                                                               helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                                                                               helpers:ThemeHelper.CheckedBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}">
-                                                        <telerik:RadDropDownButton.Content>
-                                                            <TextBlock Text="{StaticResource GlyphPalette}" 
-                                                                           FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" 
-                                                                           FontSize="18"
-                                                                           Foreground="#AA000000"/>
-                                                        </telerik:RadDropDownButton.Content>
-                                                        <telerik:RadDropDownButton.DropDownContent>
-                                                            <telerik:RadColorEditor Grid.Column="1" ColorMode="RGB" BorderThickness="0" Width="500" Margin="5">
-                                                                <telerik:RadColorEditor.Style>
-                                                                    <Style TargetType="telerik:RadColorEditor">
-                                                                        <Setter Property="SelectedColor" Value="Transparent"/>
-                                                                        <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="어류">
-                                                                                <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishColor, Mode=TwoWay}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="저서동물">
-                                                                                <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosColor, Mode=TwoWay}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="조류">
-                                                                                <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdColor, Mode=TwoWay}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="포유류">
-                                                                                <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalColor, Mode=TwoWay}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="식물상">
-                                                                                <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantColor, Mode=TwoWay}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="식생단면">
-                                                                                <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationColor, Mode=TwoWay}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="양서파충류">
-                                                                                <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileColor, Mode=TwoWay}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="서식수변">
-                                                                                <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeColor, Mode=TwoWay}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Path=Caption}" Value="수질">
-                                                                                <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityColor, Mode=TwoWay}"/>
-                                                                            </DataTrigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </telerik:RadColorEditor.Style>
-                                                            </telerik:RadColorEditor>
-                                                        </telerik:RadDropDownButton.DropDownContent>
-                                                    </telerik:RadDropDownButton>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </Grid>
-                            </ScrollViewer>
+                                                <telerik:RadDropDownButton Grid.Column="1"
+                                                                            Margin="3 0 0 0" 
+                                                                            Cursor="Hand" 
+                                                                            Height="36" 
+                                                                            helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
+                                                                            helpers:ThemeHelper.CheckedBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}">
+                                                    <telerik:RadDropDownButton.Content>
+                                                        <TextBlock Text="{StaticResource GlyphPalette}" 
+                                                                        FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" 
+                                                                        FontSize="18"
+                                                                        Foreground="#AA000000"/>
+                                                    </telerik:RadDropDownButton.Content>
+                                                    <telerik:RadDropDownButton.DropDownContent>
+                                                        <telerik:RadColorEditor Grid.Column="1" ColorMode="RGB" BorderThickness="0" Width="500" Margin="5">
+                                                            <telerik:RadColorEditor.Style>
+                                                                <Style TargetType="telerik:RadColorEditor">
+                                                                    <Setter Property="SelectedColor" Value="Transparent"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_어">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishDischargeColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_저">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosDischargeColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_조">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdDischargeColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_포">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalDischargeColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_식물">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantDischargeColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_식생">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationDischargeColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_양">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileDischargeColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_서">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeDischargeColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="방_수">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityDischargeColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_어">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FishEcologyColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_저">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BenthosEcologyColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_조">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=BirdEcologyColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_포">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=MammalEcologyColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_식물">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=PlantEcologyColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_식생">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VegetationEcologyColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_양">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=AmphibianReptileEcologyColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_서">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=HabitatWaterEdgeEcologyColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Division}" Value="생_수">
+                                                                            <Setter Property="SelectedColor" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WaterQualityEcologyColor, Mode=TwoWay}"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </telerik:RadColorEditor.Style>
+                                                        </telerik:RadColorEditor>
+                                                    </telerik:RadDropDownButton.DropDownContent>
+                                                </telerik:RadDropDownButton>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </telerik:RadListBox.ItemTemplate>
+                                    <telerik:RadListBox.GroupStyle>
+                                        <GroupStyle>
+                                            <GroupStyle.HeaderTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="0 10 0 5">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="{Binding Path=Name}" FontSize="16" Style="{StaticResource PrimaryTitleTextBlcokStyle}"/>                                                            
+                                                        <Rectangle Grid.Column="1" Margin="5 0 0 0" Style="{StaticResource HorizontalRectangleStyle}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </GroupStyle.HeaderTemplate>
+                                        </GroupStyle>
+                                    </telerik:RadListBox.GroupStyle>
+                                </telerik:RadListBox>
+                            </Grid>
+                          
                         </Grid>
                     </Border>
                 </Grid>

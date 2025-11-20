@@ -3,10 +3,12 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.Enums;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
+using System.Windows;
 
 namespace SDSM_App.ViewModels;
 
@@ -35,6 +37,7 @@ public partial class PlantEditorControlViewModel : ObservableObject, ITransientS
     [ObservableProperty] private EditStatusType _editStatus = EditStatusType.Add;
 
     [ObservableProperty] private Plant _editModel = new();
+    [ObservableProperty] private string _project = "방류하천";
 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private int? _surveyYear;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _chsu = string.Empty;
@@ -50,6 +53,7 @@ public partial class PlantEditorControlViewModel : ObservableObject, ITransientS
     [ObservableProperty] private string? _speciesEn;
     [ObservableProperty] private string? _alienPlant;
     [ObservableProperty] private string? _invasiveSpecies;
+    [ObservableProperty] private int? _siteDivisionId;
 
     #endregion
 
@@ -65,10 +69,21 @@ public partial class PlantEditorControlViewModel : ObservableObject, ITransientS
             && !string.IsNullOrWhiteSpace(SpeciesKo);
     }
 
-    //수정
+    //저장
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveExecuted()
     {
+        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site);
+        if (siteDivisionId != null)
+        {
+            SiteDivisionId = siteDivisionId;
+        }
+        else
+        {
+            MessageBox.Show($"지점명 : {Site}\n\n프로젝트 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         if (EditStatus == EditStatusType.Add)
         {
             AddSave();
@@ -142,7 +157,8 @@ public partial class PlantEditorControlViewModel : ObservableObject, ITransientS
                 SpeciesKo = SpeciesKo,
                 SpeciesEn = SpeciesEn,
                 AlienPlant = AlienPlant,
-                InvasiveSpecies = InvasiveSpecies
+                InvasiveSpecies = InvasiveSpecies,
+                SiteDivisionId = SiteDivisionId,
             };
             return model;
 
@@ -172,6 +188,7 @@ public partial class PlantEditorControlViewModel : ObservableObject, ITransientS
             EditModel.SpeciesEn = SpeciesEn;
             EditModel.AlienPlant = AlienPlant;
             EditModel.InvasiveSpecies = InvasiveSpecies;
+            EditModel.SiteDivisionId = SiteDivisionId;
 
             return true;
         }
@@ -198,6 +215,7 @@ public partial class PlantEditorControlViewModel : ObservableObject, ITransientS
 
         FormTitle = "수정";
         EditStatus = EditStatusType.Edit;
+        Project = EditModel.SiteDivision.Project;
 
         SurveyYear = model.SurveyYear;
         Chsu = model.Chsu;
@@ -212,7 +230,9 @@ public partial class PlantEditorControlViewModel : ObservableObject, ITransientS
         SpeciesKo = model.SpeciesKo;
         SpeciesEn = model.SpeciesEn;
         AlienPlant = model.AlienPlant;
-        InvasiveSpecies = model.InvasiveSpecies;    }
+        InvasiveSpecies = model.InvasiveSpecies;
+        SiteDivisionId = model.SiteDivisionId;
+    }
 
     //항목초기화
     private void ClearProperty()
@@ -235,6 +255,7 @@ public partial class PlantEditorControlViewModel : ObservableObject, ITransientS
         SpeciesEn = null;
         AlienPlant = null;
         InvasiveSpecies = null;
+        SiteDivisionId = null;
     }
 
     #endregion 

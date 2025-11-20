@@ -354,7 +354,10 @@ public partial class WaterQualityPageViewModel : ObservableObject, ITransientSer
                                                             m => m.SSGrade.ToString(),
                                                             m => m.DOGrade,
                                                             m => m.TPGrade,
-                                                            m => m.EColiGrade
+                                                            m => m.EColiGrade,
+                                                            m => m.SiteDivision.Project,
+                                                            m => m.SiteDivision.Workplace,
+                                                            m => m.SiteDivision.WorkplaceRiver
                                                            );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)

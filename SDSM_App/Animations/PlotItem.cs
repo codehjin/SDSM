@@ -2,6 +2,8 @@
 
 public class PlotItem
 {
+    public string Category { get; set; } = string.Empty;
+    public string SubCategory { get; set; } = string.Empty;
     public int XCat { get; set; }
     public string XCatText { get; set; } = string.Empty;
     public int Count { get; set; }

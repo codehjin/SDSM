@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.Commons;
 using SDSM_App.Enums;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
@@ -41,6 +42,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     [ObservableProperty] private EditStatusType _editStatus = EditStatusType.Add;
 
     [ObservableProperty] private Fish _editModel = new();
+    [ObservableProperty] private string _project = "방류하천";
 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _yearChsu = string.Empty;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _site = string.Empty;
@@ -107,6 +109,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     [ObservableProperty] private int? _m7Value;
     [ObservableProperty] private double? _fAIScore;
     [ObservableProperty] private string? _fAIGrade;
+    [ObservableProperty] private int? _siteDivisionId;
 
     #endregion
 
@@ -138,10 +141,21 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
             && AutoRiverChasu != null;
     }
 
-    //수정
+    //저장
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveExecuted()
     {
+        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site);
+        if (siteDivisionId != null)
+        {
+            SiteDivisionId = siteDivisionId;
+        }
+        else
+        {
+            MessageBox.Show($"지점명 : {Site}\n\n프로젝트 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         if (EditStatus == EditStatusType.Add)
         {
             AddSave();
@@ -344,6 +358,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
                 M7Value = cluster?.M7Value,
                 FAIScore = score,
                 FAIGrade = grade,
+                SiteDivisionId = SiteDivisionId
             };
             return model;
 
@@ -423,6 +438,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
             EditModel.M7Value = cluster?.M7Value;
             EditModel.FAIScore = score;
             EditModel.FAIGrade = grade;
+            EditModel.SiteDivisionId = SiteDivisionId;
 
             return true;
         }
@@ -451,6 +467,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
 
         FormTitle = "수정";
         EditStatus = EditStatusType.Edit;
+        Project = EditModel.SiteDivision.Project;
 
         YearChsu = EditModel.YearChsu;
         Site = EditModel.Site;
@@ -517,6 +534,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
         M7Value = EditModel.M7Value;
         FAIScore = EditModel.FAIScore;
         FAIGrade = EditModel.FAIGrade;
+        SiteDivisionId = EditModel.SiteDivisionId;
 
         foreach (var sub in EditModel.Subs.ToList())
         {
@@ -608,6 +626,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
         M7Value = null;
         FAIScore = null;
         FAIGrade = null;
+        SiteDivisionId = null;
 
         GetSpeciesData();
 

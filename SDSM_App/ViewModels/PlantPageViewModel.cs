@@ -328,7 +328,10 @@ public partial class PlantPageViewModel : ObservableObject, ITransientService
                                                  m => m.SpeciesKo,
                                                  m => m.SpeciesEn,
                                                  m => m.AlienPlant,
-                                                 m => m.InvasiveSpecies
+                                                 m => m.InvasiveSpecies,
+                                                 m => m.SiteDivision.Project,
+                                                 m => m.SiteDivision.Workplace,
+                                                 m => m.SiteDivision.WorkplaceRiver
                                                  );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)

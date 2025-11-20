@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.Commons;
 using SDSM_App.Enums;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
@@ -41,6 +42,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     [ObservableProperty] private EditStatusType _editStatus = EditStatusType.Add;
 
     [ObservableProperty] private Benthos _editModel = new();
+    [ObservableProperty] private string _project = "방류하천";
 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _yearChsu = string.Empty;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _site = string.Empty;
@@ -90,6 +92,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     [ObservableProperty] private double? _indexH;
     [ObservableProperty] private double? _indexR1;
     [ObservableProperty] private double? _indexJ;
+    [ObservableProperty] private int? _siteDivisionId;
 
     #endregion
 
@@ -120,10 +123,21 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
             && SurveyDate != null;
     }
 
-    //수정
+    //저장
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveExecuted()
     {
+        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site);
+        if (siteDivisionId != null)
+        {
+            SiteDivisionId = siteDivisionId;
+        }
+        else
+        {
+            MessageBox.Show($"지점명 : {Site}\n\n프로젝트 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         if (EditStatus == EditStatusType.Add)
         {
             AddSave();
@@ -137,7 +151,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     #endregion
 
     #region 매서드
-    
+
 
     //신규저장
     private async void AddSave()
@@ -300,6 +314,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
                 IndexJ = indexJ,
                 BMIScore = score,
                 BMIGrade = grade,
+                SiteDivisionId = SiteDivisionId,
             };
             return model;
 
@@ -362,6 +377,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
             EditModel.IndexJ = indexJ;
             EditModel.BMIScore = score;
             EditModel.BMIGrade = grade;
+            EditModel.SiteDivisionId = SiteDivisionId;
 
             return true;
         }
@@ -390,6 +406,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
 
         FormTitle = "수정";
         EditStatus = EditStatusType.Edit;
+        Project = EditModel.SiteDivision.Project;
 
         YearChsu = EditModel.YearChsu;
         Site = EditModel.Site;
@@ -439,6 +456,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         IndexJ = EditModel.IndexJ;
         BMIScore = EditModel.BMIScore;
         BMIGrade = EditModel.BMIGrade;
+        SiteDivisionId = EditModel.SiteDivisionId;
 
         foreach (var sub in EditModel.Subs.ToList())
         {
@@ -513,6 +531,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         IndexJ = null;
         BMIScore = null;
         BMIGrade = null;
+        SiteDivisionId = null;
 
         GetSpeciesData();
 
@@ -540,7 +559,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     }
 
     //군집지수 및 등급
-    private (double, double, double, double, double?, string? ) GetIndexAndGrade()
+    private (double, double, double, double, double?, string?) GetIndexAndGrade()
     {
         try
         {

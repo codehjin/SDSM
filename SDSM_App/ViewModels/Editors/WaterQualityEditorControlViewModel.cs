@@ -3,10 +3,12 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.Enums;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
+using System.Windows;
 
 namespace SDSM_App.ViewModels;
 
@@ -35,6 +37,7 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
     [ObservableProperty] private EditStatusType _editStatus = EditStatusType.Add;
 
     [ObservableProperty] private WaterQuality _editModel = new();
+    [ObservableProperty] private string _project = "방류하천";
 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _yearChsu = string.Empty;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _site = string.Empty;
@@ -81,6 +84,7 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
     [ObservableProperty] private string? _dOGrade;
     [ObservableProperty] private string? _tPGrade;
     [ObservableProperty] private string? _eColiGrade;
+    [ObservableProperty] private int? _siteDivisionId;
 
     #endregion
 
@@ -93,10 +97,21 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
             && SurveyDate != null;
     }
 
-    //수정
+    //저장
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveExecuted()
     {
+        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site);
+        if (siteDivisionId != null)
+        {
+            SiteDivisionId = siteDivisionId;
+        }
+        else
+        {
+            MessageBox.Show($"지점명 : {Site}\n\n프로젝트 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         if (EditStatus == EditStatusType.Add)
         {
             AddSave();
@@ -198,6 +213,7 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
                 DOGrade = GB.GetDoGrade(DO),
                 TPGrade = GB.GetTpGrade(TP),
                 EColiGrade = GB.GetEColiGrade(EColi),
+                SiteDivisionId = SiteDivisionId
             };
             return model;
 
@@ -253,6 +269,7 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
             EditModel.DOGrade = GB.GetDoGrade(DO);
             EditModel.TPGrade = GB.GetTpGrade(TP);
             EditModel.EColiGrade = GB.GetEColiGrade(EColi);
+            EditModel.SiteDivisionId = SiteDivisionId;
 
             return true;
         }
@@ -279,6 +296,7 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
 
         FormTitle = "수정";
         EditStatus = EditStatusType.Edit;
+        Project = EditModel.SiteDivision.Project;
 
         YearChsu = EditModel.YearChsu;
         Site = EditModel.Site;
@@ -323,6 +341,7 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
         DOGrade = EditModel.DOGrade;
         TPGrade = EditModel.TPGrade;
         EColiGrade = EditModel.EColiGrade;
+        SiteDivisionId = EditModel.SiteDivisionId;
     }
 
     //항목초기화
@@ -375,6 +394,7 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
         DOGrade = null;
         TPGrade = null;
         EColiGrade = null;
+        SiteDivisionId = null;
     }
 
     #endregion 

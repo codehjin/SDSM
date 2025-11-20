@@ -377,8 +377,11 @@ public partial class VegetationENVControlViewModel : ObservableObject, ITransien
                                                             m => m.HHeight.ToString(),
                                                             m => m.HCoverDegree.ToString(),
                                                             m => m.SpeciesCount.ToString(),
-                                                            m => m.IndividualCount.ToString()
-                                                           );
+                                                            m => m.IndividualCount.ToString(),
+                                                            m => m.Project,
+                                                            m => m.Workplace,
+                                                            m => m.WorkplaceRiver
+                                                            );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)
                     {

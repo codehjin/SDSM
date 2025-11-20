@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SDSM_Models;
 
 /// <summary>
 /// 지점명 구분
+/// 방류하천:Discharge, 생태현황:Ecology
 /// </summary>
 [Table("SiteDivision")]
 public class SiteDivision

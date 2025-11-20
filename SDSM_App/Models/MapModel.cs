@@ -9,6 +9,7 @@ public partial class MapModel : ObservableObject
 {
     [ObservableProperty] private Location _location;
     [ObservableProperty] private string _division = string.Empty;
+    [ObservableProperty] private string _project = string.Empty;
     [ObservableProperty] private string _caption = string.Empty;
     [ObservableProperty] private string _label = string.Empty;
     [ObservableProperty] private bool _isSelected;
@@ -35,6 +36,9 @@ public class MapData
 {
     [DisplayName("ID")] public int Id { get; set; }
     [DisplayName("구분")] public string? Caption { get; set; }
+    [DisplayName("프로젝트명")] public string? Project { get; set; }
+    [DisplayName("사업장")] public string? Workplace { get; set; }
+    [DisplayName("과업 대표하천")] public string? WorkplaceRiver { get; set; }
     [DisplayName("연도차수")] public string? YearChsu { get; set; }
     [DisplayName("조사일")] public DateTime? SurveyDate { get; set; }
     [DisplayName("하천명")] public string? River { get; set; }

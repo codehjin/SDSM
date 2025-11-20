@@ -97,6 +97,14 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
+    <Style x:Key="RhombusSplitIconStyle" TargetType="icon:PackIconMaterial">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
+        <Setter Property="Margin" Value="0 0 10 0"/>
+        <Setter Property="Width" Value="14"/>
+        <Setter Property="Height" Value="14"/>
+    </Style>
+
     <Style x:Key="EffectBorder" TargetType="Border">
         <Setter Property="Background" Value="{telerik:Windows11Resource ResourceKey=PrimaryBackgroundBrush}"/>
         <Setter Property="CornerRadius" Value="{telerik:Windows11Resource ResourceKey=OverlayCornerRadius}"/>

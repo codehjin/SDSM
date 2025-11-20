@@ -11,35 +11,62 @@
     <Setting Name="IsSideShow" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="VegetationColor" Type="System.String" Scope="User">
+    <Setting Name="VegetationDischargeColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FF007200</Value>
     </Setting>
-    <Setting Name="PlantColor" Type="System.String" Scope="User">
+    <Setting Name="PlantDischargeColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FF00B200</Value>
     </Setting>
-    <Setting Name="AmphibianReptileColor" Type="System.String" Scope="User">
+    <Setting Name="AmphibianReptileDischargeColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FFCC33FF</Value>
     </Setting>
-    <Setting Name="FishColor" Type="System.String" Scope="User">
+    <Setting Name="FishDischargeColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FF00B8D4</Value>
     </Setting>
-    <Setting Name="BenthosColor" Type="System.String" Scope="User">
+    <Setting Name="BenthosDischargeColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FF651FFF</Value>
     </Setting>
-    <Setting Name="BirdColor" Type="System.String" Scope="User">
+    <Setting Name="BirdDischargeColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FF9E9D24</Value>
     </Setting>
-    <Setting Name="MammalColor" Type="System.String" Scope="User">
+    <Setting Name="MammalDischargeColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FFFE9900</Value>
     </Setting>
-    <Setting Name="HabitatWaterEdgeColor" Type="System.String" Scope="User">
+    <Setting Name="HabitatWaterEdgeDischargeColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FF37474F</Value>
     </Setting>
-    <Setting Name="WaterQualityColor" Type="System.String" Scope="User">
+    <Setting Name="WaterQualityDischargeColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FF2979FF</Value>
     </Setting>
     <Setting Name="StatsControl" Type="System.String" Scope="User">
       <Value Profile="(Default)">StatsFishControl</Value>
+    </Setting>
+    <Setting Name="FishEcologyColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF00B8D4</Value>
+    </Setting>
+    <Setting Name="BenthosEcologyColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF651FFF</Value>
+    </Setting>
+    <Setting Name="BirdEcologyColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF9E9D24</Value>
+    </Setting>
+    <Setting Name="MammalEcologyColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFE9900</Value>
+    </Setting>
+    <Setting Name="VegetationEcologyColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF007200</Value>
+    </Setting>
+    <Setting Name="AmphibianReptileEcologyColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFCC33FF</Value>
+    </Setting>
+    <Setting Name="HabitatWaterEdgeEcologyColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF37474F</Value>
+    </Setting>
+    <Setting Name="WaterQualityEcologyColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF2979FF</Value>
+    </Setting>
+    <Setting Name="PlantEcologyColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF00B200</Value>
     </Setting>
   </Settings>
 </SettingsFile>

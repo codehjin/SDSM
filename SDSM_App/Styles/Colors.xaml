@@ -97,32 +97,59 @@
     <!--포인트 테두리-->
     <Color x:Key="PointBorderColor">#44000000</Color>
     <SolidColorBrush x:Key="PointBorderBrush" Color="{StaticResource PointBorderColor}"/>
+    
     <!--어류-->
-    <Color x:Key="FishColor">#00B8D4</Color>
-    <SolidColorBrush x:Key="FishBrush" Color="{StaticResource FishColor}"/>
+    <Color x:Key="FishDischargeColor">#00B8D4</Color>
+    <SolidColorBrush x:Key="FishDischargeBrush" Color="{StaticResource FishDischargeColor}"/>
+    <Color x:Key="FishEcologyColor">#00B8D4</Color>
+    <SolidColorBrush x:Key="FishEcologyBrush" Color="{StaticResource FishEcologyColor}"/>
+
     <!--저서동물-->
-    <Color x:Key="BenthosColor">#651FFF</Color>
-    <SolidColorBrush x:Key="BenthosBrush" Color="{StaticResource BenthosColor}"/>
+    <Color x:Key="BenthosDischargeColor">#651FFF</Color>
+    <SolidColorBrush x:Key="BenthosDischargeBrush" Color="{StaticResource BenthosDischargeColor}"/>
+    <Color x:Key="BenthosEcologyColor">#651FFF</Color>
+    <SolidColorBrush x:Key="BenthosEcologyBrush" Color="{StaticResource BenthosEcologyColor}"/>
+
     <!--조류-->
-    <Color x:Key="BirdColor">#9E9D24</Color>
-    <SolidColorBrush x:Key="BirdBrush" Color="{StaticResource BirdColor}"/>
+    <Color x:Key="BirdDischargeColor">#9E9D24</Color>
+    <SolidColorBrush x:Key="BirdDischargeBrush" Color="{StaticResource BirdDischargeColor}"/>
+    <Color x:Key="BirdEcologyColor">#9E9D24</Color>
+    <SolidColorBrush x:Key="BirdEcologyBrush" Color="{StaticResource BirdEcologyColor}"/>
+   
     <!--포유류-->
-    <Color x:Key="MammalColor">#FE9900</Color>
-    <SolidColorBrush x:Key="MammalBrush" Color="{StaticResource MammalColor}"/>
+    <Color x:Key="MammalDischargeColor">#FE9900</Color>
+    <SolidColorBrush x:Key="MammalDischargeBrush" Color="{StaticResource MammalDischargeColor}"/>
+    <Color x:Key="MammalEcologyColor">#FE9900</Color>
+    <SolidColorBrush x:Key="MammalEcologyBrush" Color="{StaticResource MammalEcologyColor}"/>
+        
     <!--식물상-->
-    <Color x:Key="PlantColor">#00B200</Color>
-    <SolidColorBrush x:Key="PlantBrush" Color="{StaticResource PlantColor}"/>
+    <Color x:Key="PlantDischargeColor">#00B200</Color>
+    <SolidColorBrush x:Key="PlantDischargeBrush" Color="{StaticResource PlantDischargeColor}"/>
+    <Color x:Key="PlantEcologyColor">#00B200</Color>
+    <SolidColorBrush x:Key="PlantEcologyBrush" Color="{StaticResource PlantEcologyColor}"/>
+    
     <!--식생단면-->
-    <Color x:Key="VegetationColor">#007200</Color>
-    <SolidColorBrush x:Key="VegetationBrush" Color="{StaticResource VegetationColor}"/>
+    <Color x:Key="VegetationDischargeColor">#007200</Color>
+    <SolidColorBrush x:Key="VegetationDischargeBrush" Color="{StaticResource VegetationDischargeColor}"/>
+    <Color x:Key="VegetationEcologyColor">#007200</Color>
+    <SolidColorBrush x:Key="VegetationEcologyBrush" Color="{StaticResource VegetationEcologyColor}"/>
+    
     <!--양서파충류-->
-    <Color x:Key="AmphibianReptileColor">#CC33FF</Color>
-    <SolidColorBrush x:Key="AmphibianReptileBrush" Color="{StaticResource AmphibianReptileColor}"/>
+    <Color x:Key="AmphibianReptileDischargeColor">#CC33FF</Color>
+    <SolidColorBrush x:Key="AmphibianReptileDischargeBrush" Color="{StaticResource AmphibianReptileDischargeColor}"/>
+    <Color x:Key="AmphibianReptileEcologyColor">#CC33FF</Color>
+    <SolidColorBrush x:Key="AmphibianReptileEcologyBrush" Color="{StaticResource AmphibianReptileEcologyColor}"/>
+    
     <!--서식수변-->
-    <Color x:Key="HabitatWaterEdgeColor">#37474F</Color>
-    <SolidColorBrush x:Key="HabitatWaterEdgeBrush" Color="{StaticResource HabitatWaterEdgeColor}"/>
+    <Color x:Key="HabitatWaterEdgeDischargeColor">#37474F</Color>
+    <SolidColorBrush x:Key="HabitatWaterEdgeDischargeBrush" Color="{StaticResource HabitatWaterEdgeDischargeColor}"/>
+    <Color x:Key="HabitatWaterEdgeEcologyColor">#37474F</Color>
+    <SolidColorBrush x:Key="HabitatWaterEdgeEcologyBrush" Color="{StaticResource HabitatWaterEdgeEcologyColor}"/>
+    
     <!--수질-->
-    <Color x:Key="WaterQualityColor">#2979FF</Color>
-    <SolidColorBrush x:Key="WaterQualityBrush" Color="{StaticResource WaterQualityColor}"/>
+    <Color x:Key="WaterQualityDischargeColor">#2979FF</Color>
+    <SolidColorBrush x:Key="WaterQualityDischargeBrush" Color="{StaticResource WaterQualityDischargeColor}"/>
+    <Color x:Key="WaterQualityEcologyColor">#2979FF</Color>
+    <SolidColorBrush x:Key="WaterQualityEcologyBrush" Color="{StaticResource WaterQualityEcologyColor}"/>
 
 </ResourceDictionary>

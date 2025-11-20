@@ -332,7 +332,10 @@ public partial class AmphibianReptilePageViewModel : ObservableObject, ITransien
                                                           m => m.MajorCategory,
                                                           m => m.MiddleCategory,
                                                           m => m.Surveyor,
-                                                          m => m.Note
+                                                          m => m.Note,
+                                                          m => m.SiteDivision.Project,
+                                                          m => m.SiteDivision.Workplace,
+                                                          m => m.SiteDivision.WorkplaceRiver
                                                           );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)

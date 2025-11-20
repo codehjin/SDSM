@@ -331,7 +331,10 @@ public partial class BirdPageViewModel : ObservableObject, ITransientService
                                                  m => m.HabitatType,
                                                  m => m.HabitatType,
                                                  m => m.Surveyor,
-                                                 m => m.Note
+                                                 m => m.Note,
+                                                 m => m.SiteDivision.Project,
+                                                 m => m.SiteDivision.Workplace,
+                                                 m => m.SiteDivision.WorkplaceRiver
                                                  );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)

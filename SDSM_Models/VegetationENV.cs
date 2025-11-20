@@ -19,7 +19,7 @@ public class VegetationENV
     [DisplayName("차수")][Required] public string Chsu { get; set; } = string.Empty; // 빈값없음
     [DisplayName("조사일")] public DateTime? SurveyDate { get; set; }  //필수
     [DisplayName("날씨")] public string? Weather { get; set; } // 빈값없음
-    [DisplayName("조사지점")][Required] public string Site { get; set; } = string.Empty; // 빈값없음
+    [DisplayName("지점명")][Required] public string Site { get; set; } = string.Empty; // 빈값없음
     [DisplayName("하천명")][Required] public string River { get; set; } = string.Empty; // 빈값없음
     [DisplayName("조사자")] public string? Surveyor { get; set; }
     [DisplayName("시점_위도")] public double? StartLat { get; set; } // 소수점 6자리

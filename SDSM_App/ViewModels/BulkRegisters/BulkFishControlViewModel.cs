@@ -22,6 +22,7 @@ using Telerik.Windows.Data;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
 using Telerik.Windows.Documents.Spreadsheet.Model;
 using Microsoft.EntityFrameworkCore;
+using SDSM_App.Helpers;
 
 namespace SDSM_App.ViewModels;
 
@@ -39,6 +40,10 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
     private readonly (int, string)[] _habitatFlowStates = [(1, "아주빠름"), (2, "빠름"), (3, "보통"), (4, "느림"), (5, "정체")];
 
     private string _loadedFileName = string.Empty;
+
+    // null : 생태현황, 방류하천 없음
+    // tryue : 생태현황 / false : 방류하천
+    private bool? _isEcology = null;
 
     #endregion
 
@@ -150,6 +155,18 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         if (!File.Exists(fileName))
         {
             return;
+        }
+
+        //생태현황, 방류하천 포함여부 체크
+        (bool? isEcology, string? message) checkResult = SiteDivisionHelper.CheckFileNameByKeywords(Path.GetFileName(fileName));
+        if (checkResult.isEcology == null)
+        {
+            MessageBox.Show(checkResult.message, "파일명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        else
+        {
+            _isEcology = checkResult.isEcology;
         }
 
         _loadedFileName = fileName;
@@ -695,7 +712,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                             sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                         }
                     }
-                    else if (prop.Name == "Side" || prop.Name == "River")
+                    else if (prop.Name == "River")
                     {
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -706,6 +723,37 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                                 insertPropertyInfo?.SetValue(insertModel, v);
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                        }
+                    }
+                    else if (prop.Name == "Site")
+                    {
+                        //필수, 생태현황, 방류하천 체크
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            var v = ((string)value).Replace(" ", "").ToUpper();
+                            if (v.Length > 0)
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
+                                if (siteDivisionId != null)
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, v);
+                                    insertModel.SiteDivisionId = siteDivisionId;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                }
                             }
                             else
                             {

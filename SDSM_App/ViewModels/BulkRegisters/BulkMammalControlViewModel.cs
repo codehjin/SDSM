@@ -5,6 +5,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SDSM_App.Enums;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
@@ -32,6 +33,10 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
     private readonly (int, string)[] _weathers = [(1, "맑음"), (2, "흐림"), (3, "비(눈)")];
 
     private string _loadedFileName = string.Empty;
+
+    // null : 생태현황, 방류하천 없음
+    // tryue : 생태현황 / false : 방류하천
+    private bool? _isEcology = null;
 
     #endregion
 
@@ -105,6 +110,18 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
         if (!File.Exists(fileName))
         {
             return;
+        }
+
+        //생태현황, 방류하천 포함여부 체크
+        (bool? isEcology, string? message) checkResult = SiteDivisionHelper.CheckFileNameByKeywords(Path.GetFileName(fileName));
+        if (checkResult.isEcology == null)
+        {
+            MessageBox.Show(checkResult.message, "파일명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        else
+        {
+            _isEcology = checkResult.isEcology;
         }
 
         _loadedFileName = fileName;
@@ -399,14 +416,45 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                             if (v.Length > 0)
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                if(prop.Name == "River")
+                                if(prop.Name == "SpeciesKo")
                                 {                                    
-                                    insertPropertyInfo?.SetValue(insertModel, v);
+                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
                                 }
                                 else
                                 {
-                                    insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+                                    insertPropertyInfo?.SetValue(insertModel, v);
                                 }                                
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                        }
+                    }
+                    else if (prop.Name == "Site")
+                    {
+                        //필수, 생태현황, 방류하천 체크
+                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            var v = ((string)value).Replace(" ", "").ToUpper();
+                            if (v.Length > 0)
+                            {
+                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
+                                if (siteDivisionId != null)
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, v);
+                                    insertModel.SiteDivisionId = siteDivisionId;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                }
                             }
                             else
                             {
@@ -724,14 +772,7 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            if(prop.Name == "Site")
-                            {
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ",""));
-                            }
-                            else
-                            {
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
-                            }
+                            insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());                           
                         }
                         else
                         {
@@ -813,13 +854,13 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                                      $"SpeciesKo, SpeciesEn, Feature, Lat, Lng, " +
                                      $"ObservationSite, Trace1, Trace2, Trace3, Trace4, " +
                                      $"Trace5, Trace6, Trace7, Trace8, Trace9, " +
-                                     $"Trace10, Trace11, Trace12, Surveyor, Note) " +
+                                     $"Trace10, Trace11, Trace12, Surveyor, Note, SiteDivisionId) " +
                                      $"VALUES " +
                                      $"(@SurveyYear, @YearChsu, @SurveyDate, @Weather, @River, @Site, " +
                                      $"@SpeciesKo, @SpeciesEn, @Feature, @Lat, @Lng, " +
                                      $"@ObservationSite, @Trace1, @Trace2, @Trace3, @Trace4, " +
                                      $"@Trace5, @Trace6, @Trace7, @Trace8, @Trace9, " +
-                                     $"@Trace10, @Trace11, @Trace12, @Surveyor, @Note)";
+                                     $"@Trace10, @Trace11, @Trace12, @Surveyor, @Note, @SiteDivisionId)";
 
                     using var command = new SQLiteCommand(strSql, conn);
 
@@ -849,6 +890,7 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                     command.Parameters.AddWithValue("@Trace12", model.Trace12 ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Surveyor", model.Surveyor ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Note", model.Note ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@SiteDivisionId", model.SiteDivisionId ?? (object)DBNull.Value);
 
                     command.ExecuteNonQuery();
                 }

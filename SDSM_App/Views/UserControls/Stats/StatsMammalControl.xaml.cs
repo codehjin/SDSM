@@ -51,34 +51,34 @@ public partial class StatsMammalControl : UserControl, ITransientService
     //전체출력
     private void AllExportRadButton_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new CommonOpenFileDialog
-        {
-            IsFolderPicker = true,
-            Title = "폴더 선택",
-        };
+        //var dialog = new CommonOpenFileDialog
+        //{
+        //    IsFolderPicker = true,
+        //    Title = "폴더 선택",
+        //};
 
-        if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-        {
-            var folder = dialog.FileName;
+        //if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+        //{
+        //    var folder = dialog.FileName;
 
-            if (string.IsNullOrWhiteSpace(folder))
-                return;
+        //    if (string.IsNullOrWhiteSpace(folder))
+        //        return;
 
-            var date = DateTime.Now.ToString("yyyyMMddHHmmss");
+        //    var date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-            ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_연도별자료_{date}.png"));
-            ChartToPng(SpeciesChart, Path.Combine(folder, $"{_caption}_출현종_{date}.png"));
-            ChartToPng(FeatureChart, Path.Combine(folder, $"{_caption}_특징_{date}.png"));
+        //    ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_연도별자료_{date}.png"));
+        //    ChartToPng(SpeciesChart, Path.Combine(folder, $"{_caption}_출현종_{date}.png"));
+        //    ChartToPng(FeatureChart, Path.Combine(folder, $"{_caption}_특징_{date}.png"));
 
-            var gridViews = new Dictionary<string, RadGridView>
-            {
-                { "연도별자료", YearDataRadGridView },
-                { "출현종", SpeciesDataRadGridView },
-                { "특징", FeatureDataRadGridView },
-            };
+        //    var gridViews = new Dictionary<string, RadGridView>
+        //    {
+        //        { "연도별자료", YearDataRadGridView },
+        //        { "출현종", SpeciesDataRadGridView },
+        //        { "특징", FeatureDataRadGridView },
+        //    };
 
-            MultiExport(folder, date, gridViews);
-        }
+        //    MultiExport(folder, date, gridViews);
+        //}
     }
 
     //개별출력
@@ -111,21 +111,21 @@ public partial class StatsMammalControl : UserControl, ITransientService
                 {
                     switch (item.Caption)
                     {
-                        case "연도별자료":
-                            {
-                                ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
-                            }
-                            break;
-                        case "출현종":
-                            {
-                                ChartToPng(SpeciesChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
-                            }
-                            break;
-                        case "특징":
-                            {
-                                ChartToPng(FeatureChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
-                            }
-                            break;
+                        //case "연도별자료":
+                        //    {
+                        //        ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
+                        //    }
+                        //    break;
+                        //case "출현종":
+                        //    {
+                        //        ChartToPng(SpeciesChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
+                        //    }
+                        //    break;
+                        //case "특징":
+                        //    {
+                        //        ChartToPng(FeatureChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
+                        //    }
+                        //    break;
                     }
                 }
             }
@@ -138,15 +138,15 @@ public partial class StatsMammalControl : UserControl, ITransientService
                 {
                     switch (item.Caption)
                     {
-                        case "연도별자료":
-                            gridViews.Add(item.Caption, YearDataRadGridView);
-                            break;
-                        case "출현종":
-                            gridViews.Add(item.Caption, SpeciesDataRadGridView);
-                            break;
-                        case "특징":
-                            gridViews.Add(item.Caption, FeatureDataRadGridView);
-                            break;
+                        //case "연도별자료":
+                        //    gridViews.Add(item.Caption, YearDataRadGridView);
+                        //    break;
+                        //case "출현종":
+                        //    gridViews.Add(item.Caption, SpeciesDataRadGridView);
+                        //    break;
+                        //case "특징":
+                        //    gridViews.Add(item.Caption, FeatureDataRadGridView);
+                        //    break;
                     }
                 }
                 MultiExport(folder, date, gridViews);
@@ -250,4 +250,28 @@ public partial class StatsMammalControl : UserControl, ITransientService
     }
 
     #endregion
+
+    private void ProjectRadGridView_AutoGeneratingColumn(object sender, GridViewAutoGeneratingColumnEventArgs e)
+    {
+        var column = (GridViewDataColumn)e.Column;
+
+        if (column != null)
+        {
+            switch (column.Header.ToString())
+            {
+                case "사업장":
+                case "과업_대표하천":
+                    column.MinWidth = 80;
+                    column.Width = 140;
+                    column.MaxWidth = 140;
+                    break;
+                default:                    
+                    column.MinWidth = 80;
+                    column.Width = new GridViewLength(1, GridViewLengthUnitType.Star);
+                    column.MaxWidth = 240;
+                    column.DataType = typeof(string);
+                    break;
+            }
+        }
+    }
 }

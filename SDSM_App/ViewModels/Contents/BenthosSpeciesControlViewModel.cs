@@ -248,7 +248,10 @@ public partial class BenthosSpeciesControlViewModel : ObservableObject, ITransie
                                                             m => m.FamilyKo,
                                                             m => m.SpeciesKo,
                                                             m => m.SpeciesEn,
-                                                            m => m.IndividualCount.ToString()
+                                                            m => m.IndividualCount.ToString(),
+                                                            m => m.Project,
+                                                            m => m.Workplace,
+                                                            m => m.WorkplaceRiver
                                                            );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)

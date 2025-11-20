@@ -62,108 +62,108 @@ namespace SDSM_App.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FF007200")]
-        public string VegetationColor {
+        public string VegetationDischargeColor {
             get {
-                return ((string)(this["VegetationColor"]));
+                return ((string)(this["VegetationDischargeColor"]));
             }
             set {
-                this["VegetationColor"] = value;
+                this["VegetationDischargeColor"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FF00B200")]
-        public string PlantColor {
+        public string PlantDischargeColor {
             get {
-                return ((string)(this["PlantColor"]));
+                return ((string)(this["PlantDischargeColor"]));
             }
             set {
-                this["PlantColor"] = value;
+                this["PlantDischargeColor"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FFCC33FF")]
-        public string AmphibianReptileColor {
+        public string AmphibianReptileDischargeColor {
             get {
-                return ((string)(this["AmphibianReptileColor"]));
+                return ((string)(this["AmphibianReptileDischargeColor"]));
             }
             set {
-                this["AmphibianReptileColor"] = value;
+                this["AmphibianReptileDischargeColor"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FF00B8D4")]
-        public string FishColor {
+        public string FishDischargeColor {
             get {
-                return ((string)(this["FishColor"]));
+                return ((string)(this["FishDischargeColor"]));
             }
             set {
-                this["FishColor"] = value;
+                this["FishDischargeColor"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FF651FFF")]
-        public string BenthosColor {
+        public string BenthosDischargeColor {
             get {
-                return ((string)(this["BenthosColor"]));
+                return ((string)(this["BenthosDischargeColor"]));
             }
             set {
-                this["BenthosColor"] = value;
+                this["BenthosDischargeColor"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FF9E9D24")]
-        public string BirdColor {
+        public string BirdDischargeColor {
             get {
-                return ((string)(this["BirdColor"]));
+                return ((string)(this["BirdDischargeColor"]));
             }
             set {
-                this["BirdColor"] = value;
+                this["BirdDischargeColor"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FFFE9900")]
-        public string MammalColor {
+        public string MammalDischargeColor {
             get {
-                return ((string)(this["MammalColor"]));
+                return ((string)(this["MammalDischargeColor"]));
             }
             set {
-                this["MammalColor"] = value;
+                this["MammalDischargeColor"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FF37474F")]
-        public string HabitatWaterEdgeColor {
+        public string HabitatWaterEdgeDischargeColor {
             get {
-                return ((string)(this["HabitatWaterEdgeColor"]));
+                return ((string)(this["HabitatWaterEdgeDischargeColor"]));
             }
             set {
-                this["HabitatWaterEdgeColor"] = value;
+                this["HabitatWaterEdgeDischargeColor"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FF2979FF")]
-        public string WaterQualityColor {
+        public string WaterQualityDischargeColor {
             get {
-                return ((string)(this["WaterQualityColor"]));
+                return ((string)(this["WaterQualityDischargeColor"]));
             }
             set {
-                this["WaterQualityColor"] = value;
+                this["WaterQualityDischargeColor"] = value;
             }
         }
         
@@ -176,6 +176,114 @@ namespace SDSM_App.Properties {
             }
             set {
                 this["StatsControl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00B8D4")]
+        public string FishEcologyColor {
+            get {
+                return ((string)(this["FishEcologyColor"]));
+            }
+            set {
+                this["FishEcologyColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF651FFF")]
+        public string BenthosEcologyColor {
+            get {
+                return ((string)(this["BenthosEcologyColor"]));
+            }
+            set {
+                this["BenthosEcologyColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF9E9D24")]
+        public string BirdEcologyColor {
+            get {
+                return ((string)(this["BirdEcologyColor"]));
+            }
+            set {
+                this["BirdEcologyColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFE9900")]
+        public string MammalEcologyColor {
+            get {
+                return ((string)(this["MammalEcologyColor"]));
+            }
+            set {
+                this["MammalEcologyColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF007200")]
+        public string VegetationEcologyColor {
+            get {
+                return ((string)(this["VegetationEcologyColor"]));
+            }
+            set {
+                this["VegetationEcologyColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFCC33FF")]
+        public string AmphibianReptileEcologyColor {
+            get {
+                return ((string)(this["AmphibianReptileEcologyColor"]));
+            }
+            set {
+                this["AmphibianReptileEcologyColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF37474F")]
+        public string HabitatWaterEdgeEcologyColor {
+            get {
+                return ((string)(this["HabitatWaterEdgeEcologyColor"]));
+            }
+            set {
+                this["HabitatWaterEdgeEcologyColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF2979FF")]
+        public string WaterQualityEcologyColor {
+            get {
+                return ((string)(this["WaterQualityEcologyColor"]));
+            }
+            set {
+                this["WaterQualityEcologyColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00B200")]
+        public string PlantEcologyColor {
+            get {
+                return ((string)(this["PlantEcologyColor"]));
+            }
+            set {
+                this["PlantEcologyColor"] = value;
             }
         }
     }

@@ -142,15 +142,17 @@
                     </Style>
                 </StackPanel.Style>
 
-                <!--연도별 자료수-->
-                <Border Style="{StaticResource ContentBoxStyle}" Margin="0 0 0 10">
-                    <StackPanel>
-                        <CheckBox x:Name="YearCheckBox" IsChecked="True" Style="{StaticResource UpDownVisibleCheckBoxStyle}">
-                            <TextBlock Text="연도별 자료" Style="{StaticResource SubTitleTextBlcokStyle}"/>
-                        </CheckBox>
-                        <Grid Margin="0 20 0 0" Visibility="{Binding Path=IsChecked, ElementName=YearCheckBox, Converter={StaticResource BoolToVisibilityConverter}}">
+                <!--사업장 대표하천별 종수-->
+                <StackPanel Margin="0 20">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 10" Height="{StaticResource DefaultHeight}">
+                        <icon:PackIconMaterial Kind="Rhombus" Style="{StaticResource RhombusSplitIconStyle}"/>
+                        <TextBlock Text="사업장 과업 대표하천별 종" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="0 0 10 0"/>
+                    </StackPanel>
+
+                    <Border Style="{StaticResource ContentBoxStyle}">
+                        <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition Width="7*"/>
                                 <ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
@@ -158,353 +160,86 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-
-                            <!--범례-->
-                            <Grid Grid.Column="0" Grid.Row="0" Margin="0 0 0 10">
-                                <telerik:RadLegend Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding LegendItems, ElementName=YearChart}">
-                                    <telerik:RadLegend.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid>
-                                                <TextBlock Text="{Binding Title}" Margin="15 0 0 0"/>
-                                                <Path Width="12" Height="12" Fill="{Binding MarkerFill}" HorizontalAlignment="Left">
-                                                    <Path.Data>
-                                                        <Binding Path="ActualMarkerGeometry" RelativeSource="{RelativeSource AncestorType=telerik:LegendItemControl}"/>
-                                                    </Path.Data>
-                                                </Path>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </telerik:RadLegend.ItemTemplate>
-                                </telerik:RadLegend>
-                            </Grid>
-
-                            <!--그래프-->
-                            <telerik:RadCartesianChart x:Name="YearChart" Grid.Column="0" Grid.Row="1" Palette="Fluent" HoverMode="FadeOtherSeries" Height="460" Background="{telerik:Windows11Resource ResourceKey=OverlayBrush}">
-                                <telerik:RadCartesianChart.Behaviors>
-                                    <telerik:ChartSelectionBehavior DataPointSelectionMode="Single"/>
-                                    <telerik:ChartTooltipBehavior Placement="Right" HorizontalOffset="5" VerticalOffset="0" ShowDuration="30000" InitialShowDelay="0" BetweenShowDelay="0"/>
-                                </telerik:RadCartesianChart.Behaviors>
-                                <telerik:RadCartesianChart.TooltipTemplate>
-                                    <DataTemplate>
-                                        <Border Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}" 
-                                                BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"
-                                                BorderThickness="1"
-                                                Padding="10"
-                                                Opacity="0.8"
-                                                CornerRadius="{telerik:Windows11Resource ResourceKey=CornerRadius}"
-                                                TextElement.Foreground="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="50"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="5"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="5"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                <TextBlock Grid.ColumnSpan="3" Text="{Binding Category, StringFormat={}{0}년}" FontSize="14" FontWeight="Bold"/>
-                                                <TextBlock Grid.Column="0" Grid.Row="4" Text="자료 수" FontSize="14"/>
-                                                <TextBlock Grid.Column="1" Grid.Row="4" Text=":" FontSize="14" Margin="0 0 3 0"/>
-                                                <TextBlock Grid.Column="2" Grid.Row="4" Text="{Binding DataItem.YVal1, StringFormat={}{0:N0}}" FontSize="14" FontWeight="Bold"/>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </telerik:RadCartesianChart.TooltipTemplate>
-                                <telerik:RadCartesianChart.HorizontalAxis>
-                                    <telerik:CategoricalAxis LabelFormat="{}{0}년" LabelFitMode="MultiLine" FontSize="14">
-                                        <telerik:CategoricalAxis.Style>
-                                            <Style TargetType="telerik:CategoricalAxis">
-                                                <Setter Property="GapLength" Value="0.5"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=YearCollection.Count, Mode=OneWay}" Value="1">
-                                                        <Setter Property="GapLength" Value="0.95"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=YearCollection.Count, Mode=OneWay}" Value="2">
-                                                        <Setter Property="GapLength" Value="0.9"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=YearCollection.Count, Mode=OneWay}" Value="3">
-                                                        <Setter Property="GapLength" Value="0.85"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=YearCollection.Count, Mode=OneWay}" Value="4">
-                                                        <Setter Property="GapLength" Value="0.8"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=YearCollection.Count, Mode=OneWay}" Value="5">
-                                                        <Setter Property="GapLength" Value="0.75"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=YearCollection.Count, Mode=OneWay}" Value="6">
-                                                        <Setter Property="GapLength" Value="0.7"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=YearCollection.Count, Mode=OneWay}" Value="7">
-                                                        <Setter Property="GapLength" Value="0.65"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=YearCollection.Count, Mode=OneWay}" Value="8">
-                                                        <Setter Property="GapLength" Value="0.6"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=YearCollection.Count, Mode=OneWay}" Value="9">
-                                                        <Setter Property="GapLength" Value="0.55"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </telerik:CategoricalAxis.Style>
-                                    </telerik:CategoricalAxis>
-                                </telerik:RadCartesianChart.HorizontalAxis>
-                                <telerik:RadCartesianChart.VerticalAxis>
-                                    <telerik:LinearAxis Minimum="0" LabelFormat="N0" FontSize="14" SmartLabelsMode="SmartStepAndRange"/>
-                                </telerik:RadCartesianChart.VerticalAxis>
-                                <telerik:RadCartesianChart.Series>
-                                    <chartView:BarSeries ItemsSource="{Binding Path=YearCollection}"
-                                                         CategoryBinding="XCat"
-                                                         ValueBinding="YVal1"
-                                                         ShowLabels="True"
-                                                         ClipToPlotArea="False"
-                                                         ani:ChartAnimationUtilities.CartesianAnimation="RiseWithDelay">
-                                        <telerik:BarSeries.LegendSettings>
-                                            <telerik:SeriesLegendSettings Title="연도별 자료 수" />
-                                        </telerik:BarSeries.LegendSettings>
-                                        <telerik:BarSeries.LabelDefinitions>
-                                            <telerik:ChartSeriesLabelDefinition HorizontalAlignment="Center" VerticalAlignment="Top">
-                                                <telerik:ChartSeriesLabelDefinition.Template>
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding DataItem.YVal1, StringFormat={}{0:N0}}"
-                                                               Margin="0 0 0 5"
-                                                               FontSize="14" 
-                                                               Foreground="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"/>
-                                                    </DataTemplate>
-                                                </telerik:ChartSeriesLabelDefinition.Template>
-                                            </telerik:ChartSeriesLabelDefinition>
-                                        </telerik:BarSeries.LabelDefinitions>
-                                    </chartView:BarSeries>
-                                </telerik:RadCartesianChart.Series>
-                                <!--눈금선-->
-                                <telerik:RadCartesianChart.Grid>
-                                    <telerik:CartesianChartGrid StripLinesVisibility="None" MajorLinesVisibility="Y" Opacity="0.2"/>
-                                </telerik:RadCartesianChart.Grid>
-                            </telerik:RadCartesianChart>
-
-                            <Grid Grid.Column="2" Grid.Row="0" Margin="0 0 0 10">
-                                <TextBlock Text="통계표" Style="{StaticResource PrimaryTextBlcokStyle}"/>
-                            </Grid>
-
-                            <!--통계표-->
-                            <telerik:RadGridView x:Name="YearDataRadGridView"
-                                                 Grid.Column="2"
+                            <StackPanel Orientation="Horizontal" Margin="0 0 0 10" Height="{StaticResource DefaultHeight}">
+                                <TextBlock Text="사업장" Style="{StaticResource PrimaryTitleTextBlcokStyle}" Margin="0 0 5 0"/>
+                                <TextBlock Style="{StaticResource PrimaryTitleTextBlcokStyle}">
+                                    <Run Text="{Binding Path=TotalWorkplace, StringFormat={}{0:N0}}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                                    <Run Text="건"/>
+                                </TextBlock>
+                                <TextBlock Text="과업 대표하천" Style="{StaticResource PrimaryTitleTextBlcokStyle}" Margin="10 0 5 0"/>
+                                <TextBlock Style="{StaticResource PrimaryTitleTextBlcokStyle}">
+                                    <Run Text="{Binding Path=TotalWorkplaceRiver, StringFormat={}{0:N0}}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                                    <Run Text="건"/>
+                                </TextBlock>
+                                <TextBlock Text="포유류" Style="{StaticResource PrimaryTitleTextBlcokStyle}" Margin="10 0 5 0"/>
+                                <TextBlock Style="{StaticResource PrimaryTitleTextBlcokStyle}">
+                                    <Run Text="{Binding Path=TotalSpecies, StringFormat={}{0:N0}}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                                    <Run Text="종"/>
+                                </TextBlock>
+                            </StackPanel>
+                            <telerik:RadGridView x:Name="ProjectRadGridView"
                                                  Grid.Row="1"
-                                                 ItemsSource="{Binding Path=YearCollection}"
+                                                 ItemsSource="{Binding Path=ProjectDataTable.DefaultView}"
                                                  HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
                                                  BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
                                                  BusyIndicatorIsIndeterminate="False"
                                                  FrozenColumnsSplitterVisibility="Collapsed"
                                                  LeftFrozenColumnCount="0"
                                                  RowIndicatorVisibility="Collapsed"
-                                                 ShowColumnFooters="True"
-                                                 Height="460"
+                                                 MinHeight="110"
+                                                 MaxHeight="460"
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
-                                                 ElementExportingToDocument="RadGridView_ElementExportingToDocument">
-                                <telerik:RadGridView.Columns>
-                                    <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCat}" DataFormatString="{}{0}년" MinWidth="80" Width="*" TextWrapping="Wrap" FooterTextAlignment="Center">
-                                        <telerik:GridViewDataColumn.AggregateFunctions>
-                                            <telerik:CountFunction ResultFormatString="{}{0:N0}건"/>
-                                        </telerik:GridViewDataColumn.AggregateFunctions>
-                                    </telerik:GridViewDataColumn>
-                                    <telerik:GridViewDataColumn Header="자료 수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="*" TextWrapping="Wrap" FooterTextAlignment="Center">
-                                        <telerik:GridViewDataColumn.AggregateFunctions>
-                                            <telerik:SumFunction ResultFormatString="{}{0:N0}건"/>
-                                        </telerik:GridViewDataColumn.AggregateFunctions>
-                                    </telerik:GridViewDataColumn>
-                                </telerik:RadGridView.Columns>
+                                                 AutoGenerateColumns="True"
+                                                 AutoGeneratingColumn="ProjectRadGridView_AutoGeneratingColumn"
+                                                 ElementExportingToDocument="RadGridView_ElementExportingToDocument"
+                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
                             </telerik:RadGridView>
-                        </Grid>
-                    </StackPanel>
-                </Border>
 
-                <!--출현종-->
-                <Border Style="{StaticResource ContentBoxStyle}" Margin="0 10">
-                    <StackPanel>
-                        <CheckBox x:Name="SpeciesCheckBox" IsChecked="True" Style="{StaticResource UpDownVisibleCheckBoxStyle}">
-                            <TextBlock Text="출현종" Style="{StaticResource SubTitleTextBlcokStyle}"/>
-                        </CheckBox>
-
-                        <Grid Margin="0 20 0 0" Visibility="{Binding Path=IsChecked, ElementName=SpeciesCheckBox, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="5*"/>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <!--범례-->
-                            <Grid Grid.Column="0" Grid.Row="0" Margin="0 0 0 10">
-                                <telerik:RadLegend Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding LegendItems, ElementName=SpeciesChart}">
-                                    <telerik:RadLegend.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid>
-                                                <TextBlock Text="{Binding Title}" Margin="15 0 0 0"/>
-                                                <Path Width="12" Height="12" Fill="{Binding MarkerFill}" HorizontalAlignment="Left">
-                                                    <Path.Data>
-                                                        <Binding Path="ActualMarkerGeometry" RelativeSource="{RelativeSource AncestorType=telerik:LegendItemControl}"/>
-                                                    </Path.Data>
-                                                </Path>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </telerik:RadLegend.ItemTemplate>
-                                </telerik:RadLegend>
-                            </Grid>
-
-                            <!--그래프-->
-                            <telerik:RadCartesianChart x:Name="SpeciesChart" Grid.Column="0" Grid.Row="1" Palette="Forest" HoverMode="FadeOtherSeries" Height="460" Background="{telerik:Windows11Resource ResourceKey=OverlayBrush}">
-                                <telerik:RadCartesianChart.Behaviors>
-                                    <telerik:ChartSelectionBehavior DataPointSelectionMode="Single"/>
-                                    <telerik:ChartTooltipBehavior Placement="Right" HorizontalOffset="5" VerticalOffset="0" ShowDuration="30000" InitialShowDelay="0" BetweenShowDelay="0"/>
-                                </telerik:RadCartesianChart.Behaviors>
-                                <telerik:RadCartesianChart.TooltipTemplate>
-                                    <DataTemplate>
-                                        <Border Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}" 
-                                                BorderBrush="{telerik:Windows11Resource ResourceKey=PrimaryBorderBrush}"
-                                                BorderThickness="1"
-                                                Padding="10"
-                                                Opacity="0.8"
-                                                CornerRadius="{telerik:Windows11Resource ResourceKey=CornerRadius}"
-                                                TextElement.Foreground="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="50"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="5"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                <TextBlock Grid.ColumnSpan="3" Text="{Binding DataItem.XCatText}" FontSize="14" FontWeight="Bold"/>
-                                                <TextBlock Grid.Column="0" Grid.Row="2" Text="종" FontSize="14"/>
-                                                <TextBlock Grid.Column="1" Grid.Row="2" Text=":" FontSize="14" Margin="0 0 3 0"/>
-                                                <TextBlock Grid.Column="2" Grid.Row="2" Text="{Binding DataItem.YVal1, StringFormat={}{0:N0}}" FontSize="14" FontWeight="Bold"/>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </telerik:RadCartesianChart.TooltipTemplate>
-                                <telerik:RadCartesianChart.HorizontalAxis>
-                                    <telerik:CategoricalAxis LabelFitMode="MultiLine" FontSize="14">
-                                        <telerik:CategoricalAxis.Style>
-                                            <Style TargetType="telerik:CategoricalAxis">
-                                                <Setter Property="GapLength" Value="0.5"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=SpeciesCollection.Count, Mode=OneWay}" Value="1">
-                                                        <Setter Property="GapLength" Value="0.95"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=SpeciesCollection.Count, Mode=OneWay}" Value="2">
-                                                        <Setter Property="GapLength" Value="0.9"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=SpeciesCollection.Count, Mode=OneWay}" Value="3">
-                                                        <Setter Property="GapLength" Value="0.85"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=SpeciesCollection.Count, Mode=OneWay}" Value="4">
-                                                        <Setter Property="GapLength" Value="0.8"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=SpeciesCollection.Count, Mode=OneWay}" Value="5">
-                                                        <Setter Property="GapLength" Value="0.75"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=SpeciesCollection.Count, Mode=OneWay}" Value="6">
-                                                        <Setter Property="GapLength" Value="0.7"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=v.Count, Mode=OneWay}" Value="7">
-                                                        <Setter Property="GapLength" Value="0.65"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=SpeciesCollection.Count, Mode=OneWay}" Value="8">
-                                                        <Setter Property="GapLength" Value="0.6"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=SpeciesCollection.Count, Mode=OneWay}" Value="9">
-                                                        <Setter Property="GapLength" Value="0.55"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </telerik:CategoricalAxis.Style>
-                                    </telerik:CategoricalAxis>
-                                </telerik:RadCartesianChart.HorizontalAxis>
-                                <telerik:RadCartesianChart.VerticalAxis>
-                                    <telerik:LinearAxis Minimum="0" LabelFormat="N0" FontSize="14" SmartLabelsMode="SmartStepAndRange"/>
-                                </telerik:RadCartesianChart.VerticalAxis>
-                                <telerik:RadCartesianChart.Series>
-                                    <chartView:BarSeries ItemsSource="{Binding Path=SpeciesCollection}"
-                                                         CategoryBinding="XCatText"
-                                                         ValueBinding="YVal1"
-                                                         ShowLabels="True"
-                                                         ClipToPlotArea="False"
-                                                         ani:ChartAnimationUtilities.CartesianAnimation="RiseWithDelay">
-                                        <telerik:BarSeries.LegendSettings>
-                                            <telerik:SeriesLegendSettings Title="연도별 종수" />
-                                        </telerik:BarSeries.LegendSettings>
-                                        <telerik:BarSeries.LabelDefinitions>
-                                            <telerik:ChartSeriesLabelDefinition HorizontalAlignment="Center" VerticalAlignment="Top">
-                                                <telerik:ChartSeriesLabelDefinition.Template>
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding DataItem.YVal1, StringFormat={}{0:N0}}"
-                                                                   Margin="0 0 0 5"
-                                                                   FontSize="14" 
-                                                                   Foreground="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"/>
-                                                    </DataTemplate>
-                                                </telerik:ChartSeriesLabelDefinition.Template>
-                                            </telerik:ChartSeriesLabelDefinition>
-                                        </telerik:BarSeries.LabelDefinitions>
-                                    </chartView:BarSeries>
-                                </telerik:RadCartesianChart.Series>
-                                <!--눈금선-->
-                                <telerik:RadCartesianChart.Grid>
-                                    <telerik:CartesianChartGrid StripLinesVisibility="None" MajorLinesVisibility="Y" Opacity="0.2"/>
-                                </telerik:RadCartesianChart.Grid>
-                            </telerik:RadCartesianChart>
-
-                            <Grid Grid.Column="2" Grid.Row="0" Margin="0 0 0 10">
-                                <TextBlock Text="통계표" Style="{StaticResource PrimaryTextBlcokStyle}"/>
-                            </Grid>
-
-                            <!--통계표-->
-                            <telerik:RadGridView x:Name="SpeciesDataRadGridView"
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0 0 0 10" Height="{StaticResource DefaultHeight}">
+                                <TextBlock Text="출현종" Style="{StaticResource PrimaryTitleTextBlcokStyle}" Margin="0 0 10 0"/>
+                                <TextBlock Style="{StaticResource PrimaryTitleTextBlcokStyle}">
+                                    <Run Text="{Binding Path=ProjectSpeciesCollection.Count, Mode=OneWay, StringFormat={}{0:N0}}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
+                                    <Run Text="종"/>
+                                </TextBlock>
+                            </StackPanel>
+                            <telerik:RadGridView x:Name="ProjectSpeciesRadGridView"
                                                  Grid.Column="2"
                                                  Grid.Row="1"
-                                                 ItemsSource="{Binding Path=SpeciesCollection}"
+                                                 ItemsSource="{Binding Path=ProjectSpeciesCollection}"
                                                  HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
                                                  BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
                                                  BusyIndicatorIsIndeterminate="False"
                                                  FrozenColumnsSplitterVisibility="Collapsed"
                                                  LeftFrozenColumnCount="0"
                                                  RowIndicatorVisibility="Collapsed"
-                                                 ShowColumnFooters="True"
-                                                 Height="460"
+                                                 MinHeight="110"
+                                                 MaxHeight="460"
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
-                                                 ElementExportingToDocument="RadGridView_ElementExportingToDocument">
+                                                 ElementExportingToDocument="RadGridView_ElementExportingToDocument"
+                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
                                 <telerik:RadGridView.Columns>
-                                    <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCatText}" MinWidth="80" Width="*" TextWrapping="Wrap" FooterTextAlignment="Center">
-                                        <telerik:GridViewDataColumn.AggregateFunctions>
-                                            <telerik:CountFunction ResultFormatString="{}{0:N0}건"/>
-                                        </telerik:GridViewDataColumn.AggregateFunctions>
-                                    </telerik:GridViewDataColumn>
-                                    <telerik:GridViewDataColumn Header="종수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="60" Width="*" TextWrapping="Wrap" FooterTextAlignment="Center"/>
+                                    <telerik:GridViewDataColumn Header="특징" DataMemberBinding="{Binding}" MinWidth="80" Width="*" MaxWidth="640" TextWrapping="Wrap" />
                                 </telerik:RadGridView.Columns>
                             </telerik:RadGridView>
                         </Grid>
-
-                    </StackPanel>
-                </Border>
+                    </Border>
+                </StackPanel>
 
                 <!--특징-->
-                <Border Style="{StaticResource ContentBoxStyle}" Margin="0 10">
-                    <StackPanel>
-                        <CheckBox x:Name="FeatureCheckBox" IsChecked="True" Style="{StaticResource UpDownVisibleCheckBoxStyle}">
-                            <TextBlock Text="특징" Style="{StaticResource SubTitleTextBlcokStyle}"/>
-                        </CheckBox>
+                <StackPanel Margin="0 20">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 10" Height="{StaticResource DefaultHeight}">
+                        <icon:PackIconMaterial Kind="Rhombus" Style="{StaticResource RhombusSplitIconStyle}"/>
+                        <TextBlock Text="특징" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="0 0 10 0"/>
+                    </StackPanel>
+
+                    <Border Style="{StaticResource ContentBoxStyle}">
                         <Grid Margin="0 20 0 0" Visibility="{Binding Path=IsChecked, ElementName=FeatureCheckBox, Converter={StaticResource BoolToVisibilityConverter}}">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="1.4*"/>
                                 <ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
@@ -599,12 +334,12 @@
                                 </telerik:RadPieChart.Series>
                             </telerik:RadPieChart>
 
-                            <Grid Grid.Column="2" Grid.Row="0" Margin="0 0 0 10">
-                                <TextBlock Text="통계표" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                            <Grid Grid.Column="2" Grid.Row="0" Height="{StaticResource DefaultHeight}" Margin="0 0 0 10">
+                                <TextBlock Text="통계표" Style="{StaticResource PrimaryTitleTextBlcokStyle}"/>
                             </Grid>
 
                             <!--통계표-->
-                            <telerik:RadGridView x:Name="FeatureDataRadGridView"
+                            <telerik:RadGridView x:Name="FeatureRadGridView"
                                                  Grid.Column="2"
                                                  Grid.Row="1"
                                                  ItemsSource="{Binding Path=FeatureCollection}"
@@ -614,32 +349,46 @@
                                                  FrozenColumnsSplitterVisibility="Collapsed"
                                                  LeftFrozenColumnCount="0"
                                                  RowIndicatorVisibility="Collapsed"
-                                                 ShowColumnFooters="True"
                                                  Height="460"
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
-                                                 ElementExportingToDocument="RadGridView_ElementExportingToDocument">
+                                                 ElementExportingToDocument="RadGridView_ElementExportingToDocument"
+                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
                                 <telerik:RadGridView.Columns>
-                                    <telerik:GridViewDataColumn Header="특징" DataMemberBinding="{Binding Path=XCatText}" MinWidth="80" Width="*" TextWrapping="Wrap" FooterTextAlignment="Center">
-                                        <telerik:GridViewDataColumn.AggregateFunctions>
-                                            <telerik:CountFunction ResultFormatString="{}{0:N0}건"/>
-                                        </telerik:GridViewDataColumn.AggregateFunctions>
-                                    </telerik:GridViewDataColumn>
-                                    <telerik:GridViewDataColumn Header="비율(%)" DataMemberBinding="{Binding Path=YRatio1}" DataFormatString="{}{0:F2}" MinWidth="80" Width="*" TextWrapping="Wrap" FooterTextAlignment="Center">
-                                        <telerik:GridViewDataColumn.AggregateFunctions>
-                                            <telerik:SumFunction ResultFormatString="{}{0:F2}"/>
-                                        </telerik:GridViewDataColumn.AggregateFunctions>
-                                    </telerik:GridViewDataColumn>
-                                    <telerik:GridViewDataColumn Header="개수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="*" TextWrapping="Wrap" FooterTextAlignment="Center">
-                                        <telerik:GridViewDataColumn.AggregateFunctions>
-                                            <telerik:SumFunction ResultFormatString="{}{0:N0}개"/>
-                                        </telerik:GridViewDataColumn.AggregateFunctions>
-                                    </telerik:GridViewDataColumn>
+                                    <telerik:GridViewDataColumn Header="특징" DataMemberBinding="{Binding Path=XCatText}" MinWidth="80" Width="2*" TextWrapping="Wrap"/>
+                                    <telerik:GridViewDataColumn Header="비율(%)" DataMemberBinding="{Binding Path=YRatio1}" DataFormatString="{}{0:F2}" MinWidth="80" Width="*" TextWrapping="Wrap" />
+                                    <telerik:GridViewDataColumn Header="개수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="*" TextWrapping="Wrap"/>
+                                </telerik:RadGridView.Columns>
+                            </telerik:RadGridView>
+
+                            <Grid Grid.Column="4" Grid.Row="0" Height="{StaticResource DefaultHeight}" Margin="0 0 0 10">
+                                <TextBlock Text="출현종" Style="{StaticResource PrimaryTitleTextBlcokStyle}"/>
+                            </Grid>
+                        
+                            <!--출현종-->
+                            <telerik:RadGridView x:Name="FeatureSpeciesRadGridView"
+                                                 Grid.Column="4"
+                                                 Grid.Row="1"
+                                                 ItemsSource="{Binding Path=FeatureSpeciesCollection}"
+                                                 HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
+                                                 BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
+                                                 BusyIndicatorIsIndeterminate="False"
+                                                 FrozenColumnsSplitterVisibility="Collapsed"
+                                                 LeftFrozenColumnCount="0"
+                                                 RowIndicatorVisibility="Collapsed"
+                                                 Height="460"
+                                                 IsFilteringAllowed="False"
+                                                 IsSynchronizedWithCurrentItem="{x:Null}"
+                                                 ElementExportingToDocument="RadGridView_ElementExportingToDocument"
+                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
+                                <telerik:RadGridView.Columns>
+                                    <telerik:GridViewDataColumn Header="특징" DataMemberBinding="{Binding Path=Category}" MinWidth="80" Width="2*" TextWrapping="Wrap" />
+                                    <telerik:GridViewDataColumn Header="비율(%)" DataMemberBinding="{Binding Path=SubCategory}" DataFormatString="{}{0:F2}" MinWidth="80" Width="*" TextWrapping="Wrap" />
                                 </telerik:RadGridView.Columns>
                             </telerik:RadGridView>
                         </Grid>
+                    </Border>
                     </StackPanel>
-                </Border>
 
             </StackPanel>
         </ScrollViewer>

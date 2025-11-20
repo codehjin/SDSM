@@ -142,6 +142,9 @@
                                          LeftFrozenColumnCount="0"
                                          SelectionMode="Extended">
                         <telerik:RadGridView.Columns>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SiteDivision.Project}" MinWidth="80" Width="140" MaxWidth="140"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SiteDivision.Workplace}" MinWidth="80" Width="140" MaxWidth="140"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SiteDivision.WorkplaceRiver}" MinWidth="80" Width="140" MaxWidth="140"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyYear}" MinWidth="80" Width="120" MaxWidth="120"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Chsu}" MinWidth="80" Width="120" MaxWidth="120"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>

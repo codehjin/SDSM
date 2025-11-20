@@ -339,7 +339,10 @@ public partial class MammalPageViewModel : ObservableObject, ITransientService
                                                  m => m.Trace11.ToString(),
                                                  m => m.Trace12.ToString(),
                                                  m => m.Surveyor,
-                                                 m => m.Note
+                                                 m => m.Note,
+                                                 m => m.SiteDivision.Project,
+                                                 m => m.SiteDivision.Workplace,
+                                                 m => m.SiteDivision.WorkplaceRiver
                                                  );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)

@@ -5,6 +5,7 @@ namespace SDSM_App.Models;
 public partial class SearchItem : ObservableObject
 {
     public string Title { get; set; } = string.Empty;
+    public string Division { get; set; } = string.Empty;
     public string Caption { get; set; } = string.Empty;
     public string? SearchText { get; set; }
 

@@ -3,10 +3,12 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.Enums;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
+using System.Windows;
 
 namespace SDSM_App.ViewModels;
 
@@ -35,6 +37,7 @@ public partial class VegetationEditorControlViewModel : ObservableObject, ITrans
     [ObservableProperty] private EditStatusType _editStatus = EditStatusType.Add;
 
     [ObservableProperty] private Vegetation _editModel = new();
+    [ObservableProperty] private string _project = "방류하천";
 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _yearChsu = string.Empty;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _site = string.Empty;
@@ -45,6 +48,7 @@ public partial class VegetationEditorControlViewModel : ObservableObject, ITrans
     [ObservableProperty] private string? _surveyor;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _colony = string.Empty;
     [ObservableProperty] private double? _area;
+    [ObservableProperty] private int? _siteDivisionId;
 
     #endregion
 
@@ -59,10 +63,21 @@ public partial class VegetationEditorControlViewModel : ObservableObject, ITrans
             && !string.IsNullOrWhiteSpace(Colony);
     }
 
-    //수정
+    //저장
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveExecuted()
     {
+        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site);
+        if (siteDivisionId != null)
+        {
+            SiteDivisionId = siteDivisionId;
+        }
+        else
+        {
+            MessageBox.Show($"지점명 : {Site}\n\n프로젝트 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         if (EditStatus == EditStatusType.Add)
         {
             AddSave();
@@ -128,7 +143,8 @@ public partial class VegetationEditorControlViewModel : ObservableObject, ITrans
                 Site = Site,
                 Surveyor = Surveyor,
                 Colony = Colony,
-                Area = Area
+                Area = Area,
+                SiteDivisionId = SiteDivisionId
             };
             return model;
 
@@ -150,6 +166,7 @@ public partial class VegetationEditorControlViewModel : ObservableObject, ITrans
             EditModel.Surveyor = Surveyor;
             EditModel.Colony = Colony;
             EditModel.Area = Area;
+            EditModel.SiteDivisionId = SiteDivisionId;
 
             return true;
         }
@@ -176,6 +193,7 @@ public partial class VegetationEditorControlViewModel : ObservableObject, ITrans
 
         FormTitle = "수정";
         EditStatus = EditStatusType.Edit;
+        Project = EditModel.SiteDivision.Project;
 
         YearChsu = model.YearChsu;
         SurveyDate = model.SurveyDate;
@@ -186,6 +204,7 @@ public partial class VegetationEditorControlViewModel : ObservableObject, ITrans
         Surveyor = model.Surveyor;
         Colony = model.Colony;
         Area = model.Area;
+        SiteDivisionId = model.SiteDivisionId;
     }
 
     //항목초기화
@@ -204,6 +223,7 @@ public partial class VegetationEditorControlViewModel : ObservableObject, ITrans
         Surveyor = null;
         Colony = string.Empty;
         Area = null;
+        SiteDivisionId = null;
     }
 
     #endregion 

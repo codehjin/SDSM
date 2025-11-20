@@ -337,8 +337,11 @@ public partial class HabitatWaterEdgePageViewModel : ObservableObject, ITransien
                                                             m => m.EvaluationItem9.ToString(),
                                                             m => m.EvaluationItem10.ToString(),
                                                             m => m.EvaluationScore.ToString(),
-                                                            m => m.EvaluationGrade
-                                                           );
+                                                            m => m.EvaluationGrade,
+                                                            m => m.SiteDivision.Project,
+                                                            m => m.SiteDivision.Workplace,
+                                                            m => m.SiteDivision.WorkplaceRiver
+                                                            );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)
                     {

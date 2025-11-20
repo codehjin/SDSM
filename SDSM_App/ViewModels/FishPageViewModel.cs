@@ -415,7 +415,10 @@ public partial class FishPageViewModel : ObservableObject, ITransientService
                                                   m => m.M7Value.ToString(),
                                                   m => m.FAIGrade,
                                                   m => m.SpeciesCount.ToString(),
-                                                  m => m.IndividualCount.ToString()
+                                                  m => m.IndividualCount.ToString(),
+                                                  m => m.Project,
+                                                  m => m.Workplace,
+                                                  m => m.WorkplaceRiver
                                                   );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)

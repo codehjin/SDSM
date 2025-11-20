@@ -3,10 +3,12 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.Enums;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
+using System.Windows;
 
 namespace SDSM_App.ViewModels;
 
@@ -35,12 +37,13 @@ public partial class MammalEditorControlViewModel : ObservableObject, ITransient
     [ObservableProperty] private EditStatusType _editStatus = EditStatusType.Add;
 
     [ObservableProperty] private Mammal _editModel = new();
+    [ObservableProperty] private string _project = "방류하천";
 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _yearChsu = string.Empty;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private DateTime? _surveyDate;
     [ObservableProperty] private string? _weather;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _river = string.Empty;
-    [ObservableProperty] private string? _site;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _site = string.Empty;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _speciesKo = string.Empty;
     [ObservableProperty] private string? _speciesEn;
     [ObservableProperty] private string? _feature;
@@ -61,6 +64,7 @@ public partial class MammalEditorControlViewModel : ObservableObject, ITransient
     [ObservableProperty] private int? _trace12;
     [ObservableProperty] private string? _surveyor;
     [ObservableProperty] private string? _note;
+    [ObservableProperty] private int? _siteDivisionId;
 
     #endregion
 
@@ -71,13 +75,25 @@ public partial class MammalEditorControlViewModel : ObservableObject, ITransient
         return !string.IsNullOrWhiteSpace(YearChsu)
             && SurveyDate != null
             && !string.IsNullOrWhiteSpace(River)
+            && !string.IsNullOrWhiteSpace(Site)
             && !string.IsNullOrWhiteSpace(SpeciesKo);
     }
 
-    //수정
+    //저장
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveExecuted()
     {
+        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site);
+        if (siteDivisionId != null)
+        {
+            SiteDivisionId = siteDivisionId;
+        }
+        else
+        {
+            MessageBox.Show($"지점명 : {Site}\n\n프로젝트 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         if (EditStatus == EditStatusType.Add)
         {
             AddSave();
@@ -160,6 +176,7 @@ public partial class MammalEditorControlViewModel : ObservableObject, ITransient
                 Trace12 = Trace12,
                 Surveyor = Surveyor,
                 Note = Note,
+                SiteDivisionId = SiteDivisionId
             };
             return model;
 
@@ -197,6 +214,7 @@ public partial class MammalEditorControlViewModel : ObservableObject, ITransient
             EditModel.Trace12 = Trace12;
             EditModel.Surveyor = Surveyor;
             EditModel.Note = Note;
+            EditModel.SiteDivisionId = SiteDivisionId;
 
             return true;
         }
@@ -223,6 +241,7 @@ public partial class MammalEditorControlViewModel : ObservableObject, ITransient
 
         FormTitle = "수정";
         EditStatus = EditStatusType.Edit;
+        Project = EditModel.SiteDivision.Project;
 
         YearChsu = EditModel.YearChsu;
         SurveyDate = EditModel.SurveyDate;
@@ -249,6 +268,7 @@ public partial class MammalEditorControlViewModel : ObservableObject, ITransient
         Trace12 = EditModel.Trace12;
         Surveyor = EditModel.Surveyor;
         Note = EditModel.Note;
+        SiteDivisionId = EditModel.SiteDivisionId;
     }
 
     //항목초기화
@@ -262,7 +282,7 @@ public partial class MammalEditorControlViewModel : ObservableObject, ITransient
         SurveyDate = null;
         Weather = null;
         River = string.Empty;
-        Site = null;
+        Site = string.Empty;
         SpeciesKo = string.Empty;
         SpeciesEn = null;
         Feature = null;
@@ -283,6 +303,7 @@ public partial class MammalEditorControlViewModel : ObservableObject, ITransient
         Trace12 = null;
         Surveyor = null;
         Note = null;
+        SiteDivisionId = null;
     }
 
     #endregion 

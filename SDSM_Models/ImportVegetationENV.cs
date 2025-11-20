@@ -11,7 +11,7 @@ public class ImportVegetationENV
     [DisplayName("차수")] public string? Chsu { get; set; }
     [DisplayName("조사일")] public string? SurveyDate { get; set; }
     [DisplayName("날씨")] public string? Weather { get; set; }
-    [DisplayName("조사지점")] public string? Site { get; set; }
+    [DisplayName("지점명")] public string? Site { get; set; }
     [DisplayName("하천명")] public string? River { get; set; }
     [DisplayName("조사자")] public string? Surveyor { get; set; }
     [DisplayName("시점_위도")] public string? StartLat { get; set; }

@@ -1245,4 +1245,97 @@
         <Setter Property="ItemContainerStyle"  Value="{StaticResource MultiRadComboBoxItemStyle}"/>
     </Style>
 
+    <Style x:Key="NonFillRadListBoxItemStyle" TargetType="telerik:RadListBoxItem">
+        <Setter Property="helpers:ThemeHelper.MouseOverBackgroundBrush" Value="Transparent"/>
+        <Setter Property="helpers:ThemeHelper.CheckedBackgroundBrush" Value="Transparent"/>
+        <Setter Property="helpers:ThemeHelper.FocusBackgroundBrush" Value="Transparent"/>
+        <Setter Property="helpers:ThemeHelper.FocusBrush" Value="Transparent"/>
+        <Setter Property="helpers:ThemeHelper.DisabledForegroundBrush" Value="{telerik:Windows11Resource ResourceKey=DisabledForegroundBrush}"/>
+        <Setter Property="helpers:ThemeHelper.CornerRadius" Value="{telerik:Windows11Resource ResourceKey=CornerRadius}"/>
+        <Setter Property="FontFamily" Value="{telerik:Windows11Resource ResourceKey=FontFamily}"/>
+        <Setter Property="FontSize" Value="{telerik:Windows11Resource ResourceKey=FontSize}"/>
+        <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=PrimaryForegroundBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="{telerik:Windows11Resource ResourceKey=ItemWithPillPadding}"/>
+        <Setter Property="MinHeight" Value="{telerik:Windows11Resource ResourceKey=DefaultItemMinHeight}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Local"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="telerik:RadListBoxItem">
+                    <Grid Background="#01FFFFFF">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="BorderVisual"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        <Border x:Name="FocusVisual"
+                                Style="{StaticResource FocusVisualBorderStyle}"
+                                CornerRadius="{TemplateBinding helpers:ThemeHelper.CornerRadius}"
+                                Margin="0"/>
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Margin="{TemplateBinding Padding}"
+                                          Grid.Column="0"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+
+                        <!-- MouseOver -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush), Mode=OneWay}"/>
+                            <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBrush), Mode=OneWay}"/>
+                        </Trigger>
+
+                        <!-- Focused -->
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter Property="Opacity" Value="1" TargetName="FocusVisual"/>
+                            <Setter Property="BorderThickness" Value="3"/>
+                        </Trigger>
+
+                        <!-- Focused & MouseOver -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsKeyboardFocusWithin" Value="True"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="FocusVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush), Mode=OneWay}"/>
+                        </MultiTrigger>
+
+                        <!-- Disabled -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="contentPresenter" Value="{telerik:Windows11Resource ResourceKey=DisabledOpacity}" Property="Opacity"/>
+                            <Setter TargetName="contentPresenter" Property="TextBlock.Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.DisabledForegroundBrush), Mode=OneWay}"/>
+                        </Trigger>
+
+                        <!-- IsSelected general setters -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBackgroundBrush), Mode=OneWay}"/>
+                            <Setter TargetName="BorderVisual" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.CheckedBrush), Mode=OneWay}"/>
+                        </Trigger>
+
+                        <!-- Selected and MouseOver -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="BorderVisual" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(helpers:ThemeHelper.MouseOverBackgroundBrush), Mode=OneWay}"/>
+                        </MultiTrigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

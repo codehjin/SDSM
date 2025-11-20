@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SDSM_App.Animations;
 using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_Models;
+using System.Data;
 using Telerik.Windows.Data;
 
 namespace SDSM_App.ViewModels;
@@ -38,14 +40,18 @@ public partial class StatsMammalControlViewModel : ObservableObject, ITransientS
     [ObservableProperty] private RadObservableCollection<int> _searchCollection = [];
     [ObservableProperty] private RadObservableCollection<int> _searchSelectedItems = [];
 
-    //연도별 자료수
-    [ObservableProperty] private RadObservableCollection<PlotItem> _yearCollection = [];
+    //전체 사업장, 대표하천, 종 수
+    [ObservableProperty] private int _totalSpecies;
+    [ObservableProperty] private int _totalWorkplace;
+    [ObservableProperty] private int _totalWorkplaceRiver;
 
-    //출현종
-    [ObservableProperty] private RadObservableCollection<PlotItem> _speciesCollection = [];
+    //사업장 대표하천별 과,종
+    [ObservableProperty] private DataTable _projectDataTable = new();
+    [ObservableProperty] private RadObservableCollection<string> _projectSpeciesCollection = [];
 
     //특징
     [ObservableProperty] private RadObservableCollection<PlotItem> _featureCollection = [];
+    [ObservableProperty] private RadObservableCollection<PlotItem> _featureSpeciesCollection = [];
 
     #endregion
 
@@ -83,7 +89,7 @@ public partial class StatsMammalControlViewModel : ObservableObject, ITransientS
             new(){ Caption = "특징", IsCheckedTable = false, IsCheckedChart = false },
         ];
 
-        Data = await context.Mammals.ToListAsync();
+        Data = await context.Mammals.Where(m => m.SiteDivision.Project == "방류하천").ToListAsync();
 
         var years = await GetSearchData(Data);
 
@@ -121,6 +127,7 @@ public partial class StatsMammalControlViewModel : ObservableObject, ITransientS
                         Data.Where(m => m.SurveyYear == item)
                             .Select(m => new Mammal
                             {
+                                SiteDivision = m.SiteDivision,
                                 SurveyYear = m.SurveyYear,
                                 YearChsu = m.YearChsu,
                                 SpeciesKo = m.SpeciesKo,
@@ -139,7 +146,7 @@ public partial class StatsMammalControlViewModel : ObservableObject, ITransientS
         if (GB.IsBusy == false)
             GB.IsBusy = true;
 
-        var tasks = new[] { GetYearData(), GetSpeciesData(), GetFeatureData() };
+        var tasks = new[] { GetProjectData(), GetFeatureData() };
 
         try
         {
@@ -155,68 +162,77 @@ public partial class StatsMammalControlViewModel : ObservableObject, ITransientS
         }
     }
 
-    //연도별 자료수
-    private async Task GetYearData()
+    //사업장 대표하천별 과,종
+    private async Task GetProjectData()
     {
+
         try
         {
-            YearCollection.Clear();
+            ProjectDataTable = new();
+            var dt = new DataTable();
 
             var models = new List<PlotItem>();
+            var speciesModels = new List<string>();
 
             await Task.Run(() =>
             {
-                var items = SearchData.GroupBy(m => m.SurveyYear).Select(m => new PlotItem { XCat = m.Key, Count = m.Count() }).OrderBy(m => m.XCat).ToList();
+                TotalSpecies = SearchData.GroupBy(m => m.SpeciesKo).Count();
+                TotalWorkplace = SearchData.GroupBy(m => m.SiteDivision.Workplace).Count();
+                TotalWorkplaceRiver = SearchData.GroupBy(m => m.SiteDivision.WorkplaceRiver).Count();
 
-                foreach (var item in items)
+                speciesModels.AddRange(SearchData.GroupBy(m => m.SpeciesKo).Select(m => m.Key).OrderBy(m => m));
+
+                var years = SearchData.GroupBy(m => m.SurveyYear).Select(m => m.Key).OrderBy(m => m).ToList();
+                var workplaceGroups = SearchData.GroupBy(m => m.SiteDivision.Workplace).Select(m => m.Key).OrderBy(m => m).ToList();
+
+                dt.Columns.Add(new DataColumn("사업장", typeof(string)));
+                dt.Columns.Add(new DataColumn("과업_대표하천", typeof(string)));
+
+                foreach (var year in years)
                 {
-                    var model = new PlotItem
+                    dt.Columns.Add(new DataColumn($"{year}년", typeof(string)));
+                }
+
+                foreach (var workplaceGroup in workplaceGroups)
+                {
+                    var workplaceRivers = SearchData.Where(m => m.SiteDivision.Workplace == workplaceGroup)
+                                                      .GroupBy(m => m.SiteDivision.WorkplaceRiver)
+                                                      .Select(m => m.Key)
+                                                      .OrderBy(m => m)
+                                                      .ToList();
+
+                    foreach (var workplaceRiver in workplaceRivers)
                     {
-                        XCat = item.XCat,
-                        YVal1 = item.Count,
-                    };
-                    models.Add(model);
+                        foreach (var year in years)
+                        {
+                            var data = SearchData.Where(m => m.SiteDivision.Workplace == workplaceGroup && m.SiteDivision.WorkplaceRiver == workplaceRiver && m.SurveyYear == year).ToList();
+                            var speciesCount = 0;
+
+                            if (data.Count > 0)
+                            {
+                                speciesCount = data.GroupBy(m => m.SpeciesKo).Count();
+                            }
+
+                            var yearName = $"{year}년";
+
+                            var row = dt.NewRow();
+
+                            row["사업장"] = workplaceGroup;
+                            row["과업_대표하천"] = workplaceRiver;
+                            row[yearName] = $"{speciesCount}종";
+
+                            dt.Rows.Add(row);
+                        }
+                    }
                 }
             });
 
-            YearCollection.AddRange(models);
+            ProjectDataTable = dt;
+            ProjectSpeciesCollection.AddRange(speciesModels);
         }
         catch (Exception ex)
         {
-            GB.LogWrite(GetType().Name, nameof(GetYearData), ex.Message);
-        }
-    }
-
-    //출현종
-    private async Task GetSpeciesData()
-    {
-        try
-        {
-            SpeciesCollection.Clear();
-
-            var models = new List<PlotItem>();
-
-            await Task.Run(() =>
-            {
-                var items = SearchData.GroupBy(m => m.SurveyYear).Select(m => new PlotItem { XCat = m.Key, Count = m.Count() }).OrderBy(m => m.XCat).ToList();
-
-                foreach (var item in items)
-                {
-                    var speciesCount = SearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.SpeciesKo).Count();
-
-                    models.Add(new PlotItem { XCatText = $"{item.XCat}년", YVal1 = speciesCount });
-                }
-
-                var speciess = SearchData.GroupBy(m => m.SpeciesKo).Count();
-
-                models.Add(new PlotItem { XCatText = "젼체(년)", YVal1 = speciess });
-            });
-
-            SpeciesCollection.AddRange(models);
-        }
-        catch (Exception ex)
-        {
-            GB.LogWrite(GetType().Name, nameof(GetSpeciesData), ex.Message);
+            GB.LogWrite(GetType().Name, nameof(GetProjectData), ex.Message);
         }
     }
 
@@ -226,8 +242,10 @@ public partial class StatsMammalControlViewModel : ObservableObject, ITransientS
         try
         {
             FeatureCollection.Clear();
+            FeatureSpeciesCollection.Clear();
 
             var models = new List<PlotItem>();
+            var speciesModels = new List<PlotItem>();
 
             await Task.Run(() =>
             {
@@ -247,11 +265,15 @@ public partial class StatsMammalControlViewModel : ObservableObject, ITransientS
                         YVal1 = item.Count,
                         YRatio1 = Math.Round(((double)item.Count / totalCount) * 100, 2, MidpointRounding.AwayFromZero),
                     });
+
+                    speciesModels.AddRange(SearchData.Where(m => m.Feature == item.XCatText).GroupBy(m => m.SpeciesKo).Select(m => new PlotItem { Category = item.XCatText, SubCategory = m.Key }));
                 }
             });
 
             //비율로 내림차순 정렬
             FeatureCollection.AddRange(models.OrderByDescending(m => m.YVal2));
+
+            FeatureSpeciesCollection.AddRange(speciesModels.OrderBy(m => m.Category).ThenBy(m => m.SubCategory));
         }
         catch (Exception ex)
         {
@@ -259,5 +281,5 @@ public partial class StatsMammalControlViewModel : ObservableObject, ITransientS
         }
     }
 
-    #endregion 
+    #endregion
 }

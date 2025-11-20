@@ -34,7 +34,7 @@
                 <StackPanel  Grid.Row="1" Margin="30"  MaxWidth="{StaticResource ContentXSmallMaxWidth}">
 
                     <!--프로젝트별 지점목록-->
-                    <TextBlock Text="프로젝트 사업장 지점명" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="0 0 0 10"/>
+                    <TextBlock Text="프로젝트 사업장 지점" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="0 0 0 10"/>
                     <Border Style="{StaticResource ContentBoxStyle}">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -135,7 +135,7 @@
                                     <telerik:GridViewDataColumn Header="수정" HeaderCellStyle="{StaticResource NotSortingGridViewHeaderCellStyle}">
                                         <telerik:GridViewDataColumn.CellTemplate>
                                             <DataTemplate>
-                                                <telerik:RadButton Width="60" Height="32" PreviewMouseDown="EditRadButton_PreviewMouseDown">
+                                                <telerik:RadButton MinWidth="60" MinHeight="32" Margin="0" PreviewMouseDown="EditRadButton_PreviewMouseDown" Style="{StaticResource EditButtonStyle}">
                                                     <telerik:RadGlyph Glyph="{StaticResource GlyphEdit}"/>
                                                 </telerik:RadButton>
                                             </DataTemplate>

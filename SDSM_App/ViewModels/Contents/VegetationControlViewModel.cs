@@ -323,7 +323,10 @@ public partial class VegetationControlViewModel : ObservableObject, ITransientSe
                                                     m => m.River,                                                   
                                                     m => m.Surveyor,                                                   
                                                     m => m.Colony,                                                   
-                                                    m => m.Area.ToString()                                                   
+                                                    m => m.Area.ToString(),
+                                                    m => m.SiteDivision.Project,
+                                                    m => m.SiteDivision.Workplace,
+                                                    m => m.SiteDivision.WorkplaceRiver
                                                     );
 
                     if (SearchModeSelectedValue == SearchModeType.일치)

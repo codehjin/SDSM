@@ -1,12 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.Enums;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
+using SDSM_App.Models;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace SDSM_App.ViewModels;
 
@@ -35,6 +40,7 @@ public partial class AmphibianReptileEditorControlViewModel : ObservableObject, 
     [ObservableProperty] private EditStatusType _editStatus = EditStatusType.Add;
 
     [ObservableProperty] private AmphibianReptile _editModel = new();
+    [ObservableProperty] private string _project = "방류하천";
 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _yearChsu = string.Empty;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private DateTime? _surveyDate;
@@ -71,10 +77,21 @@ public partial class AmphibianReptileEditorControlViewModel : ObservableObject, 
             && !string.IsNullOrWhiteSpace(SpeciesKo);
     }
 
-    //수정
+    //저장
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveExecuted()
     {
+        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site);
+        if (siteDivisionId != null)
+        {
+            SiteDivisionId = siteDivisionId;
+        }
+        else
+        {
+            MessageBox.Show($"지점명 : {Site}\n\n프로젝트 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         if (EditStatus == EditStatusType.Add)
         {
             AddSave();
@@ -136,7 +153,7 @@ public partial class AmphibianReptileEditorControlViewModel : ObservableObject, 
                 SurveyDate = SurveyDate,
                 Weather = Weather,
                 River = River,
-                Site = Site,                    
+                Site = Site,
                 SpeciesKo = SpeciesKo,
                 SpeciesEn = SpeciesEn,
                 Feature = Feature,
@@ -212,6 +229,7 @@ public partial class AmphibianReptileEditorControlViewModel : ObservableObject, 
 
         FormTitle = "수정";
         EditStatus = EditStatusType.Edit;
+        Project = EditModel.SiteDivision.Project;
 
         YearChsu = EditModel.YearChsu;
         SurveyDate = EditModel.SurveyDate;

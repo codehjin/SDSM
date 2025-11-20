@@ -5,6 +5,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SDSM_App.Enums;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
@@ -33,6 +34,10 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
     private readonly (int, string)[] _weathers = [(1, "맑음"), (2, "흐림"), (3, "비(눈)")];
 
     private string _loadedFileName = string.Empty;
+
+    // null : 생태현황, 방류하천 없음
+    // tryue : 생태현황 / false : 방류하천
+    private bool? _isEcology = null;
 
     #endregion
 
@@ -106,6 +111,18 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         if (!File.Exists(fileName))
         {
             return;
+        }
+
+        //생태현황, 방류하천 포함여부 체크
+        (bool? isEcology, string? message) checkResult = SiteDivisionHelper.CheckFileNameByKeywords(Path.GetFileName(fileName));
+        if (checkResult.isEcology == null)
+        {
+            MessageBox.Show(checkResult.message, "파일명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        else
+        {
+            _isEcology = checkResult.isEcology;
         }
 
         _loadedFileName = fileName;
@@ -408,16 +425,26 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                             sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                         }
                     }
-                    else if (prop.Name == "Side")
+                    else if (prop.Name == "Site")
                     {
-                        //필수 문자
+                        //필수, 생태현황, 방류하천 체크
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
-                            var v = ((string)value).Replace(" ", "");
+                            var v = ((string)value).Replace(" ", "").ToUpper();
                             if (v.Length > 0)
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, v);
+
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
+                                if (siteDivisionId != null)
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, v);
+                                    insertModel.SiteDivisionId = siteDivisionId;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                }
                             }
                             else
                             {
@@ -720,7 +747,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                                      $"TN, EC, Cl, SO42, Cu, " +
                                      $"Zn, Cr, Turbidity, Chla, " +
                                      $"WaterTemperature, WaterDepth, FlowVelocity, FlowSec, FlowDay," +
-                                     $"PHGrade, BODGrade, CODGrade, TOCGrade, SSGrade, DOGrade, TPGrade, EColiGrade) " +
+                                     $"PHGrade, BODGrade, CODGrade, TOCGrade, SSGrade, DOGrade, TPGrade, EColiGrade, SiteDivisionId) " +
                                      $"VALUES " +
                                      $"(@SurveyYear, @YearChsu, @Site, @SurveyDate, @MajorRegion, @MiddleRegion, " +
                                      $"@River, @RiverType, @Lat, @Lng, @Weather, " +
@@ -729,7 +756,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                                      $"@TN, @EC, @Cl, @SO42, @Cu, " +
                                      $"@Zn, @Cr, @Turbidity, @Chla, " +
                                      $"@WaterTemperature, @WaterDepth, @FlowVelocity, @FlowSec, @FlowDay," +
-                                     $"@PHGrade, @BODGrade, @CODGrade, @TOCGrade, @SSGrade, @DOGrade, @TPGrade, @EColiGrade)";
+                                     $"@PHGrade, @BODGrade, @CODGrade, @TOCGrade, @SSGrade, @DOGrade, @TPGrade, @EColiGrade, @SiteDivisionId)";
 
                     using var command = new SQLiteCommand(strSql, conn);
 
@@ -779,6 +806,8 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                     command.Parameters.AddWithValue("@DOGrade", model.DOGrade ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@TPGrade", model.TPGrade ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@EColiGrade", model.EColiGrade ?? (object)DBNull.Value);
+
+                    command.Parameters.AddWithValue("@SiteDivisionId", model.SiteDivisionId ?? (object)DBNull.Value);
 
                     command.ExecuteNonQuery();
                 }
