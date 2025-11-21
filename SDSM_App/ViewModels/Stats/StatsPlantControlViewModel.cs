@@ -5,6 +5,7 @@ using SDSM_App.Animations;
 using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_Models;
+using System.Data;
 using Telerik.Windows.Data;
 
 namespace SDSM_App.ViewModels;
@@ -41,8 +42,14 @@ public partial class StatsPlantControlViewModel : ObservableObject, ITransientSe
     //연도별 자료수
     [ObservableProperty] private RadObservableCollection<PlotItem> _yearCollection = [];
 
-    //출현종
-    [ObservableProperty] private RadObservableCollection<PlotItem> _speciesCollection = [];
+    //전체 사업장, 대표하천, 종 수
+    [ObservableProperty] private int _projectTotalSpecies;
+    [ObservableProperty] private int _projectTotalWorkplace;
+    [ObservableProperty] private int _projectTotalWorkplaceRiver;
+
+    //사업장 대표하천별 과,종
+    [ObservableProperty] private DataTable _projectDataTable = new();
+    [ObservableProperty] private RadObservableCollection<string> _projectSpeciesCollection = [];
 
     #endregion
 
@@ -73,13 +80,7 @@ public partial class StatsPlantControlViewModel : ObservableObject, ITransientSe
 
         using var context = new SDSMDbContext();
 
-        ExportCollection =
-        [
-            new(){ Caption = "연도별자료", IsCheckedTable = false, IsCheckedChart = false },
-            new(){ Caption = "출현종", IsCheckedTable = false, IsCheckedChart = false },
-        ];
-
-        Data = await context.Plants.ToListAsync();
+        Data = await context.Plants.Where(m => m.SiteDivision.Project == "방류하천").ToListAsync();
 
         var years = await GetSearchData(Data);
 
@@ -117,8 +118,8 @@ public partial class StatsPlantControlViewModel : ObservableObject, ITransientSe
                         Data.Where(m => m.SurveyYear == item)
                             .Select(m => new Plant
                             {
+                                SiteDivision = m.SiteDivision,
                                 SurveyYear = m.SurveyYear,
-                                Chsu = m.Chsu,
                                 SpeciesKo = m.SpeciesKo,
                             })
                     );
@@ -134,7 +135,7 @@ public partial class StatsPlantControlViewModel : ObservableObject, ITransientSe
         if (GB.IsBusy == false)
             GB.IsBusy = true;
 
-        var tasks = new[] { GetYearData(), GetSpeciesData()};
+        var tasks = new[] { GetYearData(), GetProjectData()};
 
         try
         {
@@ -182,36 +183,87 @@ public partial class StatsPlantControlViewModel : ObservableObject, ITransientSe
         }
     }
 
-    //출현종
-    private async Task GetSpeciesData()
+    //사업장 대표하천별 과,종
+    private async Task GetProjectData()
     {
+
         try
         {
-            SpeciesCollection.Clear();
+            ProjectDataTable = new();
+            var dt = new DataTable();
 
             var models = new List<PlotItem>();
+            var speciesModels = new List<string>();
 
             await Task.Run(() =>
             {
-                var items = SearchData.GroupBy(m => m.SurveyYear).Select(m => new PlotItem { XCat = m.Key, Count = m.Count() }).OrderBy(m => m.XCat).ToList();
+                //사업장 대표하천
+                ProjectTotalWorkplace = SearchData.GroupBy(m => m.SiteDivision.Workplace).Count();
+                ProjectTotalWorkplaceRiver = SearchData.GroupBy(m => m.SiteDivision.WorkplaceRiver).Count();
 
-                foreach (var item in items)
+                //출현종
+                speciesModels.AddRange(SearchData.GroupBy(m => m.SpeciesKo).Select(m => m.Key).OrderBy(m => m));
+                ProjectTotalSpecies = speciesModels.Count;
+
+                var years = SearchData.GroupBy(m => m.SurveyYear).Select(m => m.Key).OrderBy(m => m).ToList();
+                var workplaceGroups = SearchData.GroupBy(m => m.SiteDivision.Workplace).Select(m => m.Key).OrderBy(m => m).ToList();
+
+                dt.Columns.Add(new DataColumn("사업장", typeof(string)));
+                dt.Columns.Add(new DataColumn("과업대표하천", typeof(string)));
+
+                foreach (var year in years)
                 {
-                    var speciesCount = SearchData.Where(m => m.SurveyYear == item.XCat).GroupBy(m => m.SpeciesKo).Count();
-
-                    models.Add(new PlotItem { XCatText = $"{item.XCat}년", YVal1 = speciesCount });
+                    dt.Columns.Add(new DataColumn($"{year}년_종수", typeof(string)));
+                    dt.Columns.Add(new DataColumn($"{year}년_출현종", typeof(string)));
                 }
 
-                var speciess = SearchData.GroupBy(m => m.SpeciesKo).Count();
+                foreach (var workplaceGroup in workplaceGroups)
+                {
+                    var workplaceRivers = SearchData.Where(m => m.SiteDivision.Workplace == workplaceGroup)
+                                                      .GroupBy(m => m.SiteDivision.WorkplaceRiver)
+                                                      .Select(m => m.Key)
+                                                      .OrderBy(m => m)
+                                                      .ToList();
 
-                models.Add(new PlotItem { XCatText = "젼체(년)", YVal1 = speciess });
+                    foreach (var workplaceRiver in workplaceRivers)
+                    {
+                        foreach (var year in years)
+                        {
+                            var data = SearchData.Where(m => m.SiteDivision.Workplace == workplaceGroup && m.SiteDivision.WorkplaceRiver == workplaceRiver && m.SurveyYear == year).ToList();
+                            var speciesCount = 0;
+
+                            //출현종
+                            var speciesList = data.Select(m => m.SpeciesKo).Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().OrderBy(s => s).ToList();
+                            // 콤마로 연결한 문자열로 변환
+                            var speciesCsv = speciesList.Count > 0 ? string.Join(", ", speciesList) : string.Empty;
+
+                            if (data.Count > 0)
+                            {
+                                speciesCount = data.GroupBy(m => m.SpeciesKo).Count();
+                            }
+
+                            var yearName = $"{year}년_종수";
+                            var yearSpecies = $"{year}년_출현종";
+
+                            var row = dt.NewRow();
+
+                            row["사업장"] = workplaceGroup;
+                            row["과업대표하천"] = workplaceRiver;
+                            row[yearName] = $"{speciesCount}종";
+                            row[yearSpecies] = speciesCsv;
+
+                            dt.Rows.Add(row);
+                        }
+                    }
+                }
             });
 
-            SpeciesCollection.AddRange(models);
+            ProjectDataTable = dt;
+            ProjectSpeciesCollection.AddRange(speciesModels);
         }
         catch (Exception ex)
         {
-            GB.LogWrite(GetType().Name, nameof(GetSpeciesData), ex.Message);
+            GB.LogWrite(GetType().Name, nameof(GetProjectData), ex.Message);
         }
     }
 

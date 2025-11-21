@@ -1300,7 +1300,7 @@
                                     <Border BorderBrush="{StaticResource MainSelectedBrush}" BorderThickness="0 0 0 0">
                                         <telerik:RadRadioButton Tag="StatsPage" IsChecked="{Binding Path=IsCheckedStats, Mode=TwoWay}" Click="MenuItem_Click">
                                             <StackPanel Orientation="Horizontal">
-                                                <icon:PackIconPhosphorIcons Kind="TreeStructureLight" Style="{StaticResource PackIconPhosphorIconsStyle}"/>
+                                                <icon:PackIconPhosphorIcons Kind="ChartBarLight" Style="{StaticResource PackIconPhosphorIconsStyle}"/>
                                                 <TextBlock Text="통계" Style="{StaticResource MenuContentTextBlcokStyle}"/>
                                             </StackPanel>
                                         </telerik:RadRadioButton>

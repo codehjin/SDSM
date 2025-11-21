@@ -5,6 +5,7 @@ using SDSM_App.Animations;
 using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_Models;
+using System.Data;
 using Telerik.Windows.Controls.Charting;
 using Telerik.Windows.Data;
 
@@ -42,7 +43,7 @@ public partial class StatsVegetationControlViewModel : ObservableObject, ITransi
     //연도별 자료수
     [ObservableProperty] private RadObservableCollection<PlotItem> _yearCollection = [];
 
-    //군락
+    ///군락
     [ObservableProperty] private RadObservableCollection<PlotItem> _colonyCountCollection = [];
     [ObservableProperty] private RadObservableCollection<PlotItem> _colonyNameCollection = [];
     [ObservableProperty] private RadObservableCollection<PlotItem> _colonyNameChartCollection = [];
@@ -76,14 +77,7 @@ public partial class StatsVegetationControlViewModel : ObservableObject, ITransi
 
         using var context = new SDSMDbContext();
 
-        ExportCollection =
-        [
-            new(){ Caption = "연도별자료", IsCheckedTable = false, IsCheckedChart = false },
-            new(){ Caption = "연도별군락수", IsCheckedTable = false, IsCheckedChart = false },
-            new(){ Caption = "군락별면적", IsCheckedTable = false, IsCheckedChart = false },
-        ];
-
-        Data = await context.Vegetations.ToListAsync();
+        Data = await context.Vegetations.Where(m => m.SiteDivision.Project == "방류하천").ToListAsync();
 
         var years = await GetSearchData(Data);
 
@@ -121,8 +115,8 @@ public partial class StatsVegetationControlViewModel : ObservableObject, ITransi
                         Data.Where(m => m.SurveyYear == item)
                             .Select(m => new Vegetation
                             {
+                                SiteDivision = m.SiteDivision,
                                 SurveyYear = m.SurveyYear,
-                                YearChsu = m.YearChsu,
                                 Colony = m.Colony,
                                 Area = m.Area
                             })

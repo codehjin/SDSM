@@ -74,13 +74,7 @@ public partial class StatsHabitatWaterEdgeControlViewModel : ObservableObject, I
 
         using var context = new SDSMDbContext();
 
-        ExportCollection =
-        [
-            new(){ Caption = "연도별자료", IsCheckedTable = false, IsCheckedChart = false },
-            new(){ Caption = "평가등급", IsCheckedTable = false, IsCheckedChart = false },
-        ];
-
-        Data = await context.HabitatWaterEdges.ToListAsync();
+        Data = await context.HabitatWaterEdges.Where(m => m.SiteDivision.Project == "방류하천").ToListAsync();
 
         var years = await GetSearchData(Data);
 
@@ -118,6 +112,7 @@ public partial class StatsHabitatWaterEdgeControlViewModel : ObservableObject, I
                         Data.Where(m => m.SurveyYear == item)
                             .Select(m => new HabitatWaterEdge
                             {
+                                SiteDivision = m.SiteDivision,
                                 SurveyYear = m.SurveyYear,
                                 YearChsu = m.YearChsu,
                                 River = m.River,
@@ -261,49 +256,6 @@ public partial class StatsHabitatWaterEdgeControlViewModel : ObservableObject, I
             GB.LogWrite(GetType().Name, nameof(GetGradeData), ex.Message);
         }
     }
-
-    //private async Task GetGradeData()
-    //{
-    //    try
-    //    {
-    //        GradeCollection.Clear();
-
-    //        var models = new List<PlotItem>();
-
-    //        await Task.Run(() =>
-    //        {
-    //            var items = SearchData.Where(m => !string.IsNullOrEmpty(m.EvaluationGrade))
-    //                                  .GroupBy(m => m.EvaluationGrade)
-    //                                  .Select(m => new PlotItem { XCatText = m.Key ?? "", Count = m.Count() })
-    //                                  .OrderBy(m => m.XCatText)
-    //                                  .ToList();
-
-    //            //전체자료에서의 비율
-    //            var totalCount = SearchData.Count;
-    //            string[] grades = ["A", "B", "C", "D", "E"];
-
-    //            foreach (var grade in grades)
-    //            {
-    //                var data = items.Where(m => m.XCatText == grade).ToList();
-    //                var count = data.Sum(m => m.Count);
-
-    //                models.Add(new PlotItem 
-    //                { 
-    //                    XCatText = grade, 
-    //                    YVal1 = count,
-    //                    YRatio1 = Math.Round(((double)count / totalCount) * 100, 2), 
-    //                });
-    //            }
-    //        });
-
-    //        //A~E 등급으로 정렬
-    //        GradeCollection.AddRange(models.OrderBy(m=>m.XCatText));
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        GB.LogWrite(GetType().Name, nameof(GetGradeData), ex.Message);
-    //    }
-    //}
 
     #endregion
 }

@@ -92,82 +92,11 @@ public partial class StatsHabitatWaterEdgeControl : UserControl, ITransientServi
 
             var gridViews = new Dictionary<string, RadGridView>
             {
-                { "연도별자료", YearDataRadGridView },
-                { "평가등급", GradeDataRadGridView },
+                { "연도별자료", YearRadGridView },
+                { "평가등급", GradeRadGridView },
             };
 
             MultiExport(folder, date, gridViews);
-        }
-    }
-
-    //개별출력
-    private void EachExportRadButton_Click(object sender, RoutedEventArgs e)
-    {
-        var chartItems = _vm.ExportCollection.Where(m => m.IsCheckedChart).ToList();
-        var tableItems = _vm.ExportCollection.Where(m => m.IsCheckedTable).ToList();
-
-        if (chartItems.Count == 0 && tableItems.Count == 0)
-            return;
-
-        var dialog = new CommonOpenFileDialog
-        {
-            IsFolderPicker = true,
-            Title = "폴더 선택",
-        };
-
-        if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-        {
-            var folder = dialog.FileName;
-
-            if (string.IsNullOrWhiteSpace(folder))
-                return;
-
-            var date = DateTime.Now.ToString("yyyyMMddHHmmss");
-
-            if (chartItems.Count != 0)
-            {
-                foreach (var item in chartItems)
-                {
-                    switch (item.Caption)
-                    {
-                        case "연도별자료":
-                            {
-                                ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
-                            }
-                            break;
-                        case "평가등급":
-                            {
-                                //그래프 없음
-                            }
-                            break;
-                    }
-                }
-            }
-
-            if (tableItems.Count != 0)
-            {
-                var gridViews = new Dictionary<string, RadGridView>();
-
-                foreach (var item in _vm.ExportCollection.Where(m => m.IsCheckedTable))
-                {
-                    switch (item.Caption)
-                    {
-                        case "연도별자료":
-                            gridViews.Add(item.Caption, YearDataRadGridView);
-                            break;
-                        case "평가등급":
-                            gridViews.Add(item.Caption, GradeDataRadGridView);
-                            break;
-                    }
-                }
-                MultiExport(folder, date, gridViews);
-            }
-
-            if (chartItems.Count != 0 && tableItems.Count == 0)
-            {
-                var toast = (GB.ExportMessage, true);
-                WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
-            }
         }
     }
 

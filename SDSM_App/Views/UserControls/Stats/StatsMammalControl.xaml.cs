@@ -3,11 +3,13 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.ViewModels;
+using System.Data;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Telerik.Windows.Controls;
+using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
 using Telerik.Windows.Documents.Spreadsheet.Model;
 using Telerik.Windows.Documents.Spreadsheet.PropertySystem;
@@ -22,6 +24,7 @@ public partial class StatsMammalControl : UserControl, ITransientService
 {
     private readonly StatsMammalControlViewModel _vm;
     private readonly string _caption = "포유류";
+    private readonly Style? _cellLeftStyle = Application.Current.FindResource("GridViewCellLeftStyle") as Style;
 
     public StatsMammalControl(StatsMammalControlViewModel vm)
     {
@@ -48,48 +51,84 @@ public partial class StatsMammalControl : UserControl, ITransientService
         }
     }
 
+    private void ProjectRadGridView_Loaded(object sender, RoutedEventArgs e)
+    {
+        var dt = _vm.ProjectDataTable;
+        if (dt == null || dt.Rows.Count == 0)
+            return;
+
+        var years = new List<string>();
+
+        foreach (DataColumn column in dt.Columns)
+        {
+            var header = column.ColumnName ?? "";
+            if (header.Contains('_'))
+            {
+                // "_" 다음 문자열만 남김
+                years.Add(header[..(header.IndexOf('_'))]);
+            }
+        }
+
+        foreach (var year in years.Distinct())
+        {
+            ProjectRadGridView.ColumnGroups.Add(new GridViewColumnGroup { Name = year, Header = year });
+        }
+    }
+
+    private void ProjectRadGridView_AutoGeneratingColumn(object sender, GridViewAutoGeneratingColumnEventArgs e)
+    {
+        var column = (GridViewDataColumn)e.Column;
+
+        if (column != null)
+        {
+            switch (column.Header.ToString())
+            {
+                case "사업장":
+                    column.MinWidth = 80;
+                    column.Width = 100;
+                    column.MaxWidth = 100;
+                    break;
+                case "과업대표하천":
+                    column.MinWidth = 80;
+                    column.Width = 120;
+                    column.MaxWidth = 120;
+                    break;
+                default:
+                    var header = column.Header.ToString() ?? "";
+                    if (header.Contains('_'))
+                    {
+                        //컬럼 그룹
+                        column.ColumnGroupName = header[..(header.IndexOf('_'))];
+
+                        // 컬럼명
+                        column.Header = header[(header.IndexOf('_') + 1)..];
+                    }
+
+                    if (column.Header.ToString() == "종수")
+                    {
+                        column.MinWidth = 80;
+                        column.Width = GridViewLength.Auto;
+                        column.MaxWidth = 80;
+                        column.DataType = typeof(string);
+                    }
+                    else
+                    {
+                        column.MinWidth = 60;
+                        column.Width = new GridViewLength(1, GridViewLengthUnitType.Star);
+                        column.MaxWidth = 320;
+                        column.TextWrapping = TextWrapping.Wrap;
+                        if (_cellLeftStyle != null)
+                            column.CellStyle = _cellLeftStyle;
+                        column.DataType = typeof(string);
+                    }
+                    break;
+            }
+        }
+    }
+
     //전체출력
     private void AllExportRadButton_Click(object sender, RoutedEventArgs e)
     {
-        //var dialog = new CommonOpenFileDialog
-        //{
-        //    IsFolderPicker = true,
-        //    Title = "폴더 선택",
-        //};
-
-        //if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-        //{
-        //    var folder = dialog.FileName;
-
-        //    if (string.IsNullOrWhiteSpace(folder))
-        //        return;
-
-        //    var date = DateTime.Now.ToString("yyyyMMddHHmmss");
-
-        //    ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_연도별자료_{date}.png"));
-        //    ChartToPng(SpeciesChart, Path.Combine(folder, $"{_caption}_출현종_{date}.png"));
-        //    ChartToPng(FeatureChart, Path.Combine(folder, $"{_caption}_특징_{date}.png"));
-
-        //    var gridViews = new Dictionary<string, RadGridView>
-        //    {
-        //        { "연도별자료", YearDataRadGridView },
-        //        { "출현종", SpeciesDataRadGridView },
-        //        { "특징", FeatureDataRadGridView },
-        //    };
-
-        //    MultiExport(folder, date, gridViews);
-        //}
-    }
-
-    //개별출력
-    private void EachExportRadButton_Click(object sender, RoutedEventArgs e)
-    {
-        var chartItems = _vm.ExportCollection.Where(m => m.IsCheckedChart).ToList();
-        var tableItems = _vm.ExportCollection.Where(m => m.IsCheckedTable).ToList();
-
-        if (chartItems.Count == 0 && tableItems.Count == 0)
-            return;
-
         var dialog = new CommonOpenFileDialog
         {
             IsFolderPicker = true,
@@ -105,58 +144,17 @@ public partial class StatsMammalControl : UserControl, ITransientService
 
             var date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-            if (chartItems.Count != 0)
-            {
-                foreach (var item in chartItems)
-                {
-                    switch (item.Caption)
-                    {
-                        //case "연도별자료":
-                        //    {
-                        //        ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
-                        //    }
-                        //    break;
-                        //case "출현종":
-                        //    {
-                        //        ChartToPng(SpeciesChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
-                        //    }
-                        //    break;
-                        //case "특징":
-                        //    {
-                        //        ChartToPng(FeatureChart, Path.Combine(folder, $"{_caption}_{item.Caption}_{date}.png"));
-                        //    }
-                        //    break;
-                    }
-                }
-            }
+            ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_연도별자료_{date}.png"));
+            ChartToPng(FeatureChart, Path.Combine(folder, $"{_caption}_특징_{date}.png"));
 
-            if (tableItems.Count != 0)
+            var gridViews = new Dictionary<string, RadGridView>
             {
-                var gridViews = new Dictionary<string, RadGridView>();
+                { "연도별자료", YearRadGridView },
+                { "사업장별출현종", ProjectRadGridView },
+                { "특징", FeatureRadGridView },
+            };
 
-                foreach (var item in _vm.ExportCollection.Where(m => m.IsCheckedTable))
-                {
-                    switch (item.Caption)
-                    {
-                        //case "연도별자료":
-                        //    gridViews.Add(item.Caption, YearDataRadGridView);
-                        //    break;
-                        //case "출현종":
-                        //    gridViews.Add(item.Caption, SpeciesDataRadGridView);
-                        //    break;
-                        //case "특징":
-                        //    gridViews.Add(item.Caption, FeatureDataRadGridView);
-                        //    break;
-                    }
-                }
-                MultiExport(folder, date, gridViews);
-            }
-
-            if (chartItems.Count != 0 && tableItems.Count == 0)
-            {
-                var toast = (GB.ExportMessage, true);
-                WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
-            }
+            MultiExport(folder, date, gridViews);
         }
     }
 
@@ -250,28 +248,4 @@ public partial class StatsMammalControl : UserControl, ITransientService
     }
 
     #endregion
-
-    private void ProjectRadGridView_AutoGeneratingColumn(object sender, GridViewAutoGeneratingColumnEventArgs e)
-    {
-        var column = (GridViewDataColumn)e.Column;
-
-        if (column != null)
-        {
-            switch (column.Header.ToString())
-            {
-                case "사업장":
-                case "과업_대표하천":
-                    column.MinWidth = 80;
-                    column.Width = 140;
-                    column.MaxWidth = 140;
-                    break;
-                default:                    
-                    column.MinWidth = 80;
-                    column.Width = new GridViewLength(1, GridViewLengthUnitType.Star);
-                    column.MaxWidth = 240;
-                    column.DataType = typeof(string);
-                    break;
-            }
-        }
-    }
 }

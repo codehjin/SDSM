@@ -1,16 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.Enums;
 using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
-using SDSM_App.Models;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace SDSM_App.ViewModels;
