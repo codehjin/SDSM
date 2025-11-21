@@ -6,6 +6,7 @@ using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_Models;
 using System.Data;
+using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
 
 namespace SDSM_App.ViewModels;
@@ -53,6 +54,7 @@ public partial class StatsBenthosControlViewModel : ObservableObject, ITransient
     //사업장 대표하천별 과,종
     [ObservableProperty] private DataTable _projectDataTable = new();
     [ObservableProperty] private RadObservableCollection<string> _projectSpeciesCollection = [];
+    [ObservableProperty] private RadGridView _projectRadGridView = new();
 
     #endregion
 
@@ -161,6 +163,8 @@ public partial class StatsBenthosControlViewModel : ObservableObject, ITransient
         {
             await Task.WhenAll(tasks);
 
+            await SetProjectColumns();
+
             if (GB.IsBusy == true)
                 GB.IsBusy = false;
         }
@@ -217,19 +221,24 @@ public partial class StatsBenthosControlViewModel : ObservableObject, ITransient
 
             await Task.Run(() =>
             {
-                //사업장 대표하천
-                ProjectTotalWorkplace = SpeciesSearchData.GroupBy(m => m.Workplace).Count();
-                ProjectTotalWorkplaceRiver = SpeciesSearchData.GroupBy(m => m.WorkplaceRiver).Count();
+                //사업장 대표하천 : 자료가 적은 원본으로
+                ProjectTotalWorkplace = SpeciesData.Select(m => m.Workplace).Distinct().Count();
+                ProjectTotalWorkplaceRiver = SpeciesData.Select(m => m.WorkplaceRiver).Distinct().Count();
 
                 //출현종
-                speciesModels.AddRange(SpeciesSearchData.GroupBy(m => m.SpeciesKo).Select(m => m.Key).OrderBy(m => m));
+                speciesModels.AddRange(SpeciesSearchData.Where(m => !string.IsNullOrWhiteSpace(m.SpeciesKo)).Select(m => m.SpeciesKo!).Distinct().OrderBy(m => m));
                 ProjectTotalSpecies = speciesModels.Count;
 
-                var years = SpeciesSearchData.GroupBy(m => m.SurveyYear).Select(m => m.Key).OrderBy(m => m).ToList();
-                var workplaceGroups = SpeciesSearchData.GroupBy(m => m.Workplace).Select(m => m.Key).OrderBy(m => m).ToList();
+                //자료가 적은 원본으로
+                var years = SpeciesData.Select(m => m.SurveyYear).Distinct().OrderByDescending(m => m).ToList();
+                var workplaces = SpeciesData.Select(m => m.Workplace).Distinct().OrderBy(m => m).ToList();
 
                 dt.Columns.Add(new DataColumn("사업장", typeof(string)));
                 dt.Columns.Add(new DataColumn("과업대표하천", typeof(string)));
+
+                //전체
+                dt.Columns.Add(new DataColumn($"전체_종수", typeof(string)));
+                dt.Columns.Add(new DataColumn($"전체_출현종", typeof(string)));
 
                 foreach (var year in years)
                 {
@@ -237,43 +246,44 @@ public partial class StatsBenthosControlViewModel : ObservableObject, ITransient
                     dt.Columns.Add(new DataColumn($"{year}년_출현종", typeof(string)));
                 }
 
-                foreach (var workplaceGroup in workplaceGroups)
+                foreach (var workplace in workplaces)
                 {
-                    var workplaceRivers = SpeciesSearchData.Where(m => m.Workplace == workplaceGroup)
-                                                             .GroupBy(m => m.WorkplaceRiver)
-                                                             .Select(m => m.Key)
-                                                             .OrderBy(m => m)
-                                                             .ToList();
+                    var workplaceRivers = SpeciesSearchData.Where(m => m.Workplace == workplace).Select(m => m.WorkplaceRiver).Distinct().OrderBy(m => m).ToList();
 
                     foreach (var workplaceRiver in workplaceRivers)
                     {
+                        var row = dt.NewRow();
+
+                        var allData = SpeciesSearchData.Where(m => m.Workplace == workplace && m.WorkplaceRiver == workplaceRiver).ToList();
+                        //출현종
+                        var allSpeciesList = allData.Select(m => m.SpeciesKo).Where(m => !string.IsNullOrWhiteSpace(m)).Distinct().OrderBy(s => s).ToList();
+                        // 콤마로 연결한 문자열로 변환
+                        var allSpeciesCsv = allSpeciesList.Count > 0 ? string.Join(", ", allSpeciesList) : string.Empty;
+
+                        row["사업장"] = workplace;
+                        row["과업대표하천"] = workplaceRiver;
+                        row["전체_종수"] = $"{allData.Select(m => m.SpeciesKo).Distinct().Count()}종";
+                        row["전체_출현종"] = allSpeciesCsv;
+
                         foreach (var year in years)
                         {
-                            var data = SpeciesSearchData.Where(m => m.Workplace == workplaceGroup && m.WorkplaceRiver == workplaceRiver && m.SurveyYear == year).ToList();
-                            var speciesCount = 0;
+                            var data = allData.Where(m => m.SurveyYear == year).ToList();
 
                             //출현종
-                            var speciesList = data.Select(m => m.SpeciesKo).Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().OrderBy(s => s).ToList();
+                            var speciesList = data.Select(m => m.SpeciesKo).Where(m => !string.IsNullOrWhiteSpace(m)).Distinct().OrderBy(s => s).ToList();
                             // 콤마로 연결한 문자열로 변환
                             var speciesCsv = speciesList.Count > 0 ? string.Join(", ", speciesList) : string.Empty;
-
-                            if (data.Count > 0)
-                            {
-                                speciesCount = data.GroupBy(m => m.SpeciesKo).Count();
-                            }
 
                             var yearName = $"{year}년_종수";
                             var yearSpecies = $"{year}년_출현종";
 
-                            var row = dt.NewRow();
-
-                            row["사업장"] = workplaceGroup;
+                            row["사업장"] = workplace;
                             row["과업대표하천"] = workplaceRiver;
-                            row[yearName] = $"{speciesCount}종";
+                            row[yearName] = $"{data.Select(m => m.SpeciesKo).Distinct().Count()}종";
                             row[yearSpecies] = speciesCsv;
-
-                            dt.Rows.Add(row);
                         }
+
+                        dt.Rows.Add(row);
                     }
                 }
             });
@@ -285,6 +295,40 @@ public partial class StatsBenthosControlViewModel : ObservableObject, ITransient
         {
             GB.LogWrite(GetType().Name, nameof(GetProjectData), ex.Message);
         }
+    }
+
+    //사업장 과업대표하천 컬럼그룹 동적생성
+    private async Task SetProjectColumns()
+    {
+        var dt = ProjectDataTable;
+        if (dt == null || dt.Rows.Count == 0)
+            return;
+
+        var headers = new List<string>();
+
+        await Task.Run(() =>
+        {
+            foreach (DataColumn column in dt.Columns)
+            {
+                var header = column.ColumnName ?? "";
+                if (header.Contains('_'))
+                {
+                    // "_" 다음 문자열만 남김
+                    headers.Add(header[..(header.IndexOf('_'))]);
+                }
+            }
+        });
+
+        ProjectRadGridView.ColumnGroups.SuspendNotifications();
+
+        ProjectRadGridView.ColumnGroups.Clear();
+
+        foreach (var header in headers.Distinct())
+        {
+            ProjectRadGridView.ColumnGroups.Add(new GridViewColumnGroup { Name = header, Header = header });
+        }
+
+        ProjectRadGridView.ColumnGroups.ResumeNotifications();
     }
 
     #endregion 

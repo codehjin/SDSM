@@ -161,10 +161,10 @@
                         <telerik:RadButton Content="포유류" Tag="BulkMammalControl" Click="OpenRadButton_Click"/>
                     </UniformGrid>
                     <UniformGrid Columns="4">
+                        <telerik:RadButton Content="양서파충류" Tag="BulkAmphibianReptileControl" Click="OpenRadButton_Click"/>
                         <telerik:RadButton Content="식물상" Tag="BulkPlantControl" Click="OpenRadButton_Click"/>
                         <telerik:RadButton Content="식생도" Tag="BulkVegetationControl" Click="OpenRadButton_Click"/>
                         <telerik:RadButton Content="식생단면" Tag="BulkVegetationENVControl" Click="OpenRadButton_Click"/>
-                        <telerik:RadButton Content="양서파충류" Tag="BulkAmphibianReptileControl" Click="OpenRadButton_Click"/>
                     </UniformGrid>
                     <TextBlock Text="환경자료" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="5 40 0 10"/>
                     <UniformGrid>

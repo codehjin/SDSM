@@ -72,9 +72,9 @@ public partial class StatsVegetationControl : UserControl, ITransientService
 
             var gridViews = new Dictionary<string, RadGridView>
             {
-                { "연도별자료", YearDataRadGridView },
-                { "연도별군락수", ColonyCountDataRadGridView },
-                { "군락별면적", ColonyNameDataRadGridView },
+                { "연도별 자료", YearRadGridView },
+                { "연도별 군락수", ColonyCountRadGridView },
+                { "군락별 면적", ColonyNameRadGridView },
             };
 
             MultiExport(folder, date, gridViews);

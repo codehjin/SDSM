@@ -92,7 +92,7 @@ public partial class StatsHabitatWaterEdgeControl : UserControl, ITransientServi
 
             var gridViews = new Dictionary<string, RadGridView>
             {
-                { "연도별자료", YearRadGridView },
+                { "연도자료", YearRadGridView },
                 { "평가등급", GradeRadGridView },
             };
 

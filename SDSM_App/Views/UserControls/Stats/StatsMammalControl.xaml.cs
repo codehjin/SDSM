@@ -9,7 +9,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
 using Telerik.Windows.Documents.Spreadsheet.Model;
 using Telerik.Windows.Documents.Spreadsheet.PropertySystem;
@@ -32,6 +31,9 @@ public partial class StatsMammalControl : UserControl, ITransientService
         
         _vm = vm;
         DataContext = _vm;
+
+        //컬럼 동적 생성용
+        _vm.ProjectRadGridView = ProjectRadGridView;
     }
 
     #region Control 이벤트
@@ -48,30 +50,6 @@ public partial class StatsMammalControl : UserControl, ITransientService
             {
                 e.Value = d;
             }
-        }
-    }
-
-    private void ProjectRadGridView_Loaded(object sender, RoutedEventArgs e)
-    {
-        var dt = _vm.ProjectDataTable;
-        if (dt == null || dt.Rows.Count == 0)
-            return;
-
-        var years = new List<string>();
-
-        foreach (DataColumn column in dt.Columns)
-        {
-            var header = column.ColumnName ?? "";
-            if (header.Contains('_'))
-            {
-                // "_" 다음 문자열만 남김
-                years.Add(header[..(header.IndexOf('_'))]);
-            }
-        }
-
-        foreach (var year in years.Distinct())
-        {
-            ProjectRadGridView.ColumnGroups.Add(new GridViewColumnGroup { Name = year, Header = year });
         }
     }
 
@@ -114,8 +92,8 @@ public partial class StatsMammalControl : UserControl, ITransientService
                     else
                     {
                         column.MinWidth = 60;
-                        column.Width = new GridViewLength(1, GridViewLengthUnitType.Star);
-                        column.MaxWidth = 320;
+                        column.Width = GridViewLength.Auto;
+                        column.MaxWidth = 420;
                         column.TextWrapping = TextWrapping.Wrap;
                         if (_cellLeftStyle != null)
                             column.CellStyle = _cellLeftStyle;
@@ -149,8 +127,9 @@ public partial class StatsMammalControl : UserControl, ITransientService
 
             var gridViews = new Dictionary<string, RadGridView>
             {
-                { "연도별자료", YearRadGridView },
-                { "사업장별출현종", ProjectRadGridView },
+                { "연도별 자료", YearRadGridView },
+                { "사업장 과업대표하천별 출현종", ProjectRadGridView },
+                { "전체 출현종", ProjectSpeciesRadGridView },
                 { "특징", FeatureRadGridView },
             };
 

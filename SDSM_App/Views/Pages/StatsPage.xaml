@@ -37,10 +37,10 @@
             <telerik:RadRadioButton Content="저서동물" Tag="StatsBenthosControl" Click="RadRadioButton_Click"/>
             <telerik:RadRadioButton Content="조류" Tag="StatsBirdControl" Click="RadRadioButton_Click"/>
             <telerik:RadRadioButton Content="포유류" Tag="StatsMammalControl" Click="RadRadioButton_Click"/>
+            <telerik:RadRadioButton Content="양서파충류" Tag="StatsAmphibianReptileControl" Click="RadRadioButton_Click"/>
             <telerik:RadRadioButton Content="식물상" Tag="StatsPlantControl" Click="RadRadioButton_Click"/>
             <telerik:RadRadioButton Content="식생도" Tag="StatsVegetationControl" Click="RadRadioButton_Click"/>
-            <telerik:RadRadioButton Content="식생단면" Tag="StatsVegetationENVControl" Click="RadRadioButton_Click"/>
-            <telerik:RadRadioButton Content="양서파충류" Tag="StatsAmphibianReptileControl" Click="RadRadioButton_Click"/>
+            <telerik:RadRadioButton Content="식생" Tag="StatsVegetationENVControl" Click="RadRadioButton_Click"/>
             <telerik:RadRadioButton Content="서식수변" Tag="StatsHabitatWaterEdgeControl" Click="RadRadioButton_Click"/>
             <telerik:RadRadioButton Content="수질" Tag="StatsWaterQualityControl" Click="RadRadioButton_Click"/>
         </UniformGrid>

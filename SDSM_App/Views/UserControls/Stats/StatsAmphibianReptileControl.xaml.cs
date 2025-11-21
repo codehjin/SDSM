@@ -22,6 +22,7 @@ public partial class StatsAmphibianReptileControl : UserControl, ITransientServi
 {
     private readonly StatsAmphibianReptileControlViewModel _vm;
     private readonly string _caption = "양서파충류";
+    private readonly Style? _cellLeftStyle = Application.Current.FindResource("GridViewCellLeftStyle") as Style;
 
     public StatsAmphibianReptileControl(StatsAmphibianReptileControlViewModel vm)
     {
@@ -29,6 +30,9 @@ public partial class StatsAmphibianReptileControl : UserControl, ITransientServi
 
         _vm = vm;
         DataContext = _vm;
+
+        //컬럼 동적 생성용
+        _vm.ProjectRadGridView = ProjectRadGridView;
     }
 
     #region Control 이벤트
@@ -44,6 +48,57 @@ public partial class StatsAmphibianReptileControl : UserControl, ITransientServi
             else if (double.TryParse(e.Value.ToString(), out var d))
             {
                 e.Value = d;
+            }
+        }
+    }
+
+    private void ProjectRadGridView_AutoGeneratingColumn(object sender, GridViewAutoGeneratingColumnEventArgs e)
+    {
+        var column = (GridViewDataColumn)e.Column;
+
+        if (column != null)
+        {
+            switch (column.Header.ToString())
+            {
+                case "사업장":
+                    column.MinWidth = 80;
+                    column.Width = 100;
+                    column.MaxWidth = 100;
+                    break;
+                case "과업대표하천":
+                    column.MinWidth = 80;
+                    column.Width = 120;
+                    column.MaxWidth = 120;
+                    break;
+                default:
+                    var header = column.Header.ToString() ?? "";
+                    if (header.Contains('_'))
+                    {
+                        //컬럼 그룹
+                        column.ColumnGroupName = header[..(header.IndexOf('_'))];
+
+                        // 컬럼명
+                        column.Header = header[(header.IndexOf('_') + 1)..];
+                    }
+
+                    if (column.Header.ToString() == "종수")
+                    {
+                        column.MinWidth = 80;
+                        column.Width = GridViewLength.Auto;
+                        column.MaxWidth = 80;
+                        column.DataType = typeof(string);
+                    }
+                    else
+                    {
+                        column.MinWidth = 60;
+                        column.Width = GridViewLength.Auto;
+                        column.MaxWidth = 420;
+                        column.TextWrapping = TextWrapping.Wrap;
+                        if (_cellLeftStyle != null)
+                            column.CellStyle = _cellLeftStyle;
+                        column.DataType = typeof(string);
+                    }
+                    break;
             }
         }
     }
@@ -67,12 +122,12 @@ public partial class StatsAmphibianReptileControl : UserControl, ITransientServi
             var date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
             ChartToPng(YearChart, Path.Combine(folder, $"{_caption}_연도별자료_{date}.png"));
-            ChartToPng(SpeciesChart, Path.Combine(folder, $"{_caption}_출현종_{date}.png"));
 
             var gridViews = new Dictionary<string, RadGridView>
             {
-                { "연도별자료", YearDataRadGridView },
-                { "출현종", SpeciesDataRadGridView },
+                { "연도별 자료", YearRadGridView },
+                { "사업장 과업대표하천별 출현종", ProjectRadGridView },
+                { "전체 출현종", ProjectSpeciesRadGridView },
             };
 
             MultiExport(folder, date, gridViews);

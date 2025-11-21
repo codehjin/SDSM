@@ -7,6 +7,7 @@ using SDSM_App.Models;
 using SDSM_Models;
 using System.Data;
 using System.Text;
+using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
 
 namespace SDSM_App.ViewModels;
@@ -44,7 +45,8 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
     [ObservableProperty] private RadObservableCollection<PlotItem> _yearCollection = [];
 
     //수질등급
-    [ObservableProperty] private DataTable _gradeCollection = new();
+    [ObservableProperty] private DataTable _gradeDataTable = new();
+    [ObservableProperty] private RadGridView _gradeRadGridView = new();
 
     #endregion
 
@@ -145,6 +147,8 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
         {
             await Task.WhenAll(tasks);
 
+            await SetGradeColumns();
+
             if (GB.IsBusy == true)
                 GB.IsBusy = false;
         }
@@ -192,14 +196,14 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
     {
         try
         {
-            GradeCollection = new();
+            GradeDataTable = new();
             var dt = new DataTable();
 
             await Task.Run(() =>
             {
-                var years = SearchData.GroupBy(m => m.SurveyYear).Select(m => m.Key).OrderBy(m => m).ToList();
-                var rivers = SearchData.GroupBy(m => m.River).Select(m => m.Key).OrderBy(m => m).ToList();
-                string[] grades = ["pH", "BOD", "COD","TOC","SS","DO","T-P", "대장균군"];
+                var years = SearchData.Select(m => m.SurveyYear).Distinct().OrderBy(m => m).ToList();
+                var rivers = SearchData.Select(m => m.River).Distinct().OrderBy(m => m).ToList();
+                string[] grades = ["pH", "BOD", "COD", "TOC", "SS", "DO", "T-P", "대장균군"];
 
                 dt.Columns.Add(new DataColumn("연도", typeof(string)));
 
@@ -216,7 +220,7 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
                 }
 
                 //기타 컬럼 목록 만들기
-                var etcColumns = new List<DataColumn>();    
+                var etcColumns = new List<DataColumn>();
                 foreach (DataColumn column in dt.Columns)
                 {
                     if (column.ColumnName.Contains("기타"))
@@ -247,7 +251,7 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
 
                         //PH
                         columnName = $"{riverName}_pH";
-                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.PH != null).Select(m=>m.PH)];                        
+                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.PH != null).Select(m => m.PH)];
                         if (data.Count != 0)
                         {
                             var scoreSum = data.Sum(m => m) ?? 0;
@@ -366,13 +370,47 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
                     dt.Rows.Add(row);
                 }
 
-                GradeCollection = dt;
+                GradeDataTable = dt;
             });
         }
         catch (Exception ex)
         {
             GB.LogWrite(GetType().Name, nameof(GetGradeData), ex.Message);
         }
+    }
+
+    //수질등급 컬럼그룹 동적생성
+    private async Task SetGradeColumns()
+    {
+        var dt = GradeDataTable;
+        if (dt == null || dt.Rows.Count == 0)
+            return;
+
+        var headers = new List<string>();
+
+        await Task.Run(() =>
+        {
+            foreach (DataColumn column in dt.Columns)
+            {
+                var header = column.ColumnName ?? "";
+                if (header.Contains('_'))
+                {
+                    // "_" 다음 문자열만 남김
+                    headers.Add(header[..(header.IndexOf('_'))]);
+                }
+            }
+        });
+
+        GradeRadGridView.ColumnGroups.SuspendNotifications();
+
+        GradeRadGridView.ColumnGroups.Clear();
+
+        foreach (var header in headers.Distinct())
+        {
+            GradeRadGridView.ColumnGroups.Add(new GridViewColumnGroup { Name = header, Header = header });
+        }
+
+        GradeRadGridView.ColumnGroups.ResumeNotifications();
     }
 
     #endregion 

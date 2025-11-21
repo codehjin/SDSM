@@ -30,33 +30,12 @@ public partial class StatsWaterQualityControl : UserControl, ITransientService
 
         _vm = vm;
         DataContext = _vm;
+
+        //컬럼 동적 생성용
+        _vm.GradeRadGridView = GradeRadGridView;
     }
 
     #region Control 이벤트
-
-    private void GradeDataRadGridView_Loaded(object sender, RoutedEventArgs e)
-    {
-        var dt = _vm.GradeCollection;
-        if (dt == null || dt.Rows.Count == 0)
-            return;
-
-        var rivers = new List<string>();
-
-        foreach (DataColumn column in dt.Columns)
-        {
-            var header = column.ColumnName ?? "";
-            if (header.Contains('_'))
-            {
-                // "_" 다음 문자열만 남김
-                rivers.Add(header[..(header.IndexOf('_'))]);
-            }
-        }
-
-        foreach (var river in rivers.Distinct())
-        {
-            GradeRadGridView.ColumnGroups.Add(new GridViewColumnGroup { Name = river, Header = river });
-        }
-    }
 
     private void RadGridView_ElementExportingToDocument(object sender, GridViewElementExportingToDocumentEventArgs e)
     {
@@ -127,7 +106,7 @@ public partial class StatsWaterQualityControl : UserControl, ITransientService
 
             var gridViews = new Dictionary<string, RadGridView>
             {
-                { "연도별자료", YearRadGridView },
+                { "연도별 자료", YearRadGridView },
                 { "수질등급", GradeRadGridView },
             };
 

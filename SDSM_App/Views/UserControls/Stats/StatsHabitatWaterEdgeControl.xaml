@@ -135,22 +135,40 @@
                 <StackPanel Margin="0 10">
                     <StackPanel Orientation="Horizontal" Margin="0 0 0 10" Height="{StaticResource DefaultHeight}">
                         <icon:PackIconMaterial Kind="Rhombus" Style="{StaticResource RhombusSplitIconStyle}"/>
-                        <TextBlock Text="연도별 자료수" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="0 0 10 0"/>
+                        <TextBlock Text="연도별 자료" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="0 0 10 0"/>
                     </StackPanel>
                     <Border Style="{StaticResource ContentBoxStyle}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="6*"/>
-                                <ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
+                            <!--범례-->
+                            <Grid Grid.Column="0" Grid.Row="0" Margin="0 0 0 10">
+                                <telerik:RadLegend Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding LegendItems, ElementName=YearChart}">
+                                    <telerik:RadLegend.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <TextBlock Text="{Binding Title}" Margin="15 0 0 0" Style="{StaticResource PrimaryTitleTextBlcokStyle}"/>
+                                                <Path Width="12" Height="12" Fill="{Binding MarkerFill}" HorizontalAlignment="Left">
+                                                    <Path.Data>
+                                                        <Binding Path="ActualMarkerGeometry" RelativeSource="{RelativeSource AncestorType=telerik:LegendItemControl}"/>
+                                                    </Path.Data>
+                                                </Path>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </telerik:RadLegend.ItemTemplate>
+                                </telerik:RadLegend>
+                            </Grid>
+                            
                             <!--그래프-->
-                            <telerik:RadCartesianChart x:Name="YearChart" Grid.RowSpan ="2" Palette="Fluent" HoverMode="FadeOtherSeries" Height="460" Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}">
+                            <telerik:RadCartesianChart x:Name="YearChart" Grid.Row ="1" Palette="Fluent" HoverMode="FadeOtherSeries" Height="465" Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}">
                                 <telerik:RadCartesianChart.Behaviors>
                                     <telerik:ChartSelectionBehavior DataPointSelectionMode="Single"/>
                                     <telerik:ChartTooltipBehavior Placement="Right" HorizontalOffset="5" VerticalOffset="0" ShowDuration="30000" InitialShowDelay="0" BetweenShowDelay="0"/>
@@ -262,23 +280,23 @@
 
                             <!--통계표-->
                             <telerik:RadGridView x:Name="YearRadGridView"
-                                                Grid.Column="2"
-                                                Grid.Row="1"
-                                                ItemsSource="{Binding Path=YearCollection}"
-                                                HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
-                                                BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
-                                                BusyIndicatorIsIndeterminate="False"
-                                                FrozenColumnsSplitterVisibility="Collapsed"
-                                                LeftFrozenColumnCount="0"
-                                                RowIndicatorVisibility="Collapsed"
-                                                ShowColumnFooters="True"
-                                                Height="460"
-                                                IsFilteringAllowed="False"
-                                                IsSynchronizedWithCurrentItem="{x:Null}"
-                                                ElementExportingToDocument="RadGridView_ElementExportingToDocument">
+                                                 Grid.Column="2"
+                                                 Grid.Row="1"
+                                                 ItemsSource="{Binding Path=YearCollection}"
+                                                 HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
+                                                 BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
+                                                 BusyIndicatorIsIndeterminate="False"
+                                                 FrozenColumnsSplitterVisibility="Collapsed"
+                                                 LeftFrozenColumnCount="0"
+                                                 RowIndicatorVisibility="Collapsed"
+                                                 Height="465"
+                                                 IsFilteringAllowed="False"
+                                                 IsSynchronizedWithCurrentItem="{x:Null}"
+                                                 ElementExportingToDocument="RadGridView_ElementExportingToDocument"
+                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
                                 <telerik:RadGridView.Columns>
-                                    <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCat}" DataFormatString="{}{0}년" MinWidth="80" Width="*" MaxWidth="160" TextWrapping="Wrap"/>
-                                    <telerik:GridViewDataColumn Header="자료 수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="*" MaxWidth="160" TextWrapping="Wrap" />
+                                    <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCat}" DataFormatString="{}{0}년" MinWidth="80" Width="120" MaxWidth="140" TextWrapping="Wrap"/>
+                                    <telerik:GridViewDataColumn Header="자료 수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="140" MaxWidth="140" TextWrapping="Wrap" />
                                 </telerik:RadGridView.Columns>
                             </telerik:RadGridView>
                         </Grid>
@@ -311,9 +329,11 @@
                                                  RowIndicatorVisibility="Collapsed"
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
+                                                 MinHeight="110"
                                                  AutoGenerateColumns="True"
                                                  AutoGeneratingColumn="GradeDataRadGridView_AutoGeneratingColumn"
-                                                 ElementExportingToDocument="RadGridView_ElementExportingToDocument"                                                 >
+                                                 ElementExportingToDocument="RadGridView_ElementExportingToDocument"
+                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
                             </telerik:RadGridView>
                         </Grid>
                     </Border>
