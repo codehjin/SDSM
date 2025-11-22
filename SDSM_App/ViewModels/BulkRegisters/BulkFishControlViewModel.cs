@@ -2,9 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SDSM_App.Enums;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
@@ -15,14 +17,13 @@ using System.Data.SQLite;
 using System.IO;
 using System.Media;
 using System.Reflection;
+using System.Security.Policy;
 using System.Text;
 using System.Windows;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
 using Telerik.Windows.Documents.Spreadsheet.Model;
-using Microsoft.EntityFrameworkCore;
-using SDSM_App.Helpers;
 
 namespace SDSM_App.ViewModels;
 
@@ -353,6 +354,14 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
     //엑셀->모델 (서식수변 항목 미포함)
     private (List<ImportFish>, List<ImportFishSpecies>) DataTableToModels(Worksheet worksheet)
     {
+        //하천 서식환경 항목이 있는지 아니면 없는지 체크
+        var habitatResult = HabitatSuccess(worksheet);
+        if (!string.IsNullOrEmpty(habitatResult))
+        {
+            MessageBox.Show(habitatResult, "서식환경 항목 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return ([], []);
+        }
+
         var importModels = new List<ImportFish>();
         var importSpeciesModels = new List<ImportFishSpecies>();
 
@@ -471,6 +480,14 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
     //엑셀->모델 (서식수변 추가 항목(24개) 포함)
     private (List<ImportFish>, List<ImportFishSpecies>) ContainHabitatDataTableToModels(Worksheet worksheet)
     {
+        //하천 서식환경 항목이 있는지 아니면 없는지 체크
+        var habitatResult = HabitatSuccess(worksheet);
+        if (!string.IsNullOrEmpty(habitatResult))
+        {
+            MessageBox.Show(habitatResult, "서식환경 항목 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return ([], []);
+        }
+
         var importModels = new List<ImportFish>();
         var importSpeciesModels = new List<ImportFishSpecies>();
 
@@ -623,7 +640,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                 sb.Clear();
 
                 var insertModel = new Fish();
-                
+
                 // 날짜 범위 체크
                 var minDate = GB.MinDate;
                 var maxDate = DateTime.Today;
@@ -640,7 +657,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
 
                     var value = prop.GetValue(model);
 
-                    if (prop.Name == "MacthNumber" 
+                    if (prop.Name == "MacthNumber"
                         || prop.Name == "FAIScore" || prop.Name == "FAIScore" || prop.Name == "TotalIndividualCount" || prop.Name == "TotalSpeciesCount" || prop.Name == "M1Value"
                         || prop.Name == "M2Value" || prop.Name == "M3Value" || prop.Name == "M4Value" || prop.Name == "M5Value" || prop.Name == "M6Value" || prop.Name == "M7Value"
                         || prop.Name == "FAIScore" || prop.Name == "FAIGrade" || prop.Name == "SpeciesCount" || prop.Name == "IndividualCount")
@@ -1088,10 +1105,10 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            
-                            if(prop.Name == "RiverType" || prop.Name == "SurveyUnavailableReason")
+
+                            if (prop.Name == "RiverType" || prop.Name == "SurveyUnavailableReason")
                             {
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ",""));
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ", ""));
                             }
                             else
                             {
@@ -1291,7 +1308,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         }
     }
 
-    //하위 저정
+    //하위 저장
     private void SubBatchSave(int parentId, int macthNumber)
     {
         try
@@ -1570,4 +1587,47 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
     }
 
     #endregion
+
+    #region 하천서식환경이 있는경우와 없는경우 체크
+
+    private string? HabitatSuccess(Worksheet worksheet)
+    {
+        // 하천서식환경이 있는 경우 : index 17행 14열 에 유역형태
+        // 하천서식환경이 없는경우   : index 17행 14열에 암반
+
+        var value = ((ICellValue)(worksheet.Cells[17, 14].GetValue().Value)).GetResultValueAsString(worksheet.Cells[17, 14].GetFormat().Value).Replace(" ", "");
+
+        if (IsContainHabitat)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return "15열-18행의 항목명 : 유역형태\n\n항목이름이 없습니다.";
+            }
+            else
+            {
+                if (value != "유역형태")
+                {
+                    return "하천서식환경 체크시\n15열-18행의 항목명 : 유역형태\n\n항목이름이 없습니다.";
+                }
+                return null;
+            }
+        }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return "15열-18행의 항목명 : 암반n\n항목이름이 없습니다.";
+            }
+            else
+            {
+                if (value != "암반")
+                {
+                    return "15열-18행의 항목명 : 암반\n\n항목이름이 없습니다.";
+                }
+                return null;
+            }
+        }
+
+        #endregion
+    }
 }
