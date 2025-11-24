@@ -280,7 +280,7 @@
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
-                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
+                                                 RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
                                 <telerik:RadGridView.Columns>
                                     <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCat}" DataFormatString="{}{0}년" MinWidth="80" Width="120" MaxWidth="120"/>
                                     <telerik:GridViewDataColumn Header="자료 수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="140" MaxWidth="140"/>
@@ -458,7 +458,7 @@
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
-                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
+                                                 RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
                                 <telerik:RadGridView.Columns>
                                     <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCatText}" MinWidth="80" Width="120" MaxWidth="120"/>
                                     <telerik:GridViewDataColumn Header="군락수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="120" MaxWidth="120"/>
@@ -610,7 +610,7 @@
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
-                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
+                                                 RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
                                 <telerik:RadGridView.Columns>
                                     <telerik:GridViewDataColumn Header="군락" DataMemberBinding="{Binding Path=XCatText}" MinWidth="80" Width="240" MaxWidth="240"/>
                                     <telerik:GridViewDataColumn Header="면적" DataMemberBinding="{Binding Path=YRatio1}" DataFormatString="N4" MinWidth="80" Width="150" MaxWidth="150" TextWrapping="Wrap"/>

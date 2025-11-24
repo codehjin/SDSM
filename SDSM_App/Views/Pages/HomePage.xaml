@@ -354,7 +354,7 @@
                                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                             <Setter Property="FontSize" Value="15"/>
                                         </Style>
-                                        <Style x:Key="SubGridViewCell" TargetType="telerik:GridViewCell" BasedOn="{StaticResource GridViewCellStyle}">
+                                        <Style x:Key="SubGridViewCellStyle" TargetType="telerik:GridViewCell" BasedOn="{StaticResource GridViewCellStyle}">
                                             <Setter Property="Padding" Value="7 0"/>
                                             <Setter Property="VerticalAlignment" Value="Stretch"/>
                                             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -432,7 +432,7 @@
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=DOGrade}" MinWidth="80" Width="110" MaxWidth="110" IsVisible="{Binding Path=IsWaterQuality}"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TPGrade}" MinWidth="80" Width="110" MaxWidth="110" IsVisible="{Binding Path=IsWaterQuality}"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EColiGrade}" MinWidth="80" Width="120" MaxWidth="120" IsVisible="{Binding Path=IsWaterQuality}"/>
-                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SubSpecies}" MinWidth="80" Width="320" MaxWidth="320" TextTrimming="CharacterEllipsis" IsVisible="{Binding Path=IsSubSpecies}" CellStyle="{StaticResource SubGridViewCell}"/>
+                                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SubSpecies}" MinWidth="80" Width="320" MaxWidth="320" TextTrimming="CharacterEllipsis" IsVisible="{Binding Path=IsSubSpecies}" CellStyle="{StaticResource SubGridViewCellStyle}"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="160" MaxWidth="160" TextTrimming="CharacterEllipsis"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" MinWidth="80" Width="140" MaxWidth="140"/>
                                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" MinWidth="80" Width="140" MaxWidth="140"/>

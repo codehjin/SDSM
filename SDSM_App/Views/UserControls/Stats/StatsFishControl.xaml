@@ -281,7 +281,7 @@
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
-                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
+                                                 RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
                                 <telerik:RadGridView.Columns>
                                     <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCat}" DataFormatString="{}{0}년" MinWidth="80" Width="120" MaxWidth="120"/>
                                     <telerik:GridViewDataColumn Header="자료 수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="140" MaxWidth="140"/>
@@ -331,13 +331,15 @@
                                                  FrozenColumnsSplitterVisibility="Collapsed"
                                                  LeftFrozenColumnCount="0"
                                                  RowIndicatorVisibility="Collapsed"
-                                                 Height="465"
+                                                 MinHeight="465"
+                                                 MaxHeight="880"
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"                                                 
                                                  AutoGenerateColumns="True"
                                                  AutoGeneratingColumn="ProjectRadGridView_AutoGeneratingColumn"
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
-                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
+                                                 RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
+                                
                             </telerik:RadGridView>
 
                             <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0 0 0 10" Height="{StaticResource DefaultHeight}">
@@ -357,11 +359,11 @@
                                                  FrozenColumnsSplitterVisibility="Collapsed"
                                                  LeftFrozenColumnCount="0"
                                                  RowIndicatorVisibility="Collapsed"
-                                                 Height="465"
+                                                 Height="{Binding Path=ActualHeight, ElementName=ProjectRadGridView}"
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
-                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
+                                                 RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
                                 <telerik:RadGridView.Columns>
                                     <telerik:GridViewDataColumn Header="출현종" DataMemberBinding="{Binding}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
                                 </telerik:RadGridView.Columns>

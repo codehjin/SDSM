@@ -4,9 +4,13 @@ using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.ViewModels;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
@@ -23,7 +27,7 @@ public partial class StatsFishControl : UserControl, ITransientService
 {
     private readonly StatsFishControlViewModel _vm;
     private readonly string _caption = "어류";
-    private readonly Style? _cellLeftStyle = Application.Current.FindResource("GridViewCellLeftStyle") as Style;
+    private readonly Style? _leftCellStyle = Application.Current.FindResource("GridViewCellLeftStyle") as Style;
 
     public StatsFishControl(StatsFishControlViewModel vm)
     {
@@ -94,8 +98,8 @@ public partial class StatsFishControl : UserControl, ITransientService
                         column.Width = GridViewLength.Auto;
                         column.MaxWidth = 420;
                         column.TextWrapping = TextWrapping.Wrap;
-                        if (_cellLeftStyle != null)
-                            column.CellStyle = _cellLeftStyle;
+                        if (_leftCellStyle != null)
+                            column.CellStyle = _leftCellStyle;
                         column.DataType = typeof(string);
                     }
                     break;

@@ -222,16 +222,16 @@ public partial class StatsFishControlViewModel : ObservableObject, ITransientSer
             await Task.Run(() =>
             {
                 //사업장 대표하천 : 자료가 적은 원본으로
-                ProjectTotalWorkplace = SpeciesData.Select(m => m.Workplace).Distinct().Count();
-                ProjectTotalWorkplaceRiver = SpeciesData.Select(m => m.WorkplaceRiver).Distinct().Count();
+                ProjectTotalWorkplace = SpeciesSearchData.Select(m => m.Workplace).Distinct().Count();
+                ProjectTotalWorkplaceRiver = SpeciesSearchData.Select(m => m.WorkplaceRiver).Distinct().Count();
 
                 //출현종
                 speciesModels.AddRange(SpeciesSearchData.Where(m => !string.IsNullOrWhiteSpace(m.SpeciesKo)).Select(m => m.SpeciesKo!).Distinct().OrderBy(m => m));
                 ProjectTotalSpecies = speciesModels.Count;
 
                 //자료가 적은 원본으로
-                var years = SpeciesData.Select(m => m.SurveyYear).Distinct().OrderByDescending(m => m).ToList();
-                var workplaces = SpeciesData.Select(m => m.Workplace).Distinct().OrderBy(m => m).ToList();
+                var years = SearchData.Select(m => m.SurveyYear).Distinct().OrderByDescending(m => m).ToList();
+                var workplaces = SearchData.Select(m => m.SiteDivision.Workplace).Distinct().OrderBy(m => m).ToList();
 
                 dt.Columns.Add(new DataColumn("사업장", typeof(string)));
                 dt.Columns.Add(new DataColumn("과업대표하천", typeof(string)));

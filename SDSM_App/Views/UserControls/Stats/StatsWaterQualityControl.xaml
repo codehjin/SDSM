@@ -281,7 +281,7 @@
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
-                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
+                                                 RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
                                 <telerik:RadGridView.Columns>
                                     <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCat}" DataFormatString="{}{0}년" MinWidth="80" Width="120" MaxWidth="120"/>
                                     <telerik:GridViewDataColumn Header="자료 수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="140" MaxWidth="140"/>
@@ -319,10 +319,11 @@
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
                                                  MinHeight="110"
+                                                 MaxHeight="880"
                                                  AutoGenerateColumns="True"
                                                  AutoGeneratingColumn="GradeDataRadGridView_AutoGeneratingColumn"
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
-                                                 RowStyle="{StaticResource SelectedBackgroundNullRowStyle}">
+                                                 RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
                             </telerik:RadGridView>
                         </Grid>                       
                     </Border>

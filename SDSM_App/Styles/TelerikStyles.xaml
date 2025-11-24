@@ -7,8 +7,9 @@
                     xmlns:mat="clr-namespace:Telerik.Windows.Controls.MaterialControls;assembly=Telerik.Windows.Controls"
                     xmlns:controlsInput="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Input"
                     xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                    xmlns:main="clr-namespace:SDSM_App">
-
+                    xmlns:main="clr-namespace:SDSM_App"
+                    xmlns:converter="clr-namespace:SDSM_App.Converters">
+   
     <Style TargetType="telerik:RadButton">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Height" Value="{StaticResource DefaultHeight}"/>
@@ -514,13 +515,14 @@
         <Setter Property="AllowDrop" Value="True"/>
     </Style>
 
-    <Style x:Key="SelectedBackgroundNullRowStyle" TargetType="telerik:GridViewRow" BasedOn="{StaticResource GridViewRowStyle}">
+    <Style x:Key="ActionBackgroundNullRowStyle" TargetType="telerik:GridViewRow" BasedOn="{StaticResource GridViewRowStyle}">
         <Setter Property="VerticalContentAlignment" Value="Stretch"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="AllowDrop" Value="True"/>
         <Setter Property="SelectedBackground" Value="{x:Null}"/>
+        <Setter Property="MouseOverBackground" Value="{x:Null}"/>
     </Style>
 
     <Style x:Key="OriginalMinHeightGridViewRowStyle" TargetType="telerik:GridViewRow" BasedOn="{StaticResource GridViewRowStyle}">
