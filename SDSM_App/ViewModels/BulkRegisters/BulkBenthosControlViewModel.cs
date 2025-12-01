@@ -64,8 +64,6 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
     //항목 열 번호 목록
     public List<ColumnNumber> ColumnNumbers { get; set; } = [];
 
-    public RadSpreadsheet DataSpreadsheet { get; set; } = new();
-
     [ObservableProperty] private RadObservableCollection<ImportBenthos> _modelCollection = [];
     [ObservableProperty] private RadObservableCollection<Benthos> _convertedCollection = [];
 
@@ -515,38 +513,16 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                             sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                         }
                     }
-                    else if (prop.Name == "River")
-                    {
-                        //필수 문자
-                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
-                        {
-                            var v = ((string)value).Replace(" ", "");
-
-                            if (v.Length > 0)
-                            {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, v);
-                            }
-                            else
-                            {
-                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
-                            }
-                        }
-                        else
-                        {
-                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
-                        }
-                    }
                     else if (prop.Name == "Site")
                     {
+                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+
                         //필수, 생태현황, 방류하천 체크
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             var v = ((string)value).Replace(" ", "").ToUpper();
                             if (v.Length > 0)
                             {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-
                                 var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
                                 if (siteDivisionId != null)
                                 {
@@ -560,12 +536,44 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                             }
                             else
                             {
-                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                                if (_isEcology == true)
+                                {
+                                    var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, null);
+                                    if (siteDivisionId != null)
+                                    {
+                                        insertPropertyInfo?.SetValue(insertModel, null);
+                                        insertModel.SiteDivisionId = siteDivisionId;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                                }
                             }
                         }
                         else
                         {
-                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            if (_isEcology == true)
+                            {
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, null);
+                                if (siteDivisionId != null)
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, null);
+                                    insertModel.SiteDivisionId = siteDivisionId;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
                         }
                     }
                     else if (prop.Name == "SurveyDate")
@@ -911,7 +919,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
 
-                            if (prop.Name == "RiverType" || prop.Name == "SurveyUnavailableReason")
+                            if (prop.Name == "River" ||  prop.Name == "RiverType" || prop.Name == "SurveyUnavailableReason")
                             {
                                 insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ", ""));
                             }

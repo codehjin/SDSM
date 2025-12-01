@@ -16,9 +16,7 @@ public static class SiteDivisionHelper
     {
         IEnumerable<SiteDivision> siteDivisions = GB.ProjectSiteNames;
 
-        if (string.IsNullOrWhiteSpace(site) || !siteDivisions.Any()) return null;
-
-        var normalizedSite = site.Replace(" ", "").ToUpper();
+        if (!siteDivisions.Any()) return null;
 
         if (isEcology == true)
         {
@@ -26,6 +24,10 @@ public static class SiteDivisionHelper
         }
         else if (isEcology == false)
         {
+            if (string.IsNullOrWhiteSpace(site)) return null;
+
+            var normalizedSite = site.Replace(" ", "").ToUpper();
+
             foreach (var sd in siteDivisions)
             {
                 var ws = sd.WorkplaceSite;

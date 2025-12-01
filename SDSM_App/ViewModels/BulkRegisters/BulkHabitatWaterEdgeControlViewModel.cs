@@ -407,37 +407,16 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                             sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                         }
                     }
-                    else if (prop.Name == "River")
-                    {
-                        //필수 문자
-                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
-                        {
-                            var v = ((string)value).Replace(" ", "");
-                            if (v.Length > 0)
-                            {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, v);
-                            }
-                            else
-                            {
-                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
-                            }
-                        }
-                        else
-                        {
-                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
-                        }
-                    }
                     else if (prop.Name == "Site")
                     {
+                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+
                         //필수, 생태현황, 방류하천 체크
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             var v = ((string)value).Replace(" ", "").ToUpper();
                             if (v.Length > 0)
                             {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-
                                 var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
                                 if (siteDivisionId != null)
                                 {
@@ -451,12 +430,44 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                             }
                             else
                             {
-                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                                if (_isEcology == true)
+                                {
+                                    var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, null);
+                                    if (siteDivisionId != null)
+                                    {
+                                        insertPropertyInfo?.SetValue(insertModel, null);
+                                        insertModel.SiteDivisionId = siteDivisionId;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                                }
                             }
                         }
                         else
                         {
-                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            if (_isEcology == true)
+                            {
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, null);
+                                if (siteDivisionId != null)
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, null);
+                                    insertModel.SiteDivisionId = siteDivisionId;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
                         }
                     }
                     else if (prop.Name == "SurveyDate")
@@ -662,7 +673,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            if (prop.Name == "RiverType" || prop.Name == "SurveyUnavailableReason")
+                            if (prop.Name == "River" || prop.Name == "RiverType" || prop.Name == "SurveyUnavailableReason")
                             {
                                 insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ", ""));
                             }
@@ -744,7 +755,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
 
                     command.Parameters.AddWithValue("@SurveyYear", model.SurveyYear);
                     command.Parameters.AddWithValue("@YearChsu", model.YearChsu);
-                    command.Parameters.AddWithValue("@Site", model.Site);
+                    command.Parameters.AddWithValue("@Site", model.Site ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
                     command.Parameters.AddWithValue("@MajorRegion", model.MajorRegion ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@MiddleRegion", model.MiddleRegion ?? (object)DBNull.Value);

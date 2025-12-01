@@ -358,7 +358,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         var habitatResult = HabitatSuccess(worksheet);
         if (!string.IsNullOrEmpty(habitatResult))
         {
-            MessageBox.Show(habitatResult, "서식환경 항목 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowTopMostMessage(habitatResult, "서식환경 항목 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
             return ([], []);
         }
 
@@ -484,7 +484,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         var habitatResult = HabitatSuccess(worksheet);
         if (!string.IsNullOrEmpty(habitatResult))
         {
-            MessageBox.Show(habitatResult, "서식환경 항목 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowTopMostMessage(habitatResult, "서식환경 항목 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
             return ([], []);
         }
 
@@ -729,38 +729,16 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                             sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
                         }
                     }
-                    else if (prop.Name == "River")
-                    {
-                        //필수 문자
-                        if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
-                        {
-                            var v = ((string)value).Replace(" ", "");
-
-                            if (v.Length > 0)
-                            {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, v);
-                            }
-                            else
-                            {
-                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
-                            }
-                        }
-                        else
-                        {
-                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
-                        }
-                    }
                     else if (prop.Name == "Site")
                     {
+                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+
                         //필수, 생태현황, 방류하천 체크
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             var v = ((string)value).Replace(" ", "").ToUpper();
                             if (v.Length > 0)
                             {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-
                                 var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
                                 if (siteDivisionId != null)
                                 {
@@ -774,12 +752,44 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                             }
                             else
                             {
-                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                                if (_isEcology == true)
+                                {
+                                    var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, null);
+                                    if (siteDivisionId != null)
+                                    {
+                                        insertPropertyInfo?.SetValue(insertModel, null);
+                                        insertModel.SiteDivisionId = siteDivisionId;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                                }
                             }
                         }
                         else
                         {
-                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            if (_isEcology == true)
+                            {
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, null);
+                                if (siteDivisionId != null)
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, null);
+                                    insertModel.SiteDivisionId = siteDivisionId;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
                         }
                     }
                     else if (prop.Name == "SurveyDate")
@@ -1106,7 +1116,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
 
-                            if (prop.Name == "RiverType" || prop.Name == "SurveyUnavailableReason")
+                            if (prop.Name == "River" || prop.Name == "RiverType" || prop.Name == "SurveyUnavailableReason")
                             {
                                 insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ", ""));
                             }
@@ -1599,35 +1609,57 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
 
         if (IsContainHabitat)
         {
-            if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(value) || value != "유역형태")
             {
-                return "15열-18행의 항목명 : 유역형태\n\n항목이름이 없습니다.";
+                return "하천 서식환경을 체크한 경우\n\n15열-18행의 항목명 : 유역형태\n항목 이름이 있어야 합니다.";
             }
-            else
-            {
-                if (value != "유역형태")
-                {
-                    return "하천서식환경 체크시\n15열-18행의 항목명 : 유역형태\n\n항목이름이 없습니다.";
-                }
-                return null;
-            }
+            return null;
         }
         else
         {
-            if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(value) || value != "암반")
             {
-                return "15열-18행의 항목명 : 암반n\n항목이름이 없습니다.";
+                return "하천 서식환경을 체크하지 않은 경우\n\n15열-18행의 항목명 : 암반\n항목 이름이 있어야 합니다.";
+            }
+           return null; 
+        }
+
+    }
+    #endregion
+
+    #region 메세지 박스 최상위
+
+    private static MessageBoxResult ShowTopMostMessage(string message, string caption, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None)
+    {
+        MessageBoxResult result = MessageBoxResult.None;
+
+        Application.Current?.Dispatcher.Invoke(() =>
+        {
+            // 활성 창을 우선 사용하고, 없으면 MainWindow 사용
+            var owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive) ?? Application.Current?.MainWindow;
+
+            if (owner != null)
+            {
+                result = MessageBox.Show(owner, message, caption, buttons, icon);
             }
             else
             {
-                if (value != "암반")
+                // 임시 최상위 윈도우를 만들어 소유자로 사용 (항상 최상위로 보장)
+                var temp = new Window { Width = 0, Height = 0, WindowStyle = WindowStyle.None, ShowInTaskbar = false, Topmost = true };
+                temp.Show();
+                try
                 {
-                    return "15열-18행의 항목명 : 암반\n\n항목이름이 없습니다.";
+                    result = MessageBox.Show(temp, message, caption, buttons, icon);
                 }
-                return null;
+                finally
+                {
+                    temp.Close();
+                }
             }
-        }
+        });
 
-        #endregion
+        return result;
     }
+
+    #endregion
 }

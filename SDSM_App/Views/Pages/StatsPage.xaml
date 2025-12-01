@@ -18,7 +18,7 @@
 
         <!--타이틀-->
         <StackPanel Style="{StaticResource TitleStackPanelStyle}" MaxWidth="{StaticResource ContentMaxWidth}">
-            <TextBlock Text="통계" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Text="통계 (방류하천 기준)" Style="{StaticResource TitleTextBlockStyle}"/>
         </StackPanel>
 
         <UniformGrid x:Name="MenuUniformGrid" Grid.Row="1" Columns="10" Margin="30 30 30 10" MaxWidth="{StaticResource ContentMaxWidth}">

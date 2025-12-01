@@ -427,14 +427,14 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                     }
                     else if (prop.Name == "Site")
                     {
+                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+
                         //필수, 생태현황, 방류하천 체크
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             var v = ((string)value).Replace(" ", "").ToUpper();
                             if (v.Length > 0)
                             {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-
                                 var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
                                 if (siteDivisionId != null)
                                 {
@@ -448,12 +448,44 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                             }
                             else
                             {
-                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                                if (_isEcology == true)
+                                {
+                                    var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, null);
+                                    if (siteDivisionId != null)
+                                    {
+                                        insertPropertyInfo?.SetValue(insertModel, null);
+                                        insertModel.SiteDivisionId = siteDivisionId;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                                }
                             }
                         }
                         else
                         {
-                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            if (_isEcology == true)
+                            {
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, null);
+                                if (siteDivisionId != null)
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, null);
+                                    insertModel.SiteDivisionId = siteDivisionId;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
                         }
                     }
                     else if (prop.Name == "SurveyDate")
@@ -630,10 +662,10 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                         }
                     }
                     else if (prop.Name == "PH" || prop.Name == "BOD" || prop.Name == "COD" || prop.Name == "TOC" || prop.Name == "SS"
-                        || prop.Name == "DO" || prop.Name == "TP" || prop.Name == "Ecotoxicity" || prop.Name == "EColi" 
+                        || prop.Name == "DO" || prop.Name == "TP" || prop.Name == "Ecotoxicity" || prop.Name == "EColi"
                         || prop.Name == "TN" || prop.Name == "EC" || prop.Name == "Cl" || prop.Name == "SO42" || prop.Name == "Cu" || prop.Name == "Zn"
                         || prop.Name == "Cr" || prop.Name == "Turbidity" || prop.Name == "Chla" || prop.Name == "WaterTemperature" || prop.Name == "WaterDepth"
-                        || prop.Name == "FlowVelocity" || prop.Name == "FlowSec" || prop.Name == "FlowDay" )
+                        || prop.Name == "FlowVelocity" || prop.Name == "FlowSec" || prop.Name == "FlowDay")
                     {
                         //실수
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -641,13 +673,13 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                             if (double.TryParse(value.ToString(), out double d))
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                
-                                if(prop.Name == "TP" || prop.Name == "Cu" || prop.Name == "Zn" || prop.Name == "Cr"  || prop.Name == "FlowSec")
+
+                                if (prop.Name == "TP" || prop.Name == "Cu" || prop.Name == "Zn" || prop.Name == "Cr" || prop.Name == "FlowSec")
                                 {
                                     //소수점 3자리
                                     insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 3, MidpointRounding.AwayFromZero));
                                 }
-                                else if(prop.Name == "BOD" || prop.Name == "COD" || prop.Name == "TOC" || prop.Name == "DO" || prop.Name == "TN" || prop.Name == "FlowVelocity")
+                                else if (prop.Name == "BOD" || prop.Name == "COD" || prop.Name == "TOC" || prop.Name == "DO" || prop.Name == "TN" || prop.Name == "FlowVelocity")
                                 {
                                     //소수점 2자리
                                     insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 2, MidpointRounding.AwayFromZero));
@@ -674,9 +706,9 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            if(prop.Name == "River" || prop.Name == "RiverType")
+                            if (prop.Name == "River" || prop.Name == "RiverType")
                             {
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ",""));
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ", ""));
                             }
                             else
                             {
@@ -762,7 +794,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
                     command.Parameters.AddWithValue("@SurveyYear", model.SurveyYear);
                     command.Parameters.AddWithValue("@YearChsu", model.YearChsu);
-                    command.Parameters.AddWithValue("@Site", model.Site);
+                    command.Parameters.AddWithValue("@Site", model.Site ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
                     command.Parameters.AddWithValue("@MajorRegion", model.MajorRegion ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@MiddleRegion", model.MiddleRegion ?? (object)DBNull.Value);
@@ -782,7 +814,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                     command.Parameters.AddWithValue("@TP", model.TP ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Ecotoxicity", model.Ecotoxicity ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@EColi", model.EColi ?? (object)DBNull.Value);
-                    
+
                     command.Parameters.AddWithValue("@TN", model.TN ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@EC", model.EC ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Cl", model.Cl ?? (object)DBNull.Value);
@@ -797,7 +829,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                     command.Parameters.AddWithValue("@FlowVelocity", model.FlowVelocity ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@FlowSec", model.FlowSec ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@FlowDay", model.FlowDay ?? (object)DBNull.Value);
-                    
+
                     command.Parameters.AddWithValue("@PHGrade", model.PHGrade ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@BODGrade", model.BODGrade ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@CODGrade", model.CODGrade ?? (object)DBNull.Value);
@@ -892,9 +924,9 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
             ["EC"] = ["EC", "전기전도도", "ElectricalConductivity", "Electrical"],
             ["Cl"] = ["Cl", "Cl-", "염소이온"],
             ["SO42"] = ["SO42", "SO42-", "황이온"],
-            ["Cu"] = ["구리","Cu"],
-            ["Zn"] = ["아연","Zn"],
-            ["Cr"] = ["크롬","Cr"],
+            ["Cu"] = ["구리", "Cu"],
+            ["Zn"] = ["아연", "Zn"],
+            ["Cr"] = ["크롬", "Cr"],
             ["Turbidity"] = ["탁도"],
             ["Chla"] = ["클로로필a", "클로로필", "Chla", "Chl-a"],
             ["WaterTemperature"] = ["수온", "온도"],
@@ -995,7 +1027,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         var value = ((ICellValue)(worksheet.Cells[21, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[21, columnIndex].GetFormat().Value);
         if (double.TryParse(value, out double d))
             return GB.GetEColiGrade(d);
-       
+
         return "4";
     }
 

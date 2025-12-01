@@ -42,14 +42,14 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
     [ObservableProperty] private EditStatusType _editStatus = EditStatusType.Add;
 
     [ObservableProperty] private VegetationENV _editModel = new();
-    [ObservableProperty] private string _project = "방류하천";
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _project = "방류하천";
 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private int? _surveyYear;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _chsu = string.Empty;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private DateTime? _surveyDate;
     [ObservableProperty] private string? _weather;
-    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _site = string.Empty;
-    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _river = string.Empty;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string? _site;
+    [ObservableProperty] private string? _river;
     [ObservableProperty] private string? _surveyor;
     [ObservableProperty] private double? _startLat;
     [ObservableProperty] private double? _startLng;
@@ -191,9 +191,8 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
     {
         return SurveyYear != null
             && !string.IsNullOrWhiteSpace(Chsu)
-            && !string.IsNullOrWhiteSpace(Site)
-            && !string.IsNullOrWhiteSpace(River)
-            && SurveyDate != null;
+            && SurveyDate != null
+            && (Project != "방류하천" || !string.IsNullOrWhiteSpace(Site));
     }
 
     //저장
@@ -207,7 +206,7 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
         }
         else
         {
-            MessageBox.Show($"지점명 : {Site}\n\n프로젝트 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show($"지점명 : {Site}\n\n방류하천 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -486,8 +485,8 @@ public partial class VegetationENVEditorControlViewModel : ObservableObject, ITr
         Chsu = string.Empty;
         SurveyDate = null;
         Weather = null;
-        Site = string.Empty;
-        River = string.Empty;
+        Site = null;
+        River = null;
         Surveyor = null;
         StartLat = null;
         StartLng = null;

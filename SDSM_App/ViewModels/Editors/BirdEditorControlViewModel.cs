@@ -37,13 +37,13 @@ public partial class BirdEditorControlViewModel : ObservableObject, ITransientSe
     [ObservableProperty] private EditStatusType _editStatus = EditStatusType.Add;
 
     [ObservableProperty] private Bird _editModel = new();
-    [ObservableProperty] private string _project = "방류하천";
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _project = "방류하천";
 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _yearChsu = string.Empty;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private DateTime? _surveyDate;
     [ObservableProperty] private string? _weather;
-    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _river = string.Empty;
-    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _site = string.Empty;
+    [ObservableProperty] private string? _river;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string? _site;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _speciesKo = string.Empty;
     [ObservableProperty] private string? _speciesEn;
     [ObservableProperty] private string? _feature;
@@ -66,9 +66,8 @@ public partial class BirdEditorControlViewModel : ObservableObject, ITransientSe
     {
         return !string.IsNullOrWhiteSpace(YearChsu)
             && SurveyDate != null
-            && !string.IsNullOrWhiteSpace(River)
-            && !string.IsNullOrWhiteSpace(Site)
-            && !string.IsNullOrWhiteSpace(SpeciesKo);
+            && !string.IsNullOrWhiteSpace(SpeciesKo)
+            && (Project != "방류하천" || !string.IsNullOrWhiteSpace(Site));
     }
 
     //저장
@@ -82,7 +81,7 @@ public partial class BirdEditorControlViewModel : ObservableObject, ITransientSe
         }
         else
         {
-            MessageBox.Show($"지점명 : {Site}\n\n프로젝트 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show($"지점명 : {Site}\n\n방류하천 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -249,8 +248,8 @@ public partial class BirdEditorControlViewModel : ObservableObject, ITransientSe
         YearChsu = string.Empty;
         SurveyDate = null;
         Weather = null;
-        River = string.Empty;
-        Site = string.Empty;
+        River = null;
+        Site = null;
         SpeciesKo = string.Empty;
         SpeciesEn = null;
         Feature = null;

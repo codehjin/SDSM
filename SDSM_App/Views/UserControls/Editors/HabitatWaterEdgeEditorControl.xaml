@@ -45,7 +45,7 @@
                             </StackPanel.Style>
                             <TextBlock Text="프로젝트명" Style="{StaticResource FormLabelStyle}" FontFamily="{StaticResource High1FontFamily}"/>
                             <TextBlock Text="*" Style="{StaticResource FormLabelRequiredStyle}" Margin="0 0 20 0"/>
-                            <telerik:RadComboBox SelectedValue="{Binding Path=Project}" SelectedValuePath="Content" Width="160" Height="36" Style="{StaticResource FormRadComboBoxStyle}">
+                            <telerik:RadComboBox SelectedValue="{Binding Path=Project, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Content" Width="160" Height="36" Style="{StaticResource FormRadComboBoxStyle}">
                                 <telerik:RadComboBoxItem Content="방류하천"/>
                                 <telerik:RadComboBoxItem Content="생태현황"/>
                             </telerik:RadComboBox>
@@ -102,7 +102,17 @@
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="지점명" Style="{StaticResource FormLabelStyle}" />
-                                                <TextBlock Text="*" Style="{StaticResource FormLabelRequiredStyle}" />
+                                                <TextBlock Text="*">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource FormLabelRequiredStyle}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=Project}" Value="생태현황">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
                                             </StackPanel>
                                         </Border>
                                         <telerik:RadWatermarkTextBox Text="{Binding Path=Site, UpdateSourceTrigger=PropertyChanged}"

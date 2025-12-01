@@ -37,10 +37,10 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
     [ObservableProperty] private EditStatusType _editStatus = EditStatusType.Add;
 
     [ObservableProperty] private WaterQuality _editModel = new();
-    [ObservableProperty] private string _project = "방류하천";
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _project = "방류하천";
 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _yearChsu = string.Empty;
-    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string _site = string.Empty;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string? _site;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private DateTime? _surveyDate;
     [ObservableProperty] private string? _majorRegion;
     [ObservableProperty] private string? _middleRegion;
@@ -93,8 +93,8 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
     private bool CanSave()
     {
         return !string.IsNullOrWhiteSpace(YearChsu)
-            && !string.IsNullOrWhiteSpace(Site)
-            && SurveyDate != null;
+            && SurveyDate != null
+            && (Project != "방류하천" || !string.IsNullOrWhiteSpace(Site));
     }
 
     //저장
@@ -108,7 +108,7 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
         }
         else
         {
-            MessageBox.Show($"지점명 : {Site}\n\n프로젝트 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show($"지점명 : {Site}\n\n방류하천 지점명 목록에 포함되어 있지 않습니다.", "지점명 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -352,7 +352,7 @@ public partial class WaterQualityEditorControlViewModel : ObservableObject, ITra
         EditModel = new();
 
         YearChsu = string.Empty;
-        Site = string.Empty;
+        Site = null;
         SurveyDate = null;
         MajorRegion = null;
         MiddleRegion = null;

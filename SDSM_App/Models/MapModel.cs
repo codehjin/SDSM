@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Media;
 using Telerik.Windows.Controls.Map;
+using Telerik.Windows.Data;
 
 namespace SDSM_App.Models;
 
@@ -32,9 +33,21 @@ public partial class MapModel : ObservableObject
     public List<MapData> Data { get; set; } = [];
 }
 
+public partial class MapDivision : ObservableObject
+{
+    public string Project { get; set; } = string.Empty;
+    public string Division { get; set; } = string.Empty;
+    public string Caption { get; set; } = string.Empty;
+    public int Year { get; set; }
+    public int DataCount { get; set; }
+    [ObservableProperty] private bool _isSelected;
+    public RadObservableCollection<MapModel> Subs { get; set; } = [];
+}
+
 public class MapData
 {
     [DisplayName("ID")] public int Id { get; set; }
+    [DisplayName("연도")] public int SurveyYear { get; set; }
     [DisplayName("구분")] public string? Caption { get; set; }
     [DisplayName("프로젝트명")] public string? Project { get; set; }
     [DisplayName("사업장")] public string? Workplace { get; set; }

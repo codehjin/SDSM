@@ -551,63 +551,45 @@
                                 <telerik:RadToggleButton x:Name="SearchRadToggleButton" Cursor="Hand" Height="{StaticResource DefaultHeight}" HorizontalAlignment="Left" Margin="0 0 10 0">
                                     <StackPanel Orientation="Horizontal">
                                         <telerik:RadGlyph Glyph="{StaticResource GlyphZoom}" VerticalAlignment="Center"/>
-                                        <TextBlock Text="검색" Margin="5 0 5 0"/>
+                                        <TextBlock Text="국명 검색" Margin="5 0 5 0"/>
                                     </StackPanel>
                                 </telerik:RadToggleButton>
-                                <telerik:RadButton Grid.Column="1" Content="전체 선택해제" Height="{StaticResource DefaultHeight}" Command="{Binding Path=AllPointUnCheckedExecutedCommand}"/>
+                                <telerik:RadButton Grid.Column="1" HorizontalAlignment="Right" HorizontalContentAlignment="Stretch" Click="ResetRadButton_Click">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="자료 및 기능 초기화" Margin="0 0 10 0" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                                        <telerik:RadGlyph Grid.Column="1" Glyph="{StaticResource GlyphReset}" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </telerik:RadButton>
                             </Grid>
 
-                            <Border Grid.Row="1" Margin="0 0 0 15" Visibility="{Binding Path=IsChecked, ElementName=SearchRadToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="80"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="5"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Text="선택" VerticalAlignment="Top" Margin="0 8 0 0" Style="{StaticResource PrimaryTextBlcokStyle}"/>
-                                    <telerik:RadComboBox Grid.Column="1"
-                                                         ItemsSource="{Binding Path=SearchCollection}"
-                                                         SelectedItem="{Binding Path=SearchSelectedItem}"
-                                                         DisplayMemberPath="Caption"
-                                                         Cursor="Hand"
-                                                         MaxDropDownHeight="600"
-                                                         Height="{StaticResource DefaultHeight}"
-                                                         helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
-                                                         helpers:ThemeHelper.CheckedBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}">
-                                        <telerik:EventToCommandBehavior.EventBindings>
-                                            <telerik:EventBinding EventName="SelectionChanged" Command="{Binding Path=SearchSelectionChangedExecutedCommand}"/>
-                                        </telerik:EventToCommandBehavior.EventBindings>
-                                    </telerik:RadComboBox>
-                                    <telerik:RadAutoCompleteBox Grid.Column="0"
-                                                                Grid.Row="2"
-                                                                Grid.ColumnSpan="2"
-                                                                ItemsSource="{Binding Path=SearchValueCollection}"
-                                                                SelectedItems="{Binding Path=SearchValueSelectionCollection}"
-                                                                AutoCompleteMode="Suggest"
-                                                                DisplayMemberPath="SearchText"
-                                                                WatermarkContent="검색어를 입력하세요."
-                                                                Width="330"
-                                                                MinHeight="{StaticResource DefaultHeight}"
-                                                                MaxHeight="170"
-                                                                NoResultsContent="목록 값없음"
-                                                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                                BoxesItemStyle="{StaticResource SearchBoxesItemxStyle}"
-                                                                FilteringBehavior="{StaticResource AutoCompleteBoxFilteringBehavior}"
-                                                                SelectionChanged="RadAutoCompleteBox_SelectionChanged">
-                                        <telerik:RadAutoCompleteBox.TextBoxStyle>
-                                            <Style TargetType="telerik:RadWatermarkTextBox" BasedOn="{StaticResource RadAutoCompleteTextBoxStyle}">
-                                                <Setter Property="InputMethod.PreferredImeState" Value="On"/>
-                                                <Setter Property="InputMethod.PreferredImeConversionMode" Value="Native"/>
-                                            </Style>
-                                        </telerik:RadAutoCompleteBox.TextBoxStyle>
-                                    </telerik:RadAutoCompleteBox>
-                                </Grid>
+                            <Border Grid.Row="1" Margin="0 0 0 15" Visibility="{Binding Path=IsChecked, ElementName=SearchRadToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}">                                
+                                <telerik:RadAutoCompleteBox ItemsSource="{Binding Path=SearchValueCollection}"
+                                                            SelectedItems="{Binding Path=SearchValueSelectionCollection}"
+                                                            AutoCompleteMode="Suggest"
+                                                            DisplayMemberPath="SearchText"
+                                                            WatermarkContent="검색어를 입력하세요."
+                                                            MinWidth="330"
+                                                            MinHeight="{StaticResource DefaultHeight}"
+                                                            MaxHeight="170"
+                                                            MaxDropDownHeight="880"
+                                                            NoResultsContent="목록 값없음"
+                                                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                            BoxesItemStyle="{StaticResource SearchBoxesItemxStyle}"
+                                                            FilteringBehavior="{StaticResource AutoCompleteBoxFilteringBehavior}"
+                                                            SelectionChanged="RadAutoCompleteBox_SelectionChanged">
+                                    <telerik:RadAutoCompleteBox.TextBoxStyle>
+                                        <Style TargetType="telerik:RadWatermarkTextBox" BasedOn="{StaticResource RadAutoCompleteTextBoxStyle}">
+                                            <Setter Property="InputMethod.PreferredImeState" Value="On"/>
+                                            <Setter Property="InputMethod.PreferredImeConversionMode" Value="Native"/>
+                                        </Style>
+                                    </telerik:RadAutoCompleteBox.TextBoxStyle>
+                                </telerik:RadAutoCompleteBox>
+                                
                             </Border>
                            
                             <Grid Grid.Row="2">
@@ -636,7 +618,7 @@
                                 </StackPanel>
 
                                 <telerik:RadListBox Grid.Row="1" 
-                                                    ItemsSource="{Binding Path=SurveyDataView.View}"
+                                                    ItemsSource="{Binding Path=DivisionDataView.View}"
                                                     IsSynchronizedWithCurrentItem="False"
                                                     IsScrollIntoViewEnabled="False"
                                                     BorderThickness="0"
@@ -652,22 +634,27 @@
                                                     <ColumnDefinition Width="80"/>
                                                 </Grid.ColumnDefinitions>
 
-                                                <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"                                                              
-                                                            Command="{Binding Path=DataContext.AddAndRemovePointExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" 
-                                                            CommandParameter="{Binding}">
+                                                <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"
+                                                          helpers:ThemeHelper.FocusBrush="Transparent" 
+                                                          helpers:ThemeHelper.FocusBackgroundBrush="Transparent"
+                                                          Cursor="Hand">
+                                                    <telerik:EventToCommandBehavior.EventBindings>
+                                                        <telerik:EventBinding EventName="Checked" Command="{Binding Path=DataContext.MapDivisionCheckedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"/>
+                                                        <telerik:EventBinding EventName="Unchecked" Command="{Binding Path=DataContext.MapDivisionUncheckedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"/>
+                                                    </telerik:EventToCommandBehavior.EventBindings>
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="75"/>
-                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="70"/>
+                                                            <ColumnDefinition Width="160"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
 
                                                         <TextBlock Text="{Binding Path=Caption}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>                                                       
-                                                        <TextBlock Grid.Column="1" Margin="10 0 20 0">
+                                                        <TextBlock Grid.Column="1" Margin="10 0 20 0" TextAlignment="Right">
                                                             <Run Text="("/>
-                                                            <Run Text="{Binding Path=Count, StringFormat={}{0:N0}}"/>
+                                                            <Run Text="{Binding Path=DataCount, StringFormat={}{0:N0}}"/>
                                                             <Run Text="/"/>
-                                                            <Run Text="{Binding Path=PointCount, StringFormat={}{0:N0}}"/>
+                                                            <Run Text="{Binding Path=Subs.Count, Mode=OneWay, StringFormat={}{0:N0}}"/>
                                                             <Run Text=")"/>
                                                         </TextBlock>                                                      
 
@@ -1266,10 +1253,10 @@
                                               Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                 </StackPanel>
 
-                <telerik:RadButton Grid.Row="5" Margin="0 10 0 20" HorizontalAlignment="Center" Style="{StaticResource AccentButtonStyle}" Command="{Binding Path=LatLngChangedSaveExecutedCommand}">
+                <telerik:RadButton Grid.Row="5" Margin="0 10 0 20" HorizontalAlignment="Center" Style="{StaticResource AccentButtonStyle}" Click="LatLngChangedSaveRadButton_Click" Command="{Binding Path=LatLngChangedSaveExecutedCommand}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Path=LatLngChangeSelectedItems.Count, StringFormat={}{0:N0}건}"/>
-                        <TextBlock Text="일괄 변경 후 새로고침" Margin="5 0 0 0"/>
+                        <TextBlock Text="일괄 변경 후 자료 및 기능 초기화" Margin="5 0 0 0"/>
                     </StackPanel>
                 </telerik:RadButton>
 

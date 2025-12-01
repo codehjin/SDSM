@@ -159,7 +159,7 @@ public partial class HomePage : Page, ITransientService
     private void RadAutoCompleteBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         MapPinCalloutPopupClose();
-        _vm.SearchValueSelectionChangedExecutedCommand.Execute(null);
+        _vm.SearchSelectionChangedExecutedCommand.Execute(null);
     }
 
     //좌표 변경 창 열기
@@ -251,6 +251,19 @@ public partial class HomePage : Page, ITransientService
         {
             RemoveMbTilesProvider(item.MbTilesName);
         }
+    }
+
+    //자료 및 기능 초기화
+    private void ResetRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        _vm.ResetExecutedCommand.Execute(null);
+        MapPinCalloutPopupClose();
+    }
+
+    //위경도 변경
+    private void LatLngChangedSaveRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        MapPinCalloutPopupClose();
     }
 
     #endregion
@@ -458,4 +471,5 @@ public partial class HomePage : Page, ITransientService
     }
 
     #endregion
+
 }

@@ -270,7 +270,7 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
                     {
                         var speciesCount = speciesModels.Where(m => m.ID == id.ID).GroupBy(m => m.SpeciesKo).Count();
                         var parentModel = models.Where(m => m.ID == id.ID).FirstOrDefault();
-                        if(parentModel != null)
+                        if (parentModel != null)
                         {
                             parentModel.SpeciesCount = speciesCount;
                             parentModel.IndividualCount = id.Count;
@@ -509,15 +509,16 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
                         PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                         insertPropertyInfo?.SetValue(insertModel, value);
                     }
-                    else if (prop.Name == "ID" && prop.Name == "Chsu" && prop.Name == "River")
+                    else if (prop.Name == "ID" && prop.Name == "Chsu")
                     {
+                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+
                         //필수 문자
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             var v = ((string)value).Replace(" ", "");
                             if (v.Length > 0)
                             {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                                 insertPropertyInfo?.SetValue(insertModel, v);
                             }
                             else
@@ -532,14 +533,14 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
                     }
                     else if (prop.Name == "Site")
                     {
+                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+
                         //필수, 생태현황, 방류하천 체크
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             var v = ((string)value).Replace(" ", "").ToUpper();
                             if (v.Length > 0)
                             {
-                                PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-
                                 var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
                                 if (siteDivisionId != null)
                                 {
@@ -553,12 +554,44 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
                             }
                             else
                             {
-                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                                if (_isEcology == true)
+                                {
+                                    var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, null);
+                                    if (siteDivisionId != null)
+                                    {
+                                        insertPropertyInfo?.SetValue(insertModel, null);
+                                        insertModel.SiteDivisionId = siteDivisionId;
+                                    }
+                                    else
+                                    {
+                                        sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                                }
                             }
                         }
                         else
                         {
-                            sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            if (_isEcology == true)
+                            {
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, null);
+                                if (siteDivisionId != null)
+                                {
+                                    insertPropertyInfo?.SetValue(insertModel, null);
+                                    insertModel.SiteDivisionId = siteDivisionId;
+                                }
+                                else
+                                {
+                                    sb.Append(GB.GetImportErrorText(prop, ErrorType.SiteError));
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(GB.GetImportErrorText(prop, ErrorType.Unique));
+                            }
                         }
                     }
                     else if (prop.Name == "SurveyYear")
@@ -798,7 +831,11 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                            insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
+
+                            if (prop.Name == "River")
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ", ""));
+                            else
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
                         }
                         else
                         {
@@ -885,9 +922,9 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
                         {
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
 
-                            if(prop.Name == "Layer")
+                            if (prop.Name == "Layer")
                             {
-                                insertPropertyInfo?.SetValue(insertModel, ((string)value).ToUpper().Replace(" ",""));
+                                insertPropertyInfo?.SetValue(insertModel, ((string)value).ToUpper().Replace(" ", ""));
                             }
                             else
                             {
