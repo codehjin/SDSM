@@ -380,7 +380,7 @@ public partial class WaterQualityPageViewModel : ObservableObject, ITransientSer
 
                 ModelTotal = query.Count();
 
-                ModelCollection = [.. query.OrderByDescending(m => m.WaterQualityId).Skip(index * PageSize).Take(PageSize)];
+                ModelCollection = [.. query.OrderBy(m => m.SurveyDate).ThenBy(m => m.Site).Skip(index * PageSize).Take(PageSize)];
 
             }, _cts.Token);
         }

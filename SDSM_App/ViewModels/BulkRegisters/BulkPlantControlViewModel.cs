@@ -69,6 +69,7 @@ public partial class BulkPlantControlViewModel : ObservableObject, ITransientSer
 
     [ObservableProperty] private int _firstRowNumber = 3;
     [ObservableProperty] private int _firstColumnNumber = 1;
+    public string FirstColumnAlphabet { get; } = "A";
 
     //에러 개수
     [ObservableProperty]
@@ -796,20 +797,20 @@ public partial class BulkPlantControlViewModel : ObservableObject, ITransientSer
 
     private void GetColumnNumbers()
     {
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "연도", Value = 1 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "차수", Value = 2 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사일", Value = 3 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "날씨", Value = 4 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사지점", Value = 5 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천명", Value = 6 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", Value = 7 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "출현위도", Value = 8 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "출현경도", Value = 9 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위치", Value = 10 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "종명", Value = 11 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "학명", Value = 12 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "외래식물구분", Value = 13 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "생태교란종", Value = 14 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "연도", ValueString = "A" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "차수", ValueString = "B" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사일", ValueString = "C" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "날씨", ValueString = "D" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사지점", ValueString = "E" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천명", ValueString = "F" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", ValueString = "G" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "출현위도", ValueString = "H" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "출현경도", ValueString = "I" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위치", ValueString = "J" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "종명", ValueString = "K" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "학명", ValueString = "L" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "외래식물구분", ValueString = "M" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "생태교란종", ValueString = "N" });
     }
 
     private void GetSavedFileInfos()

@@ -10,7 +10,6 @@ using System.Windows.Data;
 using System.Windows.Media;
 using Telerik.Windows.Controls.Map;
 using Telerik.Windows.Data;
-using Telerik.Windows.Documents.Model.Revisions;
 
 namespace SDSM_App.ViewModels;
 
@@ -20,6 +19,9 @@ namespace SDSM_App.ViewModels;
 public partial class HomePageViewModel : ObservableObject, ITransientService
 {
     #region 필드
+
+    //조류와 포유류 중 목록이 2개 이상인 경우 그중 아래 목록이 포함된 종이 라벨에 표시
+    private readonly List<Char> _featureChars = ['Ⅰ', '1', 'Ⅱ', '2', '멸', '천', '하', '적'];
 
     #endregion
 
@@ -488,7 +490,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     fishQuery = fishQuery.Where(m => m.Subs.Any(s => s.SpeciesKo != null && searchValues.Contains(s.SpeciesKo)));
                 }
 
-                var fishGroups = await fishQuery.Include(m => m.Subs).GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ToList() }).ToListAsync();
+                var fishGroups = await fishQuery.Include(m => m.Subs).GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ThenBy(m => m.SurveyDate).ToList() }).ToListAsync();
 
                 var fishCount = fishGroups.Sum(g => g.Items.Count);
 
@@ -505,7 +507,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                         var firstValue = $"{ProcessSurveyYear(items.First().SurveyYear):00}";
                         var lastValue = $"{ProcessSurveyYear(items.Last().SurveyYear):00}";
 
-                       label = firstValue == lastValue ? $"{division}_어({firstValue})" : $"{division}_어({firstValue}~{lastValue})";
+                        label = firstValue == lastValue ? $"{division}_어({firstValue})" : $"{division}_어({firstValue}~{lastValue})";
                     }
                     else
                     {
@@ -586,7 +588,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     benthosQuery = benthosQuery.Where(m => m.Subs.Any(s => s.SpeciesKo != null && searchValues.Contains(s.SpeciesKo)));
                 }
 
-                var benthosGroups = await benthosQuery.Include(m => m.Subs).GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ToList() }).ToListAsync();
+                var benthosGroups = await benthosQuery.Include(m => m.Subs).GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ThenBy(m => m.SurveyDate).ToList() }).ToListAsync();
 
                 var benthosCount = benthosGroups.Sum(g => g.Items.Count);
 
@@ -607,7 +609,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     }
                     else
                     {
-                        label = $"{division}_저{ProcessSurveyYear(items.First().SurveyYear):00})";
+                        label = $"{division}_저({ProcessSurveyYear(items.First().SurveyYear):00})";
                     }
 
                     foreach (var item in items)
@@ -684,7 +686,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     birdQuery = birdQuery.Where(m => !string.IsNullOrWhiteSpace(m.SpeciesKo) && searchValues.Contains(m.SpeciesKo));
                 }
 
-                var birdGroups = await birdQuery.GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ToList() }).ToListAsync();
+                var birdGroups = await birdQuery.GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ThenBy(m => m.SurveyDate).ToList() }).ToListAsync();
 
                 var birdCount = birdGroups.Sum(g => g.Items.Count);
 
@@ -695,17 +697,30 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     var lat = items.FirstOrDefault()?.Lat ?? 0;
                     var lng = items.FirstOrDefault()?.Lng ?? 0;
                     var mapData = new List<MapData>();
+                    var firstSpeciesKo = "";
 
                     if (items.Count > 1)
                     {
+                        var featureSpeciesKo = items.FirstOrDefault(m => !string.IsNullOrWhiteSpace(m.Feature) && m.Feature.Any(c => _featureChars.Contains(c)))?.SpeciesKo ?? "";
+                        if (featureSpeciesKo != "")
+                        {
+                            firstSpeciesKo = $" : {featureSpeciesKo}...";
+                        }
+                        else
+                        {
+                            firstSpeciesKo = items.First() != null ? $" : {items.First()?.SpeciesKo ?? ""}..." : "";
+                        }
+
                         var firstValue = $"{ProcessSurveyYear(items.First().SurveyYear):00}";
                         var lastValue = $"{ProcessSurveyYear(items.Last().SurveyYear):00}";
 
-                        label = firstValue == lastValue ? $"{division}_조({firstValue})" : $"{division}_조({firstValue}~{lastValue})";
+                        label = firstValue == lastValue ? $"{division}_조({firstValue}){firstSpeciesKo}" : $"{division}_조({firstValue}~{lastValue}){firstSpeciesKo}";
                     }
                     else
                     {
-                        label = $"{division}_조{ProcessSurveyYear(items.First().SurveyYear):00})";
+                        firstSpeciesKo = items.First() != null ? $" : {items.First()?.SpeciesKo ?? ""}" : "";
+
+                        label = $"{division}_조({ProcessSurveyYear(items.First().SurveyYear):00}){firstSpeciesKo}";
                     }
 
                     foreach (var item in items)
@@ -769,7 +784,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     mammalQuery = mammalQuery.Where(m => !string.IsNullOrWhiteSpace(m.SpeciesKo) && searchValues.Contains(m.SpeciesKo));
                 }
 
-                var mammalGroups = await mammalQuery.GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ToList() }).ToListAsync();
+                var mammalGroups = await mammalQuery.GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ThenBy(m => m.SurveyDate).ToList() }).ToListAsync();
 
                 var mammalCount = mammalGroups.Sum(g => g.Items.Count);
 
@@ -780,19 +795,32 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     var lat = items.FirstOrDefault()?.Lat ?? 0;
                     var lng = items.FirstOrDefault()?.Lng ?? 0;
                     var mapData = new List<MapData>();
+                    var firstSpeciesKo = "";
 
                     if (items.Count > 1)
                     {
+                        var featureSpeciesKo = items.FirstOrDefault(m => !string.IsNullOrWhiteSpace(m.Feature) && m.Feature.Any(c => _featureChars.Contains(c)))?.SpeciesKo ?? "";
+                        if (featureSpeciesKo != "")
+                        {
+                            firstSpeciesKo = $" : {featureSpeciesKo}...";
+                        }
+                        else
+                        {
+                            firstSpeciesKo = items.First() != null ? $" : {items.First()?.SpeciesKo ?? ""}..." : "";
+                        }
+
                         var firstValue = $"{ProcessSurveyYear(items.First().SurveyYear):00}";
                         var lastValue = $"{ProcessSurveyYear(items.Last().SurveyYear):00}";
 
-                        label = firstValue == lastValue ? $"{division}_포({firstValue})" : $"{division}_포({firstValue}~{lastValue})";
+                        label = firstValue == lastValue ? $"{division}_포({firstValue}){firstSpeciesKo}" : $"{division}_포({firstValue}~{lastValue}){firstSpeciesKo}";
                     }
                     else
                     {
-                        label = $"{division}_포{ProcessSurveyYear(items.First().SurveyYear):00})";
-                    }
+                        firstSpeciesKo = items.First() != null ? $" : {items.First()?.SpeciesKo ?? ""}" : "";
 
+                        label = $"{division}_포({ProcessSurveyYear(items.First().SurveyYear):00}){firstSpeciesKo}";
+                    }
+                   
                     foreach (var item in items)
                     {
                         var data = new MapData
@@ -852,7 +880,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     arQuery = arQuery.Where(m => !string.IsNullOrWhiteSpace(m.SpeciesKo) && searchValues.Contains(m.SpeciesKo));
                 }
 
-                var arGroups = await arQuery.GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ToList() }).ToListAsync();
+                var arGroups = await arQuery.GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ThenBy(m => m.SurveyDate).ToList() }).ToListAsync();
 
                 var arCount = arGroups.Sum(g => g.Items.Count);
 
@@ -873,7 +901,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     }
                     else
                     {
-                        label = $"{division}_양{ProcessSurveyYear(items.First().SurveyYear):00})";
+                        label = $"{division}_양({ProcessSurveyYear(items.First().SurveyYear):00})";
                     }
 
                     foreach (var item in items)
@@ -935,7 +963,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     plantQuery = plantQuery.Where(m => !string.IsNullOrWhiteSpace(m.SpeciesKo) && searchValues.Contains(m.SpeciesKo));
                 }
 
-                var plantGroups = await plantQuery.GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ToList() }).ToListAsync();
+                var plantGroups = await plantQuery.GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ThenBy(m => m.SurveyDate).ToList() }).ToListAsync();
 
                 var plantCount = plantGroups.Sum(g => g.Items.Count);
 
@@ -956,7 +984,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     }
                     else
                     {
-                        label = $"{division}_식물{ProcessSurveyYear(items.First().SurveyYear):00})";
+                        label = $"{division}_식물({ProcessSurveyYear(items.First().SurveyYear):00})";
                     }
 
                     foreach (var item in items)
@@ -1018,7 +1046,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     veENVQuery = veENVQuery.Where(m => m.Subs.Any(s => s.SpeciesKo != null && searchValues.Contains(s.SpeciesKo)));
                 }
 
-                var veENVGroups = await veENVQuery.Include(m => m.Subs).GroupBy(m => new { m.StartLat, m.StartLng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ToList() }).ToListAsync();
+                var veENVGroups = await veENVQuery.Include(m => m.Subs).GroupBy(m => new { m.StartLat, m.StartLng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ThenBy(m => m.SurveyDate).ToList() }).ToListAsync();
 
                 var veENVCount = veENVGroups.Sum(g => g.Items.Count);
 
@@ -1039,7 +1067,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     }
                     else
                     {
-                        label = $"{division}_식단{ProcessSurveyYear(items.First().SurveyYear):00})";
+                        label = $"{division}_식단({ProcessSurveyYear(items.First().SurveyYear):00})";
                     }
 
                     foreach (var item in items)
@@ -1107,7 +1135,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
 
                 IQueryable<HabitatWaterEdge> habitatWaterEdgetQuery = context.HabitatWaterEdges.AsNoTracking().Where(m => m.SiteDivision.Project == project && m.Lat != null && m.Lng != null);
 
-                var habitatWaterEdgeGroups = await habitatWaterEdgetQuery.GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ToList() }).ToListAsync();
+                var habitatWaterEdgeGroups = await habitatWaterEdgetQuery.GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ThenBy(m => m.SurveyDate).ToList() }).ToListAsync();
 
                 var habitatCount = habitatWaterEdgeGroups.Sum(g => g.Items.Count);
 
@@ -1128,7 +1156,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     }
                     else
                     {
-                        label = $"{division}_서{ProcessSurveyYear(items.First().SurveyYear):00})";
+                        label = $"{division}_서({ProcessSurveyYear(items.First().SurveyYear):00})";
                     }
 
                     foreach (var item in items)
@@ -1184,7 +1212,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
 
                 IQueryable<WaterQuality> waterQualityQuery = context.WaterQualitys.AsNoTracking().Where(m => m.SiteDivision.Project == project && m.Lat != null && m.Lng != null);
 
-                var waterQualityGroups = await waterQualityQuery.GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ToList() }).ToListAsync();
+                var waterQualityGroups = await waterQualityQuery.GroupBy(m => new { m.Lat, m.Lng }).Select(g => new { Items = g.OrderBy(m => m.SurveyYear).ThenBy(m => m.SurveyDate).ToList() }).ToListAsync();
 
                 var waterQualityCount = waterQualityGroups.Sum(g => g.Items.Count);
 
@@ -1205,7 +1233,7 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     }
                     else
                     {
-                        label = $"{division}_수{ProcessSurveyYear(items.First().SurveyYear):00})";
+                        label = $"{division}_수({ProcessSurveyYear(items.First().SurveyYear):00})";
                     }
 
                     foreach (var item in items)

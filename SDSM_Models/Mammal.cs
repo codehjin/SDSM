@@ -38,7 +38,7 @@ public class Mammal
     [DisplayName("번식지")] public int? Trace9 { get; set; }
     [DisplayName("배설물")] public int? Trace10 { get; set; }
     [DisplayName("카메라")] public int? Trace11 { get; set; }
-    [DisplayName("기타(탐문 등)")] public int? Trace12 { get; set; }
+    [DisplayName("기타\n(탐문 등)")] public int? Trace12 { get; set; }
     [DisplayName("조사자")] public string? Surveyor { get; set; }
     [DisplayName("특이사항")] public string? Note { get; set; }
 

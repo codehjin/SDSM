@@ -1,14 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using NinjaNye.SearchExtensions;
-using SDSM_App.Enums;
 using SDSM_App.InjectableServices;
-using SDSM_App.Models;
-using SDSM_Models;
-using System.Collections.ObjectModel;
-using Telerik.Windows.Controls;
-using Telerik.Windows.Data;
 
 namespace SDSM_App.ViewModels;
 

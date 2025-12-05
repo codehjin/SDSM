@@ -296,7 +296,7 @@
                 <StackPanel Margin="0 10">
                     <StackPanel Orientation="Horizontal" Margin="0 0 0 10" Height="{StaticResource DefaultHeight}">
                         <icon:PackIconMaterial Kind="Rhombus" Style="{StaticResource RhombusSplitIconStyle}"/>
-                        <TextBlock Text="사업장 과업 대표하천별 출현종" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="0 0 10 0"/>
+                        <TextBlock Text="사업장 출현종" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="0 0 10 0"/>
                     </StackPanel>
 
                     <Border Style="{StaticResource ContentBoxStyle}">
@@ -321,14 +321,17 @@
                                     <Run Text="{Binding Path=ProjectTotalWorkplaceRiver, StringFormat={}{0:N0}}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
                                     <Run Text="건"/>
                                 </TextBlock>
+
+                                <telerik:RadButton Content="출현종 자세히 보기" Margin="20 0 0 0" Click="ViewerOpenRadButton_Click"/>
                             </StackPanel>
+
                             <telerik:RadGridView x:Name="ProjectRadGridView"
                                                  Grid.Row="1"
                                                  ItemsSource="{Binding Path=ProjectDataTable.DefaultView}"
                                                  HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
                                                  BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
                                                  BusyIndicatorIsIndeterminate="False"
-                                                 FrozenColumnsSplitterVisibility="Collapsed"
+                                                 FrozenColumnsSplitterVisibility="Visible"
                                                  LeftFrozenColumnCount="0"
                                                  RowIndicatorVisibility="Collapsed"
                                                  MinHeight="465"
@@ -339,8 +342,8 @@
                                                  AutoGeneratingColumn="ProjectRadGridView_AutoGeneratingColumn"
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
                                                  RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
-                                
                             </telerik:RadGridView>
+
 
                             <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0 0 0 10" Height="{StaticResource DefaultHeight}">
                                 <TextBlock Text="출현종" Style="{StaticResource PrimaryTitleTextBlcokStyle}" Margin="0 0 10 0"/>
@@ -359,7 +362,7 @@
                                                  FrozenColumnsSplitterVisibility="Collapsed"
                                                  LeftFrozenColumnCount="0"
                                                  RowIndicatorVisibility="Collapsed"
-                                                 Height="{Binding Path=ActualHeight, ElementName=ProjectRadGridView}"
+                                                 Height="{Binding Path=ActualHeight, UpdateSourceTrigger=PropertyChanged, ElementName=ProjectRadGridView}"
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
@@ -374,5 +377,7 @@
 
             </StackPanel>
         </ScrollViewer>
+
+        <ContentControl x:Name="ProjectSpeciesViewerContentControl" Grid.Row="0" Grid.RowSpan="4"/>
     </Grid>
 </UserControl>

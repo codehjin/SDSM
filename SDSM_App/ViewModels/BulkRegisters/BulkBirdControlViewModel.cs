@@ -68,6 +68,7 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
 
     [ObservableProperty] private int _firstRowNumber = 5;
     [ObservableProperty] private int _firstColumnNumber = 2;
+    public string FirstColumnAlphabet { get; } = "B";
 
     //에러 개수
     [ObservableProperty]
@@ -956,29 +957,29 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
 
     private void GetColumnNumbers()
     {
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "연도차수", Value = 2 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사일", Value = 3 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "날씨", Value = 4 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천명", Value = 5 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "지점명", Value = 6 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "일반명", Value = 7 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "학명", Value = 8 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특징", Value = 9 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_도", Value = 10 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_분", Value = 11 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_초", Value = 12 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_도", Value = 13 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_분", Value = 14 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_초", Value = 15 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도", Value = 16 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도", Value = 17 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "개체수", Value = 19 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "도래유형", Value = 20 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "대항목", Value = 21 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "세부항목", Value = 22 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "서식유형", Value = 23 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", Value = 24 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특이사항", Value = 25 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "연도차수", ValueString = "B" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사일", ValueString = "C" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "날씨", ValueString = "D" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천명", ValueString = "E" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "지점명", ValueString = "F" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "일반명", ValueString = "G" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "학명", ValueString = "H" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특징", ValueString = "I" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_도", ValueString = "J" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_분", ValueString = "K" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_초", ValueString = "L" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_도", ValueString = "M" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_분", ValueString = "N" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_초", ValueString = "O" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도", ValueString = "P" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도", ValueString = "Q" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "개체수", ValueString = "S" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "도래유형", ValueString = "T" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "대항목", ValueString = "U" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "세부항목", ValueString = "V" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "서식유형", ValueString = "W" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", ValueString = "X" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특이사항", ValueString = "Y" });
     }
 
     private void GetSavedFileInfos()

@@ -143,7 +143,7 @@
                                     </telerik:GridViewDataColumn>
                                     <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Project}" MinWidth="80" Width="*" MaxWidth="460" IsFilterable="False"/>
                                     <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Workplace}" MinWidth="80" Width="*" MaxWidth="460"/>
-                                    <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WorkplaceRiver}" MinWidth="80" Width="*" MaxWidth="460"/>
+                                    <telerik:GridViewDataColumn Header="과업 대표하천" DataMemberBinding="{Binding Path=WorkplaceRiver}" MinWidth="80" Width="*" MaxWidth="460"/>
                                     <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WorkplaceSite}" MinWidth="80" Width="*" MaxWidth="460"/>
                                 </telerik:RadGridView.Columns>
                             </telerik:RadGridView>

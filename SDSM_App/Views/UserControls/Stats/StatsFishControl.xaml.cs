@@ -4,13 +4,9 @@ using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.ViewModels;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
@@ -27,7 +23,7 @@ public partial class StatsFishControl : UserControl, ITransientService
 {
     private readonly StatsFishControlViewModel _vm;
     private readonly string _caption = "어류";
-    private readonly Style? _leftCellStyle = Application.Current.FindResource("GridViewCellLeftStyle") as Style;
+    private readonly Style? _cellLeftStyle = Application.Current.FindResource("GridViewCellLeftStyle") as Style;
 
     public StatsFishControl(StatsFishControlViewModel vm)
     {
@@ -36,6 +32,7 @@ public partial class StatsFishControl : UserControl, ITransientService
         _vm = vm;
         DataContext = _vm;
 
+        //컬럼 동적 생성용
         _vm.ProjectRadGridView = ProjectRadGridView;
     }
 
@@ -66,12 +63,10 @@ public partial class StatsFishControl : UserControl, ITransientService
             {
                 case "사업장":
                     column.MinWidth = 80;
-                    column.Width = 100;
                     column.MaxWidth = 100;
                     break;
                 case "과업대표하천":
                     column.MinWidth = 80;
-                    column.Width = 120;
                     column.MaxWidth = 120;
                     break;
                 default:
@@ -96,14 +91,27 @@ public partial class StatsFishControl : UserControl, ITransientService
                     {
                         column.MinWidth = 60;
                         column.Width = GridViewLength.Auto;
-                        column.MaxWidth = 420;
-                        column.TextWrapping = TextWrapping.Wrap;
-                        if (_leftCellStyle != null)
-                            column.CellStyle = _leftCellStyle;
+                        column.MaxWidth = 160;
+                        column.TextTrimming = TextTrimming.CharacterEllipsis;
+                        if (_cellLeftStyle != null)
+                            column.CellStyle = _cellLeftStyle;
                         column.DataType = typeof(string);
                     }
                     break;
             }
+        }
+    }
+
+    private void ViewerOpenRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (App.Current.Services.GetService(typeof(ProjectSpeciesViewerControl)) is ProjectSpeciesViewerControl viewer)
+        {
+            viewer.CloseClick += (s, e) =>
+            {
+                ProjectSpeciesViewerContentControl.Content = null;
+            };
+            viewer.DataDataTable = _vm.ProjectDataTable.Copy();
+            ProjectSpeciesViewerContentControl.Content = viewer;
         }
     }
 
@@ -130,7 +138,7 @@ public partial class StatsFishControl : UserControl, ITransientService
             var gridViews = new Dictionary<string, RadGridView>
             {
                 { "연도별 자료", YearRadGridView },
-                { "사업장 과업대표하천별 출현종", ProjectRadGridView },
+                { "사업장 출현종", ProjectRadGridView },
                 { "전체 출현종", ProjectSpeciesRadGridView },
             };
 

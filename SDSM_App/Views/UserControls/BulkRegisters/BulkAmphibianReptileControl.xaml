@@ -28,14 +28,14 @@
                             <telerik:RadGlyph Glyph="{StaticResource GlyphReset}"/>
                         </StackPanel>
                     </telerik:RadButton>
-                    <telerik:RadWatermarkTextBox Text="{Binding Path=SheetName, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5 0 0 0" Style="{StaticResource FormWatermarkTextBoxStyle}"/>
+                    <telerik:RadWatermarkTextBox Text="{Binding Path=SheetName, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5 0 0 0" Style="{StaticResource FormWatermarkTextBoxStyle}"/>
                     <Rectangle Margin="20 0" Style="{StaticResource VerticalRectangleStyle}"/>
-                    <TextBlock Text="입력자료 시작 위치" Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 10 0"/>
+                    <TextBlock Text="입력자료 시작 위치 : 엑셀" Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 5 0"/>
                     <TextBlock Text="{Binding Path=FirstRowNumber}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
                     <TextBlock Text="행" Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 5 0"/>
-                    <TextBlock Text="{Binding Path=FirstColumnNumber}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
+                    <TextBlock Text="{Binding Path=FirstColumnAlphabet}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}" Style="{StaticResource PrimaryTextBlcokStyle}"/>
                     <TextBlock Text="열," Style="{StaticResource PrimaryTextBlcokStyle}" Margin="0 0 10 0"/>
-                    <telerik:RadDropDownButton Content="항목 열 번호" 
+                    <telerik:RadDropDownButton Content="항목 열 위치" 
                                                Cursor="Hand"
                                                helpers:ThemeHelper.MouseOverBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}"
                                                helpers:ThemeHelper.CheckedBrush="{telerik:Windows11Resource ResourceKey=FocusBrush}">
@@ -47,7 +47,7 @@
                                         <ColumnDefinition Width="50"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="항목명"/>
-                                    <TextBlock Grid.Column="1" Text="열 번호" TextAlignment="Right"/>
+                                    <TextBlock Grid.Column="1" Text="열 위치" TextAlignment="Right"/>
                                 </Grid>
                                 <ScrollViewer Padding="5" MaxHeight="720">
                                     <ItemsControl ItemsSource="{Binding Path=ColumnNumbers}">
@@ -70,7 +70,7 @@
                                                             <ColumnDefinition Width="50"/>
                                                         </Grid.ColumnDefinitions>
                                                         <TextBlock Text="{Binding Path=ColumnName}"/>
-                                                        <TextBlock Grid.Column="1" Text="{Binding Path=Value}" TextAlignment="Right"/>
+                                                        <TextBlock Grid.Column="1" Text="{Binding Path=ValueString}" TextAlignment="Right"/>
                                                     </Grid>
                                                 </Border>
                                             </DataTemplate>
@@ -193,7 +193,7 @@
                                          RowIndicatorVisibility="Collapsed"
                                          IsFilteringAllowed="False">
                         <telerik:RadGridView.Columns>
-                            <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
+                            <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" Width="460" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn Header="조사일&#13;(2000-01-01~오늘)" DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160"/>
@@ -288,7 +288,7 @@
                                          RowIndicatorVisibility="Collapsed"
                                          IsFilteringAllowed="False">
                         <telerik:RadGridView.Columns>
-                            <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
+                            <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" Width="460" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn Header="조사일&#13;(2000-01-01~오늘)" DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160"/>
@@ -309,8 +309,8 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng_Do}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng_Bun}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng_Cho}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" MinWidth="80" Width="160" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MajorCategory}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MiddleCategory}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180"/>

@@ -79,6 +79,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
 
     [ObservableProperty] private int _firstRowNumber = 2;
     [ObservableProperty] private int _firstColumnNumber = 17;
+    public string FirstColumnAlphabet { get; } = "Q";
     [ObservableProperty] private int _speciesFirstRowNumber = 79;
     [ObservableProperty] private bool _isContainHabitat;
 

@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="SDSM_App.Views.UserControls.ProjectSpeciesViewerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             mc:Ignorable="d" 
+             x:Name="_this">   
+    <Border Style="{StaticResource EditorLayoutStyle}">
+        <Border Margin="50" Style="{StaticResource ContentBoxStyle}" Background="{telerik:Windows11Resource ResourceKey=PrimarySolidBackgroundBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="사업장 출현종" Style="{StaticResource PrimaryTitleTextBlcokStyle}" Margin="0 0 0 10"/>
+                <telerik:RadButton Grid.Column="1" Margin="0 0 0 10" Click="CloseButton_Click">
+                    <telerik:RadGlyph Glyph="{StaticResource GlyphClose}"/>
+                </telerik:RadButton>
+                <telerik:RadGridView x:Name="DataTableRadGridView"
+                                     Grid.Row="1"
+                                     Grid.ColumnSpan="2"
+                                     ItemsSource="{Binding Path=DataDataTable.DefaultView, ElementName=_this}"
+                                     HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
+                                     BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
+                                     BusyIndicatorIsIndeterminate="False"
+                                     FrozenColumnsSplitterVisibility="Visible"
+                                     LeftFrozenColumnCount="0"
+                                     RowIndicatorVisibility="Collapsed"
+                                     MinHeight="110"
+                                     IsFilteringAllowed="False"
+                                     IsSynchronizedWithCurrentItem="{x:Null}"                                                 
+                                     AutoGenerateColumns="True"
+                                     AutoGeneratingColumn="DataTableRadGridView_AutoGeneratingColumn"
+                                     RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
+                </telerik:RadGridView>
+            </Grid>
+        </Border>
+    </Border>    
+</UserControl>

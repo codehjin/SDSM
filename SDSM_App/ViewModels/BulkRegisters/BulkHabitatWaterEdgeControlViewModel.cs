@@ -68,6 +68,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
 
     [ObservableProperty] private int _firstRowNumber = 2;
     [ObservableProperty] private int _firstColumnNumber = 6;
+    public string FirstColumnAlphabet { get; } = "F";
 
     //에러 개수
     [ObservableProperty]

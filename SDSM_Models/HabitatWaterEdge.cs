@@ -30,16 +30,16 @@ public class HabitatWaterEdge
     [DisplayName("조사자")] public string? Surveyor { get; set; }
     [DisplayName("조사불가시")] public string? SurveyUnavailableReason { get; set; }// 빈값없음
     [DisplayName("특이사항")] public string? Note { get; set; }
-    [DisplayName("자연적 종횡사주")] public double? EvaluationItem1 { get; set; }//소수점 1자리
-    [DisplayName("하도정비/하도 자연성")] public double? EvaluationItem2 { get; set; }//소수점 1자리
-    [DisplayName("유속 다양성")] public double? EvaluationItem3 { get; set; }//소수점 1자리
+    [DisplayName("자연적\n 종횡사주")] public double? EvaluationItem1 { get; set; }//소수점 1자리
+    [DisplayName("하도정비/\n하도 자연성")] public double? EvaluationItem2 { get; set; }//소수점 1자리
+    [DisplayName("유속\n 다양성")] public double? EvaluationItem3 { get; set; }//소수점 1자리
     [DisplayName("하천변 폭")] public double? EvaluationItem4 { get; set; }//소수점 1자리
-    [DisplayName("저수로 하안공")] public double? EvaluationItem5 { get; set; }//소수점 1자리
-    [DisplayName("제방하안 재료")] public double? EvaluationItem6 { get; set; }//소수점 1자리
+    [DisplayName("저수로\n 하안공")] public double? EvaluationItem5 { get; set; }//소수점 1자리
+    [DisplayName("제방하안\n 재료")] public double? EvaluationItem6 { get; set; }//소수점 1자리
     [DisplayName("저질 상태")] public double? EvaluationItem7 { get; set; }//소수점 1자리
     [DisplayName("횡구조물")] public double? EvaluationItem8 { get; set; }//소수점 1자리
-    [DisplayName("제외지 토지 이용")] public double? EvaluationItem9 { get; set; }//소수점 1자리
-    [DisplayName("제내지 토지 이용")] public double? EvaluationItem10 { get; set; }//소수점 1자리
+    [DisplayName("제외지\n 토지 이용")] public double? EvaluationItem9 { get; set; }//소수점 1자리
+    [DisplayName("제내지\n 토지 이용")] public double? EvaluationItem10 { get; set; }//소수점 1자리
     [DisplayName("평가점수")] public double? EvaluationScore { get; set; }//소수점 1자리
     [DisplayName("평가등급")] public string? EvaluationGrade { get; set; }
 

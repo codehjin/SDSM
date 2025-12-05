@@ -62,12 +62,10 @@ public partial class StatsBenthosControl : UserControl, ITransientService
             {
                 case "사업장":
                     column.MinWidth = 80;
-                    column.Width = 100;
                     column.MaxWidth = 100;
                     break;
                 case "과업대표하천":
                     column.MinWidth = 80;
-                    column.Width = 120;
                     column.MaxWidth = 120;
                     break;
                 default:
@@ -92,14 +90,27 @@ public partial class StatsBenthosControl : UserControl, ITransientService
                     {
                         column.MinWidth = 60;
                         column.Width = GridViewLength.Auto;
-                        column.MaxWidth = 420;
-                        column.TextWrapping = TextWrapping.Wrap;
+                        column.MaxWidth = 160;
+                        column.TextTrimming = TextTrimming.CharacterEllipsis;
                         if (_cellLeftStyle != null)
                             column.CellStyle = _cellLeftStyle;
                         column.DataType = typeof(string);
                     }
                     break;
             }
+        }
+    }
+    
+    private void ViewerOpenRadButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (App.Current.Services.GetService(typeof(ProjectSpeciesViewerControl)) is ProjectSpeciesViewerControl viewer)
+        {
+            viewer.CloseClick += (s, e) =>
+            {
+                ProjectSpeciesViewerContentControl.Content = null;
+            };
+            viewer.DataDataTable = _vm.ProjectDataTable.Copy();
+            ProjectSpeciesViewerContentControl.Content = viewer;
         }
     }
 
@@ -126,7 +137,7 @@ public partial class StatsBenthosControl : UserControl, ITransientService
             var gridViews = new Dictionary<string, RadGridView>
             {
                 { "연도별 자료", YearRadGridView },
-                { "사업장 과업대표하천별 출현종", ProjectRadGridView },
+                { "사업장 출현종", ProjectRadGridView },
                 { "전체 출현종", ProjectSpeciesRadGridView },
             };
 

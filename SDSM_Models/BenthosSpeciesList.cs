@@ -18,8 +18,8 @@ public class BenthosSpeciesList
 
     [DisplayName("오탁치(s)")] public double? SaprobicValue { get; set; }
     [DisplayName("지표가중치(g)")] public int? IndicatorWeight { get; set; }
-    [DisplayName("멸종위기야생생물 I급")] public string? Endangered1 { get; set; }
-    [DisplayName("멸종위기야생생물 II급")] public string? Endangered2 { get; set; }
+    [DisplayName("멸종위기\n야생생물 I급")] public string? Endangered1 { get; set; }
+    [DisplayName("멸종위기\n야생생물 II급")] public string? Endangered2 { get; set; }
     [DisplayName("한국고유종")] public string? Endemic { get; set; }
     [DisplayName("문")] public string? PhylumKo { get; set; }
     [DisplayName("강")] public string? ClassKo { get; set; }

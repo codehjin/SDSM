@@ -68,6 +68,7 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
 
     [ObservableProperty] private int _firstRowNumber = 5;
     [ObservableProperty] private int _firstColumnNumber = 2;
+    public string FirstColumnAlphabet { get; } = "B";
 
     //에러 개수
     [ObservableProperty]
@@ -955,37 +956,37 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
 
     private void GetColumnNumbers()
     {
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "연도차수", Value = 2 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사일", Value = 3 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "날씨", Value = 4 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천명", Value = 5 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "지점명", Value = 6 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "일반명", Value = 7 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "학명", Value = 8 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특징", Value = 9 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_도", Value = 10 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_분", Value = 11 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_초", Value = 12 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_도", Value = 13 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_분", Value = 14 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_초", Value = 15 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도", Value = 16 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도", Value = 17 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "관찰지 유형", Value = 19 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "포획", Value = 20 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "관찰", Value = 21 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "울음", Value = 22 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "사체", Value = 23 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "족적", Value = 24 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "털", Value = 25 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "식흔", Value = 26 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "굴", Value = 27 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "번식지", Value = 28 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "배설물", Value = 29 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "카메라", Value = 30 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "기타(탐문 등)", Value = 31 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", Value = 32 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특이사항", Value = 33 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "연도차수", ValueString = "B" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사일", ValueString = "C" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "날씨", ValueString = "D" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천명", ValueString = "E" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "지점명", ValueString = "F" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "일반명", ValueString = "G" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "학명", ValueString = "H" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특징", ValueString = "I" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_도", ValueString = "J" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_분", ValueString = "K" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도_초", ValueString = "L" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_도", ValueString = "M" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_분", ValueString = "N" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_초", ValueString = "O" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도", ValueString = "P" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도", ValueString = "Q" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "관찰지 유형", ValueString = "S" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "포획", ValueString = "T" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "관찰", ValueString = "U" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "울음", ValueString = "V" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "사체", ValueString = "W" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "족적", ValueString = "X" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "털", ValueString = "Y" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "식흔", ValueString = "Z" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "굴", ValueString = "AA" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "번식지", ValueString = "AB" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "배설물", ValueString = "AC" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "카메라", ValueString = "AD" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "기타(탐문 등)", ValueString = "AE" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", ValueString = "AF" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "특이사항", ValueString = "AG" });
     }
 
     private void GetSavedFileInfos()

@@ -37,10 +37,12 @@
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}"/>
                                 </StackPanel.Resources>
                                 <TextBlock Text="전체" Margin="0 0 5 0"/>
-                                <TextBlock Text="{Binding Path=ModelCollection.Count, Mode=OneWay, StringFormat={}{0:N0}}" Margin="3 0 0 0"/>
+                                <TextBlock Text="{Binding Path=ModelTotal, StringFormat={}{0:N0}}" Margin="3 0 0 0"/>
                                 <TextBlock Text="건" Margin="0 0 5 0"/>
-                                <TextBlock Text="/" Margin="5 0"/>
-                                <TextBlock Text="페이지" Margin="5 0 5 0"/>
+                                <TextBlock Text="{Binding Path=PageIndex, ElementName=SpeciesDataRadDataPager, Converter={StaticResource IndexToNumberConverter}, StringFormat=({0:N0}}"/>
+                                <TextBlock Text="/" Margin="2 0"/>
+                                <TextBlock Text="{Binding Path=PageCount , ElementName=SpeciesDataRadDataPager, StringFormat={}{0:N0})}"/>
+                                <TextBlock Text="페이지" Margin="5 0 3 0"/>
                                 <TextBlock Text="{Binding Path=Items.Count, Mode=OneWay, ElementName=SpeciesDataRadGridView, StringFormat={}{0:N0}}" Margin="3 0 0 0" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
                                 <TextBlock Text="건"/>
                             </StackPanel>
@@ -108,84 +110,84 @@
                             <telerik:GridViewColumnGroup Name="species" Header="출현종"/>
                         </telerik:RadGridView.ColumnGroups>
                         <telerik:RadGridView.Columns>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FishId}" MinWidth="80" Width="140" MaxWidth="140"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Project}" MinWidth="80" Width="140" MaxWidth="140"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Workplace}" MinWidth="80" Width="140" MaxWidth="140"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WorkplaceRiver}" MinWidth="80" Width="140" MaxWidth="140"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MajorRegion}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MiddleRegion}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RiverType}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyAgency}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="survey"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CollectionTime}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="collection"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CollectionTool}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="collection"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CollectionFlowState}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="collection"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CollectionFlowState}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=AutoRiverChasu}" MinWidth="80" Width="140" MaxWidth="140"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WatershedType}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="rivertype"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=DrainageSystemType}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="rivertype"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RiverWidth}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="rivertype"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YuWidth}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="rivertype"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Depth}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="rivertype"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Submerged}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="aquatic"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Floating}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="aquatic"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Emergent}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="aquatic"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeftVacantLand}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="left"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeftH}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="left"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeftS}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="left"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeftT1}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="left"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RightVacantLand}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="right"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RightH}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="right"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RightS}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="right"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RightT1}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="right"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeveeLeft}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="levee"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeveeRight}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="levee"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Confounder}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="harmful"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Structure}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="harmful"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Fishway}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="harmful"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EtcNote}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="harmful"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Bedrock}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Concrete}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Mud}" MinWidth="80" Width="200" MaxWidth="200"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Sand}" MinWidth="80" Width="200" MaxWidth="200"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FineGravel}" MinWidth="80" Width="200" MaxWidth="200"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Gravel}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SmallStone}" MinWidth="80" Width="200" MaxWidth="200"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BigStone}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatRiverType}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="habitat"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatFlowState}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="habitat"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatFlowState}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="habitat"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyUnavailableReason}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" ColumnGroupName="etc"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Note}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" ColumnGroupName="etc"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=DECount}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="abnormal"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EFCount}" MinWidth="80" Width="260" MaxWidth="260" ColumnGroupName="abnormal"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LECount}" MinWidth="80" Width="180" MaxWidth="180" ColumnGroupName="abnormal"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TUCount}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="abnormal"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIScore}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIGrade}" MinWidth="80" Width="160" MaxWidth="160"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FishTrait}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=ToleranceGuild}" MinWidth="80" Width="200" MaxWidth="200"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Endangered2}" MinWidth="80" Width="200" MaxWidth="200"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FeedingGuild}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatGuild}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Endemic}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Endangered1}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Endangered2}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=NaturalMonument}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LineageOrder}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=ClassKo}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=OrderKo}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FamilyKo}" MinWidth="80" Width="160" MaxWidth="160"  ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap" ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="480" MaxWidth="480" TextWrapping="Wrap" ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndividualCount}" MinWidth="80" Width="160" MaxWidth="160" ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FishId}" MinWidth="80" MaxWidth="140"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Project}" MinWidth="80" MaxWidth="140"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Workplace}" MinWidth="80" MaxWidth="140"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WorkplaceRiver}" MinWidth="80" MaxWidth="140"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" MaxWidth="160" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" MaxWidth="160" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" MaxWidth="160" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MajorRegion}" MinWidth="80" MaxWidth="160" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=MiddleRegion}" MinWidth="80" MaxWidth="160" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" MaxWidth="160" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RiverType}" MinWidth="80" MaxWidth="160" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" MaxWidth="160" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" MaxWidth="160" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" MaxWidth="160" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyAgency}" MinWidth="80" MaxWidth="180" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Surveyor}" MinWidth="80" MaxWidth="180" ColumnGroupName="survey"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CollectionTime}" MinWidth="80" MaxWidth="180" ColumnGroupName="collection"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CollectionTool}" MinWidth="80" MaxWidth="180" ColumnGroupName="collection"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CollectionFlowState}" MinWidth="80" MaxWidth="180" ColumnGroupName="collection"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=CollectionFlowState}" MinWidth="80" MaxWidth="180" ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=AutoRiverChasu}" MinWidth="80" MaxWidth="140"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WatershedType}" MinWidth="80" MaxWidth="180" ColumnGroupName="rivertype"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=DrainageSystemType}" MinWidth="80" MaxWidth="180" ColumnGroupName="rivertype"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RiverWidth}" MinWidth="80" MaxWidth="180" ColumnGroupName="rivertype"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YuWidth}" MinWidth="80" MaxWidth="180" ColumnGroupName="rivertype"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Depth}" MinWidth="80" MaxWidth="180" ColumnGroupName="rivertype"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Submerged}" MinWidth="80" MaxWidth="180" ColumnGroupName="aquatic"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Floating}" MinWidth="80" MaxWidth="180" ColumnGroupName="aquatic"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Emergent}" MinWidth="80" MaxWidth="180" ColumnGroupName="aquatic"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeftVacantLand}" MinWidth="80" MaxWidth="180" ColumnGroupName="left"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeftH}" MinWidth="80" MaxWidth="180" ColumnGroupName="left"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeftS}" MinWidth="80" MaxWidth="180" ColumnGroupName="left"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeftT1}" MinWidth="80" MaxWidth="180" ColumnGroupName="left"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RightVacantLand}" MinWidth="80" MaxWidth="180" ColumnGroupName="right"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RightH}" MinWidth="80" MaxWidth="180" ColumnGroupName="right"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RightS}" MinWidth="80" MaxWidth="180" ColumnGroupName="right"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RightT1}" MinWidth="80" MaxWidth="180" ColumnGroupName="right"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeveeLeft}" MinWidth="80" MaxWidth="180" ColumnGroupName="levee"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeveeRight}" MinWidth="80" MaxWidth="180" ColumnGroupName="levee"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Confounder}" MinWidth="80" MaxWidth="180" ColumnGroupName="harmful"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Structure}" MinWidth="80" MaxWidth="180" ColumnGroupName="harmful"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Fishway}" MinWidth="80" MaxWidth="180" ColumnGroupName="harmful"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EtcNote}" MinWidth="80" MaxWidth="180" ColumnGroupName="harmful"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Bedrock}" MinWidth="80" MaxWidth="160"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Concrete}" MinWidth="80" MaxWidth="160"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Mud}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Sand}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FineGravel}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Gravel}" MinWidth="80" MaxWidth="160"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SmallStone}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BigStone}" MinWidth="80" MaxWidth="160"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatRiverType}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatFlowState}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatFlowState}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyUnavailableReason}" MinWidth="80" MaxWidth="240" TextWrapping="Wrap" ColumnGroupName="etc"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Note}" MinWidth="80" MaxWidth="240" TextWrapping="Wrap" ColumnGroupName="etc"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=DECount}" MinWidth="80" MaxWidth="180" ColumnGroupName="abnormal"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=EFCount}" MinWidth="80" MaxWidth="260" ColumnGroupName="abnormal"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LECount}" MinWidth="80" MaxWidth="180" ColumnGroupName="abnormal"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=TUCount}" MinWidth="80" MaxWidth="160" ColumnGroupName="abnormal"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIScore}" MinWidth="80" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FAIGrade}" MinWidth="80" MaxWidth="160"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FishTrait}" MinWidth="80" MaxWidth="160"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=ToleranceGuild}" MinWidth="80" MaxWidth="200"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Endangered2}" MinWidth="80" MaxWidth="200"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FeedingGuild}" MinWidth="80" MaxWidth="160"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatGuild}" MinWidth="80" MaxWidth="160"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Endemic}" MinWidth="80" MaxWidth="160"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Endangered1}" MinWidth="80" MaxWidth="160"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Endangered2}" MinWidth="80" MaxWidth="160"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=NaturalMonument}" MinWidth="80" MaxWidth="160"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LineageOrder}" MinWidth="80" MaxWidth="160"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=ClassKo}" MinWidth="80" MaxWidth="160"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=OrderKo}" MinWidth="80" MaxWidth="160"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FamilyKo}" MinWidth="80" MaxWidth="160"  ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" MaxWidth="240" TextWrapping="Wrap" ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" MaxWidth="480" TextWrapping="Wrap" ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=IndividualCount}" MinWidth="80" MaxWidth="160" ColumnGroupName="species"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>
@@ -207,7 +209,8 @@
                     </telerik:RadNumericUpDown>
                 </StackPanel>
 
-                <telerik:RadDataPager Grid.Column="1"
+                <telerik:RadDataPager x:Name="SpeciesDataRadDataPager"
+                                      Grid.Column="1"
                                       ItemCount="{Binding Path=ModelTotal}"
                                       PageSize="{Binding Path=PageSize}"
                                       PageIndex="{Binding Path=PageIndex, Mode=TwoWay}"

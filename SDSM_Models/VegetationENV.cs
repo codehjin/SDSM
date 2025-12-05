@@ -22,18 +22,18 @@ public class VegetationENV
     [DisplayName("지점명")] public string? Site { get; set; } // 빈값없음
     [DisplayName("하천명")] public string? River { get; set; } //빈값없음
     [DisplayName("조사자")] public string? Surveyor { get; set; }
-    [DisplayName("시점_위도")] public double? StartLat { get; set; } // 소수점 6자리
-    [DisplayName("시점_경도")] public double? StartLng { get; set; }// 소수점 6자리
-    [DisplayName("시점_행정구역명")] public string? StartAddress { get; set; }
-    [DisplayName("종점_위도")] public double? EndLat { get; set; }// 소수점 6자리
-    [DisplayName("종점_경도")] public double? EndLng { get; set; }// 소수점 6자리
-    [DisplayName("시점_각도")] public double? StartAzimuth { get; set; }
+    [DisplayName("시점 위도")] public double? StartLat { get; set; } // 소수점 6자리
+    [DisplayName("시점 경도")] public double? StartLng { get; set; }// 소수점 6자리
+    [DisplayName("시점\n 행정구역명")] public string? StartAddress { get; set; }
+    [DisplayName("종점 위도")] public double? EndLat { get; set; }// 소수점 6자리
+    [DisplayName("종점 경도")] public double? EndLng { get; set; }// 소수점 6자리
+    [DisplayName("시점 각도")] public double? StartAzimuth { get; set; }
     //Riverside Land
-    [DisplayName("제외지_하천구조")] public string? RLSubstrateStructure  { get; set; }
-    [DisplayName("제외지_교란")] public string? RLDisturbance { get; set; }
+    [DisplayName("제외지\n 하천구조")] public string? RLSubstrateStructure  { get; set; }
+    [DisplayName("제외지 교란")] public string? RLDisturbance { get; set; }
     //Interior Land
-    [DisplayName("제내지_좌안_토지이용")] public string? ILLeftLandUse { get; set; }
-    [DisplayName("제내지_우안_토지이용")] public string? ILRightLandUse { get; set; }
+    [DisplayName("제내지 좌안\n 토지이용")] public string? ILLeftLandUse { get; set; }
+    [DisplayName("제내지 우안\n 토지이용")] public string? ILRightLandUse { get; set; }
     [DisplayName("거리(m)")] public double? Distance { get; set; }// 소수점 1자리
     [DisplayName("경사(°)")] public double? Slope { get; set; }// 소수점 1자리
     [DisplayName("수심(cm)")] public double? DepthWater { get; set; }// 소수점 1자리

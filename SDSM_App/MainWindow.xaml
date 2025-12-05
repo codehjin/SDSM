@@ -1378,13 +1378,13 @@
                                                         <TextBlock Text="양서파충류"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click" Visibility="Collapsed">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="식물상"/>
                                                     </StackPanel>
                                                 </telerik:RadRadioButton>
-                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click">
+                                                <telerik:RadRadioButton IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click" Visibility="Collapsed">
                                                     <StackPanel Orientation="Horizontal">
                                                         <icon:PackIconBootstrapIcons Style="{StaticResource MenuContentIconStyle}"/>
                                                         <TextBlock Text="식생"/>

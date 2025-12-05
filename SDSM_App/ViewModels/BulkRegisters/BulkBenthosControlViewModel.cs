@@ -76,6 +76,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
     [ObservableProperty] private int _firstRowNumber = 2;
     [ObservableProperty] private int _firstColumnNumber = 13;
+    public string FirstColumnAlphabet { get; } = "M";
     [ObservableProperty] private int _speciesFirstRowNumber = 47;
 
     //에러 개수

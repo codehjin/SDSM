@@ -35,7 +35,7 @@ public class ImportMammal
     [DisplayName("번식지")] public string? Trace9 { get; set; }
     [DisplayName("배설물")] public string? Trace10 { get; set; }
     [DisplayName("카메라")] public string? Trace11 { get; set; }
-    [DisplayName("기타(탐문 등)")] public string? Trace12 { get; set; }
+    [DisplayName("기타\n(탐문 등)")] public string? Trace12 { get; set; }
     [DisplayName("조사자")] public string? Surveyor { get; set; }
     [DisplayName("특이사항")] public string? Note { get; set; }
 }

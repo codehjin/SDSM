@@ -9,7 +9,9 @@
                     xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
                     xmlns:main="clr-namespace:SDSM_App"
                     xmlns:converter="clr-namespace:SDSM_App.Converters">
-   
+
+    <converter:IndexToNumberConverter x:Key="IndexToNumberConverter"/>
+    
     <Style TargetType="telerik:RadButton">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Height" Value="{StaticResource DefaultHeight}"/>
@@ -502,7 +504,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="BorderBrush" Value="{telerik:Windows11Resource ResourceKey=PrimarySolidBorderBrush}"/>
         <Setter Property="BorderThickness" Value="0 0 0 1"/>
-        <Setter Property="MinHeight" Value="50"/>
+        <Setter Property="MinHeight" Value="46"/>
         <Setter Property="Template" Value="{StaticResource GridViewHeaderRowTemplate}"/>
     </Style>
 

@@ -225,7 +225,7 @@ public partial class StatsVegetationENVControlViewModel : ObservableObject, ITra
                 ProjectTotalSpecies = speciesModels.Count;
 
                 //자료가 적은 원본으로
-                var years = SearchData.Select(m => m.SurveyYear).Distinct().OrderByDescending(m => m).ToList();
+                var years = SearchData.Select(m => m.SurveyYear).Distinct().OrderBy(m => m).ToList();
                 var workplaces = SearchData.Select(m => m.SiteDivision.Workplace).Distinct().OrderBy(m => m).ToList();
 
                 dt.Columns.Add(new DataColumn("사업장", typeof(string)));

@@ -48,5 +48,5 @@ public class VegetationENVView
     // SiteDivision에서 가져온 컬럼
     [DisplayName("프로젝트명")] public string? Project { get; set; }
     [DisplayName("사업장")] public string? Workplace { get; set; }
-    [DisplayName("과업 대표하천")] public string? WorkplaceRiver { get; set; }
+    [DisplayName("과업\n 대표하천")] public string? WorkplaceRiver { get; set; }
 }

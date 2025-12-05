@@ -354,7 +354,7 @@ public partial class PlantPageViewModel : ObservableObject, ITransientService
 
                 ModelTotal = query.Count();
 
-                ModelCollection = [.. query.OrderByDescending(m => m.PlantId).Skip(index * PageSize).Take(PageSize)];
+                ModelCollection = [.. query.OrderBy(m => m.SurveyDate).ThenBy(m => m.Site).Skip(index * PageSize).Take(PageSize)];
 
 
             }, _cts.Token);

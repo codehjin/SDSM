@@ -66,6 +66,7 @@ public partial class BulkVegetationControlViewModel : ObservableObject, ITransie
 
     [ObservableProperty] private int _firstRowNumber = 2;
     [ObservableProperty] private int _firstColumnNumber = 1;
+    public string FirstColumnAlphabet { get; } = "A";
 
     //에러 개수
     [ObservableProperty]
@@ -688,15 +689,15 @@ public partial class BulkVegetationControlViewModel : ObservableObject, ITransie
 
     private void GetColumnNumbers()
     {
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "연도차수", Value = 1 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "지점명", Value = 2 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사일", Value = 3 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "대권역명", Value = 4 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "중권역명", Value = 5 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천명", Value = 6 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", Value = 7 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "군락명", Value = 8 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "군락면적", Value = 9 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "연도차수", ValueString = "A" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "지점명", ValueString = "B" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사일", ValueString = "C" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "대권역명", ValueString = "D" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "중권역명", ValueString = "E" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천명", ValueString = "F" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", ValueString = "G" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "군락명", ValueString = "H" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "군락면적", ValueString = "I" });
     }
 
     private void GetSavedFileInfos()

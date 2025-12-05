@@ -403,7 +403,7 @@ public partial class VegetationENVControlViewModel : ObservableObject, ITransien
 
                 ModelTotal = query.Count();
 
-                ModelCollection = [.. query.OrderByDescending(m => m.VegetationENVId).Skip(index * PageSize).Take(PageSize)];
+                ModelCollection = [.. query.OrderBy(m => m.SurveyDate).ThenBy(m => m.Site).Skip(index * PageSize).Take(PageSize)];
 
             }, _cts.Token);
         }

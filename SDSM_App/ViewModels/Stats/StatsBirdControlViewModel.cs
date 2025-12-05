@@ -215,7 +215,7 @@ public partial class StatsBirdControlViewModel : ObservableObject, ITransientSer
                 speciesModels.AddRange(SearchData.Select(m => m.SpeciesKo).Distinct().OrderBy(m => m));
                 ProjectTotalSpecies = speciesModels.Count;
 
-                var years = SearchData.Select(m => m.SurveyYear).Distinct().OrderByDescending(m => m).ToList();
+                var years = SearchData.Select(m => m.SurveyYear).Distinct().OrderBy(m => m).ToList();
                 var workplaces = SearchData.Select(m => m.SiteDivision.Workplace).Distinct().OrderBy(m => m).ToList();
 
                 dt.Columns.Add(new DataColumn("사업장", typeof(string)));
