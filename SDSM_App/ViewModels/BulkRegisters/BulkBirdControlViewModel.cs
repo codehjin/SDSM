@@ -868,6 +868,8 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
 
     private bool AddSave()
     {
+        const int batchSize = 500;
+
         try
         {
             GB.IsBusy = true;
@@ -875,61 +877,50 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
             GB.BusyContent = "자료 저장 중...";
             GB.IsIndeterminate = false;
 
-            double progressTotal = ConvertedCount;
-            double progressCount = 0;
+            var entities = ConvertedCollection.ToList();
 
-            string strConn = GB.SqliteDataSource;
+            if (entities.Count == 0)
+                return true;
 
-            using (var conn = new SQLiteConnection(strConn))
+            using var context = new SDSMDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
+            try
             {
-                conn.Open();
+                // 성능 최적화
+                context.ChangeTracker.AutoDetectChangesEnabled = false;
 
-                using var transaction = conn.BeginTransaction();
+                int total = entities.Count;
+                int processed = 0;
 
-                foreach (var model in ConvertedCollection)
+                for (int i = 0; i < total; i += batchSize)
                 {
-                    progressCount++;
-                    GB.ProgressValue = (progressCount / progressCount) * 100;
+                    var batch = entities.Skip(i).Take(batchSize).ToList();
 
-                    string strSql = $"INSERT INTO Bird" +
-                                     $"(SurveyYear, YearChsu, SurveyDate, Weather, River, Site, " +
-                                     $"SpeciesKo, SpeciesEn, Feature, Lat, Lng, " +
-                                     $"IndividualCount, MigratoryType, Category, CategoryDetail, HabitatType, " +
-                                     $"Surveyor, Note, SiteDivisionId) " +
-                                     $"VALUES " +
-                                     $"(@SurveyYear, @YearChsu, @SurveyDate, @Weather, @River, @Site, " +
-                                     $"@SpeciesKo, @SpeciesEn, @Feature, @Lat, @Lng, " +
-                                     $"@IndividualCount, @MigratoryType, @Category, @CategoryDetail, @HabitatType, " +
-                                     $"@Surveyor, @Note, @SiteDivisionId)";
+                    context.Birds.AddRange(batch);
+                    context.SaveChanges();
 
-                    using var command = new SQLiteCommand(strSql, conn);
+                    // 메모리 해제 및 다음 배치 준비
+                    context.ChangeTracker.Clear();
 
-                    command.Parameters.AddWithValue("@SurveyYear", model.SurveyYear);
-                    command.Parameters.AddWithValue("@YearChsu", model.YearChsu);
-                    command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
-                    command.Parameters.AddWithValue("@Weather", model.Weather ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@River", model.River ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Site", model.Site ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SpeciesKo", model.SpeciesKo);
-                    command.Parameters.AddWithValue("@SpeciesEn", model.SpeciesEn ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Feature", model.Feature ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Lat", model.Lat ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Lng", model.Lng ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@IndividualCount", model.IndividualCount ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@MigratoryType", model.MigratoryType ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Category", model.Category ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@CategoryDetail", model.CategoryDetail ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@HabitatType", model.HabitatType ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Surveyor", model.Surveyor ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Note", model.Note ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SiteDivisionId", model.SiteDivisionId ?? (object)DBNull.Value);
-
-                    command.ExecuteNonQuery();
+                    processed += batch.Count;
+                    GB.ProgressValue = total > 0 ? (processed / (double)total) * 100d : 100d;
                 }
 
                 transaction.Commit();
+                return true;
             }
-            return true;
+            catch (Exception exInner)
+            {
+                try { transaction.Rollback(); } catch { }
+                GB.LogWrite(GetType().Name, nameof(AddSave), exInner.Message);
+                return false;
+            }
+            finally
+            {
+                // 복구
+                try { context.ChangeTracker.AutoDetectChangesEnabled = true; } catch { }
+            }
         }
         catch (Exception ex)
         {

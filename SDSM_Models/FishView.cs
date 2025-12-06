@@ -27,28 +27,7 @@ public class FishView
     [DisplayName("채집도구")] public string? CollectionTool { get; set; }
     [DisplayName("흐름상태")] public string? CollectionFlowState { get; set; }
     [DisplayName("하천차수")] public int? AutoRiverChasu { get; set; }
-    [DisplayName("유역형태")] public string? WatershedType { get; set; }
-    [DisplayName("수계형태")] public string? DrainageSystemType { get; set; }
-    [DisplayName("하폭(m)")] public string? RiverWidth { get; set; }
-    [DisplayName("유폭(m)")] public string? YuWidth { get; set; }
-    [DisplayName("수심(m)")] public string? Depth { get; set; }
-    [DisplayName("침수성")] public string? Submerged { get; set; }
-    [DisplayName("부수성")] public string? Floating { get; set; }
-    [DisplayName("정수성")] public string? Emergent { get; set; }
-    [DisplayName("나지")] public int? LeftVacantLand { get; set; }
-    [DisplayName("초본류")] public int? LeftH { get; set; }
-    [DisplayName("관목류")] public int? LeftS { get; set; }
-    [DisplayName("교목류")] public int? LeftT1 { get; set; }
-    [DisplayName("나지")] public int? RightVacantLand { get; set; }
-    [DisplayName("초본류")] public int? RightH { get; set; }
-    [DisplayName("관목류")] public int? RightS { get; set; }
-    [DisplayName("교목류")] public int? RightT1 { get; set; }
-    [DisplayName("좌안")] public string? LeveeLeft { get; set; }
-    [DisplayName("우안")] public string? LeveeRight { get; set; }
-    [DisplayName("교란요인")] public string? Confounder { get; set; }
-    [DisplayName("하천내\n 구조물")] public string? Structure { get; set; }
-    [DisplayName("어도 유무")] public string? Fishway { get; set; }
-    [DisplayName("기타 특이사항")] public string? EtcNote { get; set; }
+    
     [DisplayName("암반")] public int? Bedrock { get; set; }
     [DisplayName("콘크리트")] public int? Concrete { get; set; }
     [DisplayName("진흙이하\n(<0.063mm)")] public int? Mud { get; set; }

@@ -66,20 +66,11 @@
     <Color x:Key="NoThemeMouseOverBackgroundColor">#FFD9D9D9</Color>
     <SolidColorBrush x:Key="NoThemeMouseOverBackgroundBrush" Color="{StaticResource NoThemeMouseOverBackgroundColor}" />
 
-    <LinearGradientBrush x:Key="Stats1LinearBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#2196F3" Offset="0"/>
-        <GradientStop Color="#64B5F6" Offset="1"/>
-    </LinearGradientBrush>
+    <Color x:Key="Stats1LinearColor">#FF0099BC</Color>
+    <SolidColorBrush x:Key="Stats1LinearBrush" Color="{StaticResource Stats1LinearColor}" />
 
-    <LinearGradientBrush x:Key="Stats2LinearBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#7BAB38" Offset="0"/>
-        <GradientStop Color="#8EC441" Offset="1"/>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="Stats3LinearBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#00897B" Offset="0"/>
-        <GradientStop Color="#26A69A" Offset="1"/>
-    </LinearGradientBrush>
+    <Color x:Key="Stats2LinearColor">#FFADB827</Color>
+    <SolidColorBrush x:Key="Stats2LinearBrush" Color="{StaticResource Stats2LinearColor}" />
 
     <!--주메뉴-->
     <Color x:Key="MainPrimaryColor">#FF1E232E</Color>

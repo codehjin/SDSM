@@ -749,6 +749,8 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
 
     private bool AddSave()
     {
+        const int batchSize = 500;
+
         try
         {
             GB.IsBusy = true;
@@ -756,98 +758,50 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
             GB.BusyContent = "자료 저장 중...";
             GB.IsIndeterminate = false;
 
-            double progressTotal = ConvertedCount;
-            double progressCount = 0;
+            var entities = ConvertedCollection.ToList();
 
-            string strConn = GB.SqliteDataSource;
+            if (entities.Count == 0)
+                return true;
 
-            using (var conn = new SQLiteConnection(strConn))
+            using var context = new SDSMDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
+            try
             {
-                conn.Open();
+                // 성능 최적화
+                context.ChangeTracker.AutoDetectChangesEnabled = false;
 
-                using var transaction = conn.BeginTransaction();
+                int total = entities.Count;
+                int processed = 0;
 
-                foreach (var model in ConvertedCollection)
+                for (int i = 0; i < total; i += batchSize)
                 {
-                    progressCount++;
-                    GB.ProgressValue = (progressCount / progressCount) * 100;
+                    var batch = entities.Skip(i).Take(batchSize).ToList();
 
-                    string strSql = $"INSERT INTO WaterQuality" +
-                                     $"(SurveyYear, YearChsu, Site, SurveyDate, MajorRegion, MiddleRegion, " +
-                                     $"River, RiverType, Lat, Lng, Weather, " +
-                                     $"SurveyAgency, Surveyor, PH, BOD, COD, " +
-                                     $"TOC, SS, DO, TP, Ecotoxicity, EColi, " +
-                                     $"TN, EC, Cl, SO42, Cu, " +
-                                     $"Zn, Cr, Turbidity, Chla, " +
-                                     $"WaterTemperature, WaterDepth, FlowVelocity, FlowSec, FlowDay," +
-                                     $"PHGrade, BODGrade, CODGrade, TOCGrade, SSGrade, DOGrade, TPGrade, EColiGrade, SiteDivisionId) " +
-                                     $"VALUES " +
-                                     $"(@SurveyYear, @YearChsu, @Site, @SurveyDate, @MajorRegion, @MiddleRegion, " +
-                                     $"@River, @RiverType, @Lat, @Lng, @Weather, " +
-                                     $"@SurveyAgency, @Surveyor, @PH, @BOD, @COD, " +
-                                     $"@TOC, @SS, @DO, @TP, @Ecotoxicity, @EColi, " +
-                                     $"@TN, @EC, @Cl, @SO42, @Cu, " +
-                                     $"@Zn, @Cr, @Turbidity, @Chla, " +
-                                     $"@WaterTemperature, @WaterDepth, @FlowVelocity, @FlowSec, @FlowDay," +
-                                     $"@PHGrade, @BODGrade, @CODGrade, @TOCGrade, @SSGrade, @DOGrade, @TPGrade, @EColiGrade, @SiteDivisionId)";
+                    context.WaterQualitys.AddRange(batch);
+                    context.SaveChanges();
 
-                    using var command = new SQLiteCommand(strSql, conn);
+                    // 메모리 해제 및 다음 배치 준비
+                    context.ChangeTracker.Clear();
 
-                    command.Parameters.AddWithValue("@SurveyYear", model.SurveyYear);
-                    command.Parameters.AddWithValue("@YearChsu", model.YearChsu);
-                    command.Parameters.AddWithValue("@Site", model.Site ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
-                    command.Parameters.AddWithValue("@MajorRegion", model.MajorRegion ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@MiddleRegion", model.MiddleRegion ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@River", model.River ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@RiverType", model.RiverType ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Lat", model.Lat ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Lng", model.Lng ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Weather", model.Weather ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SurveyAgency", model.SurveyAgency ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Surveyor", model.Surveyor ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@PH", model.PH ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@BOD", model.BOD ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@COD", model.COD ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@TOC", model.TOC ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SS", model.SS ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@DO", model.DO ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@TP", model.TP ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Ecotoxicity", model.Ecotoxicity ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EColi", model.EColi ?? (object)DBNull.Value);
-
-                    command.Parameters.AddWithValue("@TN", model.TN ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EC", model.EC ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Cl", model.Cl ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SO42", model.SO42 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Cu", model.Cu ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Zn", model.Zn ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Cr", model.Cr ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Turbidity", model.Turbidity ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Chla", model.Chla ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@WaterTemperature", model.WaterTemperature ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@WaterDepth", model.WaterDepth ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@FlowVelocity", model.FlowVelocity ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@FlowSec", model.FlowSec ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@FlowDay", model.FlowDay ?? (object)DBNull.Value);
-
-                    command.Parameters.AddWithValue("@PHGrade", model.PHGrade ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@BODGrade", model.BODGrade ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@CODGrade", model.CODGrade ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@TOCGrade", model.TOCGrade ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SSGrade", model.SSGrade ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@DOGrade", model.DOGrade ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@TPGrade", model.TPGrade ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EColiGrade", model.EColiGrade ?? (object)DBNull.Value);
-
-                    command.Parameters.AddWithValue("@SiteDivisionId", model.SiteDivisionId ?? (object)DBNull.Value);
-
-                    command.ExecuteNonQuery();
+                    processed += batch.Count;
+                    GB.ProgressValue = total > 0 ? (processed / (double)total) * 100d : 100d;
                 }
 
                 transaction.Commit();
+                return true;
             }
-            return true;
+            catch (Exception exInner)
+            {
+                try { transaction.Rollback(); } catch { }
+                GB.LogWrite(GetType().Name, nameof(AddSave), exInner.Message);
+                return false;
+            }
+            finally
+            {
+                // 복구
+                try { context.ChangeTracker.AutoDetectChangesEnabled = true; } catch { }
+            }
         }
         catch (Exception ex)
         {
@@ -966,7 +920,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         if (double.TryParse(value, out double d))
             return GB.GetPhGrade(d);
 
-        return 4;
+        return null;
     }
 
     private static string? GetBodGrade(Worksheet worksheet, int columnIndex)
@@ -975,7 +929,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         if (double.TryParse(value, out double d))
             return GB.GetBodGrade(d);
 
-        return "6";
+        return null;
     }
 
     private static string? GetCodGrade(Worksheet worksheet, int columnIndex)
@@ -984,7 +938,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         if (double.TryParse(value, out double d))
             return GB.GetCodGrade(d);
 
-        return "6";
+        return null;
     }
 
     private static string? GetTocGrade(Worksheet worksheet, int columnIndex)
@@ -993,7 +947,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         if (double.TryParse(value, out double d))
             return GB.GetTocGrade(d);
 
-        return "6";
+        return null;
     }
 
     private static int? GetSsGrade(Worksheet worksheet, int columnIndex)
@@ -1002,7 +956,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         if (double.TryParse(value, out double d))
             return GB.GetSsGrade(d);
 
-        return 5;
+        return null;
     }
 
     private static string? GetDoGrade(Worksheet worksheet, int columnIndex)
@@ -1011,7 +965,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         if (double.TryParse(value, out double d))
             return GB.GetDoGrade(d);
 
-        return "6";
+        return null;
     }
 
     private static string? GetTpGrade(Worksheet worksheet, int columnIndex)
@@ -1020,7 +974,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         if (double.TryParse(value, out double d))
             return GB.GetTpGrade(d);
 
-        return "6";
+        return null;
     }
 
     private static string? GetEColiGrade(Worksheet worksheet, int columnIndex)
@@ -1029,7 +983,7 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
         if (double.TryParse(value, out double d))
             return GB.GetEColiGrade(d);
 
-        return "4";
+        return null;
     }
 
     #endregion

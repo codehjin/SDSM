@@ -857,6 +857,8 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
     //일괄저장
     private bool AddSave()
     {
+        const int batchSize = 500;
+
         try
         {
             GB.IsBusy = true;
@@ -864,71 +866,50 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
             GB.BusyContent = "자료 저장 중...";
             GB.IsIndeterminate = false;
 
-            double progressTotal = ConvertedCount;
-            double progressCount = 0;
+            var entities = ConvertedCollection.ToList();
 
-            string strConn = GB.SqliteDataSource;
+            if (entities.Count == 0)
+                return true;
 
-            using (var conn = new SQLiteConnection(strConn))
+            using var context = new SDSMDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
+            try
             {
-                conn.Open();
+                // 성능 최적화
+                context.ChangeTracker.AutoDetectChangesEnabled = false;
 
-                using var transaction = conn.BeginTransaction();
+                int total = entities.Count;
+                int processed = 0;
 
-                foreach (var model in ConvertedCollection)
+                for (int i = 0; i < total; i += batchSize)
                 {
-                    progressCount++;
-                    GB.ProgressValue = (progressCount / progressCount) * 100;
+                    var batch = entities.Skip(i).Take(batchSize).ToList();
 
-                    string strSql = $"INSERT INTO Mammal" +
-                                     $"(SurveyYear, YearChsu, SurveyDate, Weather, River, Site, " +
-                                     $"SpeciesKo, SpeciesEn, Feature, Lat, Lng, " +
-                                     $"ObservationSite, Trace1, Trace2, Trace3, Trace4, " +
-                                     $"Trace5, Trace6, Trace7, Trace8, Trace9, " +
-                                     $"Trace10, Trace11, Trace12, Surveyor, Note, SiteDivisionId) " +
-                                     $"VALUES " +
-                                     $"(@SurveyYear, @YearChsu, @SurveyDate, @Weather, @River, @Site, " +
-                                     $"@SpeciesKo, @SpeciesEn, @Feature, @Lat, @Lng, " +
-                                     $"@ObservationSite, @Trace1, @Trace2, @Trace3, @Trace4, " +
-                                     $"@Trace5, @Trace6, @Trace7, @Trace8, @Trace9, " +
-                                     $"@Trace10, @Trace11, @Trace12, @Surveyor, @Note, @SiteDivisionId)";
+                    context.Mammals.AddRange(batch);
+                    context.SaveChanges();
 
-                    using var command = new SQLiteCommand(strSql, conn);
+                    // 메모리 해제 및 다음 배치 준비
+                    context.ChangeTracker.Clear();
 
-                    command.Parameters.AddWithValue("@SurveyYear", model.SurveyYear);
-                    command.Parameters.AddWithValue("@YearChsu", model.YearChsu);
-                    command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
-                    command.Parameters.AddWithValue("@Weather", model.Weather ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@River", model.River ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Site", model.Site ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SpeciesKo", model.SpeciesKo);
-                    command.Parameters.AddWithValue("@SpeciesEn", model.SpeciesEn ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Feature", model.Feature ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Lat", model.Lat ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Lng", model.Lng ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@ObservationSite", model.ObservationSite ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace1", model.Trace1 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace2", model.Trace2 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace3", model.Trace3 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace4", model.Trace4 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace5", model.Trace5 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace6", model.Trace6 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace7", model.Trace7?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace8", model.Trace8 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace9", model.Trace9 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace10", model.Trace10 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace11", model.Trace11 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Trace12", model.Trace12 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Surveyor", model.Surveyor ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Note", model.Note ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SiteDivisionId", model.SiteDivisionId ?? (object)DBNull.Value);
-
-                    command.ExecuteNonQuery();
+                    processed += batch.Count;
+                    GB.ProgressValue = total > 0 ? (processed / (double)total) * 100d : 100d;
                 }
 
                 transaction.Commit();
+                return true;
             }
-            return true;
+            catch (Exception exInner)
+            {
+                try { transaction.Rollback(); } catch { }
+                GB.LogWrite(GetType().Name, nameof(AddSave), exInner.Message);
+                return false;
+            }
+            finally
+            {
+                // 복구
+                try { context.ChangeTracker.AutoDetectChangesEnabled = true; } catch { }
+            }
         }
         catch (Exception ex)
         {

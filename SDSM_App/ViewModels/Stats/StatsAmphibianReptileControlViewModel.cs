@@ -166,16 +166,34 @@ public partial class StatsAmphibianReptileControlViewModel : ObservableObject, I
 
             await Task.Run(() =>
             {
-                var items = SearchData.GroupBy(m => m.SurveyYear).Select(m => new PlotItem { XCat = m.Key, Count = m.Count() }).OrderBy(m => m.XCat).ToList();
+                // 연도별 자료(레코드) 수
+                var recordCounts = SearchData.GroupBy(m => m.SurveyYear)
+                                               .Select(g => new { Year = g.Key, Records = g.Count() })
+                                               .ToDictionary(x => x.Year, x => x.Records);
 
-                foreach (var item in items)
+                // 연도별 종수(중복 제거한 SpeciesKo 개수)
+                var speciesCounts = SearchData.GroupBy(m => m.SurveyYear)
+                                               .Select(g => new
+                                               {
+                                                   Year = g.Key,
+                                                   SpeciesCount = g.Select(s => s.SpeciesKo).Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().Count()
+                                               })
+                                               .ToDictionary(x => x.Year, x => x.SpeciesCount);
+
+                // 모든 연도(레코드 또는 종 데이터에 등장하는 연도들의 합집합)를 오름차순으로 처리
+                var allYears = recordCounts.Keys.Union(speciesCounts.Keys).OrderBy(y => y).ToList();
+
+                foreach (var year in allYears)
                 {
-                    var model = new PlotItem
+                    var recCount = recordCounts.TryGetValue(year, out var r) ? r : 0;
+                    var spCount = speciesCounts.TryGetValue(year, out var s) ? s : 0;
+
+                    models.Add(new PlotItem
                     {
-                        XCat = item.XCat,
-                        YVal1 = item.Count,
-                    };
-                    models.Add(model);
+                        XCat = year,
+                        YVal1 = recCount,   // 자료(레코드) 수
+                        YRatio1 = spCount   // 연도별 종수
+                    });
                 }
             });
 

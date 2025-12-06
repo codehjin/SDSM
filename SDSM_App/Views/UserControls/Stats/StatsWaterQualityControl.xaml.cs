@@ -30,9 +30,6 @@ public partial class StatsWaterQualityControl : UserControl, ITransientService
 
         _vm = vm;
         DataContext = _vm;
-
-        //컬럼 동적 생성용
-        _vm.GradeRadGridView = GradeRadGridView;
     }
 
     #region Control 이벤트
@@ -48,38 +45,6 @@ public partial class StatsWaterQualityControl : UserControl, ITransientService
             else if (double.TryParse(e.Value.ToString(), out var d))
             {
                 e.Value = d;
-            }
-        }
-    }
-
-    private void GradeDataRadGridView_AutoGeneratingColumn(object sender, GridViewAutoGeneratingColumnEventArgs e)
-    {
-        var column = (GridViewDataColumn)e.Column;
-
-        if (column != null)
-        {
-            switch (column.Header.ToString())
-            {
-                case "연도":
-                    column.MinWidth = 120;
-                    column.Width = 120;
-                    column.MaxWidth = 120;
-                    break;
-                default:
-                    var header = column.Header.ToString() ?? "";
-                    if (header.Contains('_'))
-                    {
-                        //컬럼 그룹
-                        column.ColumnGroupName = header[..(header.IndexOf('_'))];
-
-                        // 컬럼명
-                        column.Header = header[(header.IndexOf('_') + 1)..];
-                    }
-                    column.MinWidth = 52;
-                    column.Width = 52;
-                    column.MaxWidth = 52;
-                    column.DataType = typeof(string);
-                    break;
             }
         }
     }

@@ -193,7 +193,7 @@
                                          RowIndicatorVisibility="Collapsed"
                                          IsFilteringAllowed="False">
                         <telerik:RadGridView.Columns>
-                            <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" Width="460" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
+                            <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn Header="조사일&#13;(2000-01-01~오늘)" DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160"/>
@@ -288,7 +288,7 @@
                                          RowIndicatorVisibility="Collapsed"
                                          IsFilteringAllowed="False">
                         <telerik:RadGridView.Columns>
-                            <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" Width="460" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
+                            <telerik:GridViewDataColumn Header="오류 내용" DataMemberBinding="{Binding Path=ErrorContent}" MinWidth="60" MaxWidth="460" TextTrimming="CharacterEllipsis"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=YearChsu}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn Header="조사일&#13;(2000-01-01~오늘)" DataMemberBinding="{Binding Path=SurveyDate}" DataFormatString="{}{0:yyyy-MM-dd}" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Weather}" MinWidth="80" Width="160" MaxWidth="160"/>

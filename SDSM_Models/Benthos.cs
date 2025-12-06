@@ -58,10 +58,10 @@ public class Benthos
     [DisplayName("냄새")] public int? Smell { get; set; }
     [DisplayName("특이사항")] public string? Note { get; set; }
     [DisplayName("채집불가시")] public string? SurveyUnavailableReason { get; set; }//빈값없음
-    [DisplayName("우점도(DI)")] public double? IndexDI { get; set; }
-    [DisplayName("다양도(H')")] public double? IndexH { get; set; }
-    [DisplayName("종풍부도(R1)")] public double? IndexR1 { get; set; }
-    [DisplayName("균등도(J')")] public double? IndexJ { get; set; }
+    [DisplayName("우점도(DI)")] public double? IndexDI { get; set; }//소수점 2자리
+    [DisplayName("다양도(H')")] public double? IndexH { get; set; }//소수점 2자리
+    [DisplayName("종풍부도(R1)")] public double? IndexR1 { get; set; }//소수점 2자리
+    [DisplayName("균등도(J')")] public double? IndexJ { get; set; }//소수점 2자리
     [DisplayName("BMI 점수")] public double? BMIScore { get; set; }//소수점 1자리
     [DisplayName("BMI 등급")] public string? BMIGrade { get; set; }
     [NotMapped][DisplayName("종수")] public int SpeciesCount { get; set; }

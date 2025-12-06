@@ -252,7 +252,7 @@
                                                          ClipToPlotArea="False"
                                                          ani:ChartAnimationUtilities.CartesianAnimation="RiseWithDelay">
                                         <telerik:BarSeries.LegendSettings>
-                                            <telerik:SeriesLegendSettings Title="연도별 자료 수" />
+                                            <telerik:SeriesLegendSettings Title="자료수" />
                                         </telerik:BarSeries.LegendSettings>
                                         <telerik:BarSeries.LabelDefinitions>
                                             <telerik:ChartSeriesLabelDefinition HorizontalAlignment="Center" VerticalAlignment="Top">
@@ -295,8 +295,8 @@
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
                                                  RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
                                 <telerik:RadGridView.Columns>
-                                    <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCat}" DataFormatString="{}{0}년" MinWidth="80" Width="120" MaxWidth="140" TextWrapping="Wrap"/>
-                                    <telerik:GridViewDataColumn Header="자료 수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="140" MaxWidth="140" TextWrapping="Wrap" />
+                                    <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCat}" DataFormatString="{}{0}년" MinWidth="80" Width="110" MaxWidth="110"/>
+                                    <telerik:GridViewDataColumn Header="자료수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="110" MaxWidth="110"/>
                                 </telerik:RadGridView.Columns>
                             </telerik:RadGridView>
                         </Grid>
@@ -329,7 +329,7 @@
                                                  RowIndicatorVisibility="Collapsed"
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
-                                                 MinHeight="110"
+                                                 MinHeight="465"
                                                  MaxHeight="880"
                                                  AutoGenerateColumns="True"
                                                  AutoGeneratingColumn="GradeDataRadGridView_AutoGeneratingColumn"

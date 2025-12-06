@@ -716,6 +716,8 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
 
     private bool AddSave()
     {
+        const int batchSize = 500;
+
         try
         {
             GB.IsBusy = true;
@@ -723,72 +725,50 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
             GB.BusyContent = "자료 저장 중...";
             GB.IsIndeterminate = false;
 
-            double progressTotal = ConvertedCount;
-            double progressCount = 0;
+            var entities = ConvertedCollection.ToList();
 
-            string strConn = GB.SqliteDataSource;
+            if (entities.Count == 0)
+                return true;
 
-            using (var conn = new SQLiteConnection(strConn))
+            using var context = new SDSMDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
+            try
             {
-                conn.Open();
+                // 성능 최적화
+                context.ChangeTracker.AutoDetectChangesEnabled = false;
 
-                using var transaction = conn.BeginTransaction();
+                int total = entities.Count;
+                int processed = 0;
 
-                foreach (var model in ConvertedCollection)
+                for (int i = 0; i < total; i += batchSize)
                 {
-                    progressCount++;
-                    GB.ProgressValue = (progressCount / progressCount) * 100;
+                    var batch = entities.Skip(i).Take(batchSize).ToList();
 
-                    string strSql = $"INSERT INTO HabitatWaterEdge" +
-                                     $"(SurveyYear, YearChsu, Site, SurveyDate, MajorRegion, MiddleRegion, " +
-                                     $"River, RiverType, Lat, Lng, Weather, " +
-                                     $"SurveyAgency, Surveyor, SurveyUnavailableReason, Note, EvaluationItem1, " +
-                                     $"EvaluationItem2, EvaluationItem3, EvaluationItem4, EvaluationItem5, EvaluationItem6, " +
-                                     $"EvaluationItem7, EvaluationItem8, EvaluationItem9, EvaluationItem10, EvaluationScore, EvaluationGrade, SiteDivisionId) " +
-                                     $"VALUES " +
-                                     $"(@SurveyYear, @YearChsu, @Site, @SurveyDate, @MajorRegion, @MiddleRegion, " +
-                                     $"@River, @RiverType, @Lat, @Lng, @Weather, " +
-                                     $"@SurveyAgency, @Surveyor, @SurveyUnavailableReason, @Note, @EvaluationItem1, " +
-                                     $"@EvaluationItem2, @EvaluationItem3, @EvaluationItem4, @EvaluationItem5, @EvaluationItem6, " +
-                                     $"@EvaluationItem7, @EvaluationItem8, @EvaluationItem9, @EvaluationItem10, @EvaluationScore, @EvaluationGrade, @SiteDivisionId)";
+                    context.HabitatWaterEdges.AddRange(batch);
+                    context.SaveChanges();
 
-                    using var command = new SQLiteCommand(strSql, conn);
+                    // 메모리 해제 및 다음 배치 준비
+                    context.ChangeTracker.Clear();
 
-                    command.Parameters.AddWithValue("@SurveyYear", model.SurveyYear);
-                    command.Parameters.AddWithValue("@YearChsu", model.YearChsu);
-                    command.Parameters.AddWithValue("@Site", model.Site ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
-                    command.Parameters.AddWithValue("@MajorRegion", model.MajorRegion ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@MiddleRegion", model.MiddleRegion ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@River", model.River ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@RiverType", model.RiverType ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Lat", model.Lat ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Lng", model.Lng ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Weather", model.Weather ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SurveyAgency", model.SurveyAgency ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Surveyor", model.Surveyor ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SurveyUnavailableReason", model.SurveyUnavailableReason ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Note", model.Note ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EvaluationItem1", model.EvaluationItem1 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EvaluationItem2", model.EvaluationItem2 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EvaluationItem3", model.EvaluationItem3 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EvaluationItem4", model.EvaluationItem4 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EvaluationItem5", model.EvaluationItem5 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EvaluationItem6", model.EvaluationItem6 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EvaluationItem7", model.EvaluationItem7 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EvaluationItem8", model.EvaluationItem8 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EvaluationItem9", model.EvaluationItem9 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EvaluationItem10", model.EvaluationItem10 ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EvaluationScore", model.EvaluationScore ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@EvaluationGrade", model.EvaluationGrade ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SiteDivisionId", model.SiteDivisionId ?? (object)DBNull.Value);
-
-                    command.ExecuteNonQuery();
+                    processed += batch.Count;
+                    GB.ProgressValue = total > 0 ? (processed / (double)total) * 100d : 100d;
                 }
 
                 transaction.Commit();
+                return true;
             }
-            return true;
+            catch (Exception exInner)
+            {
+                try { transaction.Rollback(); } catch { }
+                GB.LogWrite(GetType().Name, nameof(AddSave), exInner.Message);
+                return false;
+            }
+            finally
+            {
+                // 복구
+                try { context.ChangeTracker.AutoDetectChangesEnabled = true; } catch { }
+            }
         }
         catch (Exception ex)
         {
@@ -802,8 +782,9 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
             GB.BusyContent = string.Empty;
             GB.ProgressValue = 0;
         }
-    }
 
+    }
+ 
     //초기화
     private void Reset()
     {

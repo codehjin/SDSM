@@ -60,28 +60,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     [ObservableProperty] private string? _collectionTool;
     [ObservableProperty] private string? _collectionFlowState;
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private int? _autoRiverChasu;
-    [ObservableProperty] private string? _WatershedType;
-    [ObservableProperty] private string? _drainageSystemType;
-    [ObservableProperty] private string? _riverWidth;
-    [ObservableProperty] private string? _yuWidth;
-    [ObservableProperty] private string? _depth;
-    [ObservableProperty] private string? _submerged;
-    [ObservableProperty] private string? _floating;
-    [ObservableProperty] private string? _emergent;
-    [ObservableProperty] private int? _leftVacantLand;
-    [ObservableProperty] private int? _leftH;
-    [ObservableProperty] private int? _leftS;
-    [ObservableProperty] private int? _leftT1;
-    [ObservableProperty] private int? _rightVacantLand;
-    [ObservableProperty] private int? _rightH;
-    [ObservableProperty] private int? _rightS;
-    [ObservableProperty] private int? _rightT1;
-    [ObservableProperty] private string? _leveeLeft;
-    [ObservableProperty] private string? _leveeRight;
-    [ObservableProperty] private string? _confounder;
-    [ObservableProperty] private string? _structure;
-    [ObservableProperty] private string? _fishway;
-    [ObservableProperty] private string? _etcNote;
+    
     [ObservableProperty] private int? _bedrock;
     [ObservableProperty] private int? _concrete;
     [ObservableProperty] private int? _mud;
@@ -308,28 +287,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
                 CollectionTool = CollectionTool,
                 CollectionFlowState = CollectionFlowState,
                 AutoRiverChasu = AutoRiverChasu,
-                WatershedType = WatershedType,
-                DrainageSystemType = DrainageSystemType,
-                RiverWidth = RiverWidth,
-                YuWidth = YuWidth,
-                Depth = Depth,
-                Submerged = Submerged,
-                Floating = Floating,
-                Emergent = Emergent,
-                LeftVacantLand = LeftVacantLand,
-                LeftH = LeftH,
-                LeftS = LeftS,
-                LeftT1 = LeftT1,
-                RightVacantLand = RightVacantLand,
-                RightH = RightH,
-                RightS = RightS,
-                RightT1 = RightT1,
-                LeveeLeft = LeveeLeft,
-                LeveeRight = LeveeRight,
-                Confounder = Confounder,
-                Structure = Structure,
-                Fishway = Fishway,
-                EtcNote = EtcNote,
+                
                 Bedrock = Bedrock,
                 Concrete = Concrete,
                 Mud = Mud,
@@ -388,28 +346,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
             EditModel.CollectionTool = CollectionTool;
             EditModel.CollectionFlowState = CollectionFlowState;
             EditModel.AutoRiverChasu = AutoRiverChasu;
-            EditModel.WatershedType = WatershedType;
-            EditModel.DrainageSystemType = DrainageSystemType;
-            EditModel.RiverWidth = RiverWidth;
-            EditModel.YuWidth = YuWidth;
-            EditModel.Depth = Depth;
-            EditModel.Submerged = Submerged;
-            EditModel.Floating = Floating;
-            EditModel.Emergent = Emergent;
-            EditModel.LeftVacantLand = LeftVacantLand;
-            EditModel.LeftH = LeftH;
-            EditModel.LeftS = LeftS;
-            EditModel.LeftT1 = LeftT1;
-            EditModel.RightVacantLand = RightVacantLand;
-            EditModel.RightH = RightH;
-            EditModel.RightS = RightS;
-            EditModel.RightT1 = RightT1;
-            EditModel.LeveeLeft = LeveeLeft;
-            EditModel.LeveeRight = LeveeRight;
-            EditModel.Confounder = Confounder;
-            EditModel.Structure = Structure;
-            EditModel.Fishway = Fishway;
-            EditModel.EtcNote = EtcNote;
+           
             EditModel.Bedrock = Bedrock;
             EditModel.Concrete = Concrete;
             EditModel.Mud = Mud;
@@ -484,28 +421,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
         CollectionTool = EditModel.CollectionTool;
         CollectionFlowState = EditModel.CollectionFlowState;
         AutoRiverChasu = EditModel.AutoRiverChasu;
-        WatershedType = EditModel.WatershedType;
-        DrainageSystemType = EditModel.DrainageSystemType;
-        RiverWidth = EditModel.RiverWidth;
-        YuWidth = EditModel.YuWidth;
-        Depth = EditModel.Depth;
-        Submerged = EditModel.Submerged;
-        Floating = EditModel.Floating;
-        Emergent = EditModel.Emergent;
-        LeftVacantLand = EditModel.LeftVacantLand;
-        LeftH = EditModel.LeftH;
-        LeftS = EditModel.LeftS;
-        LeftT1 = EditModel.LeftT1;
-        RightVacantLand = EditModel.RightVacantLand;
-        RightH = EditModel.RightH;
-        RightS = EditModel.RightS;
-        RightT1 = EditModel.RightT1;
-        LeveeLeft = EditModel.LeveeLeft;
-        LeveeRight = EditModel.LeveeRight;
-        Confounder = EditModel.Confounder;
-        Structure = EditModel.Structure;
-        Fishway = EditModel.Fishway;
-        EtcNote = EditModel.EtcNote;
+        
         Bedrock = EditModel.Bedrock;
         Concrete = EditModel.Concrete;
         Mud = EditModel.Mud;
@@ -576,28 +492,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
         CollectionTool = null;
         CollectionFlowState = null;
         AutoRiverChasu = null;
-        WatershedType = null;
-        DrainageSystemType = null;
-        RiverWidth = null;
-        YuWidth = null;
-        Depth = null;
-        Submerged = null;
-        Floating = null;
-        Emergent = null;
-        LeftVacantLand = null;
-        LeftH = null;
-        LeftS = null;
-        LeftT1 = null;
-        RightVacantLand = null;
-        RightH = null;
-        RightS = null;
-        RightT1 = null;
-        LeveeLeft = null;
-        LeveeRight = null;
-        Confounder = null;
-        Structure = null;
-        Fishway = null;
-        EtcNote = null;
+        
         Bedrock = null;
         Concrete = null;
         Mud = null;

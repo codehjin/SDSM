@@ -183,9 +183,9 @@
                                                     <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
                                                 <TextBlock Grid.ColumnSpan="3" Text="{Binding Category, StringFormat={}{0}년}" FontSize="14" FontWeight="Bold"/>
-                                                <TextBlock Grid.Column="0" Grid.Row="4" Text="자료 수" FontSize="14"/>
-                                                <TextBlock Grid.Column="1" Grid.Row="4" Text=":" FontSize="14" Margin="0 0 3 0"/>
-                                                <TextBlock Grid.Column="2" Grid.Row="4" Text="{Binding DataItem.YVal1, StringFormat={}{0:N0}}" FontSize="14" FontWeight="Bold"/>
+                                                <TextBlock Grid.Column="0" Grid.Row="2" Text="자료 수" FontSize="14"/>
+                                                <TextBlock Grid.Column="1" Grid.Row="2" Text=":" FontSize="14" Margin="0 0 3 0"/>
+                                                <TextBlock Grid.Column="2" Grid.Row="2" Text="{Binding DataItem.YVal1, StringFormat={}{0:N0}}" FontSize="14" FontWeight="Bold"/>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
@@ -239,14 +239,13 @@
                                                          ClipToPlotArea="False"
                                                          ani:ChartAnimationUtilities.CartesianAnimation="RiseWithDelay">
                                         <telerik:BarSeries.LegendSettings>
-                                            <telerik:SeriesLegendSettings Title="연도별 자료 수" />
+                                            <telerik:SeriesLegendSettings Title="자료수" />
                                         </telerik:BarSeries.LegendSettings>
                                         <telerik:BarSeries.LabelDefinitions>
                                             <telerik:ChartSeriesLabelDefinition HorizontalAlignment="Center" VerticalAlignment="Top">
                                                 <telerik:ChartSeriesLabelDefinition.Template>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding DataItem.YVal1, StringFormat={}{0:N0}}"
-                                                            Margin="0 0 0 5"
                                                             FontSize="14" 
                                                             Foreground="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"/>
                                                     </DataTemplate>
@@ -282,8 +281,8 @@
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
                                                  RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
                                 <telerik:RadGridView.Columns>
-                                    <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCat}" DataFormatString="{}{0}년" MinWidth="80" Width="120" MaxWidth="120"/>
-                                    <telerik:GridViewDataColumn Header="자료 수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="140" MaxWidth="140"/>
+                                    <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCat}" DataFormatString="{}{0}년" MinWidth="80" Width="110" MaxWidth="110"/>
+                                    <telerik:GridViewDataColumn Header="자료수" DataMemberBinding="{Binding Path=YVal1}" DataFormatString="N0" MinWidth="80" Width="110" MaxWidth="110"/>
                                 </telerik:RadGridView.Columns>
                             </telerik:RadGridView>
                         </Grid>
@@ -417,7 +416,7 @@
                                                          ClipToPlotArea="False"
                                                          ani:ChartAnimationUtilities.CartesianAnimation="RiseWithDelay">
                                         <telerik:BarSeries.LegendSettings>
-                                            <telerik:SeriesLegendSettings Title="연도별 군락수" />
+                                            <telerik:SeriesLegendSettings Title="군락수" />
                                         </telerik:BarSeries.LegendSettings>
                                         <telerik:BarSeries.LabelDefinitions>
                                             <telerik:ChartSeriesLabelDefinition HorizontalAlignment="Center" VerticalAlignment="Top">
@@ -569,7 +568,7 @@
                                                          ClipToPlotArea="False"
                                                          ani:ChartAnimationUtilities.CartesianAnimation="RiseWithDelay">
                                         <telerik:BarSeries.LegendSettings>
-                                            <telerik:SeriesLegendSettings Title="군락별 면적" />
+                                            <telerik:SeriesLegendSettings Title="면적" />
                                         </telerik:BarSeries.LegendSettings>
                                         <telerik:BarSeries.LabelDefinitions>
                                             <telerik:ChartSeriesLabelDefinition HorizontalAlignment="Center" VerticalAlignment="Top">

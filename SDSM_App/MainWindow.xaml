@@ -960,8 +960,8 @@
                                                     <telerik:RadRadioButton Grid.Column="6" Grid.Row="4" Content="조류" IsChecked="{Binding Path=IsCheckedBird, Mode=TwoWay}" Tag="BirdPage" Click="MenuItem_Click"/>
                                                     <telerik:RadRadioButton Grid.Column="6" Grid.Row="5" Content="포유류" IsChecked="{Binding Path=IsCheckedMammal, Mode=TwoWay}" Tag="MammalPage" Click="MenuItem_Click"/>
                                                     <telerik:RadRadioButton Grid.Column="6" Grid.Row="6" Content="양서파충류" IsChecked="{Binding Path=IsCheckedAmphibianReptile, Mode=TwoWay}" Tag="AmphibianReptilePage" Click="MenuItem_Click"/>
-                                                    <telerik:RadRadioButton Grid.Column="6" Grid.Row="7" Content="식물상" IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click"/>
-                                                    <telerik:RadRadioButton Grid.Column="6" Grid.Row="8" Content="식생" IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click"/>
+                                                    <telerik:RadRadioButton Grid.Column="6" Grid.Row="7" Content="식물상" IsChecked="{Binding Path=IsCheckedPlant, Mode=TwoWay}" Tag="PlantPage" Click="MenuItem_Click" Visibility="Collapsed"/>
+                                                    <telerik:RadRadioButton Grid.Column="6" Grid.Row="8" Content="식생" IsChecked="{Binding Path=IsCheckedVegetation, Mode=TwoWay}" Tag="VegetationPage" Click="MenuItem_Click" Visibility="Collapsed"/>
 
                                                     <TextBlock Grid.Column="8" Grid.Row="0" Text="환경자료" Style="{StaticResource CaptionTextBlockStyle}"/>
                                                     <Rectangle Grid.Column="8" Grid.Row="1"/>

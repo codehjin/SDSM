@@ -11,7 +11,6 @@ using SDSM_App.Messengers;
 using SDSM_App.Models;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
-using System.Data.SQLite;
 using System.IO;
 using System.Media;
 using System.Reflection;
@@ -711,9 +710,10 @@ public partial class BulkPlantControlViewModel : ObservableObject, ITransientSer
         }
     }
 
-    //일괄저장
     private bool AddSave()
     {
+        const int batchSize = 500;
+
         try
         {
             GB.IsBusy = true;
@@ -721,55 +721,50 @@ public partial class BulkPlantControlViewModel : ObservableObject, ITransientSer
             GB.BusyContent = "자료 저장 중...";
             GB.IsIndeterminate = false;
 
-            double progressTotal = ConvertedCount;
-            double progressCount = 0;
+            var entities = ConvertedCollection.ToList();
 
-            string strConn = GB.SqliteDataSource;
+            if (entities.Count == 0)
+                return true;
 
-            using (var conn = new SQLiteConnection(strConn))
+            using var context = new SDSMDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
+            try
             {
-                conn.Open();
+                // 성능 최적화
+                context.ChangeTracker.AutoDetectChangesEnabled = false;
 
-                using var transaction = conn.BeginTransaction();
+                int total = entities.Count;
+                int processed = 0;
 
-                foreach (var model in ConvertedCollection)
+                for (int i = 0; i < total; i += batchSize)
                 {
-                    progressCount++;
-                    GB.ProgressValue = (progressCount / progressCount) * 100;
+                    var batch = entities.Skip(i).Take(batchSize).ToList();
 
-                    string strSql = $"INSERT INTO Plant" +
-                                     $"(SurveyYear, Chsu, SurveyDate, Weather, Site, River, " +
-                                     $"Surveyor, Lat, Lng, SurveyLocation, SpeciesKo, " +
-                                     $"SpeciesEn, AlienPlant, InvasiveSpecies, SiteDivisionId) " +
-                                     $"VALUES " +
-                                     $"(@SurveyYear, @Chsu, @SurveyDate, @Weather, @Site, @River, " +
-                                     $"@Surveyor, @Lat, @Lng, @SurveyLocation, @SpeciesKo, " +
-                                     $"@SpeciesEn, @AlienPlant, @InvasiveSpecies, @SiteDivisionId)";
+                    context.Plants.AddRange(batch);
+                    context.SaveChanges();
 
-                    using var command = new SQLiteCommand(strSql, conn);
+                    // 메모리 해제 및 다음 배치 준비
+                    context.ChangeTracker.Clear();
 
-                    command.Parameters.AddWithValue("@SurveyYear", model.SurveyYear);
-                    command.Parameters.AddWithValue("@Chsu", model.Chsu);
-                    command.Parameters.AddWithValue("@SurveyDate", model.SurveyDate);
-                    command.Parameters.AddWithValue("@Weather", model.Weather ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Site", model.Site ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@River", model.River ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Surveyor", model.Surveyor ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Lat", model.Lat ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Lng", model.Lng ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SurveyLocation", model.SurveyLocation ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SpeciesKo", model.SpeciesKo);
-                    command.Parameters.AddWithValue("@SpeciesEn", model.SpeciesEn ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@AlienPlant", model.AlienPlant ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@InvasiveSpecies", model.InvasiveSpecies ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@SiteDivisionId", model.SiteDivisionId ?? (object)DBNull.Value);
-
-                    command.ExecuteNonQuery();
+                    processed += batch.Count;
+                    GB.ProgressValue = total > 0 ? (processed / (double)total) * 100d : 100d;
                 }
 
                 transaction.Commit();
+                return true;
             }
-            return true;
+            catch (Exception exInner)
+            {
+                try { transaction.Rollback(); } catch { }
+                GB.LogWrite(GetType().Name, nameof(AddSave), exInner.Message);
+                return false;
+            }
+            finally
+            {
+                // 복구
+                try { context.ChangeTracker.AutoDetectChangesEnabled = true; } catch { }
+            }
         }
         catch (Exception ex)
         {

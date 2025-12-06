@@ -818,13 +818,13 @@ public static class GB
     {
         if (value != null)
             return (value >= 6.5 && value <= 8.5) ? 1 : 4;
-        return 4;
+        return null;
     }
 
-    public static string GetBodGrade(double? value)
+    public static string? GetBodGrade(double? value)
     {
         if (value == null)
-            return "6";
+            return null;
 
         if (value <= 1) return "1a";
         if (value <= 2) return "1b";
@@ -835,10 +835,10 @@ public static class GB
         return "6";
     }
 
-    public static string GetCodGrade(double? value)
+    public static string? GetCodGrade(double? value)
     {
         if (value == null)
-            return "6";
+            return null;
 
         if (value <= 2) return "1a";
         if (value <= 4) return "1b";
@@ -849,10 +849,10 @@ public static class GB
         return "6";
     }
 
-    public static string GetTocGrade(double? value)
+    public static string? GetTocGrade(double? value)
     {
         if (value == null)
-            return "6";
+            return null;
 
         if (value <= 2) return "1a";
         if (value <= 3) return "1b";
@@ -866,17 +866,17 @@ public static class GB
     public static int? GetSsGrade(double? value)
     {
         if (value == null)
-            return 5;
+            return null;
 
         if (value <= 25) return 1;
         if (value <= 100) return 4;
         return 5;
     }
 
-    public static string GetDoGrade(double? value)
+    public static string? GetDoGrade(double? value)
     {
         if (value == null)
-            return "6";
+            return null;
 
         if (value >= 7.5) return "1a";
         if (value >= 5) return "1b";
@@ -884,10 +884,10 @@ public static class GB
         return "6";
     }
 
-    public static string GetTpGrade(double? value)
+    public static string? GetTpGrade(double? value)
     {
         if (value == null)
-            return "6";
+            return null;
 
         if (value <= 0.02) return "1a";
         if (value <= 0.04) return "1b";
@@ -898,10 +898,10 @@ public static class GB
         return "6";
     }
 
-    public static string GetEColiGrade(double? value)
+    public static string? GetEColiGrade(double? value)
     {
         if (value == null)
-            return "4";
+            return null;
 
         if (value <= 50) return "1a";
         if (value <= 500) return "1b";

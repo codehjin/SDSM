@@ -81,7 +81,6 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
     [ObservableProperty] private int _firstColumnNumber = 17;
     public string FirstColumnAlphabet { get; } = "Q";
     [ObservableProperty] private int _speciesFirstRowNumber = 79;
-    [ObservableProperty] private bool _isContainHabitat;
 
     //에러 개수
     [ObservableProperty]
@@ -120,20 +119,6 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
     private void SheetNameResetExecuted()
     {
         SheetName = "어류_입력";
-    }
-
-    [RelayCommand]
-    private void ContainHabitatExecuted()
-    {
-        if (IsContainHabitat == false)
-        {
-            SpeciesFirstRowNumber = 79;
-        }
-        else
-        {
-            SpeciesFirstRowNumber = 103;
-        }
-        GetColumnNumbers();
     }
 
     private bool CanDataImport()
@@ -233,15 +218,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
             {
                 var (models, species) = (new List<ImportFish>(), new List<ImportFishSpecies>());
 
-                if (IsContainHabitat == false)
-                {
-                    (models, species) = await Task.Run(() => DataTableToModels(worksheet));
-
-                }
-                else
-                {
-                    (models, species) = await Task.Run(() => ContainHabitatDataTableToModels(worksheet));
-                }
+                (models, species) = await Task.Run(() => DataTableToModels(worksheet));
 
                 if (models.Count != 0)
                 {
@@ -354,15 +331,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
 
     //엑셀->모델 (서식수변 항목 미포함)
     private (List<ImportFish>, List<ImportFishSpecies>) DataTableToModels(Worksheet worksheet)
-    {
-        //하천 서식환경 항목이 있는지 아니면 없는지 체크
-        var habitatResult = HabitatSuccess(worksheet);
-        if (!string.IsNullOrEmpty(habitatResult))
-        {
-            ShowTopMostMessage(habitatResult, "서식환경 항목 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return ([], []);
-        }
-
+    {      
         var importModels = new List<ImportFish>();
         var importSpeciesModels = new List<ImportFishSpecies>();
 
@@ -473,156 +442,6 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         catch (Exception ex)
         {
             GB.LogWrite(GetType().Name, nameof(DataTableToModels), ex.Message);
-
-            return (importModels, importSpeciesModels);
-        }
-    }
-
-    //엑셀->모델 (서식수변 추가 항목(24개) 포함)
-    private (List<ImportFish>, List<ImportFishSpecies>) ContainHabitatDataTableToModels(Worksheet worksheet)
-    {
-        //하천 서식환경 항목이 있는지 아니면 없는지 체크
-        var habitatResult = HabitatSuccess(worksheet);
-        if (!string.IsNullOrEmpty(habitatResult))
-        {
-            ShowTopMostMessage(habitatResult, "서식환경 항목 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return ([], []);
-        }
-
-        var importModels = new List<ImportFish>();
-        var importSpeciesModels = new List<ImportFishSpecies>();
-
-        try
-        {
-            CellRange usedCellRange = worksheet.UsedCellRange;
-            int matchNumber = 0;
-
-            for (int columnIndex = FirstColumnNumber - 1; columnIndex <= usedCellRange.ToIndex.ColumnIndex; columnIndex++)
-            {
-                var firstValue = ((ICellValue)(worksheet.Cells[FirstRowNumber - 1, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[FirstRowNumber - 1, columnIndex].GetFormat().Value);
-                if (!string.IsNullOrWhiteSpace(firstValue))
-                {
-                    matchNumber++;
-
-                    //종목록
-                    var speciesData = GetSpeciesData(worksheet, columnIndex, matchNumber, SpeciesFirstRowNumber);
-
-                    // 1. IndividualCount 값만 추출 (null은 0으로 처리)
-                    int[] individualCounts = [.. speciesData.Select(x => x.IndividualCount.HasValue ? (int)x.IndividualCount.Value : 0)];
-
-                    // 2. 각 개체별로 점수 계산
-                    foreach (var species in speciesData)
-                    {
-                        int value = species.IndividualCount.HasValue ? (int)species.IndividualCount.Value : 0;
-                        int rankScorer = GB.GetRankScorer(individualCounts, value);
-
-                        // 점수 RankScorer 프로퍼티에 할당
-                        species.RankScorer = rankScorer;
-                    }
-
-                    var autoRiverChasu = ((ICellValue)(worksheet.Cells[16, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[16, columnIndex].GetFormat().Value);
-                    var surveyUnavailableReason = ((ICellValue)(worksheet.Cells[52, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[52, columnIndex].GetFormat().Value);
-                    var deCount = ((ICellValue)(worksheet.Cells[67, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[67, columnIndex].GetFormat().Value);
-                    var efCount = ((ICellValue)(worksheet.Cells[68, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[68, columnIndex].GetFormat().Value);
-                    var leCount = ((ICellValue)(worksheet.Cells[69, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[69, columnIndex].GetFormat().Value);
-                    var tuCount = ((ICellValue)(worksheet.Cells[70, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[70, columnIndex].GetFormat().Value);
-
-                    int chasu = int.TryParse(autoRiverChasu.ToString(), out int cs) ? cs : 0;
-
-                    int abnormalCount = (int.TryParse(deCount.ToString(), out int de) ? de : 0)
-                        + (int.TryParse(efCount.ToString(), out int ef) ? ef : 0)
-                        + (int.TryParse(leCount.ToString(), out int le) ? le : 0)
-                        + (int.TryParse(tuCount.ToString(), out int tu) ? tu : 0);
-
-                    var (cluster, score, grade) = GB.GetFAI(speciesData, surveyUnavailableReason, abnormalCount, chasu);
-
-                    var speciesCount = speciesData.GroupBy(m => m.SpeciesKo).Count();
-                    var individualCountSum = speciesData.Sum(m => m.IndividualCount);
-
-                    var model = new ImportFish
-                    {
-                        MacthNumber = matchNumber,
-                        YearChsu = firstValue,
-                        Site = ((ICellValue)(worksheet.Cells[2, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[2, columnIndex].GetFormat().Value),
-                        SurveyDate = ((ICellValue)(worksheet.Cells[3, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[3, columnIndex].GetFormat().Value),
-                        MajorRegion = ((ICellValue)(worksheet.Cells[4, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[4, columnIndex].GetFormat().Value),
-                        MiddleRegion = ((ICellValue)(worksheet.Cells[5, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[5, columnIndex].GetFormat().Value),
-                        River = ((ICellValue)(worksheet.Cells[6, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[6, columnIndex].GetFormat().Value),
-                        RiverType = ((ICellValue)(worksheet.Cells[7, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[7, columnIndex].GetFormat().Value),
-                        Lat = ((ICellValue)(worksheet.Cells[8, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[8, columnIndex].GetFormat().Value),
-                        Lng = ((ICellValue)(worksheet.Cells[9, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[9, columnIndex].GetFormat().Value),
-                        Weather = ((ICellValue)(worksheet.Cells[10, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[10, columnIndex].GetFormat().Value),
-                        SurveyAgency = ((ICellValue)(worksheet.Cells[11, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[11, columnIndex].GetFormat().Value),
-                        Surveyor = ((ICellValue)(worksheet.Cells[12, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[12, columnIndex].GetFormat().Value),
-                        CollectionTime = ((ICellValue)(worksheet.Cells[13, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[13, columnIndex].GetFormat().Value),
-                        CollectionTool = ((ICellValue)(worksheet.Cells[14, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[14, columnIndex].GetFormat().Value),
-                        CollectionFlowState = ((ICellValue)(worksheet.Cells[15, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[15, columnIndex].GetFormat().Value),
-                        AutoRiverChasu = autoRiverChasu,
-
-                        WatershedType = ((ICellValue)(worksheet.Cells[17, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[17, columnIndex].GetFormat().Value),
-                        DrainageSystemType = ((ICellValue)(worksheet.Cells[18, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[18, columnIndex].GetFormat().Value),
-                        RiverWidth = ((ICellValue)(worksheet.Cells[19, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[19, columnIndex].GetFormat().Value),
-                        YuWidth = ((ICellValue)(worksheet.Cells[20, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[20, columnIndex].GetFormat().Value),
-                        Depth = ((ICellValue)(worksheet.Cells[21, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[21, columnIndex].GetFormat().Value),
-                        Submerged = ((ICellValue)(worksheet.Cells[22, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[22, columnIndex].GetFormat().Value),
-                        Floating = ((ICellValue)(worksheet.Cells[23, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[23, columnIndex].GetFormat().Value),
-                        Emergent = ((ICellValue)(worksheet.Cells[24, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[24, columnIndex].GetFormat().Value),
-                        LeftVacantLand = ((ICellValue)(worksheet.Cells[25, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[25, columnIndex].GetFormat().Value),
-                        LeftH = ((ICellValue)(worksheet.Cells[26, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[26, columnIndex].GetFormat().Value),
-                        LeftS = ((ICellValue)(worksheet.Cells[27, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[27, columnIndex].GetFormat().Value),
-                        LeftT1 = ((ICellValue)(worksheet.Cells[28, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[28, columnIndex].GetFormat().Value),
-                        RightVacantLand = ((ICellValue)(worksheet.Cells[30, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[30, columnIndex].GetFormat().Value),
-                        RightH = ((ICellValue)(worksheet.Cells[31, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[31, columnIndex].GetFormat().Value),
-                        RightS = ((ICellValue)(worksheet.Cells[32, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[32, columnIndex].GetFormat().Value),
-                        RightT1 = ((ICellValue)(worksheet.Cells[33, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[33, columnIndex].GetFormat().Value),
-                        LeveeLeft = ((ICellValue)(worksheet.Cells[35, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[35, columnIndex].GetFormat().Value),
-                        LeveeRight = ((ICellValue)(worksheet.Cells[36, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[36, columnIndex].GetFormat().Value),
-                        Confounder = ((ICellValue)(worksheet.Cells[37, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[37, columnIndex].GetFormat().Value),
-                        Structure = ((ICellValue)(worksheet.Cells[38, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[38, columnIndex].GetFormat().Value),
-                        Fishway = ((ICellValue)(worksheet.Cells[39, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[39, columnIndex].GetFormat().Value),
-                        EtcNote = ((ICellValue)(worksheet.Cells[40, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[40, columnIndex].GetFormat().Value),
-
-                        Bedrock = ((ICellValue)(worksheet.Cells[41, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[41, columnIndex].GetFormat().Value),
-                        Concrete = ((ICellValue)(worksheet.Cells[42, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[42, columnIndex].GetFormat().Value),
-                        Mud = ((ICellValue)(worksheet.Cells[43, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[43, columnIndex].GetFormat().Value),
-                        Sand = ((ICellValue)(worksheet.Cells[44, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[44, columnIndex].GetFormat().Value),
-                        FineGravel = ((ICellValue)(worksheet.Cells[45, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[45, columnIndex].GetFormat().Value),
-                        Gravel = ((ICellValue)(worksheet.Cells[46, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[46, columnIndex].GetFormat().Value),
-                        SmallStone = ((ICellValue)(worksheet.Cells[47, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[47, columnIndex].GetFormat().Value),
-                        BigStone = ((ICellValue)(worksheet.Cells[48, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[48, columnIndex].GetFormat().Value),
-                        HabitatRiverType = ((ICellValue)(worksheet.Cells[50, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[50, columnIndex].GetFormat().Value),
-                        HabitatFlowState = ((ICellValue)(worksheet.Cells[51, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[51, columnIndex].GetFormat().Value),
-                        SurveyUnavailableReason = surveyUnavailableReason,
-                        Note = ((ICellValue)(worksheet.Cells[53, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[53, columnIndex].GetFormat().Value),
-                        DECount = deCount,
-                        EFCount = efCount,
-                        LECount = leCount,
-                        TUCount = tuCount,
-                        FAIScore = score,
-                        FAIGrade = grade,
-                        TotalIndividualCount = cluster?.TotalIndividualCount,
-                        TotalSpeciesCount = cluster?.TotalSpeciesCount,
-                        M1Value = cluster?.M1Value,
-                        M2Value = cluster?.M2Value,
-                        M3Value = cluster?.M3Value,
-                        M4Value = cluster?.M4Value,
-                        M5Value = cluster?.M5Value,
-                        M6Value = cluster?.M6Value,
-                        M7Value = cluster?.M7Value,
-                        SpeciesCount = speciesCount,
-                        IndividualCount = individualCountSum ?? 0,
-                    };
-
-                    importModels.Add(model);
-
-                    importSpeciesModels.AddRange(speciesData);
-                }
-            }
-            return (importModels, importSpeciesModels);
-        }
-        catch (Exception ex)
-        {
-            GB.LogWrite(GetType().Name, nameof(ContainHabitatDataTableToModels), ex.Message);
 
             return (importModels, importSpeciesModels);
         }
@@ -969,9 +788,7 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                     else if (prop.Name == "CollectionTime"
                             || prop.Name == "Bedrock" || prop.Name == "Concrete" || prop.Name == "Mud" || prop.Name == "Sand" || prop.Name == "FineGravel"
                             || prop.Name == "Gravel" || prop.Name == "SmallStone" || prop.Name == "BigStone"
-                            || prop.Name == "DECount" || prop.Name == "EFCount" || prop.Name == "LECount" || prop.Name == "TUCount"
-                            || prop.Name == "LeftVacantLand" || prop.Name == "LeftH" || prop.Name == "LeftS" || prop.Name == "LeftT1"
-                            || prop.Name == "RightVacantLand" || prop.Name == "RightH" || prop.Name == "RightS" || prop.Name == "RightT1")
+                            || prop.Name == "DECount" || prop.Name == "EFCount" || prop.Name == "LECount" || prop.Name == "TUCount")
                     {
                         //정수
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
@@ -1415,67 +1232,22 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "채집도구", Value = 15 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "흐름상태", Value = 16 });
 
-        if (IsContainHabitat == false)
-        {
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "암반", Value = 18 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "콘크리트", Value = 19 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "진흙이하(<0.063mm)", Value = 20 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "모래(0.063-2mm)", Value = 21 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "잔자갈(2-16mm)", Value = 22 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "자갈(16-64mm)", Value = 23 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "작은돌(64-256mm)", Value = 24 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "큰돌(>256mm)", Value = 25 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천형태", Value = 27 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "흐름상태", Value = 28 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "채집불가시 특이사항", Value = 29 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "채집불가시 비고", Value = 30 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "기형", Value = 44 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "지느러미손상", Value = 45 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "피부손상", Value = 46 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "종양", Value = 47 });
-        }
-        else
-        {
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "유역형태", Value = 18 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "수계형태", Value = 19 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "하폭(m)", Value = 20 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "유폭(m)", Value = 21 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "수심(m)", Value = 22 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "침수성", Value = 23 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "부수성", Value = 24 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "정수성", Value = 25 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "좌안 나지", Value = 26 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "좌안 초본류", Value = 27 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "좌안 관목류", Value = 28 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "좌안 교목류", Value = 29 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "우안 나지", Value = 31 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "우안 초본류", Value = 32 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "우안 관목류", Value = 33 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "우안 교목류", Value = 34 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "좌안", Value = 36 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "우안", Value = 37 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "교란요인", Value = 38 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천내 구조물", Value = 39 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "어도 유무", Value = 40 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "기타 특이사항", Value = 41 });
-
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "암반", Value = 42 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "콘크리트", Value = 43 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "진흙이하(<0.063mm)", Value = 44 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "모래(0.063-2mm)", Value = 45 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "잔자갈(2-16mm)", Value = 46 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "자갈(16-64mm)", Value = 47 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "작은돌(64-256mm)", Value = 48 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "큰돌(>256mm)", Value = 49 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천형태", Value = 51 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "흐름상태", Value = 52 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "채집불가시 특이사항", Value = 53 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "채집불가시 비고", Value = 54 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "기형", Value = 68 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "지느러미손상", Value = 69 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "피부손상", Value = 70 });
-            ColumnNumbers.Add(new ColumnNumber { ColumnName = "종양", Value = 71 });
-        }
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "암반", Value = 18 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "콘크리트", Value = 19 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "진흙이하(<0.063mm)", Value = 20 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "모래(0.063-2mm)", Value = 21 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "잔자갈(2-16mm)", Value = 22 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "자갈(16-64mm)", Value = 23 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "작은돌(64-256mm)", Value = 24 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "큰돌(>256mm)", Value = 25 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천형태", Value = 27 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "흐름상태", Value = 28 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "채집불가시 특이사항", Value = 29 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "채집불가시 비고", Value = 30 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "기형", Value = 44 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "지느러미손상", Value = 45 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "피부손상", Value = 46 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "종양", Value = 47 });
     }
 
     #endregion
@@ -1595,71 +1367,6 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
             .ToList();
 
         return newSpecies;
-    }
-
-    #endregion
-
-    #region 하천서식환경이 있는경우와 없는경우 체크
-
-    private string? HabitatSuccess(Worksheet worksheet)
-    {
-        // 하천서식환경이 있는 경우 : index 17행 14열 에 유역형태
-        // 하천서식환경이 없는경우   : index 17행 14열에 암반
-
-        var value = ((ICellValue)(worksheet.Cells[17, 14].GetValue().Value)).GetResultValueAsString(worksheet.Cells[17, 14].GetFormat().Value).Replace(" ", "");
-
-        if (IsContainHabitat)
-        {
-            if (string.IsNullOrWhiteSpace(value) || value != "유역형태")
-            {
-                return "하천 서식환경을 체크한 경우\n\n15열-18행의 항목명 : 유역형태\n항목 이름이 있어야 합니다.";
-            }
-            return null;
-        }
-        else
-        {
-            if (string.IsNullOrWhiteSpace(value) || value != "암반")
-            {
-                return "하천 서식환경을 체크하지 않은 경우\n\n15열-18행의 항목명 : 암반\n항목 이름이 있어야 합니다.";
-            }
-           return null; 
-        }
-
-    }
-    #endregion
-
-    #region 메세지 박스 최상위
-
-    private static MessageBoxResult ShowTopMostMessage(string message, string caption, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None)
-    {
-        MessageBoxResult result = MessageBoxResult.None;
-
-        Application.Current?.Dispatcher.Invoke(() =>
-        {
-            // 활성 창을 우선 사용하고, 없으면 MainWindow 사용
-            var owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive) ?? Application.Current?.MainWindow;
-
-            if (owner != null)
-            {
-                result = MessageBox.Show(owner, message, caption, buttons, icon);
-            }
-            else
-            {
-                // 임시 최상위 윈도우를 만들어 소유자로 사용 (항상 최상위로 보장)
-                var temp = new Window { Width = 0, Height = 0, WindowStyle = WindowStyle.None, ShowInTaskbar = false, Topmost = true };
-                temp.Show();
-                try
-                {
-                    result = MessageBox.Show(temp, message, caption, buttons, icon);
-                }
-                finally
-                {
-                    temp.Close();
-                }
-            }
-        });
-
-        return result;
     }
 
     #endregion

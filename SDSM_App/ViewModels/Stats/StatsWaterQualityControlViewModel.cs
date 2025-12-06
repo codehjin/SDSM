@@ -9,6 +9,7 @@ using System.Data;
 using System.Text;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
+using Telerik.Windows.Persistence.Core;
 
 namespace SDSM_App.ViewModels;
 
@@ -45,8 +46,7 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
     [ObservableProperty] private RadObservableCollection<PlotItem> _yearCollection = [];
 
     //수질등급
-    [ObservableProperty] private DataTable _gradeDataTable = new();
-    [ObservableProperty] private RadGridView _gradeRadGridView = new();
+    [ObservableProperty] private RadObservableCollection<PlotItem> _gradeCollection = [new()];
 
     #endregion
 
@@ -117,8 +117,7 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
                             {
                                 SiteDivision = m.SiteDivision,
                                 SurveyYear = m.SurveyYear,
-                                YearChsu = m.YearChsu,
-                                River = m.River,
+                                Site = m.Site,
                                 PH = m.PH,
                                 BOD = m.BOD,
                                 COD = m.COD,
@@ -146,8 +145,6 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
         try
         {
             await Task.WhenAll(tasks);
-
-            await SetGradeColumns();
 
             if (GB.IsBusy == true)
                 GB.IsBusy = false;
@@ -196,221 +193,83 @@ public partial class StatsWaterQualityControlViewModel : ObservableObject, ITran
     {
         try
         {
-            GradeDataTable = new();
-            var dt = new DataTable();
+            GradeCollection.Clear();
+
+            var models = new List<PlotItem>();
 
             await Task.Run(() =>
             {
+                string[] osans = ["오산천3", "오산천03"];
+                string[] woncheons = ["원천리천2", "원천리천02"];
+
                 var years = SearchData.Select(m => m.SurveyYear).Distinct().OrderBy(m => m).ToList();
-                var rivers = SearchData.Select(m => m.River).Distinct().OrderBy(m => m).ToList();
-                string[] grades = ["pH", "BOD", "COD", "TOC", "SS", "DO", "T-P", "대장균군"];
+                var osanData = SearchData.Where(m => !string.IsNullOrEmpty(m.Site) && osans.Contains(m.Site)).ToList();
+                var woncheonData = SearchData.Where(m => !string.IsNullOrEmpty(m.Site) && woncheons.Contains(m.Site)).ToList();
 
-                dt.Columns.Add(new DataColumn("연도", typeof(string)));
+                // 년도별 그룹으로 만들어서 반복 시 Where 호출을 제거
+                var osanByYear = osanData.GroupBy(m => m.SurveyYear).ToDictionary(g => g.Key, g => g.ToList());
+                var woncheonByYear = woncheonData.GroupBy(m => m.SurveyYear).ToDictionary(g => g.Key, g => g.ToList());
 
-                //컬럼 추가 : 하천명
-                foreach (var river in rivers)
+                // 헬퍼: 리스트에서 선택한 필드의 평균과 등급을 계산하여 포맷된 문자열 반환
+                static string FormatGrade(List<WaterQuality>? list, Func<WaterQuality, double?> selector, Func<double?, object?> gradeFunc, int decimals = 1)
                 {
-                    foreach (var grade in grades)
-                    {
-                        var riverName = string.IsNullOrEmpty(river) ? "기타" : river;
+                    if (list == null || list.Count == 0)
+                        return "-";
 
-                        var column = new DataColumn($"{riverName}_{grade}", typeof(string)) { AllowDBNull = true };
-                        dt.Columns.Add(column);
-                    }
+                    // 유효한 값만 추출
+                    var vals = list.Select(selector).Where(v => v.HasValue).Select(v => v!.Value).ToArray();
+                    if (vals.Length == 0)
+                        return "-";
+
+                    double sum = vals.Sum();
+                    if (sum == 0)
+                        return "-";
+
+                    double avg = Math.Round(sum / vals.Length, decimals, MidpointRounding.AwayFromZero);
+                    var grade = gradeFunc(avg);
+                    var gradeStr = grade?.ToString() ?? "-";
+
+                    return $"{gradeStr}({avg})";
                 }
 
-                //기타 컬럼 목록 만들기
-                var etcColumns = new List<DataColumn>();
-                foreach (DataColumn column in dt.Columns)
-                {
-                    if (column.ColumnName.Contains("기타"))
-                    {
-                        etcColumns.Add(column);
-                    }
-                }
-
-                //기타 컬럼 지우고 추가하기
-                foreach (var etcColumn in etcColumns)
-                {
-                    dt.Columns.Remove(etcColumn);
-                    dt.Columns.Add(etcColumn);
-                }
-
-                //데이터 추가 : 연도별, 하천명별
                 foreach (var year in years)
                 {
-                    var row = dt.NewRow();
-                    row["연도"] = $"{year}년";
+                    osanByYear.TryGetValue(year, out var osanYearData);
+                    woncheonByYear.TryGetValue(year, out var woncheonYearData);
 
-                    foreach (var river in rivers)
+                    var model = new PlotItem
                     {
-                        var riverName = string.IsNullOrEmpty(river) ? "기타" : river;
-                        var grade = string.Empty;
-                        var columnName = string.Empty;
-                        var data = new List<double?>();
+                        XCat = year,
+                        
+                        YString1 = FormatGrade(osanYearData, w => w.PH, v => GB.GetPhGrade(v)),
+                        YString2 = FormatGrade(osanYearData, w => w.BOD, v => GB.GetBodGrade(v)),
+                        YString3 = FormatGrade(osanYearData, w => w.COD, v => GB.GetCodGrade(v)),
+                        YString4 = FormatGrade(osanYearData, w => w.TOC, v => GB.GetTocGrade(v)),
+                        YString5 = FormatGrade(osanYearData, w => w.SS, v => GB.GetSsGrade(v)),
+                        YString6 = FormatGrade(osanYearData, w => w.DO, v => GB.GetDoGrade(v)),
+                        YString7 = FormatGrade(osanYearData, w => w.TP, v => GB.GetTpGrade(v)),
+                        YString8 = FormatGrade(osanYearData, w => w.EColi, v => GB.GetEColiGrade(v)),
 
-                        //PH
-                        columnName = $"{riverName}_pH";
-                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.PH != null).Select(m => m.PH)];
-                        if (data.Count != 0)
-                        {
-                            var scoreSum = data.Sum(m => m) ?? 0;
-                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
-                            grade = GB.GetPhGrade(score).ToString();
-                            row[columnName] = grade;
-                        }
-                        else
-                            row[columnName] = "-";
+                        YString9 = FormatGrade(woncheonYearData, w => w.PH, v => GB.GetPhGrade(v)),
+                        YString10 = FormatGrade(woncheonYearData, w => w.BOD, v => GB.GetBodGrade(v)),
+                        YString11 = FormatGrade(woncheonYearData, w => w.COD, v => GB.GetCodGrade(v)),
+                        YString12 = FormatGrade(woncheonYearData, w => w.TOC, v => GB.GetTocGrade(v)),
+                        YString13 = FormatGrade(woncheonYearData, w => w.SS, v => GB.GetSsGrade(v)),
+                        YString14 = FormatGrade(woncheonYearData, w => w.DO, v => GB.GetDoGrade(v)),
+                        YString15 = FormatGrade(woncheonYearData, w => w.TP, v => GB.GetTpGrade(v)),
+                        YString16 = FormatGrade(woncheonYearData, w => w.EColi, v => GB.GetEColiGrade(v)),
+                    };
 
-                        //BOD
-                        columnName = $"{riverName}_BOD";
-                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.BOD != null).Select(m => m.BOD)];
-                        if (data.Count != 0)
-                        {
-                            var scoreSum = data.Sum(m => m) ?? 0;
-                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
-                            grade = GB.GetBodGrade(score);
-                            row[columnName] = grade;
-                        }
-                        else
-                            row[columnName] = "-";
-
-                        //COD
-                        columnName = $"{riverName}_COD";
-                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.COD != null).Select(m => m.COD)];
-                        if (data.Count != 0)
-                        {
-                            var scoreSum = data.Sum(m => m) ?? 0;
-                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
-                            grade = GB.GetCodGrade(score);
-                            row[columnName] = grade;
-                        }
-                        else
-                            row[columnName] = "-";
-
-                        //TOC
-                        columnName = $"{riverName}_TOC";
-                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.TOC != null).Select(m => m.TOC)];
-                        if (data.Count != 0)
-                        {
-                            var scoreSum = data.Sum(m => m) ?? 0;
-                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
-                            grade = GB.GetTocGrade(score);
-                            row[columnName] = grade;
-                        }
-                        else
-                            row[columnName] = "-";
-
-                        //SS
-                        columnName = $"{riverName}_SS";
-                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.SS != null).Select(m => m.SS)];
-                        if (data.Count != 0)
-                        {
-                            var scoreSum = data.Sum(m => m) ?? 0;
-                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
-                            grade = GB.GetSsGrade(score).ToString();
-                            row[columnName] = grade;
-                        }
-                        else
-                            row[columnName] = "-";
-
-                        //SS
-                        columnName = $"{riverName}_SS";
-                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.SS != null).Select(m => m.SS)];
-                        if (data.Count != 0)
-                        {
-                            var scoreSum = data.Sum(m => m) ?? 0;
-                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
-                            grade = GB.GetSsGrade(score).ToString();
-                            row[columnName] = grade;
-                        }
-                        else
-                            row[columnName] = "-";
-
-                        //DO
-                        columnName = $"{riverName}_DO";
-                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.DO != null).Select(m => m.DO)];
-                        if (data.Count != 0)
-                        {
-                            var scoreSum = data.Sum(m => m) ?? 0;
-                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
-                            grade = GB.GetDoGrade(score);
-                            row[columnName] = grade;
-                        }
-                        else
-                            row[columnName] = "-";
-
-                        //T-P
-                        columnName = $"{riverName}_T-P";
-                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.TP != null).Select(m => m.TP)];
-                        if (data.Count != 0)
-                        {
-                            var scoreSum = data.Sum(m => m) ?? 0;
-                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
-                            grade = GB.GetTpGrade(score);
-                            row[columnName] = grade;
-                        }
-                        else
-                            row[columnName] = "-";
-
-                        //대장균군
-                        columnName = $"{riverName}_대장균군";
-                        data = [.. SearchData.Where(m => m.SurveyYear == year && m.River == river && m.EColi != null).Select(m => m.EColi)];
-                        if (data.Count != 0)
-                        {
-                            var scoreSum = data.Sum(m => m) ?? 0;
-                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
-                            grade = GB.GetEColiGrade(score);
-                            row[columnName] = grade;
-                        }
-                        else
-                            row[columnName] = "-";
-
-                    }
-                    dt.Rows.Add(row);
+                    models.Add(model);
                 }
-
-                GradeDataTable = dt;
             });
+
+            GradeCollection.AddRange(models);
         }
         catch (Exception ex)
         {
             GB.LogWrite(GetType().Name, nameof(GetGradeData), ex.Message);
         }
-    }
-
-    //수질등급 컬럼그룹 동적생성
-    private async Task SetGradeColumns()
-    {
-        var dt = GradeDataTable;
-        if (dt == null || dt.Rows.Count == 0)
-            return;
-
-        var headers = new List<string>();
-
-        await Task.Run(() =>
-        {
-            foreach (DataColumn column in dt.Columns)
-            {
-                var header = column.ColumnName ?? "";
-                if (header.Contains('_'))
-                {
-                    // "_" 다음 문자열만 남김
-                    headers.Add(header[..(header.IndexOf('_'))]);
-                }
-            }
-        });
-
-        GradeRadGridView.ColumnGroups.SuspendNotifications();
-
-        GradeRadGridView.ColumnGroups.Clear();
-
-        foreach (var header in headers.Distinct())
-        {
-            GradeRadGridView.ColumnGroups.Add(new GridViewColumnGroup { Name = header, Header = header });
-        }
-
-        GradeRadGridView.ColumnGroups.ResumeNotifications();
     }
 
     #endregion 
