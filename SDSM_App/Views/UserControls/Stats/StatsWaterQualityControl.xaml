@@ -313,7 +313,7 @@
                                                  HeaderRowStyle="{StaticResource CustomRadGridViewHeaderRowStyle}"
                                                  BusyIndicatorContentTemplate="{StaticResource ExportBusyGridViewTemplate}"
                                                  BusyIndicatorIsIndeterminate="False"
-                                                 FrozenColumnsSplitterVisibility="Collapsed"
+                                                 FrozenColumnsSplitterVisibility="Visible"
                                                  LeftFrozenColumnCount="0"
                                                  RowIndicatorVisibility="Collapsed"
                                                  IsFilteringAllowed="False"
