@@ -1,5 +1,4 @@
 ﻿using SDSM_App.InjectableServices;
-using System.Diagnostics;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;

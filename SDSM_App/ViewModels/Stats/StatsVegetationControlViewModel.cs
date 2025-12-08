@@ -6,7 +6,6 @@ using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_Models;
 using System.Data;
-using Telerik.Windows.Controls.Charting;
 using Telerik.Windows.Data;
 
 namespace SDSM_App.ViewModels;

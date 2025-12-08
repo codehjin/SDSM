@@ -1,6 +1,5 @@
 ﻿using SDSM_App.InjectableServices;
 using SDSM_App.ViewModels;
-using SDSM_Models;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

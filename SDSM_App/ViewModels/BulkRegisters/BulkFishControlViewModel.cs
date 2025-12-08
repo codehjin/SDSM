@@ -17,7 +17,6 @@ using System.Data.SQLite;
 using System.IO;
 using System.Media;
 using System.Reflection;
-using System.Security.Policy;
 using System.Text;
 using System.Windows;
 using Telerik.Windows.Controls;

@@ -95,6 +95,7 @@
                                         </Border>
                                         <telerik:RadWatermarkTextBox Text="{Binding Path=WorkplaceSite, UpdateSourceTrigger=PropertyChanged}" 
                                                                      Width="{StaticResource FormControlWidth}" 
+                                                                     WatermarkContent="최저 2자 ~ 최대 20자"
                                                                      Style="{StaticResource FormWatermarkTextBoxStyle}" 
                                                                      LostFocus="EmptyClear_LostFocus"/>
                                     </StackPanel>

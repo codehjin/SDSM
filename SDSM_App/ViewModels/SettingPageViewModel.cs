@@ -63,7 +63,8 @@ public partial class SettingPageViewModel : ObservableObject, ITransientService
     {
         return !string.IsNullOrWhiteSpace(Workplace)
             && !string.IsNullOrWhiteSpace(WorkplaceRiver)
-            && !string.IsNullOrWhiteSpace(WorkplaceSite);
+            && !string.IsNullOrWhiteSpace(WorkplaceSite)
+            && WorkplaceSite.Length > 1;
     }
 
     [RelayCommand(CanExecute = nameof(CanSiteDivisionSave))]
@@ -116,7 +117,7 @@ public partial class SettingPageViewModel : ObservableObject, ITransientService
                                $"수정 내용이 저장 후 모든자료의 관련 자료도 함께 변경됩니다.{Environment.NewLine}" +
                                $"계속 진행하시겠습니까?";
                 var resut = MessageBox.Show(message, "자료 수정", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
-                if(resut == MessageBoxResult.Cancel)
+                if (resut == MessageBoxResult.Cancel)
                     return;
 
                 var existsItem = await context.SiteDivisions.Where(m => m.SiteDivisionId != SiteDivisioneditModel.SiteDivisionId)

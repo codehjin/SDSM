@@ -12,7 +12,6 @@ using SDSM_App.Models;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
-using System.Data.SQLite;
 using System.IO;
 using System.Media;
 using System.Reflection;

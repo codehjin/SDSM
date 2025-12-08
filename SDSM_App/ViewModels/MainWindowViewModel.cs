@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_App.Views.Windows;
-using SDSM_Models;
 using System.Windows;
 
 namespace SDSM_App.ViewModels;

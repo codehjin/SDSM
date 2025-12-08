@@ -323,8 +323,8 @@
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
                                                  RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
                                 <telerik:RadGridView.ColumnGroups>
-                                    <telerik:GridViewColumnGroup Name="osan" Header="오산천3 (방류수 합류부)"/>
-                                    <telerik:GridViewColumnGroup Name="woncheon" Header="원천리천3 (방류수 합류부)"/>
+                                    <telerik:GridViewColumnGroup Name="osan" Header="오산천 3 (방류수 합류부)"/>
+                                    <telerik:GridViewColumnGroup Name="woncheon" Header="원천리천 2 (방류수 합류부)"/>
                                 </telerik:RadGridView.ColumnGroups>
                                 <telerik:RadGridView.Columns>
                                     <telerik:GridViewDataColumn Header="연도" DataMemberBinding="{Binding Path=XCat}" MinWidth="80" Width="*" MaxWidth="160"/>

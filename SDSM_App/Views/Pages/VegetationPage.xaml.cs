@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.InjectableServices;
 using SDSM_App.Views.UserControls;
-using SDSM_Models;
 using System.Windows;
 using System.Windows.Controls;
 using Telerik.Windows.Controls;

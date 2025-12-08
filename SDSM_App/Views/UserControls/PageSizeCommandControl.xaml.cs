@@ -1,5 +1,4 @@
-﻿using SDSM_App.InjectableServices;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 

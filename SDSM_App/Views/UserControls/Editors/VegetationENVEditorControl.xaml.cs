@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Documents.Model.Drawing.Charts;
 
 namespace SDSM_App.Views.UserControls;
 

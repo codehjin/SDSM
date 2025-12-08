@@ -701,14 +701,17 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
 
                     if (items.Count > 1)
                     {
+                        var hasMultipleSpeciess = items.Select(i => i.SpeciesKo).Distinct().Count() > 1;
+                        var abbr = hasMultipleSpeciess ? "..." : "";
+
                         var featureSpeciesKo = items.FirstOrDefault(m => !string.IsNullOrWhiteSpace(m.Feature) && m.Feature.Any(c => _featureChars.Contains(c)))?.SpeciesKo ?? "";
                         if (featureSpeciesKo != "")
                         {
-                            firstSpeciesKo = $" : {featureSpeciesKo}...";
+                            firstSpeciesKo = $" : {featureSpeciesKo}{abbr}";
                         }
                         else
                         {
-                            firstSpeciesKo = items.First() != null ? $" : {items.First()?.SpeciesKo ?? ""}..." : "";
+                            firstSpeciesKo = items.First() != null ? $" : {items.First()?.SpeciesKo ?? ""}{abbr}" : "";
                         }
 
                         var firstValue = $"{ProcessSurveyYear(items.First().SurveyYear):00}";
@@ -796,17 +799,21 @@ public partial class HomePageViewModel : ObservableObject, ITransientService
                     var lng = items.FirstOrDefault()?.Lng ?? 0;
                     var mapData = new List<MapData>();
                     var firstSpeciesKo = "";
+                    
 
                     if (items.Count > 1)
                     {
+                        var hasMultipleSpeciess = items.Select(i => i.SpeciesKo).Distinct().Count() > 1;
+                        var abbr = hasMultipleSpeciess ? "..." : "";
+
                         var featureSpeciesKo = items.FirstOrDefault(m => !string.IsNullOrWhiteSpace(m.Feature) && m.Feature.Any(c => _featureChars.Contains(c)))?.SpeciesKo ?? "";
                         if (featureSpeciesKo != "")
                         {
-                            firstSpeciesKo = $" : {featureSpeciesKo}...";
+                            firstSpeciesKo = $" : {featureSpeciesKo}{abbr}";
                         }
                         else
                         {
-                            firstSpeciesKo = items.First() != null ? $" : {items.First()?.SpeciesKo ?? ""}..." : "";
+                            firstSpeciesKo = items.First() != null ? $" : {items.First()?.SpeciesKo ?? ""}{abbr}" : "";
                         }
 
                         var firstValue = $"{ProcessSurveyYear(items.First().SurveyYear):00}";

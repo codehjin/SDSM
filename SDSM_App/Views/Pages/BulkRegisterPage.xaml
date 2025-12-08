@@ -209,9 +209,9 @@
                     <UniformGrid Columns="2">
                         <telerik:RadButton Content="포유류" Tag="BulkMammalControl" Click="OpenRadButton_Click"/>
                         <telerik:RadButton Content="양서파충류" Tag="BulkAmphibianReptileControl" Click="OpenRadButton_Click"/>
-                        <telerik:RadButton Content="식물상" Tag="BulkPlantControl" Click="OpenRadButton_Click" Visibility="Collapsed"/>
+                        <!--<telerik:RadButton Content="식물상" Tag="BulkPlantControl" Click="OpenRadButton_Click" Visibility="Collapsed"/>
                         <telerik:RadButton Content="식생도" Tag="BulkVegetationControl" Click="OpenRadButton_Click" Visibility="Collapsed"/>
-                        <telerik:RadButton Content="식생단면" Tag="BulkVegetationENVControl" Click="OpenRadButton_Click" Visibility="Collapsed"/>
+                        <telerik:RadButton Content="식생단면" Tag="BulkVegetationENVControl" Click="OpenRadButton_Click" Visibility="Collapsed"/>-->
                     </UniformGrid>
                     <TextBlock Text="환경자료" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="5 40 0 10"/>
                     <UniformGrid>
@@ -238,7 +238,7 @@
                         <telerik:RadGlyph Glyph="{StaticResource GlyphClose}"/>
                     </telerik:RadButton>
                 </StackPanel>
-                
+
                 <ContentControl x:Name="ContentControl" Grid.Row="1" Margin="30"/>
             </Grid>
         </Border>

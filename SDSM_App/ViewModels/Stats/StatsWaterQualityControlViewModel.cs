@@ -6,10 +6,7 @@ using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_Models;
 using System.Data;
-using System.Text;
-using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
-using Telerik.Windows.Persistence.Core;
 
 namespace SDSM_App.ViewModels;
 

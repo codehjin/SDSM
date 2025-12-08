@@ -10,7 +10,6 @@ using SDSM_App.Messengers;
 using SDSM_App.Models.Repositories.Interfases;
 using SDSM_Models;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.Media;
 using System.Windows;
 using Telerik.Windows.Data;
