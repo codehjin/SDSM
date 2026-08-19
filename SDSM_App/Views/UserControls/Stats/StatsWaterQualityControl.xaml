@@ -319,7 +319,7 @@
                                                  IsFilteringAllowed="False"
                                                  IsSynchronizedWithCurrentItem="{x:Null}"
                                                  MinHeight="465"
-                                                 MaxHeight="880"
+                                                 MaxHeight="505"
                                                  ElementExportingToDocument="RadGridView_ElementExportingToDocument"
                                                  RowStyle="{StaticResource ActionBackgroundNullRowStyle}">
                                 <telerik:RadGridView.ColumnGroups>

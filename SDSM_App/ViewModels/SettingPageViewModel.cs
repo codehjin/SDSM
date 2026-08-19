@@ -33,6 +33,14 @@ public partial class SettingPageViewModel : ObservableObject, ITransientService
 
     #endregion
 
+    #region 기준자료 내보내기
+
+    // 조사자 앱 배포용 기준자료(reference.json) 내보내기
+    [RelayCommand]
+    private void ExportReference() => Commons.ReferenceDataExporter.Export();
+
+    #endregion
+
     #region 프로젝트 사업장 지점명
 
     [ObservableProperty] private string _siteDivisionTitle = "신규";

@@ -361,3 +361,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# 로컬 설정·데이터
+*.db-shm
+*.db-wal
+
+# 대용량 참고자료
+*.xlsx
+!docs/**/*.xlsx

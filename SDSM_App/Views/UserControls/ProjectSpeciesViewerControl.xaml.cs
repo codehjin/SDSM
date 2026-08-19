@@ -93,7 +93,7 @@ public partial class ProjectSpeciesViewerControl : UserControl, ITransientServic
                     }
                     else
                     {
-                        column.MinWidth = 60;
+                        column.MinWidth = 80;
                         column.Width = GridViewLength.Auto;
                         column.MaxWidth = 420;
                         column.TextWrapping = TextWrapping.Wrap;

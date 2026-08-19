@@ -490,6 +490,15 @@
     </Style>
 
     <!--GridView 머리글 셀-->
+    <Style x:Key="NotWrapGridViewHeaderCellStyle" TargetType="telerik:GridViewHeaderCell" BasedOn="{StaticResource GridViewHeaderCellStyle}">
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <!--GridView 머리글 셀-->
     <Style x:Key="NotSortingGridViewHeaderCellStyle" TargetType="telerik:GridViewHeaderCell" BasedOn="{StaticResource GridViewHeaderCellStyle}">
         <Setter Property="TextAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -544,6 +553,16 @@
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
     </Style>
 
+    <!--Left GridView 행 셀-->
+    <Style x:Key="GridViewCellItalicLeftStyle" TargetType="telerik:GridViewCell" BasedOn="{StaticResource GridViewCellStyle}">
+        <Setter Property="Padding" Value="7 0 7 0"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="FontStyle" Value="Italic"/>
+    </Style>
+    
     <!--Left GridView 행 셀-->
     <Style x:Key="GridViewCellLeftStyle" TargetType="telerik:GridViewCell" BasedOn="{StaticResource GridViewCellStyle}">
         <Setter Property="Padding" Value="7 0 7 0"/>

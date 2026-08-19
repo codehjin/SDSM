@@ -157,7 +157,7 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=River}" MinWidth="80" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Site}" MinWidth="80" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" MaxWidth="240" TextWrapping="Wrap" ColumnGroupName="species"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" MaxWidth="480" TextWrapping="Wrap" ColumnGroupName="species"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" MaxWidth="480" TextWrapping="Wrap" ColumnGroupName="species" CellStyle="{StaticResource GridViewCellItalicLeftStyle}"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Feature}" MinWidth="80" MaxWidth="280" TextWrapping="Wrap" ColumnGroupName="species"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lat}" DataFormatString="F6" MinWidth="80" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" MaxWidth="160"/>

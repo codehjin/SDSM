@@ -22,7 +22,7 @@ public partial class StatsPlantControl : UserControl, ITransientService
 {
     private readonly StatsPlantControlViewModel _vm;
     private readonly string _caption = "식물상";
-    private readonly Style? _cellLeftStyle = Application.Current.FindResource("GridViewCellLeftStyle") as Style;
+    private readonly Style? _notWrapHeaderCellStyle = Application.Current.FindResource("NotWrapGridViewHeaderCellStyle") as Style;
 
     public StatsPlantControl(StatsPlantControlViewModel vm)
     {
@@ -81,20 +81,19 @@ public partial class StatsPlantControl : UserControl, ITransientService
 
                     if (column.Header.ToString() == "종수")
                     {
-                        column.MinWidth = 80;
-                        column.Width = GridViewLength.Auto;
-                        column.MaxWidth = 80;
+                        column.MinWidth = 60;
+                        column.Width = new GridViewLength(1, GridViewLengthUnitType.Star);
+                        column.MaxWidth = 160;
                         column.DataType = typeof(string);
                     }
                     else
                     {
-                        column.MinWidth = 60;
-                        column.Width = GridViewLength.Auto;
-                        column.MaxWidth = 160;
-                        column.TextTrimming = TextTrimming.CharacterEllipsis;
-                        if (_cellLeftStyle != null)
-                            column.CellStyle = _cellLeftStyle;
+                        column.MinWidth = 0;
+                        column.Width = 0;
+                        column.MaxWidth = 0;
                         column.DataType = typeof(string);
+                        if (_notWrapHeaderCellStyle != null)
+                            column.HeaderCellStyle = _notWrapHeaderCellStyle;
                     }
                     break;
             }
@@ -137,7 +136,7 @@ public partial class StatsPlantControl : UserControl, ITransientService
             var gridViews = new Dictionary<string, RadGridView>
             {
                 { "연도별 자료", YearDataRadGridView },
-                { "사업장 과업대표하천별 출현종", ProjectRadGridView },
+                { "사업장 출현종", ProjectRadGridView },
                 { "전체 출현종", ProjectSpeciesRadGridView },
             };
 

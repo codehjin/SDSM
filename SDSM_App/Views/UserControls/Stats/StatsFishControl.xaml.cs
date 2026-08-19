@@ -23,7 +23,7 @@ public partial class StatsFishControl : UserControl, ITransientService
 {
     private readonly StatsFishControlViewModel _vm;
     private readonly string _caption = "어류";
-    private readonly Style? _cellLeftStyle = Application.Current.FindResource("GridViewCellLeftStyle") as Style;
+    private readonly Style? _notWrapHeaderCellStyle = Application.Current.FindResource("NotWrapGridViewHeaderCellStyle") as Style;
 
     public StatsFishControl(StatsFishControlViewModel vm)
     {
@@ -82,20 +82,19 @@ public partial class StatsFishControl : UserControl, ITransientService
 
                     if (column.Header.ToString() == "종수")
                     {
-                        column.MinWidth = 80;
-                        column.Width = GridViewLength.Auto;
-                        column.MaxWidth = 80;
+                        column.MinWidth = 60;
+                        column.Width = new GridViewLength(1, GridViewLengthUnitType.Star);
+                        column.MaxWidth = 160;
                         column.DataType = typeof(string);
                     }
                     else
                     {
-                        column.MinWidth = 60;
-                        column.Width = GridViewLength.Auto;
-                        column.MaxWidth = 160;
-                        column.TextTrimming = TextTrimming.CharacterEllipsis;
-                        if (_cellLeftStyle != null)
-                            column.CellStyle = _cellLeftStyle;
+                        column.MinWidth = 0;
+                        column.Width = 0;
+                        column.MaxWidth = 0;
                         column.DataType = typeof(string);
+                        if (_notWrapHeaderCellStyle != null)
+                            column.HeaderCellStyle = _notWrapHeaderCellStyle;
                     }
                     break;
             }
@@ -209,8 +208,6 @@ public partial class StatsFishControl : UserControl, ITransientService
         catch (Exception ex)
         {
             GB.LogWrite(GetType().Name, nameof(MultiExport), ex.Message);
-
-
         }
         finally
         {

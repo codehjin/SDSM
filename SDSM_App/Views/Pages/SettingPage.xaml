@@ -151,6 +151,19 @@
                         </Grid>
                     </Border>
 
+                    <!--조사자 기준자료 내보내기-->
+                    <TextBlock Text="조사자 기준자료" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="0 20 0 10"/>
+                    <Border Style="{StaticResource ContentBoxStyle}">
+                        <StackPanel>
+                            <TextBlock TextWrapping="Wrap" Margin="5 0 0 8"
+                                       Foreground="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"
+                                       Text="종별 과거 개체수 범위를 파일(reference.json)로 내보내 조사자 앱의 입력 이상치 경고에 사용합니다."/>
+                            <telerik:RadButton Content="기준자료 내보내기 (JSON)"
+                                               Command="{Binding ExportReferenceCommand}"
+                                               HorizontalAlignment="Left" MinWidth="200" MinHeight="36"/>
+                        </StackPanel>
+                    </Border>
+
                 </StackPanel>
             </ScrollViewer>
         </Grid>

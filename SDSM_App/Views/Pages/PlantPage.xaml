@@ -158,7 +158,7 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Lng}" DataFormatString="F6" MinWidth="80" Width="160" MaxWidth="160"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SurveyLocation}" MinWidth="80" Width="280" MaxWidth="280" TextWrapping="Wrap"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesKo}" MinWidth="80" Width="240" MaxWidth="240" TextWrapping="Wrap"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="480" MaxWidth="480" TextWrapping="Wrap"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="480" MaxWidth="480" TextWrapping="Wrap" CellStyle="{StaticResource GridViewCellItalicLeftStyle}"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=AlienPlant}" MinWidth="80" Width="180" MaxWidth="180"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=InvasiveSpecies}" MinWidth="80" Width="180" MaxWidth="180"/>
                         </telerik:RadGridView.Columns>
