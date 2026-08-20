@@ -28,12 +28,14 @@
 
 ## 3. [중] 종목록 내보내기 / 신규종 취합
 
-- 종 마스터(`FishSpeciesList`·`BenthosSpeciesList` + 조류·포유류·양서파충류 출현종)를 `species.json` 으로 내보내기
+- 어류·저서동물 마스터(`FishSpeciesList`·`BenthosSpeciesList`)를 `species.json` 으로 내보내기
   (현재 `species.json`은 DB에서 1회 생성한 상태 — 버튼으로 재생성 가능하게)
-- ⚠ **조류·포유류·양서파충류는 현재 국명 문자열 목록만 내보낸다**(`SpeciesCatalog.Bird/Mammal/Amphibian` = `List<string>`).
-  그래서 조사자 앱에서 종을 골라도 **학명이 자동으로 채워지지 않아 수동 입력**해야 한다.
-  → `SpeciesCatalog`에 국명·학명 쌍 목록을 추가하고 `Bird`/`Mammal`/`AmphibianReptile` 테이블의 `SpeciesKo`·`SpeciesEn` distinct 로 채우면 해결된다.
-- 조사자가 추가한 신규 종을 취합해 마스터에 병합하는 검수 화면
+- ⚠ **관찰형 3종(조류·포유류·양서파충류)은 이제 관리자 DB가 아니라 국가생물종목록이 기준이다**(2026-08-20).
+  - `SpeciesCatalog.Bird/Mammal/Amphibian` 타입이 `List<string>` → **`List<ObservedSpecies>`**(국명·학명·목·과·보호종·교란종·KTSN)로 바뀌었다.
+  - 생성은 조사자 저장소의 `tools\build_species_json.py` 가 담당한다(국립생물자원관 목록 xlsx → species.json).
+  - **관리자가 이 부분을 덮어쓰지 않도록 주의.** 관리자 내보내기는 `Fish`·`Benthos`만 갱신하고 관찰형 3종은 보존해야 한다.
+  - 구형 파일(국명 문자열 배열)도 계속 읽힌다(`ObservedSpeciesListConverter` 하위 호환).
+- 조사자가 추가한 신규 종(공식 목록에 없는 종)을 취합해 마스터에 병합하는 검수 화면
 
 ## 4. [중] 지도 지점 클릭 줌 제어
 
