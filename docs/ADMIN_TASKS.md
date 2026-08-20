@@ -30,6 +30,9 @@
 
 - 종 마스터(`FishSpeciesList`·`BenthosSpeciesList` + 조류·포유류·양서파충류 출현종)를 `species.json` 으로 내보내기
   (현재 `species.json`은 DB에서 1회 생성한 상태 — 버튼으로 재생성 가능하게)
+- ⚠ **조류·포유류·양서파충류는 현재 국명 문자열 목록만 내보낸다**(`SpeciesCatalog.Bird/Mammal/Amphibian` = `List<string>`).
+  그래서 조사자 앱에서 종을 골라도 **학명이 자동으로 채워지지 않아 수동 입력**해야 한다.
+  → `SpeciesCatalog`에 국명·학명 쌍 목록을 추가하고 `Bird`/`Mammal`/`AmphibianReptile` 테이블의 `SpeciesKo`·`SpeciesEn` distinct 로 채우면 해결된다.
 - 조사자가 추가한 신규 종을 취합해 마스터에 병합하는 검수 화면
 
 ## 4. [중] 지도 지점 클릭 줌 제어
