@@ -330,7 +330,9 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
         score = total != 0 ? Math.Round(total / 2, 1, MidpointRounding.AwayFromZero) : 0;
 
         // "접근불가"가 아니면 등급 산정
-        if ((SurveyUnavailableReason ?? string.Empty).Contains("접근불가") == false)
+        // ⚠ 공백을 제거하고 비교한다 — 일괄입력 경로와 동일하게(2026-08-20 수정).
+        //    제거하지 않으면 "접근 불가"(띄어쓰기)를 놓쳐 같은 자료가 입력 경로에 따라 다른 등급이 된다.
+        if ((SurveyUnavailableReason ?? string.Empty).Replace(" ", "").Contains("접근불가") == false)
         {
             if (score >= 80) grade = "A";
             else if (score >= 60) grade = "B";

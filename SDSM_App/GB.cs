@@ -534,6 +534,11 @@ public static class GB
         if (speciesData == null)
             return (null, null);
 
+        // 조사는 수행했으나 0종이면 점수 0 · 등급 E (2026-08-20 수정, 어류 FAI와 동일 규칙).
+        // 조사자 앱도 같은 규칙이라 값이 일치한다. 조사불가 사유는 위에서 "-"로 이미 처리된다.
+        if (speciesData.Count(x => (x.IndividualCount ?? 0) > 0) == 0)
+            return (0, "E");
+
         var aArr = speciesData.Select(x => double.TryParse(x.SaprobicValue, out var v) ? v : 0.0).ToArray();
         var bArr = speciesData.Select(x => int.TryParse(x.IndicatorWeight, out var v) ? v : 0).ToArray();
         var cArr = speciesData.Select(x => x.RankScorer).ToArray();
@@ -634,7 +639,10 @@ public static class GB
         double 충식종개체수비율 = 총개체수 != 0 ? (double)(충식종Sum_I - 충식종SumI_Exotic) / 총개체수 * 100.0 : 0;
 
         int 비정상개체수 = abnormalCount;
-        double 비정상개체수비율 = 비정상개체수 != 0 ? (비정상개체수 / 총개체수) * 100 : 0;
+        // 나눗셈 "앞"에서 실수로 승격한다(2026-08-20 수정).
+        // 정수 나눗셈이면 비정상 199/총 200(99.5%)도 0%가 되어 M8이 사실상 항상 만점이 된다.
+        // 총개체수 > 0 가드로 0 나누기 예외도 함께 막는다. 근거: SDSM_Surveyor\docs\90_TECH_NOTES.md §5
+        double 비정상개체수비율 = 총개체수 > 0 ? (double)비정상개체수 / 총개체수 * 100.0 : 0;
 
         double m1 = GetM1Value(chasu, 국내종총종수);
         double m2 = GetM2Value(chasu, 여울성저서종수);
@@ -660,6 +668,14 @@ public static class GB
 
         var mValues = new List<double> { m1, m2, m3, m4, m5, m6, m7, m8 };
         var (score, grade) = GetFAIValue(mValues, surveyUnavailableReason);
+
+        // 조사는 수행했으나 0종이면 점수 0 · 등급 E (2026-08-20 수정).
+        // 0 가드가 없으면 내성종 0%·잡식종 0%·비정상종 0%가 각각 만점을 받아 합계 37.5(D등급)가 된다.
+        // "어류가 한 마리도 없다"가 "내성·잡식종이 없어 건강하다"로 계산되는 역설이므로 D는 과대평가다.
+        // (조사불가 사유는 위에서 이미 "-"로 처리되어 여기까지 오지 않는다)
+        // 산출값(cluster)은 종전대로 채워 둔다 — 점수·등급만 바꾼다.
+        if (총종수 == 0)
+            return (cluster, 0, "E");
 
         return (cluster, score, grade);
     }
