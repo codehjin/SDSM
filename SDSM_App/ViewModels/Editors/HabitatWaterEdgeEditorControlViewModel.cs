@@ -314,10 +314,13 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
     }
 
     //평가등급
-    private (double, string) GetGrade()
+    // ⚠ 반환형이 nullable 이다(2026-08-20 수정).
+    //   평가항목이 비어 있으면 점수·등급을 내지 않고 null 로 둔다 — 일괄입력 경로·조사자 앱과 동일.
+    //   종전에는 0점·E등급으로 저장돼, 아직 평가하지 않은 지점이 최하등급으로 DB에 남았다.
+    //   결측(null)과 0을 엄격히 구분하는 원칙(CLAUDE.md §7.2) 적용. 근거: docs\ADMIN_TASKS.md §7-1
+    private (double?, string?) GetGrade()
     {
-        string grade = "-";
-        double score = 0;
+        string? grade = null;
 
         // 평가 항목을 배열로 묶어 합산
         var items = new double?[]
@@ -327,7 +330,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
         };
         double total = items.Sum(x => x ?? 0);
 
-        score = total != 0 ? Math.Round(total / 2, 1, MidpointRounding.AwayFromZero) : 0;
+        double? score = total != 0 ? Math.Round(total / 2, 1, MidpointRounding.AwayFromZero) : null;
 
         // "접근불가"가 아니면 등급 산정
         // ⚠ 공백을 제거하고 비교한다 — 일괄입력 경로와 동일하게(2026-08-20 수정).
@@ -339,6 +342,11 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
             else if (score >= 40) grade = "C";
             else if (score >= 20) grade = "D";
             else if (score >= 0) grade = "E";
+            // score 가 null(평가항목 미입력)이면 등급도 null 로 둔다
+        }
+        else
+        {
+            grade = "-";   // 조사불가 — 일괄입력 경로와 동일
         }
         return (score, grade);
     }
