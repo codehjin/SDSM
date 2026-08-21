@@ -128,6 +128,46 @@ foreach (var reason in new[] { "접근불가", "건 천 화", "준설", "공사�
     Row("FAI", "null자료", $"{D(score)}|{S(grade)}|" + Cluster(cluster));
 }
 
+// ── ⑤ 좌표 변환 (R3 에서 SDSM_Core 로 통합) ─────────────────────────────────
+//    ⚠ 케이스는 **뒤에 덧붙인다**. 앞쪽 순서를 바꾸면 이전 덤프와 비교가 끊긴다.
+string?[] dmsProbe =
+[
+    null, "", "   ", "숫자아님",
+    "36_47_00.5464", "36_47_0", "127_5_26.18", "0_0_0", "36_47", "36_47_00_11",
+    "N36_47_00.5464", "36_47_00.5464N", "E127_5_26.18",
+    "36°47'00.5464\"", "36°47’00.5464“", "36°47'00.5464''",
+    "127°5'26.18\"", "36°47'0.5\"", "36 ° 47 ' 00.55 \"",
+    "36.783485", "-36.783485", "36",
+];
+foreach (var v in dmsProbe)
+{
+    var (d, m, c) = GB.ParseDmsString(v);
+    Row("ParseDms", v ?? "null", $"{I(d)}|{I(m)}|{D(c)}");
+}
+
+(int deg, int min, double sec, string? hemi)[] dmsToDeg =
+[
+    (0, 0, 0, null), (36, 47, 0.5464, null), (36, 47, 0.5464, "N"), (36, 47, 0.5464, "S"),
+    (127, 5, 26.18, null), (127, 5, 26.18, "E"), (127, 5, 26.18, "W"),
+    (127, 5, 26.18, "e"), (127, 5, 26.18, "w"), (127, 5, 26.18, "기타"),
+    (90, 0, 0, "N"), (180, 0, 0, "W"), (36, 59, 59.999, null), (1, 1, 1, null),
+];
+foreach (var (deg, min, sec, hemi) in dmsToDeg)
+    Row("DmsToDegress", $"{deg}|{min}|{sec}|{hemi ?? "null"}",
+        D(GB.DmsToDegress(deg, min, sec, hemi)));
+
+string[] degPairs =
+[
+    "36.763081,127.090606", "0,0", "36.763081,0", "0,127.090606",
+    "-36.763081,-127.090606", "37.2122527,127.0715531", "36.5,127.5",
+    " 36.763081 , 127.090606 ", "숫자아님,127.0", "36.0,숫자아님",
+];
+foreach (var v in degPairs)
+{
+    var (la, ln) = GB.DegressToDMS(v);
+    Row("DegressToDMS", v, $"{la}|{ln}");
+}
+
 File.WriteAllText(outPath, sb.ToString(), new UTF8Encoding(false));
 Console.WriteLine($"케이스 {n:N0}건 → {outPath}");
 return 0;

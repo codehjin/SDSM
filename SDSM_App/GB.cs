@@ -1,6 +1,7 @@
 ﻿using SDSM_App.Enums;
 using SDSM_App.Models;
 using SDSM_Core.Ecology;
+using SDSM_Core.Helpers;
 using SDSM_Models;
 using System.ComponentModel;
 using System.Data;
@@ -225,49 +226,17 @@ public static class GB
         return Math.Round(value * 100 / total, decimalplaces, MidpointRounding.AwayFromZero);
     }
 
-    //좌표 도 텍스트 -> 도분초
+    /// <summary>`"위도,경도"` → 접두형 DMS 두 개(`N36°47'00.55"`). 계산은 SDSM_Core 하나뿐이다(R3).</summary>
     public static (string, string) DegressToDMS(string coordinate)
-    {
-        double lat;
-        double lng;
-        int beg;
-        int min;
-        double sec;
-
-        string latValue = string.Empty;
-        string lngValue = string.Empty;
-
-        string[] latlngs = coordinate.Replace(" ", "").Split(',');
-
-        lat = double.TryParse(latlngs[0], out lat) ? lat : 0;
-        lng = double.TryParse(latlngs[1], out lng) ? lng : 0;
-
-        string latDir = lat >= 0 ? "N" : "S";
-        string lngDir = lng >= 0 ? "E" : "W";
-        if (lat != 0)
-        {
-            lat = Math.Abs(lat);
-            beg = (int)Math.Truncate(lat);
-            min = (int)Math.Truncate((lat - beg) * 60);
-            sec = ((lat - beg) * 60 - min) * 60;
-
-            latValue = $"{latDir}{beg}°{min:00}\'{sec:00.00}\"";
-        }
-
-        if (lng != 0)
-        {
-            lng = Math.Abs(lng);
-            beg = (int)Math.Truncate(lng);
-            min = (int)Math.Truncate((lng - beg) * 60);
-            sec = ((lng - beg) * 60 - min) * 60;
-
-            lngValue = $"{lngDir}{beg}°{min:00}\'{sec:00.00}\"";
-        }
-
-        return (latValue, lngValue);
-    }
+        => Coordinate.ToDmsPrefixPair(coordinate);
 
     //좌표(위도,경도) 도 -> 도분초
+    /// <summary>
+    /// 십진수 → (도, 분, 초). ⚠ **호출부가 없다** — 제거는 R7(미사용 코드 정리)에서 한다.
+    /// SDSM_Core 로 옮기지 않은 이유: `_do` 만 절댓값을 쓰고 `_bun`·`_cho` 는 원값을 써서
+    /// 음수 좌표에서 결과가 어긋난다. 공용 코드에 이 동작을 넣을 수 없다.
+    /// (국내 좌표는 항상 양수라 실사용에는 영향이 없었다.)
+    /// </summary>
     public static (int, int, double) DegressToDMS(double coordinate)
     {
         int _do = 0;
@@ -286,63 +255,13 @@ public static class GB
         return (_do, _bun, _cho);
     }
 
-    //좌표 도분초 -> 도
+    /// <summary>도·분·초 → 십진수(소수점 6자리). 반구 S/W 면 음수. 계산은 SDSM_Core 하나뿐이다(R3).</summary>
     public static double DmsToDegress(int deg, int min, double sec, string? beg = null)
-    {
-        double degress = deg + min / 60d + sec / 3600d;
+        => Coordinate.DmsToDecimal(deg, min, sec, beg);
 
-        if (beg != null)
-        {
-            if (beg == "s" || beg == "S" || beg == "w" || beg == "W")
-            {
-                degress = -degress;
-            }
-        }
-
-        //소수점 6자리까지
-        return Math.Round(degress, 6, MidpointRounding.AwayFromZero);
-    }
-
-    /// <summary>
-    /// DMS 문자열(예: "36°47’00.5464“", "36_47_00.5464", "36N_47_00.5464E")을 도, 분, 초로 분리 (N/E/공백 제거, 대소문자 무시)
-    /// </summary>
+    /// <summary>DMS 문자열(밑줄형·기호형) → (도, 분, 초). 파싱은 SDSM_Core 하나뿐이다(R3).</summary>
     public static (int? Do, int? Bun, double? Cho) ParseDmsString(string? dms)
-    {
-        if (string.IsNullOrWhiteSpace(dms)) return (null, null, null);
-
-        // N, E, 공백 제거 (대소문자 구분 없이)
-        var cleaned = dms.Replace(" ", "")
-                         .Replace("N", "", StringComparison.OrdinalIgnoreCase)
-                         .Replace("E", "", StringComparison.OrdinalIgnoreCase);
-
-        // 1. 언더스코어 구분 ("36_47_00.5464")
-        var parts = cleaned.Split('_');
-        if (parts.Length == 3)
-        {
-            if (int.TryParse(parts[0], out int _do) &&
-                int.TryParse(parts[1], out int _bun) &&
-                double.TryParse(parts[2], out double _cho))
-            {
-                return (_do, _bun, _cho);
-            }
-        }
-
-        // 2. 특수문자 구분 ("36°47’00.5464“" 또는 "36°47'00.5464\"")
-        //    초 뒤에 ", “, 또는 ''(작은따옴표 두 개) 모두 허용
-        var dmsPattern = @"(\d+)[°](\d+)[’'](\d+(?:\.\d+)?)([“""]|'{2})";
-        var match = System.Text.RegularExpressions.Regex.Match(cleaned, dmsPattern);
-        if (match.Success)
-        {
-            if (int.TryParse(match.Groups[1].Value, out int _do) &&
-                int.TryParse(match.Groups[2].Value, out int _bun) &&
-                double.TryParse(match.Groups[3].Value, out double _cho))
-            {
-                return (_do, _bun, _cho);
-            }
-        }
-
-        return (null, null, null);
-    }
+        => Coordinate.ParseDms(dms);
 
     //파일크기 
     public static string BytesToString(long byteCount)
