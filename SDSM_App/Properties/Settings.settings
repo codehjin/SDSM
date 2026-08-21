@@ -68,5 +68,8 @@
     <Setting Name="PlantEcologyColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FF00B200</Value>
     </Setting>
+    <Setting Name="SitePhotoRoot" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

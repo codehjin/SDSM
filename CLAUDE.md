@@ -276,6 +276,18 @@ public class FishRepository(SDSMDbContext context)
 
 ---
 
+## 8-1. 조사지점 마스터 (`sites.json`)
+
+- **지점 마스터의 원본은 DB가 아니라 파일**이다(`<앱폴더>\sites.json`). `SiteDivision` 테이블과 별개다.
+- 편집 화면: [설정] → [조사지점 관리](`SiteMasterWindow`). 평상시 잠겨 있고 [관리자 모드로 열기] 를 켜야 열린다.
+- 읽기·쓰기·사진 복사는 **전부 `Commons\SiteCatalogStore`** 를 거친다. 직접 `File.ReadAllText` 하지 않는다.
+- 사진은 **경로만** 저장한다. 이미지 바이트를 DB·JSON 에 넣지 않는다(장당 2~5MB).
+- 같은 `SiteName` 이 **연도 구간(`ValidFrom`/`ValidTo`)별로 여러 건** 존재할 수 있다.
+  조사자료의 `Site` 값과 매칭이 깨지므로 **지점명 자체를 바꾸지 않는다**.
+- 좌표는 화면에서 십진·DMS 를 모두 받되 **십진으로 정규화**해 저장한다. 변환은 `GB.ParseDmsString`/`GB.DmsToDegress` 를 쓴다.
+
+---
+
 ## 9. 새 기능 추가 체크리스트
 
 1. 엔티티가 필요하면 `SDSM_Models`에 POCO + 어트리뷰트, `SDSMDbContext`에 `DbSet<T>`(+ 필요 시 매핑).

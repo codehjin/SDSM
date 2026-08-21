@@ -41,6 +41,27 @@ public partial class SettingPageViewModel : ObservableObject, ITransientService
 
     #endregion
 
+    #region 조사지점 관리 (ADMIN_TASKS §2-4)
+
+    /// <summary>
+    /// 지점 관리 화면 잠금. 평상시 잠겨 있고 체크해야 열린다.
+    /// ⚠ 이 앱에는 계정·권한 체계가 없어 **의도치 않은 편집을 막는 잠금**으로만 구현했다.
+    /// 실제 권한 검증이 필요하면 로그인 도입 후 이 값을 권한 조회 결과로 바꾼다.
+    /// </summary>
+    [ObservableProperty] private bool _isSiteMasterUnlocked;
+
+    [RelayCommand]
+    private void OpenSiteMaster()
+    {
+        if (IsSiteMasterUnlocked == false) return;
+
+        var window = App.Current.Services.GetRequiredService<Views.Windows.SiteMasterWindow>();
+        window.Owner = Application.Current.MainWindow;
+        window.ShowDialog();
+    }
+
+    #endregion
+
     #region 프로젝트 사업장 지점명
 
     [ObservableProperty] private string _siteDivisionTitle = "신규";

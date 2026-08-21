@@ -151,6 +151,28 @@
                         </Grid>
                     </Border>
 
+                    <!--조사지점 관리 (ADMIN_TASKS §2-4)-->
+                    <TextBlock Text="조사지점 관리" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="0 20 0 10"/>
+                    <Border Style="{StaticResource ContentBoxStyle}">
+                        <StackPanel>
+                            <TextBlock TextWrapping="Wrap" Margin="5 0 0 8"
+                                       Foreground="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"
+                                       Text="지점 마스터(sites.json)를 등록·수정·병합하고 조사자 앱 배포용으로 내보냅니다. 지점 마스터는 DB가 아니라 파일이 원본입니다."/>
+                            <TextBlock TextWrapping="Wrap" Margin="5 0 0 10"
+                                       Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"
+                                       Text="※ 지점을 잘못 고치면 모든 조사자료의 지점 연결이 어긋납니다. 관리자만 사용하세요."/>
+
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox Content="관리자 모드로 열기" VerticalContentAlignment="Center" Margin="5 0 16 0"
+                                          IsChecked="{Binding Path=IsSiteMasterUnlocked, Mode=TwoWay}"/>
+                                <telerik:RadButton Content="조사지점 관리 열기"
+                                                   Command="{Binding OpenSiteMasterCommand}"
+                                                   IsEnabled="{Binding IsSiteMasterUnlocked}"
+                                                   MinWidth="200" MinHeight="36"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
                     <!--조사자 기준자료 내보내기-->
                     <TextBlock Text="조사자 기준자료" Style="{StaticResource SubTitleTextBlcokStyle}" Margin="0 20 0 10"/>
                     <Border Style="{StaticResource ContentBoxStyle}">

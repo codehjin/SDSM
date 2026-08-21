@@ -286,5 +286,16 @@ namespace SDSM_App.Properties {
                 this["PlantEcologyColor"] = value;
             }
         }
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SitePhotoRoot {
+            get {
+                return ((string)(this["SitePhotoRoot"]));
+            }
+            set {
+                this["SitePhotoRoot"] = value;
+            }
+        }
     }
 }

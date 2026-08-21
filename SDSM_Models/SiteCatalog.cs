@@ -60,13 +60,68 @@ public class SurveySite
     /// <summary>이 지점이 적용되는 분류군. 비고에 "수질만"이 적힌 지점은 ["수질"] 이다.</summary>
     public List<string> Taxa { get; set; } = new();
 
+    /// <summary>지점 사진. 사진 루트 기준 **상대경로만** 담는다.
+    /// ⚠ 이미지 바이트를 DB·JSON에 넣지 않는다. 현장 사진은 장당 2~5MB라 파일이 급격히 커진다.</summary>
+    public List<SitePhoto> Photos { get; set; } = new();
+
+    /// <summary>이 지점 정의가 유효한 시작 연도. null이면 제한 없음.
+    /// 같은 SiteName이 연도별로 다른 장소를 가리킬 때 구간을 나눈다
+    /// (예: 어류 진위천1 — 2023년과 2025년 좌표가 18km 떨어져 있다).</summary>
+    public int? ValidFrom { get; set; }
+
+    /// <summary>이 지점 정의가 유효한 끝 연도(포함). null이면 현재까지.</summary>
+    public int? ValidTo { get; set; }
+
+    /// <summary>주어진 조사연도에 이 지점 정의가 유효한지. 연도를 모르면(null) 항상 참.</summary>
+    public bool IsValidFor(int? year)
+    {
+        if (year is not int y) return true;
+        if (ValidFrom is int from && y < from) return false;
+        if (ValidTo is int to && y > to) return false;
+        return true;
+    }
+
+    /// <summary>유효 연도 구간 표기 — `2023~2024` · `2025~` · `~2024`. 구간이 없으면 빈 문자열.</summary>
+    [JsonIgnore]
+    public string PeriodText => (ValidFrom, ValidTo) switch
+    {
+        (null, null) => string.Empty,
+        (int f, null) => $"{f}~",
+        (null, int t) => $"~{t}",
+        (int f, int t) => f == t ? $"{f}" : $"{f}~{t}"
+    };
+
     /// <summary>화면 표시용 — `곡교천1 (St.1)` 형태. 조사자가 번호를 함께 인지하도록.</summary>
     [JsonIgnore]
     public string Display => string.IsNullOrWhiteSpace(StNo) ? SiteName : $"{SiteName} ({StNo})";
+
+    /// <summary>연도 구간이 있는 지점은 구간을 병기한다 — `진위천1 (2023~2024)`.
+    /// 같은 SiteName이 여러 건 존재할 수 있으므로 목록에서 구분이 필요하다.</summary>
+    [JsonIgnore]
+    public string DisplayWithPeriod => PeriodText.Length == 0 ? Display : $"{Display} [{PeriodText}]";
 
     /// <summary>지점 설명까지 붙인 긴 표시(드롭다운 항목용).</summary>
     [JsonIgnore]
     public string DisplayLong => string.IsNullOrWhiteSpace(Desc) ? Display : $"{Display} · {Desc}";
 
     public override string ToString() => Display;
+}
+
+/// <summary>지점 사진 1장. 파일 자체는 사진 루트 폴더에 두고 여기에는 경로만 남긴다.</summary>
+public class SitePhoto
+{
+    /// <summary>사진 루트 기준 상대경로(예: `생태현황\진위천1\2026_상류.jpg`).</summary>
+    public string RelPath { get; set; } = string.Empty;
+
+    /// <summary>설명(예: 상류 전경).</summary>
+    public string? Caption { get; set; }
+
+    /// <summary>촬영 연도. 연도별 변화 비교에 쓴다.</summary>
+    public int? Year { get; set; }
+
+    [JsonIgnore]
+    public string FileName => System.IO.Path.GetFileName(RelPath);
+
+    public override string ToString() =>
+        string.IsNullOrWhiteSpace(Caption) ? FileName : $"{FileName} — {Caption}";
 }
