@@ -231,30 +231,6 @@ public static class GB
         => Coordinate.ToDmsPrefixPair(coordinate);
 
     //좌표(위도,경도) 도 -> 도분초
-    /// <summary>
-    /// 십진수 → (도, 분, 초). ⚠ **호출부가 없다** — 제거는 R7(미사용 코드 정리)에서 한다.
-    /// SDSM_Core 로 옮기지 않은 이유: `_do` 만 절댓값을 쓰고 `_bun`·`_cho` 는 원값을 써서
-    /// 음수 좌표에서 결과가 어긋난다. 공용 코드에 이 동작을 넣을 수 없다.
-    /// (국내 좌표는 항상 양수라 실사용에는 영향이 없었다.)
-    /// </summary>
-    public static (int, int, double) DegressToDMS(double coordinate)
-    {
-        int _do = 0;
-        int _bun = 0;
-        double _cho = 0.0;
-
-        if (coordinate != 0)
-        {
-            double _coordinate = Math.Abs(coordinate);
-            _do = (int)Math.Truncate(_coordinate);
-            _bun = (int)Math.Truncate((coordinate - _do) * 60);
-            _cho = ((coordinate - _do) * 60 - _bun) * 60;
-            _cho = Math.Round(_cho, 2, MidpointRounding.AwayFromZero);
-        }
-
-        return (_do, _bun, _cho);
-    }
-
     /// <summary>도·분·초 → 십진수(소수점 6자리). 반구 S/W 면 음수. 계산은 SDSM_Core 하나뿐이다(R3).</summary>
     public static double DmsToDegress(int deg, int min, double sec, string? beg = null)
         => Coordinate.DmsToDecimal(deg, min, sec, beg);
