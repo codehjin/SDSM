@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>SDSM_Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 계산 입력 모델(ImportFishSpecies·ImportBenthosSpecies 등) -->
+    <ProjectReference Include="..\SDSM_Models\SDSM_Models.csproj" />
+  </ItemGroup>
+
+</Project>
