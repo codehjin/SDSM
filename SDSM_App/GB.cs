@@ -1,5 +1,6 @@
 ﻿using SDSM_App.Enums;
 using SDSM_App.Models;
+using SDSM_Core.Ecology;
 using SDSM_Models;
 using System.ComponentModel;
 using System.Data;
@@ -396,535 +397,98 @@ public static class GB
 
     #region 저서동물 등급계산
 
-    /// <summary>
-    /// 개체수 기준 우점도(DI) 계산
-    /// (가장 큰 값 + 두 번째로 큰 값) / 전체 합계, 오류 시 1 반환
-    /// </summary>
+    // ⚠ 계산식은 SDSM_Core\Ecology\BenthosCalculator 하나뿐이다(05_REFACTORING R2).
+    //    관리자·조사자가 같은 코드를 쓴다. 여기는 반환 형태만 맞추는 얇은 어댑터다.
+    //    값을 고쳐야 하면 SDSM_Core 를 고치고 tools\CalcParity 로 회귀 대조할 것.
+
+    /// <summary>개체수 기준 우점도(DI). (최대 + 차순) / 전체 합계, 오류 시 1.</summary>
     public static double GetDI(IEnumerable<ImportBenthosSpecies> speciesData)
-    {
-        if (speciesData == null)
-            return 1;
+        => BenthosCalculator.GetDI(speciesData);
 
-        // 0보다 큰 개체수만 추출
-        var counts = speciesData.Select(x => x.IndividualCount ?? 0)
-                                  .Where(x => x > 0)
-                                  .OrderByDescending(x => x)
-                                  .ToList();
-
-        if (counts.Count == 0)
-            return 1;
-
-        double largest = counts.ElementAtOrDefault(0);
-        double secondLargest = counts.ElementAtOrDefault(1);
-        double sum = counts.Sum();
-
-        if (sum == 0)
-            return 1;
-
-        return (largest + secondLargest) / sum;
-    }
-
-    /// <summary>
-    /// Shannon-Wiener 다양도(H') 계산
-    /// (엑셀: IFERROR(-SUMPRODUCT(개체수,LOG(개체수+(개체수=0),2))/SUM(개체수)+LOG(SUM(개체수),2),0))
-    /// </summary>
+    /// <summary>다양도지수 H' (Shannon-Weaver).</summary>
     public static double GetH(IEnumerable<ImportBenthosSpecies> speciesData)
-    {
-        if (speciesData == null)
-            return 0;
+        => BenthosCalculator.GetH(speciesData);
 
-        // 개체수 배열 (null은 0으로 처리)
-        var counts = speciesData.Select(x => x.IndividualCount ?? 0)
-                                  .Where(x => x >= 0)
-                                  .ToArray();
-
-        double sum = counts.Sum();
-        if (sum == 0)
-            return 0;
-
-        // -SUMPRODUCT(개체수, LOG(개체수 + (개체수=0), 2))
-        double sumProduct = counts
-            .Select(x => x * Math.Log(x == 0 ? 1 : x, 2))
-            .Sum();
-
-        double result = -sumProduct / sum + Math.Log(sum, 2);
-
-        // NaN, Infinity 등 예외 처리
-        if (double.IsNaN(result) || double.IsInfinity(result))
-            return 0;
-
-        return result;
-    }
-
-    /// <summary>
-    /// 종풍부도(R1) 계산
-    /// (엑셀: IFERROR((COUNTIF(개체수,">0")-1)/LN(SUM(개체수)),0))
-    /// </summary>
+    /// <summary>풍부도지수 R1 (Margalef).</summary>
     public static double GetR1(IEnumerable<ImportBenthosSpecies> speciesData)
-    {
-        if (speciesData == null)
-            return 0;
+        => BenthosCalculator.GetR1(speciesData);
 
-        // 0보다 큰 개체수만 추출
-        var counts = speciesData.Select(x => x.IndividualCount ?? 0)
-                                  .Where(x => x > 0)
-                                  .ToList();
-
-        int S = counts.Count; // 출현 종수
-        double N = counts.Sum(); // 전체 개체수
-
-        if (N <= 0)
-            return 0;
-
-        double result = (S - 1) / Math.Log(N);
-
-        // NaN, Infinity 등 예외 처리
-        if (double.IsNaN(result) || double.IsInfinity(result))
-            return 0;
-
-        return result;
-    }
-
-    /// <summary>
-    /// 균등도(J') 계산
-    /// (엑셀: IFERROR(H'/LOG(출현종수,2),0))
-    /// </summary>
+    /// <summary>균등도지수 J' (Pielou).</summary>
     public static double GetJ(IEnumerable<ImportBenthosSpecies> speciesData)
-    {
-        if (speciesData == null)
-            return 0;
-
-        // 다양도(H') 계산
-        double h = GetH(speciesData);
-
-        // 출현 종수(S)
-        int S = speciesData.Select(x => x.IndividualCount ?? 0)
-                            .Count(x => x > 0);
-
-        if (S <= 1)
-            return 0;
-
-        double denominator = Math.Log(S, 2);
-        if (denominator == 0)
-            return 0;
-
-        double result = h / denominator;
-
-        // NaN, Infinity 등 예외 처리
-        if (double.IsNaN(result) || double.IsInfinity(result))
-            return 0;
-
-        return result;
-    }
+        => BenthosCalculator.GetJ(speciesData);
 
     /// <summary>
-    /// BMI 점수 및 등급 계산 (조사불가 사유 반영)
-    /// (엑셀: IFERROR(ROUND((4-SUMPRODUCT(RankScorer,RankScorer,RankScorer)/SUMPRODUCT(RankScorer,RankScorer))*25,1),0))
+    /// 저서동물지수 BMI 와 등급.
+    /// 일괄입력·편집화면 모두 "자료가 있으면 조사한 것"이므로 0종을 선언으로 본다
+    /// (조사자 앱의 `출현종 없음(0종)` 토글과 같은 취급 — 12_CALC_FIX §2).
     /// </summary>
     public static (double?, string?) GetBMI(IEnumerable<ImportBenthosSpecies> speciesData, string? surveyUnavailableReason)
     {
-        // 조사불가 사유가 있으면 등급은 "-"
-        if (!string.IsNullOrWhiteSpace(surveyUnavailableReason))
-        {
-            var reason = surveyUnavailableReason.Replace(" ", "");
-            if (reason == "접근불가" || reason == "건천화" || reason == "준설" || reason == "공사중")
-                return (null, "-");
-        }
-
         if (speciesData == null)
             return (null, null);
 
-        // 조사는 수행했으나 0종이면 점수 0 · 등급 E (2026-08-20 수정, 어류 FAI와 동일 규칙).
-        // 조사자 앱도 같은 규칙이라 값이 일치한다. 조사불가 사유는 위에서 "-"로 이미 처리된다.
-        if (speciesData.Count(x => (x.IndividualCount ?? 0) > 0) == 0)
-            return (0, "E");
-
-        var aArr = speciesData.Select(x => double.TryParse(x.SaprobicValue, out var v) ? v : 0.0).ToArray();
-        var bArr = speciesData.Select(x => int.TryParse(x.IndicatorWeight, out var v) ? v : 0).ToArray();
-        var cArr = speciesData.Select(x => x.RankScorer).ToArray();
-
-        int len = Math.Min(aArr.Length, Math.Min(bArr.Length, cArr.Length));
-        if (len == 0)
-            return (null, null);
-
-        double sumProduct3 = 0;
-        double sumProduct2 = 0;
-        for (int i = 0; i < len; i++)
-        {
-            sumProduct3 += aArr[i] * bArr[i] * cArr[i];
-            sumProduct2 += bArr[i] * cArr[i];
-        }
-
-        if (sumProduct2 == 0)
-            return (null, null);
-
-        double value = (4 - (sumProduct3 / sumProduct2)) * 25;
-        double rounded = Math.Round(value, 1, MidpointRounding.AwayFromZero);
-
-        if (double.IsNaN(rounded) || double.IsInfinity(rounded))
-            return (null, null);
-
-        // 등급 산정
-        string grade;
-        if (rounded >= 80) grade = "A";
-        else if (rounded >= 65) grade = "B";
-        else if (rounded >= 50) grade = "C";
-        else if (rounded >= 35) grade = "D";
-        else if (rounded >= 0) grade = "E";
-        else grade = "Check";
-
-        return (rounded, grade);
+        var r = BenthosCalculator.CalculateBmiDetail(speciesData, surveyUnavailableReason, noSpeciesDeclared: true);
+        return (r.Score, r.Grade);
     }
-  
-    // range : 개체수 목록, value : 종 개체수
+
+    /// <summary>개체수 순위점수(엑셀 RANK 백분위 → 5~1). 0이면 순위에서 제외.</summary>
     public static int GetRankScorer(int[] range, int value)
-    {
-        if (value == 0)
-            return 0;
-
-        // 0보다 큰 값만 카운트
-        var valid = range.Where(x => x > 0).ToArray();
-        if (valid.Length == 0)
-            return 0;
-
-        // 내림차순 순위 (엑셀 RANK와 동일)
-        int rank = valid.Count(x => x > value) + 1;
-        double percentile = (double)rank / valid.Length;
-
-        if (percentile <= 0.2) return 5;
-        if (percentile <= 0.4) return 4;
-        if (percentile <= 0.6) return 3;
-        if (percentile <= 0.8) return 2;
-        return 1;
-    }
-
+        => BenthosCalculator.GetRankScorer(range, value);
 
     #endregion
 
     #region 어류 등급계산
 
-    public static (ClusterModel? cluster,  double?, string?) GetFAI(IEnumerable<ImportFishSpecies> speciesData, string? surveyUnavailableReason, int abnormalCount, int chasu = 0)
+    // ⚠ 계산식은 SDSM_Core\Ecology\EcologyCalculator 하나뿐이다(05_REFACTORING R2).
+    //    M1~M8 구간표·비율 계산·등급 판정이 전부 그쪽에 있다. 여기는 어댑터다.
+
+    /// <summary>
+    /// 어류평가지수 FAI. 산출값(ClusterModel)·총점·등급을 함께 돌려준다.
+    /// 일괄입력·편집화면 모두 "자료가 있으면 조사한 것"이므로 0종을 선언으로 본다
+    /// (0종 → 점수 0 · 등급 E, 12_CALC_FIX §2).
+    /// </summary>
+    public static (ClusterModel? cluster, double?, string?) GetFAI(IEnumerable<ImportFishSpecies> speciesData, string? surveyUnavailableReason, int abnormalCount, int chasu = 0)
     {
-        // 조사불가 사유가 있으면 등급은 "-"
-        if (!string.IsNullOrWhiteSpace(surveyUnavailableReason))
-        {
-            var reason = surveyUnavailableReason.Replace(" ", "");
-            if (reason == "접근불가" || reason == "건천화" || reason == "준설" || reason == "공사중")
-                return (null,null, "-");
-        }
+        var r = EcologyCalculator.CalculateFaiDetail(
+            speciesData, surveyUnavailableReason, abnormalCount, chasu, noSpeciesDeclared: true);
+
+        // 조사불가는 산출값을 내지 않는다(종전과 동일하게 cluster = null)
+        if (r.Unavailable)
+            return (null, null, r.Grade);
 
         if (speciesData == null)
             return (null, null, null);
 
-        int 총종수 = speciesData.Count(x => x.IndividualCount != null && x.IndividualCount > 0);
-        int 총개체수 = speciesData.Sum(x => x.IndividualCount) ?? 0;
-
-        int 외래종_종수 = speciesData.Count(x => x.Exotic == "O" && x.IndividualCount != null && x.IndividualCount > 0);
-        int 외래종_개체수 = speciesData.Where(x => x.Exotic == "O" && x.IndividualCount != null && x.IndividualCount > 0).Sum(x => x.IndividualCount ?? 0);
-
-        int 국내종총종수 = 총종수 - 외래종_종수;
-        int 국내종총개체수 = 총개체수 - 외래종_개체수;
-
-        int 여울성저서종수 = speciesData.Count(x => x.HabitatGuild == "RB" && x.IndividualCount != null && x.IndividualCount > 0);
-        int 민감종수 = speciesData.Count(x => x.ToleranceGuild == "SS" && x.IndividualCount != null && x.IndividualCount > 0);
-
-        int 내성종Sum = speciesData.Where(x => x.ToleranceGuild == "TS" && x.IndividualCount != null && x.IndividualCount > 0).Sum(x => x.IndividualCount ?? 0);
-        double 내성종개체수비율 = 총개체수 != 0 ? (double)내성종Sum / 총개체수 * 100 : 0;
-
-        int 잡식종Sum = speciesData.Where(x => x.FeedingGuild == "O" && x.IndividualCount != null && x.IndividualCount > 0).Sum(x => x.IndividualCount ?? 0);
-        double 잡식종개체수비율 = 총개체수 != 0 ? (double)잡식종Sum / 총개체수 * 100 : 0;
-
-        int 충식종Sum_I = speciesData.Where(x => x.FeedingGuild == "I" && x.IndividualCount != null && x.IndividualCount > 0).Sum(x => x.IndividualCount ?? 0);
-        int 충식종SumI_Exotic = speciesData.Where(x => x.FeedingGuild == "I" && x.Exotic == "O" && x.IndividualCount != null && x.IndividualCount > 0).Sum(x => x.IndividualCount ?? 0);
-        double 충식종개체수비율 = 총개체수 != 0 ? (double)(충식종Sum_I - 충식종SumI_Exotic) / 총개체수 * 100.0 : 0;
-
-        int 비정상개체수 = abnormalCount;
-        // 나눗셈 "앞"에서 실수로 승격한다(2026-08-20 수정).
-        // 정수 나눗셈이면 비정상 199/총 200(99.5%)도 0%가 되어 M8이 사실상 항상 만점이 된다.
-        // 총개체수 > 0 가드로 0 나누기 예외도 함께 막는다. 근거: SDSM_Surveyor\docs\90_TECH_NOTES.md §5
-        double 비정상개체수비율 = 총개체수 > 0 ? (double)비정상개체수 / 총개체수 * 100.0 : 0;
-
-        double m1 = GetM1Value(chasu, 국내종총종수);
-        double m2 = GetM2Value(chasu, 여울성저서종수);
-        double m3 = GetM3Value(chasu, 민감종수);
-        double m4 = GetM4Value(내성종개체수비율);
-        double m5 = GetM5Value(잡식종개체수비율);
-        double m6 = GetM6Value(충식종개체수비율);
-        double m7 = GetM7Value(chasu, 국내종총개체수);
-        double m8 = GetM8Value(비정상개체수비율);
-
-        var cluster = new ClusterModel 
+        var cluster = new ClusterModel
         {
-            TotalIndividualCount = 총개체수,
-            TotalSpeciesCount = 총종수,
-            M1Value = 국내종총종수,
-            M2Value = 여울성저서종수,
-            M3Value = 민감종수,
-            M4Value = Math.Round(내성종개체수비율, 1, MidpointRounding.AwayFromZero),
-            M5Value = Math.Round(잡식종개체수비율, 1, MidpointRounding.AwayFromZero),
-            M6Value = Math.Round(충식종개체수비율, 1, MidpointRounding.AwayFromZero),
-            M7Value = 국내종총개체수,
+            TotalIndividualCount = r.TotalIndiv,
+            TotalSpeciesCount = r.TotalSpecies,
+            M1Value = r.DomesticSpecies,
+            M2Value = r.RiffleBenthic,
+            M3Value = r.Sensitive,
+            M4Value = Math.Round(r.TolerantRatio, 1, MidpointRounding.AwayFromZero),
+            M5Value = Math.Round(r.OmnivoreRatio, 1, MidpointRounding.AwayFromZero),
+            M6Value = Math.Round(r.InsectRatio, 1, MidpointRounding.AwayFromZero),
+            M7Value = r.DomesticIndiv,
         };
 
-        var mValues = new List<double> { m1, m2, m3, m4, m5, m6, m7, m8 };
-        var (score, grade) = GetFAIValue(mValues, surveyUnavailableReason);
-
-        // 조사는 수행했으나 0종이면 점수 0 · 등급 E (2026-08-20 수정).
-        // 0 가드가 없으면 내성종 0%·잡식종 0%·비정상종 0%가 각각 만점을 받아 합계 37.5(D등급)가 된다.
-        // "어류가 한 마리도 없다"가 "내성·잡식종이 없어 건강하다"로 계산되는 역설이므로 D는 과대평가다.
-        // (조사불가 사유는 위에서 이미 "-"로 처리되어 여기까지 오지 않는다)
-        // 산출값(cluster)은 종전대로 채워 둔다 — 점수·등급만 바꾼다.
-        if (총종수 == 0)
-            return (cluster, 0, "E");
-
-        return (cluster, score, grade);
-    }
-
-    //국내종총종수
-    private static double GetM1Value(int chasu, int value)
-    {
-        return chasu switch
-        {
-            1 => value <= 1 ? 0 : (value == 2 ? 6.25 : 12.5),
-            2 => value <= 2 ? 0 : (value <= 5 ? 6.25 : 12.5),
-            3 => value <= 4 ? 0 : (value <= 8 ? 6.25 : 12.5),
-            4 => value <= 5 ? 0 : (value <= 11 ? 6.25 : 12.5),
-            5 => value <= 7 ? 0 : (value <= 14 ? 6.25 : 12.5),
-            6 => value <= 9 ? 0 : (value <= 18 ? 6.25 : 12.5),
-            7 => value <= 11 ? 0 : (value <= 22 ? 6.25 : 12.5),
-            _ => 0
-        };
-    }
-
-    //여울성저서종수
-    private static double GetM2Value(int chasu, int value)
-    {
-        return chasu switch
-        {
-            1 => value == 0 ? 0 : (value == 1 ? 6.25 : 12.5),
-            2 => value == 0 ? 0 : (value <= 2 ? 6.25 : 12.5),
-            3 => value == 0 ? 0 : (value <= 2 ? 6.25 : 12.5),
-            4 => value <= 1 ? 0 : (value <= 3 ? 6.25 : 12.5),
-            5 => value == 0 ? 0 : (value <= 2 ? 6.25 : 12.5),
-            6 => value == 0 ? 0 : (value <= 2 ? 6.25 : 12.5),
-            7 => value == 0 ? 0 : (value == 1 ? 6.25 : 12.5),
-            _ => 0
-        };
-    }
-
-    //민감종수
-    private static double GetM3Value(int chasu, int value)
-    {
-        return chasu switch
-        {
-            1 => value == 0 ? 0 : (value <= 2 ? 6.25 : 12.5),
-            2 => value == 0 ? 0 : (value <= 3 ? 6.25 : 12.5),
-            3 => value <= 1 ? 0 : (value <= 4 ? 6.25 : 12.5),
-            4 => value <= 1 ? 0 : (value <= 4 ? 6.25 : 12.5),
-            5 => value <= 1 ? 0 : (value <= 4 ? 6.25 : 12.5),
-            6 => value == 0 ? 0 : (value <= 3 ? 6.25 : 12.5),
-            7 => value == 0 ? 0 : (value <= 2 ? 6.25 : 12.5),
-            _ => 0
-        };
-    }
-
-    //내성종 개체수 비율
-    private static double GetM4Value(double value)
-    {
-        if (value > 70)
-            return 0;
-        else if (value >= 30)
-            return 6.25;
-        else
-            return 12.5;
-    }
-
-    //잡식종 개체수 비율
-    private static double GetM5Value(double value)
-    {
-        if (value > 70)
-            return 0;
-        else if (value >= 30)
-            return 6.25;
-        else
-            return 12.5;
-    }
-
-    //충식종개체수비율
-    private static double GetM6Value(double value)
-    {
-        if (value < 20)
-            return 0;
-        else if (value <= 45)
-            return 6.25;
-        else
-            return 12.5;
-    }
-
-    //채집된 국내종 총 개체수
-    private static double GetM7Value(int chasu, int Value)
-    {
-        return chasu switch
-        {
-            1 => Value <= 10 ? 0 : (Value <= 20 ? 6.25 : 12.5),
-            2 => Value <= 30 ? 0 : (Value <= 55 ? 6.25 : 12.5),
-            3 => Value <= 50 ? 0 : (Value <= 90 ? 6.25 : 12.5),
-            4 => Value <= 60 ? 0 : (Value <= 115 ? 6.25 : 12.5),
-            5 => Value <= 80 ? 0 : (Value <= 160 ? 6.25 : 12.5),
-            6 => Value <= 100 ? 0 : (Value <= 200 ? 6.25 : 12.5),
-            7 => Value <= 120 ? 0 : (Value <= 240 ? 6.25 : 12.5),
-            _ => 0
-        };
-    }
-
-    //비정상종 개체수 비율
-    private static double GetM8Value(double value)
-    {
-        if (value > 1)
-            return 0;
-        else if (value > 0)
-            return 6.25;
-        else
-            return 12.5;
-    }
-
-    //
-    private static (double?, string?) GetFAIValue(List<double> mValues, string? surveyUnavailableReason)
-    {
-        // 조사불가 사유가 있으면 등급은 "-"
-        if (!string.IsNullOrWhiteSpace(surveyUnavailableReason))
-        {
-            var reason = surveyUnavailableReason.Replace(" ", "");
-            if (reason == "접근불가" || reason == "건천화" || reason == "준설" || reason == "공사중")
-                return (null, "-");
-        }
-
-        // mValues: m1, m2, m3, m4, m5, m6, m7, m8
-        double sum = mValues.Sum();
-        double rounded = Math.Round(sum, 1, MidpointRounding.AwayFromZero);
-
-        string grade;
-        // 등급 산정 (엑셀 IFERROR IF 중첩과 동일)
-        if (double.IsNaN(rounded) || double.IsInfinity(rounded))
-        {
-            grade = "E";
-            return (null, grade);
-        }
-        else if (rounded >= 80)
-            grade = "A";
-        else if (rounded >= 60)
-            grade = "B";
-        else if (rounded >= 40)
-            grade = "C";
-        else if (rounded >= 20)
-            grade = "D";
-        else if (rounded >= 0)
-            grade = "E";
-        else
-            grade = "Null";
-
-        return (rounded, grade);
+        return (cluster, r.Score, r.Grade);
     }
 
     #endregion
 
     #region 수질등급
 
-    public static int? GetPhGrade(double? value)
-    {
-        if (value != null)
-            return (value >= 6.5 && value <= 8.5) ? 1 : 4;
-        return null;
-    }
+    // ⚠ 등급 기준표는 SDSM_Core\Ecology\WaterQualityCalculator 하나뿐이다(05_REFACTORING R2).
 
-    public static string? GetBodGrade(double? value)
-    {
-        if (value == null)
-            return null;
-
-        if (value <= 1) return "1a";
-        if (value <= 2) return "1b";
-        if (value <= 3) return "2";
-        if (value <= 5) return "3";
-        if (value <= 8) return "4";
-        if (value <= 10) return "5";
-        return "6";
-    }
-
-    public static string? GetCodGrade(double? value)
-    {
-        if (value == null)
-            return null;
-
-        if (value <= 2) return "1a";
-        if (value <= 4) return "1b";
-        if (value <= 5) return "2";
-        if (value <= 7) return "3";
-        if (value <= 9) return "4";
-        if (value <= 11) return "5";
-        return "6";
-    }
-
-    public static string? GetTocGrade(double? value)
-    {
-        if (value == null)
-            return null;
-
-        if (value <= 2) return "1a";
-        if (value <= 3) return "1b";
-        if (value <= 4) return "2";
-        if (value <= 5) return "3";
-        if (value <= 6) return "4";
-        if (value <= 8) return "5";
-        return "6";
-    }
-
-    public static int? GetSsGrade(double? value)
-    {
-        if (value == null)
-            return null;
-
-        if (value <= 25) return 1;
-        if (value <= 100) return 4;
-        return 5;
-    }
-
-    public static string? GetDoGrade(double? value)
-    {
-        if (value == null)
-            return null;
-
-        if (value >= 7.5) return "1a";
-        if (value >= 5) return "1b";
-        if (value >= 2) return "4";
-        return "6";
-    }
-
-    public static string? GetTpGrade(double? value)
-    {
-        if (value == null)
-            return null;
-
-        if (value <= 0.02) return "1a";
-        if (value <= 0.04) return "1b";
-        if (value <= 0.1) return "2";
-        if (value <= 0.2) return "3";
-        if (value <= 0.3) return "4";
-        if (value <= 0.5) return "5";
-        return "6";
-    }
-
-    public static string? GetEColiGrade(double? value)
-    {
-        if (value == null)
-            return null;
-
-        if (value <= 50) return "1a";
-        if (value <= 500) return "1b";
-        if (value <= 1000) return "2";
-        if (value <= 5000) return "3";
-        return "4";
-    }
+    public static int? GetPhGrade(double? value) => WaterQualityCalculator.PhGrade(value);
+    public static string? GetBodGrade(double? value) => WaterQualityCalculator.BodGrade(value);
+    public static string? GetCodGrade(double? value) => WaterQualityCalculator.CodGrade(value);
+    public static string? GetTocGrade(double? value) => WaterQualityCalculator.TocGrade(value);
+    public static int? GetSsGrade(double? value) => WaterQualityCalculator.SsGrade(value);
+    public static string? GetDoGrade(double? value) => WaterQualityCalculator.DoGrade(value);
+    public static string? GetTpGrade(double? value) => WaterQualityCalculator.TpGrade(value);
+    public static string? GetEColiGrade(double? value) => WaterQualityCalculator.EColiGrade(value);
 
     #endregion
 

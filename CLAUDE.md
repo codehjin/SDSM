@@ -32,6 +32,9 @@
 
 **프로젝트 구성 (2개):**
 
+- **`SDSM_Core`** — **관리자·조사자가 함께 쓰는 생태 계산**(`Ecology\`: FAI·BMI·DI·H'·R1·J'·수질등급·HRI).
+  `GB` 의 계산 메서드는 **이 프로젝트를 호출하는 얇은 어댑터**다. 계산식을 고쳐야 하면 `GB` 가 아니라 여기를 고친다.
+  고치면 **조사자 앱도 함께 바뀐다.** 반드시 `tools\CalcParity` 로 교체 전후를 대조할 것(아래 §7.4).
 - **`SDSM_Models`** — 순수 POCO 엔티티/모델. 도메인 데이터 클래스만 둔다(예: `Fish`, `SiteDivision`, `ImportFishSpecies`, `*View`). 어트리뷰트(`[Table]`, `[DisplayName]`, `[Description]`)로 메타데이터를 표현한다. **이 프로젝트에는 앱/EF/UI 의존성을 넣지 않는다.**
 - **`SDSM_App`** — WPF 앱 본체. `Views/`, `ViewModels/`, `Models/`(DbContext·Repository), `Helpers/`, `Commons/`, `Converters/`, `Behaviors/`, `Enums/`, `Styles/`, `Themes/`, `Assets/`, 그리고 전역 유틸 `GB.cs`.
 
@@ -263,6 +266,27 @@ public class FishRepository(SDSMDbContext context)
 - **분류학적 종명은 띄어쓰기·대소문자를 포함해 완벽히 일치**시킨다. 종명에는 `Trim()`(양끝 공백만 제거) 외의 정규화(공백제거/대문자화)를 적용하지 않는다.
 - 반대로 **코드성 값**(외래=`O`, 내성길드=`TS/SS`, 섭식길드=`O/I`, 서식길드=`RB`, 보호종 표기 코드 등)은 `Replace(" ","").ToUpper()` 로 표준화해 비교한다.
 - 종명이 목록에 없으면 임의로 추가/치환하지 말고 검증 오류로 처리하거나(신규 종목록 추가 흐름을 탈 때만 명시적으로 추가) 사용자에게 확인받는다.
+
+### 7.4 계산식을 고칠 때 — 회귀 대조 필수
+
+생태 계산은 `SDSM_Core\Ecology\` **한 곳**에만 있다(2026-08-21 통합). 관리자 `GB` 도 조사자 앱도 여기를 호출한다.
+값이 바뀌면 **과거 조사자료의 해석이 달라지므로**, 고치기 전후로 반드시 대조한다.
+
+```bash
+# ① 고치기 전
+dotnet run --project tools\CalcParity -- --out before.csv
+# ② 계산식 수정
+# ③ 고친 뒤
+dotnet run --project tools\CalcParity -- --out after.csv
+python tools\calc_parity_diff.py before.csv after.csv     # '전건 일치' 여야 한다
+```
+
+의도한 변경이라 값이 달라져야 한다면, **무엇이 왜 달라졌는지 문서에 남기고** 과거 데이터 영향 범위를 먼저 측정한다
+(`docs\_recalc_impact_20260820.md` 가 그 예다).
+
+조사자 앱 쪽 내보내기 결과도 함께 확인한다 — `SDSM_Surveyor\docs\_baseline\README.md`.
+
+> ⚠ `GB` 의 계산 메서드 **공개 시그니처를 바꾸지 않는다.** `Bulk*`·`Editor*`·`Stats*` 가 그대로 호출한다.
 
 ---
 

@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SDSM_Models\SDSM_Models.csproj" />
+    <ProjectReference Include="..\SDSM_Core\SDSM_Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Fonts\high1 Wonchuri Title B.ttf">
