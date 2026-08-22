@@ -387,6 +387,23 @@ public static class GB
 
     #endregion
 
+    #region 서식수변 등급계산
+
+    // ⚠ 계산식은 SDSM_Core\Ecology\HabitatEvaluator 하나뿐이다(2026-08-22).
+    //    종전에는 편집화면·일괄입력이 **각자 계산식을 들고 있었다.** 판정 기준을 고칠 때
+    //    한쪽만 고치면 같은 자료가 입력 경로에 따라 다른 등급이 되므로 이 어댑터로 모았다.
+    //    (docs\_excel_formula_audit.md §5-5 — "양쪽 동시 적용")
+
+    /// <summary>
+    /// 서식·수변환경 평가점수와 등급. 평가항목 10개 합계 ÷ 2, 등급 A80·B60·C40·D20·E.
+    /// 조사불가 사유는 <b>접근불가 하나뿐</b>이다(어류 FAI 는 4종 — 엑셀·코드 모두 그렇고 의도된 차이다).
+    /// 항목을 하나라도 고르면 점수를 낸다. 전부 미선택일 때만 <c>null</c>(미평가) 이다.
+    /// </summary>
+    public static (double?, string?) GetHabitatGrade(IEnumerable<double?> items, string? surveyUnavailableReason)
+        => HabitatEvaluator.Evaluate(items, surveyUnavailableReason);
+
+    #endregion
+
     #region MessageText
 
     public static string SaveMessage { get; set; } = "자료가 저장되었습니다.";

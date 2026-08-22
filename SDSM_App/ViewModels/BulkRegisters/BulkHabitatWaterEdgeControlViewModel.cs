@@ -834,36 +834,23 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
     #region 등급계산
 
     //평가등급
+    // ⚠ 계산은 `GB.GetHabitatGrade`(= SDSM_Core\Ecology\HabitatEvaluator) **한 곳**에서 한다(2026-08-22).
+    //    여기서는 엑셀 칸을 읽어 넘기기만 한다. 근거: docs\_excel_formula_audit.md §5-5
     private static (double?, string?) GetGrade(Worksheet worksheet, int columnIndex)
     {
-        string? grade = null;
-        double total = 0;
-
+        // 평가항목 10개(엑셀 행 16~25). 숫자로 읽히지 않는 칸은 **미입력(null)** 이다 — 0 으로 채우지 않는다.
+        // 10개를 전부 0점으로 적어 낸 조사표는 미입력이 아니라 0점·E등급이다.
+        var items = new double?[10];
         for (int row = 16; row <= 25; row++)
         {
             var cellValue = ((ICellValue)(worksheet.Cells[row, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[row, columnIndex].GetFormat().Value);
-            if (double.TryParse(cellValue, out double v))
-                total += v;
+            items[row - 16] = double.TryParse(cellValue, out double v) ? v : null;
         }
 
-        double? score = total != 0 ? Math.Round(total / 2, 1, MidpointRounding.AwayFromZero) : null;
+        // 조사불가 사유(공백 제거 후 "접근불가" 포함 여부)는 계산기가 판정한다.
+        var unavailable = ((ICellValue)(worksheet.Cells[13, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[13, columnIndex].GetFormat().Value);
 
-        // "접근불가"가 아니면 등급 산정
-        var unavailable = ((ICellValue)(worksheet.Cells[13, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[13, columnIndex].GetFormat().Value).Replace(" ", "");
-        if (unavailable.Contains("접근불가") == false)
-        {
-            if (score >= 80) grade = "A";
-            else if (score >= 60) grade = "B";
-            else if (score >= 40) grade = "C";
-            else if (score >= 20) grade = "D";
-            else if (score >= 0) grade = "E";
-        }
-        else
-        {
-            grade = "-";
-        }
-
-        return (score, grade);
+        return GB.GetHabitatGrade(items, unavailable);
     }
 
     #endregion

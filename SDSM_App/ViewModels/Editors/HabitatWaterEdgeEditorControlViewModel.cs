@@ -314,41 +314,24 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
     }
 
     //평가등급
-    // ⚠ 반환형이 nullable 이다(2026-08-20 수정).
-    //   평가항목이 비어 있으면 점수·등급을 내지 않고 null 로 둔다 — 일괄입력 경로·조사자 앱과 동일.
-    //   종전에는 0점·E등급으로 저장돼, 아직 평가하지 않은 지점이 최하등급으로 DB에 남았다.
-    //   결측(null)과 0을 엄격히 구분하는 원칙(CLAUDE.md §7.2) 적용. 근거: docs\ADMIN_TASKS.md §7-1
+    // ⚠ 계산은 `GB.GetHabitatGrade`(= SDSM_Core\Ecology\HabitatEvaluator) **한 곳**에서 한다(2026-08-22).
+    //   종전에는 이 화면과 일괄입력이 각자 같은 계산식을 들고 있어, 판정 기준을 한쪽만 고치면
+    //   같은 자료가 입력 경로에 따라 다른 등급이 됐다. 근거: docs\_excel_formula_audit.md §5-5
+    //
+    //   반환형이 nullable 인 이유는 종전과 같다(2026-08-20). 평가항목을 하나도 고르지 않았으면
+    //   점수·등급을 내지 않고 null 로 둔다 — 0점·E등급으로 저장하면 아직 평가하지 않은 지점이
+    //   최하등급으로 DB에 남는다. 결측(null)과 0을 구분하는 원칙(CLAUDE.md §7.2). 근거: docs\ADMIN_TASKS.md §7-1
+    //   단, **10개를 전부 0점으로 고른 경우는 미입력이 아니다.** 0점·E등급이 나온다(2026-08-22).
     private (double?, string?) GetGrade()
     {
-        string? grade = null;
-
-        // 평가 항목을 배열로 묶어 합산
+        // 평가 항목을 배열로 묶어 넘긴다(순서 = 항목1~10)
         var items = new double?[]
         {
             EvaluationItem1, EvaluationItem2, EvaluationItem3, EvaluationItem4, EvaluationItem5,
             EvaluationItem6, EvaluationItem7, EvaluationItem8, EvaluationItem9, EvaluationItem10
         };
-        double total = items.Sum(x => x ?? 0);
 
-        double? score = total != 0 ? Math.Round(total / 2, 1, MidpointRounding.AwayFromZero) : null;
-
-        // "접근불가"가 아니면 등급 산정
-        // ⚠ 공백을 제거하고 비교한다 — 일괄입력 경로와 동일하게(2026-08-20 수정).
-        //    제거하지 않으면 "접근 불가"(띄어쓰기)를 놓쳐 같은 자료가 입력 경로에 따라 다른 등급이 된다.
-        if ((SurveyUnavailableReason ?? string.Empty).Replace(" ", "").Contains("접근불가") == false)
-        {
-            if (score >= 80) grade = "A";
-            else if (score >= 60) grade = "B";
-            else if (score >= 40) grade = "C";
-            else if (score >= 20) grade = "D";
-            else if (score >= 0) grade = "E";
-            // score 가 null(평가항목 미입력)이면 등급도 null 로 둔다
-        }
-        else
-        {
-            grade = "-";   // 조사불가 — 일괄입력 경로와 동일
-        }
-        return (score, grade);
+        return GB.GetHabitatGrade(items, SurveyUnavailableReason);
     }
 
     #endregion 

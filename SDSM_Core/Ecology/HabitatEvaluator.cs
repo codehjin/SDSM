@@ -1,4 +1,4 @@
-namespace SDSM_Core.Ecology;
+﻿namespace SDSM_Core.Ecology;
 
 /// <summary>
 /// 서식·수변환경 평가점수/등급 산정. 관리자 GetGrade 로직 이식.
@@ -21,9 +21,17 @@ public static class HabitatEvaluator
         IEnumerable<double?> items, string? surveyUnavailableReason)
     {
         var arr = items.ToArray();
+
+        // 판정 기준은 **합계가 아니라 선택 여부**다(2026-08-22 수정 · docs\_excel_formula_audit.md §5-4).
+        //   종전 `total != 0` 은 10개 항목을 전부 0점으로 고른 경우까지 미입력으로 뭉갰다.
+        //   콘크리트로 직강화된 도시하천이 실제로 그렇게 나오는데, 0점·E등급이어야 할 지점이 `-`(미평가)로 빠졌다.
+        //   → 가장 훼손된 하천이 평가를 못 받는 구조. 원본 엑셀(`SUM=0` → 0점 → E)과도 어긋났다.
+        //   FAI 0종(`12_CALC_FIX` = `0·E`)과 같은 결함이며 같은 방향으로 고친다.
+        // 전부 미선택은 그대로 null 로 둔다 — 엑셀은 빈칸과 0점을 구분 못 하지만 우리는 구분한다.
+        bool anySelected = arr.Any(x => x.HasValue);
         double total = arr.Where(x => x.HasValue).Sum(x => x!.Value);
 
-        double? score = total != 0
+        double? score = anySelected
             ? Math.Round(total / 2, 1, MidpointRounding.AwayFromZero)
             : null;
 
