@@ -291,6 +291,11 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                 var firstValue = ((ICellValue)(worksheet.Cells[rowIndex, FirstColumnNumber - 1].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, FirstColumnNumber - 1].GetFormat().Value);
                 if (!string.IsNullOrWhiteSpace(firstValue))
                 {
+                    //관찰지 유형 : 양식 S열(18). S가 비면 R열(17) — 조사자 테스트판이 R열에 쓴 파일 호환
+                    var observationSite = ((ICellValue)(worksheet.Cells[rowIndex, 18].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 18].GetFormat().Value);
+                    if (string.IsNullOrWhiteSpace(observationSite))
+                        observationSite = ((ICellValue)(worksheet.Cells[rowIndex, 17].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 17].GetFormat().Value);
+
                     var model = new ImportMammal
                     {
                         YearChsu = firstValue,
@@ -309,7 +314,7 @@ public partial class BulkMammalControlViewModel : ObservableObject, ITransientSe
                         Lng_Cho = ((ICellValue)(worksheet.Cells[rowIndex, 14].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 14].GetFormat().Value),
                         Lat = ((ICellValue)(worksheet.Cells[rowIndex, 15].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 15].GetFormat().Value),
                         Lng = ((ICellValue)(worksheet.Cells[rowIndex, 16].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 16].GetFormat().Value),
-                        ObservationSite = ((ICellValue)(worksheet.Cells[rowIndex, 17].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 17].GetFormat().Value),
+                        ObservationSite = observationSite,
                         Trace1 = ((ICellValue)(worksheet.Cells[rowIndex, 19].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 19].GetFormat().Value),
                         Trace2 = ((ICellValue)(worksheet.Cells[rowIndex, 20].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 20].GetFormat().Value),
                         Trace3 = ((ICellValue)(worksheet.Cells[rowIndex, 21].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 21].GetFormat().Value),
