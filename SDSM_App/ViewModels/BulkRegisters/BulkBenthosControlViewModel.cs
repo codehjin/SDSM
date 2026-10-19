@@ -36,7 +36,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
     private readonly (int, string)[] _weathers = [(1, "맑음"), (2, "흐림"), (3, "비(눈)")];
     private readonly (int, string)[] _camopyCovers = [(1, "없음"), (2, "부분적"), (3, "짙음")];
     private readonly (int, string)[] _floodplains = [(1, "자연형"), (2, "농경지"), (3, "도로"), (4, "주차장"), (5, "산책로"), (6, "기타")];
-    private readonly (int, string)[] _habitatRiverTypes = [(1, "산강형"), (2, "평지형"), (3, "강"), (4, "인공구조물")];
+    private readonly (int, string)[] _habitatRiverTypes = [(1, "산간형"), (2, "평지형"), (3, "강"), (4, "인공구조물")];
     private readonly (int, string)[] _flowStates = [(1, "여울"), (2, "흐름"), (3, "소")];
 
     private string _loadedFileName = string.Empty;
@@ -489,7 +489,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                                     insertPropertyInfo?.SetValue(insertModel, v);
 
-                                    if (year >= minDate.Year || year <= maxDate.Year)
+                                    if (year >= minDate.Year && year <= maxDate.Year)
                                     {
                                         //연도
                                         insertModel.SurveyYear = year;

@@ -30,6 +30,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="m.ico" />
+    <!-- 조사지점 마스터 초기본(조사자 번들 sites-20261018 · 생태현황 149곳 포함). 실행 폴더의 sites.json 을 [조사지점 관리]로 편집한다(CLAUDE.md §8-1) -->
+    <Content Include="sites.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Fonts\KoPubWorld Dotum Bold.ttf">

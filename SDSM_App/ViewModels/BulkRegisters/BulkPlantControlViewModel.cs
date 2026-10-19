@@ -363,7 +363,7 @@ public partial class BulkPlantControlViewModel : ObservableObject, ITransientSer
                             {
                                 if (v.Length >= 4 && int.TryParse(v[..4], out int year))
                                 {
-                                    if (year >= minDate.Year || year <= maxDate.Year)
+                                    if (year >= minDate.Year && year <= maxDate.Year)
                                     {
                                         //연도
                                         insertModel.SurveyYear = year;

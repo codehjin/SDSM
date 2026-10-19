@@ -373,7 +373,7 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                                     insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
 
-                                    if (year >= minDate.Year || year <= maxDate.Year)
+                                    if (year >= minDate.Year && year <= maxDate.Year)
                                     {
                                         //연도
                                         insertModel.SurveyYear = year;

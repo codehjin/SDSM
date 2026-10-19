@@ -359,7 +359,7 @@ public partial class BulkVegetationControlViewModel : ObservableObject, ITransie
                                     PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                                     insertPropertyInfo?.SetValue(insertModel, v);
 
-                                    if (year >= minDate.Year || year <= maxDate.Year)
+                                    if (year >= minDate.Year && year <= maxDate.Year)
                                     {
                                         //연도
                                         insertModel.SurveyYear = year;
