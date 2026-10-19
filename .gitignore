@@ -369,3 +369,8 @@ FodyWeavers.xsd
 # 대용량 참고자료
 *.xlsx
 !docs/**/*.xlsx
+
+# 배포 스크립트(tools/publish.ps1) 임시 폴더 — 게시본 · 압축 작업 폴더 · 빌드 경고 기록
+tools/_publish/
+tools/_publish_zip/
+tools/_publish_log/
