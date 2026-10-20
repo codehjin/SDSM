@@ -23,6 +23,15 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!--안내 : 통계는 방류하천 자료만 집계한다. 양서파충류는 생태현황 자료뿐이라 여기 나오지 않는다(2026-10-21 연계시험 문제 13)-->
+        <Border Grid.Row="1" Style="{StaticResource ContentBoxStyle}" Padding="16 8" Margin="30 10 30 0" MaxWidth="{StaticResource ContentMaxWidth}">
+            <StackPanel Orientation="Horizontal">
+                <icon:PackIconMaterial Kind="InformationOutline" Width="18" Height="18" VerticalAlignment="Center"
+                                       Foreground="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
+                <TextBlock Text="생태현황 자료는 통계 대상이 아닙니다." Style="{StaticResource PrimaryTextBlcokStyle}" Margin="8 0 0 0" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
         <!--검색-->
         <Grid Grid.Row="2" Margin="30 10 30 10" MaxWidth="{StaticResource ContentMaxWidth}">
             <Grid.ColumnDefinitions>

@@ -98,6 +98,7 @@ public partial class WaterQualityEditorControl : UserControl, ITransientService
     }
 
     //실수값 소수점 자리맞춤
+    //좌표(위도·경도 6자리)에만 건다. 수질 측정값은 반올림하지 않고 원값을 저장한다 — 칸의 자릿수는 표시용(2026-10-21 문제 4)
     private void DoubleValueToRound_LostFocus(object sender, RoutedEventArgs e)
     {
         if (sender is RadNumericUpDown upDown && upDown.Value != null)

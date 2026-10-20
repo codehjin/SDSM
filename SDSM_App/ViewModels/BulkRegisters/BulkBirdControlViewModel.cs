@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SDSM_App.Enums;
@@ -30,6 +31,10 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
     #region 필드
 
     private readonly (int, string)[] _weathers = [(1, "맑음"), (2, "흐림"), (3, "비(눈)")];
+
+    //서식유형(W열) — 양식 W3 '1) 번식확실, 2) 번식추축, 3) 월동확실, 4) 채식 및 휴식, 5) 소리, 6) 이동' 순서.
+    //2번은 양식 글자(오타 '번식추축')가 아니라 조사자 앱 선택지·DB 실값 '번식추측'으로 둔다 — 2026-10-21 문제 18
+    private readonly (int, string)[] _habitatTypes = [(1, "번식확실"), (2, "번식추측"), (3, "월동확실"), (4, "채식 및 휴식"), (5, "소리"), (6, "이동")];
 
     private string _loadedFileName = string.Empty;
 
@@ -127,18 +132,11 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
         _loadedFileName = fileName;
         var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).LastOrDefault();
 
+        //파일명만 같은 것은 정보로만 알린다 — 같은 기록인지는 저장할 때 내용으로 검사한다(2026-10-21 문제 2·3)
         if (savedFileInfo != null)
         {
-            var message = $"파일명 : {savedFileInfo.FileName}{Environment.NewLine}" +
-                           $"저장일 : {savedFileInfo.SavedTime:yyyy-MM-dd HH:mm:ss}{Environment.NewLine}" +
-                           $"저장된 기록이 있는 파일명입니다.{Environment.NewLine}{Environment.NewLine}" +
-                           $"계속 진행하시겠습니까?";
-            var result = MessageBox.Show(message, "저장된 기록이 있는 파일명", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
-
-            if (result == MessageBoxResult.Cancel)
-            {
-                return;
-            }
+            var info = (DuplicateImportHelper.SavedFileNameInfo(savedFileInfo.FileName, savedFileInfo.SavedTime), true);
+            WeakReferenceMessenger.Default.Send(new NotifyMessage(info));
         }
 
         GB.IsBusy = true;
@@ -237,28 +235,42 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
         if (MessageBox.Show(message, "자료 일괄 저장", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
             return;
 
-        //저장
-        bool isSeccess = await Task.Run(() => AddSave());
-
-        if (isSeccess)
+        //DB에 같은 기록이 있는지 — 있으면 [건너뛰기(기본)/바꾸기/추가]를 묻는다(2026-10-21 문제 2·3)
+        var decisions = FindDuplicates();
+        if (decisions == null)
         {
-            //저장된 파일정보
-            var repogitory = App.Current.Services.GetRequiredService<ISavedFileInfoRepository>();
-            var savedFileInfo = new SavedFileInfo
-            {
-                Division = "조류",
-                FileName = Path.GetFileName(_loadedFileName),
-                SavedTime = DateTime.Now
-            };
+            MessageBox.Show("같은 기록을 확인하는 중 오류가 발생하였습니다.", "저장 오류", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
 
-            var savedModel = await repogitory.InsertAsync(savedFileInfo);
-            if (savedModel != null)
+        //저장
+        var saveResult = await Task.Run(() => AddSave(decisions));
+
+        if (saveResult.IsSuccess)
+        {
+            if (saveResult.Saved + saveResult.Replaced > 0)
             {
-                SavedFileInfos.Add(savedModel);
+                //저장된 파일정보
+                var repogitory = App.Current.Services.GetRequiredService<ISavedFileInfoRepository>();
+                var savedFileInfo = new SavedFileInfo
+                {
+                    Division = "조류",
+                    FileName = Path.GetFileName(_loadedFileName),
+                    SavedTime = DateTime.Now
+                };
+
+                var savedModel = await repogitory.InsertAsync(savedFileInfo);
+                if (savedModel != null)
+                {
+                    SavedFileInfos.Add(savedModel);
+                }
             }
 
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
+
+            if (decisions.Count > 0)
+                DuplicateImportHelper.ShowSummary("조류", saveResult.Saved, saveResult.Replaced, saveResult.Skipped, saveResult.DuplicateAdded);
 
             Reset();
         }
@@ -431,7 +443,7 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                             var v = ((string)value).Replace(" ", "").ToUpper();
                             if (v.Length > 0)
                             {
-                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionId(_isEcology, v, model.YearChsu);
                                 if (siteDivisionId != null)
                                 {
                                     insertPropertyInfo?.SetValue(insertModel, v);
@@ -813,6 +825,8 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
 
                             if (prop.Name == "River")
                                 insertPropertyInfo?.SetValue(insertModel, ((string)value).Replace(" ", ""));
+                            else if (prop.Name == "HabitatType")
+                                insertPropertyInfo?.SetValue(insertModel, ToHabitatTypeName(((string)value).Trim()));
                             else
                                 insertPropertyInfo?.SetValue(insertModel, ((string)value).Trim());
                         }
@@ -865,7 +879,67 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
         }
     }
 
-    private bool AddSave()
+    //서식유형 번호(`3` · `3)` · `3.`, 쉼표로 여러 개) → 이름. 번호가 아닌 글자는 그대로 둔다(대항목·세부항목은 바꾸지 않음).
+    private string ToHabitatTypeName(string value)
+    {
+        var items = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var names = items.Select(item =>
+        {
+            var num = item.TrimEnd(')', '.').Trim();
+            if (int.TryParse(num, out int n))
+            {
+                var name = _habitatTypes.FirstOrDefault(h => h.Item1 == n).Item2;
+                if (!string.IsNullOrEmpty(name)) return name;
+            }
+            return item;
+        });
+        return string.Join(",", names);
+    }
+
+    //DB에 같은 묶음(연도차수·하천·지점·조사일)이 있는지 찾고, 있으면 처리 방법을 묻는다 — 2026-10-21 문제 2·3
+    //반환 null = 확인 실패(저장하지 않는다)
+    private Dictionary<ObservationGroupKey, DuplicateDecision>? FindDuplicates()
+    {
+        try
+        {
+            var decisions = new Dictionary<ObservationGroupKey, DuplicateDecision>();
+
+            using var context = new SDSMDbContext();
+            var existing = context.Birds.AsNoTracking().IgnoreAutoIncludes()
+                .Select(m => new { Id = m.BirdId, m.YearChsu, m.River, m.Site, m.SurveyDate })
+                .ToList()
+                .GroupBy(m => ObservationGroupKey.Of(m.YearChsu, m.River, m.Site, m.SurveyDate))
+                .ToDictionary(g => g.Key, g => g.Select(m => m.Id).ToList());
+
+            var groups = ConvertedCollection
+                .GroupBy(m => ObservationGroupKey.Of(m.YearChsu, m.River, m.Site, m.SurveyDate))
+                .Where(g => existing.ContainsKey(g.Key))
+                .ToList();
+
+            DuplicateAction? applyAll = null;
+            for (int i = 0; i < groups.Count; i++)
+            {
+                var group = groups[i];
+                var first = group.First();
+                var ids = existing[group.Key];
+
+                var newText = $"{first.YearChsu} · 하천 {first.River ?? "-"} · 지점 {first.Site ?? "-"} · {DuplicateImportHelper.DateText(first.SurveyDate)} · {group.Count()}행";
+                var existingText = $"같은 묶음 {ids.Count}행 ({DuplicateImportHelper.IdText(ids)}) — [바꾸기]는 이 묶음을 모두 지우고 새 {group.Count()}행을 저장";
+
+                var action = DuplicateImportHelper.Ask($"조류 — 같은 묶음이 DB에 있습니다 ({i + 1}/{groups.Count})", newText, existingText, ref applyAll);
+                decisions[group.Key] = new DuplicateDecision(action, ids);
+            }
+
+            return decisions;
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(FindDuplicates), ex.Message);
+            return null;
+        }
+    }
+
+    private BulkSaveResult AddSave(Dictionary<ObservationGroupKey, DuplicateDecision> decisions)
     {
         const int batchSize = 500;
 
@@ -876,16 +950,28 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
             GB.BusyContent = "자료 저장 중...";
             GB.IsIndeterminate = false;
 
-            var entities = ConvertedCollection.ToList();
+            //같은 기록 처리 — 건너뛰기는 빼고, 바꾸기는 옛 기록을 같은 트랜잭션 안에서 먼저 지운다(2026-10-21 문제 2·3)
+            DuplicateDecision? DecisionOf(Bird m) => decisions.TryGetValue(ObservationGroupKey.Of(m.YearChsu, m.River, m.Site, m.SurveyDate), out var d) ? d : null;
+
+            var all = ConvertedCollection.ToList();
+            var entities = all.Where(m => DecisionOf(m)?.Action != DuplicateAction.Skip).ToList();
+            int skipped = all.Count - entities.Count;
+            int replaced = entities.Count(m => DecisionOf(m)?.Action == DuplicateAction.Replace);
+            int duplicateAdded = entities.Count(m => DecisionOf(m)?.Action == DuplicateAction.Add);
+            int saved = entities.Count - replaced;
+            var deleteIds = decisions.Values.Where(d => d.Action == DuplicateAction.Replace).SelectMany(d => d.ExistingIds).Distinct().ToArray();
 
             if (entities.Count == 0)
-                return true;
+                return new BulkSaveResult(true, 0, 0, skipped, 0);
 
             using var context = new SDSMDbContext();
             using var transaction = context.Database.BeginTransaction();
 
             try
             {
+                if (deleteIds.Length > 0)
+                    context.Birds.IgnoreAutoIncludes().Where(m => deleteIds.Contains(m.BirdId)).ExecuteDelete();
+
                 // 성능 최적화
                 context.ChangeTracker.AutoDetectChangesEnabled = false;
 
@@ -907,13 +993,13 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                 }
 
                 transaction.Commit();
-                return true;
+                return new BulkSaveResult(true, saved, replaced, skipped, duplicateAdded);
             }
             catch (Exception exInner)
             {
                 try { transaction.Rollback(); } catch { }
                 GB.LogWrite(GetType().Name, nameof(AddSave), exInner.Message);
-                return false;
+                return BulkSaveResult.Fail;
             }
             finally
             {
@@ -924,7 +1010,7 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
         catch (Exception ex)
         {
             GB.LogWrite(GetType().Name, nameof(AddSave), ex.Message);
-            return false;
+            return BulkSaveResult.Fail;
         }
         finally
         {

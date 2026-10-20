@@ -126,7 +126,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveExecuted()
     {
-        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site);
+        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionId(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site, YearChsu);
         if (siteDivisionId != null)
         {
             SiteDivisionId = siteDivisionId;
@@ -558,7 +558,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     }
 
     //군집지수 및 등급
-    private (double, double, double, double, double?, string?) GetIndexAndGrade()
+    private (double?, double?, double?, double?, double?, string?) GetIndexAndGrade()
     {
         try
         {
@@ -591,10 +591,8 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
 
             var surveyUnavailableReason = SurveyUnavailableReason;
 
-            var indexDI = GB.GetDI(speciesData);
-            var indexH = GB.GetH(speciesData);
-            var indexR1 = GB.GetR1(speciesData);
-            var indexJ = GB.GetJ(speciesData);
+            //조사불가·0종이면 DI·H'·R1·J' 는 NULL(BMI 는 그대로 '-' · 0 E) — 2026-10-21 문제 15
+            var (indexDI, indexH, indexR1, indexJ) = GB.GetBenthosIndices(speciesData, surveyUnavailableReason);
             var (score, grade) = GB.GetBMI(speciesData, surveyUnavailableReason);
 
             return (indexDI, indexH, indexR1, indexJ, score, grade);
@@ -602,7 +600,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         catch (Exception ex)
         {
             GB.LogWrite(GetType().Name, nameof(GetIndexAndGrade), ex.Message);
-            return (0, 0, 0, 0, null, null);
+            return (null, null, null, null, null, null);
         }
     }
 

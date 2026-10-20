@@ -156,18 +156,11 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         _loadedFileName = fileName;
         var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).LastOrDefault();
 
+        //파일명만 같은 것은 정보로만 알린다 — 같은 기록인지는 저장할 때 내용으로 검사한다(2026-10-21 문제 2·3)
         if (savedFileInfo != null)
         {
-            var message = $"파일명 : {savedFileInfo.FileName}{Environment.NewLine}" +
-                           $"저장일 : {savedFileInfo.SavedTime:yyyy-MM-dd HH:mm:ss}{Environment.NewLine}" +
-                           $"저장된 기록이 있는 파일명입니다.{Environment.NewLine}{Environment.NewLine}" +
-                           $"계속 진행하시겠습니까?";
-            var result = MessageBox.Show(message, "저장된 기록이 있는 파일명", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
-
-            if (result == MessageBoxResult.Cancel)
-            {
-                return;
-            }
+            var info = (DuplicateImportHelper.SavedFileNameInfo(savedFileInfo.FileName, savedFileInfo.SavedTime), true);
+            WeakReferenceMessenger.Default.Send(new NotifyMessage(info));
         }
 
         GB.IsBusy = true;
@@ -282,28 +275,42 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         if (MessageBox.Show(message, "자료 일괄 저장", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
             return;
 
-        //저장
-        bool isSeccess = await Task.Run(() => AddSave());
-
-        if (isSeccess)
+        //DB에 같은 기록이 있는지 — 있으면 [건너뛰기(기본)/바꾸기/추가]를 묻는다(2026-10-21 문제 2·3)
+        var decisions = FindDuplicates();
+        if (decisions == null)
         {
-            //저장된 파일정보
-            var repogitory = App.Current.Services.GetRequiredService<ISavedFileInfoRepository>();
-            var savedFileInfo = new SavedFileInfo
-            {
-                Division = "저서동물",
-                FileName = Path.GetFileName(_loadedFileName),
-                SavedTime = DateTime.Now
-            };
+            MessageBox.Show("같은 기록을 확인하는 중 오류가 발생하였습니다.", "저장 오류", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
 
-            var savedModel = await repogitory.InsertAsync(savedFileInfo);
-            if (savedModel != null)
+        //저장
+        var saveResult = await Task.Run(() => AddSave(decisions));
+
+        if (saveResult.IsSuccess)
+        {
+            if (saveResult.Saved + saveResult.Replaced > 0)
             {
-                SavedFileInfos.Add(savedModel);
+                //저장된 파일정보
+                var repogitory = App.Current.Services.GetRequiredService<ISavedFileInfoRepository>();
+                var savedFileInfo = new SavedFileInfo
+                {
+                    Division = "저서동물",
+                    FileName = Path.GetFileName(_loadedFileName),
+                    SavedTime = DateTime.Now
+                };
+
+                var savedModel = await repogitory.InsertAsync(savedFileInfo);
+                if (savedModel != null)
+                {
+                    SavedFileInfos.Add(savedModel);
+                }
             }
 
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
+
+            if (decisions.Count > 0)
+                DuplicateImportHelper.ShowSummary("저서동물", saveResult.Saved, saveResult.Replaced, saveResult.Skipped, saveResult.DuplicateAdded);
 
             Reset();
         }
@@ -359,10 +366,8 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
                     var surveyUnavailableReason = ((ICellValue)(worksheet.Cells[43, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[43, columnIndex].GetFormat().Value);
 
-                    var indexDI = GB.GetDI(speciesData);
-                    var indexH = GB.GetH(speciesData);
-                    var indexR1 = GB.GetR1(speciesData);
-                    var indexJ = GB.GetJ(speciesData);
+                    //조사불가·0종이면 DI·H'·R1·J' 는 NULL(BMI 는 그대로 '-' · 0 E) — 2026-10-21 문제 15
+                    var (indexDI, indexH, indexR1, indexJ) = GB.GetBenthosIndices(speciesData, surveyUnavailableReason);
                     var (score, grade) = GB.GetBMI(speciesData, surveyUnavailableReason);
 
                     var speciesCount = speciesData.GroupBy(m => m.SpeciesKo).Count();
@@ -524,7 +529,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                             var v = ((string)value).Replace(" ", "").ToUpper();
                             if (v.Length > 0)
                             {
-                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionId(_isEcology, v, model.YearChsu);
                                 if (siteDivisionId != null)
                                 {
                                     insertPropertyInfo?.SetValue(insertModel, v);
@@ -1079,8 +1084,57 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         }
     }
 
-    private async Task<bool> AddSave()
+    //DB에 같은 기록(대분류·지점·연도차수·조사일)이 있는지 찾고, 있으면 처리 방법을 묻는다 — 2026-10-21 문제 2·3
+    //반환 null = 확인 실패(저장하지 않는다)
+    private Dictionary<Benthos, DuplicateDecision>? FindDuplicates()
     {
+        try
+        {
+            var decisions = new Dictionary<Benthos, DuplicateDecision>(ReferenceEqualityComparer.Instance);
+            var project = _isEcology == true ? "생태현황" : "방류하천";
+            var projectIds = GB.ProjectSiteNames.Where(sd => sd.Project == project).Select(sd => sd.SiteDivisionId).ToHashSet();
+
+            using var context = new SDSMDbContext();
+            var existing = context.Benthoss.AsNoTracking().IgnoreAutoIncludes()
+                .Select(m => new { Id = m.BenthosId, m.YearChsu, m.Site, m.SurveyDate, m.SiteDivisionId })
+                .ToList()
+                .Where(m => m.SiteDivisionId is int id && projectIds.Contains(id))
+                .ToList();
+
+            var matches = ConvertedCollection
+                .Select(model => (model, ids: existing
+                    .Where(e => DuplicateImportHelper.Norm(e.YearChsu) == DuplicateImportHelper.Norm(model.YearChsu)
+                             && DuplicateImportHelper.Norm(e.Site) == DuplicateImportHelper.Norm(model.Site)
+                             && DuplicateImportHelper.Day(e.SurveyDate) == DuplicateImportHelper.Day(model.SurveyDate))
+                    .Select(e => e.Id).ToList()))
+                .Where(x => x.ids.Count > 0)
+                .ToList();
+
+            DuplicateAction? applyAll = null;
+            for (int i = 0; i < matches.Count; i++)
+            {
+                var (model, ids) = matches[i];
+                var speciesRows = ConvertedSpeciesCollection.Count(s => s.MacthNumber == model.MacthNumber);
+                var oldSpeciesRows = context.BenthosSpeciess.Count(s => ids.Contains(s.BenthosId));
+                var newText = $"[{project}] {model.Site} · {model.YearChsu} · {DuplicateImportHelper.DateText(model.SurveyDate)} · 종 {speciesRows}행";
+                var existingText = $"{ids.Count}건 ({DuplicateImportHelper.IdText(ids)}) · 종 {oldSpeciesRows}행" + (ids.Count > 1 ? " — [바꾸기]는 모두 지웁니다" : "");
+                var action = DuplicateImportHelper.Ask($"저서동물 — 같은 기록이 DB에 있습니다 ({i + 1}/{matches.Count})", newText, existingText, ref applyAll);
+                decisions[model] = new DuplicateDecision(action, ids);
+            }
+
+            return decisions;
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(FindDuplicates), ex.Message);
+            return null;
+        }
+    }
+
+    private async Task<BulkSaveResult> AddSave(Dictionary<Benthos, DuplicateDecision> decisions)
+    {
+        int saved = 0, replaced = 0, skipped = 0, duplicateAdded = 0;
+
         try
         {
             GB.IsBusy = true;
@@ -1101,10 +1155,25 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
                 var macthNumber = model.MacthNumber;
 
+                decisions.TryGetValue(model, out var decision);
+                if (decision?.Action == DuplicateAction.Skip)
+                {
+                    skipped++;
+                    continue;
+                }
+                if (decision?.Action == DuplicateAction.Replace)
+                {
+                    await Task.Run(() => ReplaceSave(model, decision.ExistingIds));
+                    replaced++;
+                    continue;
+                }
+
                 var addModel = await repository.InsertAsync(model);
                 if (addModel != null)
                 {
                     await Task.Run(() => SubBatchSave(addModel.BenthosId, macthNumber));
+                    saved++;
+                    if (decision?.Action == DuplicateAction.Add) duplicateAdded++;
                 }
             }
 
@@ -1117,12 +1186,12 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                 await context.SaveChangesAsync();
             }
 
-            return true;
+            return new BulkSaveResult(true, saved, replaced, skipped, duplicateAdded);
         }
         catch (Exception ex)
         {
             GB.LogWrite(GetType().Name, nameof(AddSave), ex.Message);
-            return false;
+            return BulkSaveResult.Fail;
         }
         finally
         {
@@ -1130,6 +1199,38 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
             GB.IsIndeterminate = true;
             GB.BusyContent = string.Empty;
             GB.ProgressValue = 0;
+        }
+    }
+
+    //바꾸기 — 옛 기록(부모와 종 행)을 지우고 새 기록·종 행을 저장한다. 한 트랜잭션(실패하면 모두 되돌림) — 2026-10-21 문제 2·3
+    private void ReplaceSave(Benthos model, IReadOnlyList<int> oldIds)
+    {
+        var ids = oldIds.ToArray();
+
+        using var context = new SDSMDbContext();
+        using var transaction = context.Database.BeginTransaction();
+
+        try
+        {
+            context.BenthosSpeciess.Where(m => ids.Contains(m.BenthosId)).ExecuteDelete();
+            context.Benthoss.IgnoreAutoIncludes().Where(m => ids.Contains(m.BenthosId)).ExecuteDelete();
+
+            context.Benthoss.Add(model);
+            context.SaveChanges();
+
+            var species = ConvertedSpeciesCollection.Where(w => w.MacthNumber == model.MacthNumber).ToList();
+            foreach (var item in species)
+                item.BenthosId = model.BenthosId;
+
+            context.BenthosSpeciess.AddRange(species);
+            context.SaveChanges();
+
+            transaction.Commit();
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(ReplaceSave), ex.Message);
+            throw;
         }
     }
 

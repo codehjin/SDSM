@@ -71,7 +71,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     [ObservableProperty] private int? _bigStone;
     [ObservableProperty] private string? _habitatRiverType;
     [ObservableProperty] private string? _habitatFlowState;
-    [ObservableProperty] private string? _surveyUnavailableReason;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string? _surveyUnavailableReason;
     [ObservableProperty] private string? _note;
     [ObservableProperty] private int? _dECount;
     [ObservableProperty] private int? _eFCount;
@@ -97,7 +97,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     [ObservableProperty] private RadObservableCollection<FishSpeciesList> _addSpeciesColleciton = [];
     [ObservableProperty] private FishSpeciesList? _addSpeciesSelectedItem;
 
-    [ObservableProperty] private int _addSpeciesCount;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private int _addSpeciesCount;
     [ObservableProperty] private double _addIndividualCountSum;
 
     [RelayCommand]
@@ -115,7 +115,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     {
         return !string.IsNullOrWhiteSpace(YearChsu)
             && SurveyDate != null
-            && AutoRiverChasu != null
+            && (AutoRiverChasu != null || !string.IsNullOrWhiteSpace(SurveyUnavailableReason) || AddSpeciesCount == 0)   // 조사불가·0종이면 하천차수 없이(2026-10-21 문제 7)
             && (Project != "방류하천" || !string.IsNullOrWhiteSpace(Site));
     }
 
@@ -123,7 +123,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveExecuted()
     {
-        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site);
+        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionId(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site, YearChsu);
         if (siteDivisionId != null)
         {
             SiteDivisionId = siteDivisionId;

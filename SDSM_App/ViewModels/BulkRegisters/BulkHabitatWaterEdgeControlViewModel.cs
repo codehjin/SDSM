@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SDSM_App.Enums;
@@ -127,18 +128,11 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
         _loadedFileName = fileName;
         var savedFileInfo = SavedFileInfos.Where(m => m.FileName.Replace(" ", "").ToLower() == Path.GetFileName(_loadedFileName).Replace(" ", "").ToLower()).LastOrDefault();
 
+        //파일명만 같은 것은 정보로만 알린다 — 같은 기록인지는 저장할 때 내용으로 검사한다(2026-10-21 문제 2·3)
         if (savedFileInfo != null)
         {
-            var message = $"파일명 : {savedFileInfo.FileName}{Environment.NewLine}" +
-                           $"저장일 : {savedFileInfo.SavedTime:yyyy-MM-dd HH:mm:ss}{Environment.NewLine}" +
-                           $"저장된 기록이 있는 파일명입니다.{Environment.NewLine}{Environment.NewLine}" +
-                           $"계속 진행하시겠습니까?";
-            var result = MessageBox.Show(message, "저장된 기록이 있는 파일명", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
-
-            if (result == MessageBoxResult.Cancel)
-            {
-                return;
-            }
+            var info = (DuplicateImportHelper.SavedFileNameInfo(savedFileInfo.FileName, savedFileInfo.SavedTime), true);
+            WeakReferenceMessenger.Default.Send(new NotifyMessage(info));
         }
 
         GB.IsBusy = true;
@@ -236,28 +230,42 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
         if (MessageBox.Show(message, "자료 일괄 저장", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
             return;
 
-        //저장
-        bool isSeccess = await Task.Run(() => AddSave());
-
-        if (isSeccess)
+        //DB에 같은 기록이 있는지 — 있으면 [건너뛰기(기본)/바꾸기/추가]를 묻는다(2026-10-21 문제 2·3)
+        var decisions = FindDuplicates();
+        if (decisions == null)
         {
-            //저장된 파일정보
-            var repogitory = App.Current.Services.GetRequiredService<ISavedFileInfoRepository>();
-            var savedFileInfo = new SavedFileInfo
-            {
-                Division = "서식수변",
-                FileName = Path.GetFileName(_loadedFileName),
-                SavedTime = DateTime.Now
-            };
+            MessageBox.Show("같은 기록을 확인하는 중 오류가 발생하였습니다.", "저장 오류", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
 
-            var savedModel = await repogitory.InsertAsync(savedFileInfo);
-            if (savedModel != null)
+        //저장
+        var saveResult = await Task.Run(() => AddSave(decisions));
+
+        if (saveResult.IsSuccess)
+        {
+            if (saveResult.Saved + saveResult.Replaced > 0)
             {
-                SavedFileInfos.Add(savedModel);
+                //저장된 파일정보
+                var repogitory = App.Current.Services.GetRequiredService<ISavedFileInfoRepository>();
+                var savedFileInfo = new SavedFileInfo
+                {
+                    Division = "서식수변",
+                    FileName = Path.GetFileName(_loadedFileName),
+                    SavedTime = DateTime.Now
+                };
+
+                var savedModel = await repogitory.InsertAsync(savedFileInfo);
+                if (savedModel != null)
+                {
+                    SavedFileInfos.Add(savedModel);
+                }
             }
 
             var toast = (GB.SaveMessage, true);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
+
+            if (decisions.Count > 0)
+                DuplicateImportHelper.ShowSummary("서식수변", saveResult.Saved, saveResult.Replaced, saveResult.Skipped, saveResult.DuplicateAdded);
 
             Reset();
         }
@@ -417,7 +425,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                             var v = ((string)value).Replace(" ", "").ToUpper();
                             if (v.Length > 0)
                             {
-                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionId(_isEcology, v, model.YearChsu);
                                 if (siteDivisionId != null)
                                 {
                                     insertPropertyInfo?.SetValue(insertModel, v);
@@ -713,7 +721,52 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
         }
     }
 
-    private bool AddSave()
+    //DB에 같은 기록(대분류·지점·연도차수·조사일)이 있는지 찾고, 있으면 처리 방법을 묻는다 — 2026-10-21 문제 2·3
+    //반환 null = 확인 실패(저장하지 않는다)
+    private Dictionary<HabitatWaterEdge, DuplicateDecision>? FindDuplicates()
+    {
+        try
+        {
+            var decisions = new Dictionary<HabitatWaterEdge, DuplicateDecision>(ReferenceEqualityComparer.Instance);
+            var project = _isEcology == true ? "생태현황" : "방류하천";
+            var projectIds = GB.ProjectSiteNames.Where(sd => sd.Project == project).Select(sd => sd.SiteDivisionId).ToHashSet();
+
+            using var context = new SDSMDbContext();
+            var existing = context.HabitatWaterEdges.AsNoTracking().IgnoreAutoIncludes()
+                .Select(m => new { Id = m.HabitatWaterEdgeId, m.YearChsu, m.Site, m.SurveyDate, m.SiteDivisionId })
+                .ToList()
+                .Where(m => m.SiteDivisionId is int id && projectIds.Contains(id))
+                .ToList();
+
+            var matches = ConvertedCollection
+                .Select(model => (model, ids: existing
+                    .Where(e => DuplicateImportHelper.Norm(e.YearChsu) == DuplicateImportHelper.Norm(model.YearChsu)
+                             && DuplicateImportHelper.Norm(e.Site) == DuplicateImportHelper.Norm(model.Site)
+                             && DuplicateImportHelper.Day(e.SurveyDate) == DuplicateImportHelper.Day(model.SurveyDate))
+                    .Select(e => e.Id).ToList()))
+                .Where(x => x.ids.Count > 0)
+                .ToList();
+
+            DuplicateAction? applyAll = null;
+            for (int i = 0; i < matches.Count; i++)
+            {
+                var (model, ids) = matches[i];
+                var newText = $"[{project}] {model.Site} · {model.YearChsu} · {DuplicateImportHelper.DateText(model.SurveyDate)}";
+                var existingText = $"{ids.Count}건 ({DuplicateImportHelper.IdText(ids)})" + (ids.Count > 1 ? " — [바꾸기]는 모두 지웁니다" : "");
+                var action = DuplicateImportHelper.Ask($"서식수변 — 같은 기록이 DB에 있습니다 ({i + 1}/{matches.Count})", newText, existingText, ref applyAll);
+                decisions[model] = new DuplicateDecision(action, ids);
+            }
+
+            return decisions;
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(FindDuplicates), ex.Message);
+            return null;
+        }
+    }
+
+    private BulkSaveResult AddSave(Dictionary<HabitatWaterEdge, DuplicateDecision> decisions)
     {
         const int batchSize = 500;
 
@@ -724,16 +777,28 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
             GB.BusyContent = "자료 저장 중...";
             GB.IsIndeterminate = false;
 
-            var entities = ConvertedCollection.ToList();
+            //같은 기록 처리 — 건너뛰기는 빼고, 바꾸기는 옛 기록을 같은 트랜잭션 안에서 먼저 지운다(2026-10-21 문제 2·3)
+            DuplicateDecision? DecisionOf(HabitatWaterEdge m) => decisions.TryGetValue(m, out var d) ? d : null;
+
+            var all = ConvertedCollection.ToList();
+            var entities = all.Where(m => DecisionOf(m)?.Action != DuplicateAction.Skip).ToList();
+            int skipped = all.Count - entities.Count;
+            int replaced = entities.Count(m => DecisionOf(m)?.Action == DuplicateAction.Replace);
+            int duplicateAdded = entities.Count(m => DecisionOf(m)?.Action == DuplicateAction.Add);
+            int saved = entities.Count - replaced;
+            var deleteIds = decisions.Values.Where(d => d.Action == DuplicateAction.Replace).SelectMany(d => d.ExistingIds).Distinct().ToArray();
 
             if (entities.Count == 0)
-                return true;
+                return new BulkSaveResult(true, 0, 0, skipped, 0);
 
             using var context = new SDSMDbContext();
             using var transaction = context.Database.BeginTransaction();
 
             try
             {
+                if (deleteIds.Length > 0)
+                    context.HabitatWaterEdges.IgnoreAutoIncludes().Where(m => deleteIds.Contains(m.HabitatWaterEdgeId)).ExecuteDelete();
+
                 // 성능 최적화
                 context.ChangeTracker.AutoDetectChangesEnabled = false;
 
@@ -755,13 +820,13 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
                 }
 
                 transaction.Commit();
-                return true;
+                return new BulkSaveResult(true, saved, replaced, skipped, duplicateAdded);
             }
             catch (Exception exInner)
             {
                 try { transaction.Rollback(); } catch { }
                 GB.LogWrite(GetType().Name, nameof(AddSave), exInner.Message);
-                return false;
+                return BulkSaveResult.Fail;
             }
             finally
             {
@@ -772,7 +837,7 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
         catch (Exception ex)
         {
             GB.LogWrite(GetType().Name, nameof(AddSave), ex.Message);
-            return false;
+            return BulkSaveResult.Fail;
         }
         finally
         {
@@ -781,7 +846,6 @@ public partial class BulkHabitatWaterEdgeControlViewModel : ObservableObject, IT
             GB.BusyContent = string.Empty;
             GB.ProgressValue = 0;
         }
-
     }
  
     //초기화

@@ -66,7 +66,7 @@ public partial class VegetationEditorControlViewModel : ObservableObject, ITrans
     [RelayCommand(CanExecute = nameof(CanSave))]
     private void SaveExecuted()
     {
-        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site);
+        int? siteDivisionId = SiteDivisionHelper.FindSiteDivisionId(Project == "생태현황" ? true : Project == "방류하천" ? false : null, Site, YearChsu);
         if (siteDivisionId != null)
         {
             SiteDivisionId = siteDivisionId;

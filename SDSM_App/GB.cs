@@ -313,6 +313,23 @@ public static class GB
         => BenthosCalculator.GetJ(speciesData);
 
     /// <summary>
+    /// 저장용 군집지수 DI·H'·R1·J'. 조사불가(사유 4종 → BMI 등급 '-')이거나 출현종 0종(개체수 &gt; 0 인 종 없음)이면
+    /// 지수를 내지 않는다(null) — 계산할 개체가 없으므로 0·1 이 아니라 결측이다(2026-10-21 연계시험 문제 15).
+    /// 계산식은 그대로 <c>BenthosCalculator</c> 이고 BMI·등급은 <see cref="GetBMI"/> 가 지금처럼 낸다.
+    /// </summary>
+    public static (double? di, double? h, double? r1, double? j) GetBenthosIndices(IEnumerable<ImportBenthosSpecies> speciesData, string? surveyUnavailableReason)
+    {
+        if (speciesData == null)
+            return (null, null, null, null);
+
+        var r = BenthosCalculator.CalculateBmiDetail(speciesData, surveyUnavailableReason, noSpeciesDeclared: true);
+        if (r.Grade == "-" || r.TotalSpecies == 0)
+            return (null, null, null, null);
+
+        return (r.DI, r.H, r.R1, r.J);
+    }
+
+    /// <summary>
     /// 저서동물지수 BMI 와 등급.
     /// 일괄입력·편집화면 모두 "자료가 있으면 조사한 것"이므로 0종을 선언으로 본다
     /// (조사자 앱의 `출현종 없음(0종)` 토글과 같은 취급 — 12_CALC_FIX §2).

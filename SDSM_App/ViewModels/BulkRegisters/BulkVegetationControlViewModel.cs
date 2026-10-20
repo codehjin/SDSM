@@ -416,7 +416,7 @@ public partial class BulkVegetationControlViewModel : ObservableObject, ITransie
                             var v = ((string)value).Replace(" ", "").ToUpper();
                             if (v.Length > 0)
                             {
-                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionId(_isEcology, v, model.YearChsu);
                                 if (siteDivisionId != null)
                                 {
                                     insertPropertyInfo?.SetValue(insertModel, v);

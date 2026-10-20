@@ -441,7 +441,7 @@ public partial class BulkPlantControlViewModel : ObservableObject, ITransientSer
                             var v = ((string)value).Replace(" ", "").ToUpper();
                             if (v.Length > 0)
                             {
-                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionIdBySiteContains(_isEcology, v);
+                                var siteDivisionId = SiteDivisionHelper.FindSiteDivisionId(_isEcology, v, model.SurveyYear);
                                 if (siteDivisionId != null)
                                 {
                                     insertPropertyInfo?.SetValue(insertModel, v);

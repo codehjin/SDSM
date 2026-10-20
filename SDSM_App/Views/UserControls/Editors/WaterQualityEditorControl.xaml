@@ -261,8 +261,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -274,8 +273,7 @@
                                                                   NumberDecimalDigits="2"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -289,8 +287,7 @@
                                                                   NumberDecimalDigits="2"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -302,8 +299,7 @@
                                                                   NumberDecimalDigits="2"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -316,8 +312,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -329,8 +324,7 @@
                                                                   NumberDecimalDigits="2"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -344,8 +338,7 @@
                                                                   NumberDecimalDigits="3"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -356,8 +349,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -370,8 +362,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -385,8 +376,7 @@
                                                                   NumberDecimalDigits="2"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -397,8 +387,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -411,8 +400,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -423,8 +411,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -438,8 +425,7 @@
                                                                   NumberDecimalDigits="3"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -451,8 +437,7 @@
                                                                   NumberDecimalDigits="3"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -466,8 +451,7 @@
                                                                   NumberDecimalDigits="3"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -478,8 +462,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -492,8 +475,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -504,8 +486,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -518,8 +499,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -531,8 +511,7 @@
                                                                   NumberDecimalDigits="2"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -546,8 +525,7 @@
                                                                   NumberDecimalDigits="3"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -558,8 +536,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
 
