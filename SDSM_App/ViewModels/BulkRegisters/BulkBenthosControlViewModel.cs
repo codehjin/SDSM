@@ -98,6 +98,9 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
     [ObservableProperty]
     private int _convertedSpeciesCount;
 
+    //하상 암반·콘크리트(0보다 큼)를 특이사항으로 옮긴 기록 수 — 지침 저서 하상 6칸 밖(2026-10-21 §20). 막지는 않는다
+    [ObservableProperty] private int _substrateMovedCount;
+
     #endregion
 
     #region 종목록 속성
@@ -221,6 +224,13 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                     ConvertedCount = ConvertedCollection.Count;
                     ErrorCount = ConvertedCollection.Count(m => m.ErrorContent.Length > 0);
 
+                    SubstrateMovedCount = data.Item3;
+                    if (SubstrateMovedCount > 0)
+                    {
+                        var info = ($"하상 암반·콘크리트 값 {SubstrateMovedCount:N0}건을 특이사항으로 옮겼습니다(지침 저서 하상 6칸 밖)", true);
+                        WeakReferenceMessenger.Default.Send(new NotifyMessage(info));
+                    }
+
                     var speciesData = await Task.Run(() => SpeciesDataValidation(species));
                     SpeciesCollection.AddRange(speciesData.Item1);
                     ConvertedSpeciesCollection.AddRange(speciesData.Item2);
@@ -308,6 +318,8 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
             //저장·바꿈·건너뜀 건수에 맞는 알림(2026-10-21 N5)
             var toast = DuplicateImportHelper.SaveToast(saveResult);
+            if (SubstrateMovedCount > 0 && saveResult.Saved + saveResult.Replaced > 0)
+                toast = ($"{toast.Item1} · 하상 암반·콘크리트 → 특이사항 {SubstrateMovedCount:N0}건", toast.Item2);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
 
             if (decisions.Count > 0)
@@ -446,10 +458,11 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
     }
 
     //기본정보 검수하기
-    private (List<ImportBenthos>, List<Benthos>) DataValidation(List<ImportBenthos> importModels)
+    private (List<ImportBenthos>, List<Benthos>, int) DataValidation(List<ImportBenthos> importModels)
     {
         StringBuilder sb = new();
         var converteds = new List<Benthos>();
+        int substrateMoved = 0;
 
         try
         {
@@ -944,6 +957,13 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                     }
                 }
 
+                //저서 하상은 지침 6칸 — 암반·콘크리트(0보다 큼)는 특이사항 끝으로 옮기고 두 칸은 NULL(0·빈칸도 NULL) · 2026-10-21 §20
+                var movedText = BenthosSubstrateNote.MovedText(insertModel.Bedrock, insertModel.Concrete);
+                insertModel.Note = BenthosSubstrateNote.AppendTo(insertModel.Note, movedText);
+                insertModel.Bedrock = null;
+                insertModel.Concrete = null;
+                if (movedText != null) substrateMoved++;
+
                 if (sb.Length > 0)
                 {
                     model.ErrorContent = sb.ToString();
@@ -952,18 +972,18 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
                 converteds.Add(insertModel);
             }
-            return (importModels, converteds);
+            return (importModels, converteds, substrateMoved);
         }
         catch (SqliteException ex)
         {
             MessageBox.Show("데이터베이스 또는 테이블을 찾을수 없습니다.", "데이터베이스 오류", MessageBoxButton.OK, MessageBoxImage.Error);
             GB.LogWrite(GetType().Name, nameof(DataValidation), ex.Message);
-            return (importModels, converteds);
+            return (importModels, converteds, substrateMoved);
         }
         catch (Exception ex)
         {
             GB.LogWrite(GetType().Name, nameof(DataValidation), ex.Message);
-            return (importModels, converteds);
+            return (importModels, converteds, substrateMoved);
         }
     }
 
@@ -1301,6 +1321,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         ErrorCount = 0;
         ConvertedSpeciesCount = 0;
         ErrorSpeciesCount = 0;
+        SubstrateMovedCount = 0;
 
         SpeciesListData.Clear();
         ImportSpeciesListData.Clear();
@@ -1330,14 +1351,14 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "범람원의 이용", Value = 21 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "제방(좌안)", Value = 22 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "제방(우안)", Value = 23 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "암반", Value = 24 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "콘크리트", Value = 25 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "진흙이하(<0.063mm)", Value = 26 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "암반(빈칸 · 값은 특이사항으로)", Value = 24 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "콘크리트(빈칸 · 값은 특이사항으로)", Value = 25 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "진흙 이하(<0.063mm)", Value = 26 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "모래(0.063-2mm)", Value = 27 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "잔자갈(2-16mm)", Value = 28 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "왕모래(양식 잔자갈 · 2-16mm)", Value = 28 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "자갈(16-64mm)", Value = 29 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "작은돌(64-256mm)", Value = 30 });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "큰돌(>256mm)", Value = 31 });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "큰돌 이상(>256mm)", Value = 31 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "하천유형", Value = 33 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "하폭, 제방과 제방사이 거리(m)", Value = 34 });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "수폭, 물이 흐르는 하도의 거리(m)", Value = 35 });

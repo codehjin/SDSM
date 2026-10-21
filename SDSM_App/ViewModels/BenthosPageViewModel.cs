@@ -366,8 +366,6 @@ public partial class BenthosPageViewModel : ObservableObject, ITransientService
                                                             m => m.Floodplain,
                                                             m => m.LeveeLeft,
                                                             m => m.LeveeRight,
-                                                            m => m.Bedrock.ToString(),
-                                                            m => m.Concrete.ToString(),
                                                             m => m.Mud.ToString(),
                                                             m => m.Sand.ToString(),
                                                             m => m.FineGravel.ToString(),

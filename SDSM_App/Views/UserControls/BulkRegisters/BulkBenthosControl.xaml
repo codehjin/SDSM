@@ -235,14 +235,12 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Floodplain}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeveeLeft}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeveeRight}" MinWidth="80" Width="160" MaxWidth="160" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Bedrock}" MinWidth="80" Width="160" MaxWidth="160" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Concrete}" MinWidth="80" Width="160" MaxWidth="160" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Mud}" MinWidth="80" Width="200" MaxWidth="200" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Sand}" MinWidth="80" Width="200" MaxWidth="200" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FineGravel}" MinWidth="80" Width="200" MaxWidth="200" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Gravel}" MinWidth="80" Width="160" MaxWidth="160" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SmallStone}" MinWidth="80" Width="200" MaxWidth="200" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BigStone}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn Header="진흙 이하&#10;(&lt;0.063mm)" DataMemberBinding="{Binding Path=Mud}" MinWidth="80" Width="200" MaxWidth="200" />
+                            <telerik:GridViewDataColumn Header="모래&#10;(0.063~2mm)" DataMemberBinding="{Binding Path=Sand}" MinWidth="80" Width="200" MaxWidth="200" />
+                            <telerik:GridViewDataColumn Header="왕모래&#10;(2~16mm)" DataMemberBinding="{Binding Path=FineGravel}" MinWidth="80" Width="200" MaxWidth="200" />
+                            <telerik:GridViewDataColumn Header="자갈&#10;(16~64mm)" DataMemberBinding="{Binding Path=Gravel}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn Header="작은돌&#10;(64~256mm)" DataMemberBinding="{Binding Path=SmallStone}" MinWidth="80" Width="200" MaxWidth="200" />
+                            <telerik:GridViewDataColumn Header="큰돌 이상&#10;(&gt;256mm)" DataMemberBinding="{Binding Path=BigStone}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatRiverType}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RiverWidth}" MinWidth="80" Width="200" MaxWidth="200" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WaterWidth}" MinWidth="80" Width="200" MaxWidth="200" />
@@ -303,6 +301,19 @@
                         <TextBlock Text="오류" Margin="10 0 5 0"/>
                         <TextBlock Text="{Binding Path=ErrorCount, StringFormat={}{0:N0}}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
                         <TextBlock Text="건"/>
+                        <!--지침 저서 하상 6칸 밖(암반·콘크리트) 값을 특이사항으로 옮긴 건수 — 2026-10-21 §20-->
+                        <TextBlock Margin="10 0 0 0"
+                                   Text="{Binding Path=SubstrateMovedCount, StringFormat='하상 암반·콘크리트 → 특이사항 {0:N0}건'}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SubstrateMovedCount}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                     </StackPanel>
                     <telerik:RadButton Grid.Column="1" Margin="0 0 0 10" Tag="converted" Click="DataExportButton_Click">
                         <telerik:RadButton.Style>
@@ -355,14 +366,12 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Floodplain}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeveeLeft}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeveeRight}" MinWidth="80" Width="160" MaxWidth="160" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Bedrock}" MinWidth="80" Width="160" MaxWidth="160" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Concrete}" MinWidth="80" Width="160" MaxWidth="160" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Mud}" MinWidth="80" Width="200" MaxWidth="200" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Sand}" MinWidth="80" Width="200" MaxWidth="200" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FineGravel}" MinWidth="80" Width="200" MaxWidth="200" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Gravel}" MinWidth="80" Width="160" MaxWidth="160" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SmallStone}" MinWidth="80" Width="200" MaxWidth="200" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BigStone}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn Header="진흙 이하&#10;(&lt;0.063mm)" DataMemberBinding="{Binding Path=Mud}" MinWidth="80" Width="200" MaxWidth="200" />
+                            <telerik:GridViewDataColumn Header="모래&#10;(0.063~2mm)" DataMemberBinding="{Binding Path=Sand}" MinWidth="80" Width="200" MaxWidth="200" />
+                            <telerik:GridViewDataColumn Header="왕모래&#10;(2~16mm)" DataMemberBinding="{Binding Path=FineGravel}" MinWidth="80" Width="200" MaxWidth="200" />
+                            <telerik:GridViewDataColumn Header="자갈&#10;(16~64mm)" DataMemberBinding="{Binding Path=Gravel}" MinWidth="80" Width="160" MaxWidth="160" />
+                            <telerik:GridViewDataColumn Header="작은돌&#10;(64~256mm)" DataMemberBinding="{Binding Path=SmallStone}" MinWidth="80" Width="200" MaxWidth="200" />
+                            <telerik:GridViewDataColumn Header="큰돌 이상&#10;(&gt;256mm)" DataMemberBinding="{Binding Path=BigStone}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatRiverType}" MinWidth="80" Width="160" MaxWidth="160" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RiverWidth}" DataFormatString="{}{0:F1}" MinWidth="80" Width="200" MaxWidth="200" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WaterWidth}" DataFormatString="{}{0:F1}" MinWidth="80" Width="200" MaxWidth="200" />

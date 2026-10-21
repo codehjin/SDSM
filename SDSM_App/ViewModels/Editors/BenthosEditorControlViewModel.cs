@@ -21,6 +21,8 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
 {
     #region 필드
 
+    private const string DefaultSubstrateNotice = "지침 저서 하상 6칸 — 암반·콘크리트는 칸 밖이라 값이 있으면 특이사항으로 옮깁니다";
+
     #endregion
 
     #region 생성자
@@ -66,8 +68,7 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     [ObservableProperty] private string? _floodplain;
     [ObservableProperty] private string? _leveeLeft;
     [ObservableProperty] private string? _leveeRight;
-    [ObservableProperty] private int? _bedrock;
-    [ObservableProperty] private int? _concrete;
+    //저서 하상은 지침 [서식 2] 6칸(암반·콘크리트 없음) — 2026-10-21 §20
     [ObservableProperty] private int? _mud;
     [ObservableProperty] private int? _sand;
     [ObservableProperty] private int? _fineGravel;
@@ -85,6 +86,9 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
     [ObservableProperty] private int? _transparency;
     [ObservableProperty] private int? _smell;
     [ObservableProperty] private string? _note;
+    //연 기록의 암반·콘크리트(0보다 큼)를 특이사항으로 옮겼다는 안내 — [저장]해야 DB 에 반영(두 칸 NULL)
+    [ObservableProperty] private string _substrateNotice = DefaultSubstrateNotice;
+    [ObservableProperty] private bool _isSubstrateMoved;
     [ObservableProperty] private string? _surveyUnavailableReason;
     [ObservableProperty] private double? _bMIScore;
     [ObservableProperty] private string? _bMIGrade;
@@ -292,8 +296,8 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
                 Floodplain = Floodplain,
                 LeveeLeft = LeveeLeft,
                 LeveeRight = LeveeRight,
-                Bedrock = Bedrock,
-                Concrete = Concrete,
+                Bedrock = null,
+                Concrete = null,
                 Mud = Mud,
                 Sand = Sand,
                 FineGravel = FineGravel,
@@ -355,8 +359,9 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
             EditModel.Floodplain = Floodplain;
             EditModel.LeveeLeft = LeveeLeft;
             EditModel.LeveeRight = LeveeRight;
-            EditModel.Bedrock = Bedrock;
-            EditModel.Concrete = Concrete;
+            //암반·콘크리트는 지침 6칸 밖 — 값은 특이사항으로 옮겨 두었으므로 NULL 로 저장(2026-10-21 §20)
+            EditModel.Bedrock = null;
+            EditModel.Concrete = null;
             EditModel.Mud = Mud;
             EditModel.Sand = Sand;
             EditModel.FineGravel = FineGravel;
@@ -434,8 +439,6 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         Floodplain = EditModel.Floodplain;
         LeveeLeft = EditModel.LeveeLeft;
         LeveeRight = EditModel.LeveeRight;
-        Bedrock = EditModel.Bedrock;
-        Concrete = EditModel.Concrete;
         Mud = EditModel.Mud;
         Sand = EditModel.Sand;
         FineGravel = EditModel.FineGravel;
@@ -452,7 +455,11 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         FlowState = EditModel.FlowState;
         Transparency = EditModel.Transparency;
         Smell = EditModel.Smell;
-        Note = EditModel.Note;
+        //암반·콘크리트(0보다 큼)는 화면의 특이사항 끝에 옮겨 보인다. EditModel 은 그대로라 [닫기]만 하면 DB 는 바뀌지 않는다(2026-10-21 §20)
+        var movedText = BenthosSubstrateNote.MovedText(EditModel.Bedrock, EditModel.Concrete);
+        Note = BenthosSubstrateNote.AppendTo(EditModel.Note, movedText);
+        IsSubstrateMoved = movedText != null;
+        SubstrateNotice = movedText == null ? DefaultSubstrateNotice : $"{movedText} → 특이사항 끝에 옮겼습니다. [저장]해야 반영됩니다";
         SurveyUnavailableReason = EditModel.SurveyUnavailableReason;
         IndexDI = EditModel.IndexDI;
         IndexH = EditModel.IndexH;
@@ -532,8 +539,6 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         Floodplain = null;
         LeveeLeft = null;
         LeveeRight = null;
-        Bedrock = null;
-        Concrete = null;
         Mud = null;
         Sand = null;
         FineGravel = null;
@@ -551,6 +556,8 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         Transparency = null;
         Smell = null;
         Note = null;
+        SubstrateNotice = DefaultSubstrateNotice;
+        IsSubstrateMoved = false;
         SurveyUnavailableReason = null;
         IndexDI = null;
         IndexH = null;

@@ -179,14 +179,12 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Floodplain}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat1"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeveeLeft}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat1"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=LeveeRight}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat1"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Bedrock}" MinWidth="80" MaxWidth="160"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Concrete}" MinWidth="80" MaxWidth="160"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Mud}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Sand}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FineGravel}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Gravel}" MinWidth="80" MaxWidth="160"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SmallStone}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BigStone}" MinWidth="80" MaxWidth="160"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn Header="진흙 이하&#10;(&lt;0.063mm)" DataMemberBinding="{Binding Path=Mud}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn Header="모래&#10;(0.063~2mm)" DataMemberBinding="{Binding Path=Sand}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn Header="왕모래&#10;(2~16mm)" DataMemberBinding="{Binding Path=FineGravel}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn Header="자갈&#10;(16~64mm)" DataMemberBinding="{Binding Path=Gravel}" MinWidth="80" MaxWidth="160"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn Header="작은돌&#10;(64~256mm)" DataMemberBinding="{Binding Path=SmallStone}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
+                            <telerik:GridViewDataColumn Header="큰돌 이상&#10;(&gt;256mm)" DataMemberBinding="{Binding Path=BigStone}" MinWidth="80" MaxWidth="160"  ColumnGroupName="riverded"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatRiverType}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat2"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RiverWidth}" DataFormatString="{}{0:F1}" MinWidth="80" MaxWidth="200"  ColumnGroupName="habitat2"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WaterWidth}" DataFormatString="{}{0:F1}" MinWidth="80" MaxWidth="200"  ColumnGroupName="habitat2"/>
