@@ -221,6 +221,9 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
 
             using var transaction = conn.BeginTransaction();
 
+            //글자 칸의 빈 값은 일괄등록처럼 NULL(종목록에는 빈 글자로 들어 있다) · 2026-10-20 (3) 결정 6
+            static object TextOrNull(string? v) => string.IsNullOrWhiteSpace(v) ? DBNull.Value : v;
+
             foreach (var model in speciess)
             {
                 string strSql = $"INSERT INTO FishSpecies" +
@@ -232,21 +235,21 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
 
                 using var command = new SQLiteCommand(strSql, conn);
 
-                command.Parameters.AddWithValue("@FishTrait", model.FishTrait ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@ToleranceGuild", model.ToleranceGuild ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@FeedingGuild", model.FeedingGuild ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@HabitatGuild", model.HabitatGuild ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@Exotic", model.Exotic ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@Endemic", model.Endemic ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@Endangered1", model.Endangered1 ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@Endangered2", model.Endangered2 ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@NaturalMonument", model.NaturalMonument ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@FishTrait", TextOrNull(model.FishTrait));
+                command.Parameters.AddWithValue("@ToleranceGuild", TextOrNull(model.ToleranceGuild));
+                command.Parameters.AddWithValue("@FeedingGuild", TextOrNull(model.FeedingGuild));
+                command.Parameters.AddWithValue("@HabitatGuild", TextOrNull(model.HabitatGuild));
+                command.Parameters.AddWithValue("@Exotic", TextOrNull(model.Exotic));
+                command.Parameters.AddWithValue("@Endemic", TextOrNull(model.Endemic));
+                command.Parameters.AddWithValue("@Endangered1", TextOrNull(model.Endangered1));
+                command.Parameters.AddWithValue("@Endangered2", TextOrNull(model.Endangered2));
+                command.Parameters.AddWithValue("@NaturalMonument", TextOrNull(model.NaturalMonument));
                 command.Parameters.AddWithValue("@LineageOrder", model.LineageOrder ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@ClassKo", model.ClassKo ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@OrderKo", model.OrderKo ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@FamilyKo", model.FamilyKo ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@SpeciesKo", model.SpeciesKo ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@SpeciesEn", model.SpeciesEn ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@ClassKo", TextOrNull(model.ClassKo));
+                command.Parameters.AddWithValue("@OrderKo", TextOrNull(model.OrderKo));
+                command.Parameters.AddWithValue("@FamilyKo", TextOrNull(model.FamilyKo));
+                command.Parameters.AddWithValue("@SpeciesKo", TextOrNull(model.SpeciesKo));
+                command.Parameters.AddWithValue("@SpeciesEn", TextOrNull(model.SpeciesEn));
                 command.Parameters.AddWithValue("@IndividualCount", model.IndividualCount ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("@FishId", parentId);
 
@@ -304,8 +307,9 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
                 EFCount = EFCount,
                 LECount = LECount,
                 TUCount = TUCount,
-                TotalIndividualCount = TotalIndividualCount,
-                TotalSpeciesCount = TotalSpeciesCount,
+                //총 개체수·총 종수는 일괄등록처럼 FAI 계산 결과로(조사불가면 NULL) — 2026-10-21 §11-5
+                TotalIndividualCount = cluster?.TotalIndividualCount,
+                TotalSpeciesCount = cluster?.TotalSpeciesCount,
                 M1Value = cluster?.M1Value,
                 M2Value = cluster?.M2Value,
                 M3Value = cluster?.M3Value,
@@ -363,8 +367,9 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
             EditModel.EFCount = EFCount;
             EditModel.LECount = LECount;
             EditModel.TUCount = TUCount;
-            EditModel.TotalIndividualCount = TotalIndividualCount;
-            EditModel.TotalSpeciesCount = TotalSpeciesCount;
+            //총 개체수·총 종수는 일괄등록처럼 FAI 계산 결과로(조사불가면 NULL) — 열 때 값을 그대로 쓰면 개체수를 바꿔도 옛 값이 남았다 · 2026-10-21 §11-5
+            EditModel.TotalIndividualCount = cluster?.TotalIndividualCount;
+            EditModel.TotalSpeciesCount = cluster?.TotalSpeciesCount;
             EditModel.M1Value = cluster?.M1Value;
             EditModel.M2Value = cluster?.M2Value;
             EditModel.M3Value = cluster?.M3Value;
@@ -454,13 +459,40 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
         foreach (var sub in EditModel.Subs.ToList())
         {
             var speciesKoEn = $"{sub.SpeciesKo} {sub.SpeciesEn}";
+            bool isListed = false;
             foreach (var item in AddSpeciesColleciton)
             {
                 if (item.SearchText == speciesKoEn)
                 {
                     item.IndividualCount = sub.IndividualCount;
+                    isListed = true;
                     break;
                 }
+            }
+
+            //종목록에 없는 종 행(일괄등록으로 들어온 목록 밖 종)은 그 행 값 그대로 목록 끝에 붙인다
+            //→ 화면에 보이고 출현종 수·FAI·[저장]에 그대로 들어간다(지워지지 않게) · 2026-10-20 (3) 결정 6
+            if (!isListed)
+            {
+                AddSpeciesColleciton.Add(new FishSpeciesList
+                {
+                    FishTrait = sub.FishTrait,
+                    ToleranceGuild = sub.ToleranceGuild,
+                    FeedingGuild = sub.FeedingGuild,
+                    HabitatGuild = sub.HabitatGuild,
+                    Exotic = sub.Exotic,
+                    Endemic = sub.Endemic,
+                    Endangered1 = sub.Endangered1,
+                    Endangered2 = sub.Endangered2,
+                    NaturalMonument = sub.NaturalMonument,
+                    LineageOrder = sub.LineageOrder,
+                    ClassKo = sub.ClassKo,
+                    OrderKo = sub.OrderKo,
+                    FamilyKo = sub.FamilyKo,
+                    SpeciesKo = sub.SpeciesKo,
+                    SpeciesEn = sub.SpeciesEn,
+                    IndividualCount = sub.IndividualCount,
+                });
             }
         }
 

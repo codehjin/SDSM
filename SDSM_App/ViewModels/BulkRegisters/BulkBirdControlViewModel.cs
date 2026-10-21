@@ -266,7 +266,8 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
                 }
             }
 
-            var toast = (GB.SaveMessage, true);
+            //저장·바꿈·건너뜀 건수에 맞는 알림(2026-10-21 N5)
+            var toast = DuplicateImportHelper.SaveToast(saveResult);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
 
             if (decisions.Count > 0)
@@ -896,23 +897,26 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
         return string.Join(",", names);
     }
 
-    //DB에 같은 묶음(연도차수·하천·지점·조사일)이 있는지 찾고, 있으면 처리 방법을 묻는다 — 2026-10-21 문제 2·3
+    //DB에 같은 묶음(대분류·지점·연도차수·조사일 — 방류하천은 하천 빼기, 생태현황은 하천 포함)이 있는지 찾고, 있으면 처리 방법을 묻는다 — 2026-10-21 문제 2·3 · N4
     //반환 null = 확인 실패(저장하지 않는다)
     private Dictionary<ObservationGroupKey, DuplicateDecision>? FindDuplicates()
     {
         try
         {
             var decisions = new Dictionary<ObservationGroupKey, DuplicateDecision>();
+            var project = _isEcology == true ? "생태현황" : "방류하천";
+            var projectIds = GB.ProjectSiteNames.Where(sd => sd.Project == project).Select(sd => sd.SiteDivisionId).ToHashSet();
 
             using var context = new SDSMDbContext();
             var existing = context.Birds.AsNoTracking().IgnoreAutoIncludes()
-                .Select(m => new { Id = m.BirdId, m.YearChsu, m.River, m.Site, m.SurveyDate })
+                .Select(m => new { Id = m.BirdId, m.YearChsu, m.River, m.Site, m.SurveyDate, m.SiteDivisionId })
                 .ToList()
-                .GroupBy(m => ObservationGroupKey.Of(m.YearChsu, m.River, m.Site, m.SurveyDate))
-                .ToDictionary(g => g.Key, g => g.Select(m => m.Id).ToList());
+                .Where(m => m.SiteDivisionId is int id && projectIds.Contains(id))
+                .GroupBy(m => ObservationGroupKey.Of(_isEcology, m.YearChsu, m.Site, m.River, m.SurveyDate))
+                .ToDictionary(g => g.Key, g => (Ids: g.Select(m => m.Id).ToList(), Rivers: g.Select(m => m.River).ToList()));
 
             var groups = ConvertedCollection
-                .GroupBy(m => ObservationGroupKey.Of(m.YearChsu, m.River, m.Site, m.SurveyDate))
+                .GroupBy(m => ObservationGroupKey.Of(_isEcology, m.YearChsu, m.Site, m.River, m.SurveyDate))
                 .Where(g => existing.ContainsKey(g.Key))
                 .ToList();
 
@@ -921,12 +925,13 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
             {
                 var group = groups[i];
                 var first = group.First();
-                var ids = existing[group.Key];
+                var (ids, rivers) = existing[group.Key];
 
-                var newText = $"{first.YearChsu} · 하천 {first.River ?? "-"} · 지점 {first.Site ?? "-"} · {DuplicateImportHelper.DateText(first.SurveyDate)} · {group.Count()}행";
-                var existingText = $"같은 묶음 {ids.Count}행 ({DuplicateImportHelper.IdText(ids)}) — [바꾸기]는 이 묶음을 모두 지우고 새 {group.Count()}행을 저장";
+                var newText = $"[{project}] {first.YearChsu} · 지점 {DuplicateImportHelper.SiteText(first.Site)} · {DuplicateImportHelper.DateText(first.SurveyDate)} · {group.Count()}행 · 하천 {DuplicateImportHelper.RiverText(group.Select(m => m.River))}";
+                var existingText = $"같은 묶음 {ids.Count}행 ({DuplicateImportHelper.IdText(ids)}) · 하천 {DuplicateImportHelper.RiverText(rivers)} — [바꾸기]는 이 묶음을 모두 지우고 새 {group.Count()}행을 저장";
+                var note = DuplicateImportHelper.RiverDifferenceNote(rivers, group.Select(m => m.River));
 
-                var action = DuplicateImportHelper.Ask($"조류 — 같은 묶음이 DB에 있습니다 ({i + 1}/{groups.Count})", newText, existingText, ref applyAll);
+                var action = DuplicateImportHelper.Ask($"조류 — 같은 묶음이 DB에 있습니다 ({i + 1}/{groups.Count})", newText, existingText, ref applyAll, note);
                 decisions[group.Key] = new DuplicateDecision(action, ids);
             }
 
@@ -951,7 +956,7 @@ public partial class BulkBirdControlViewModel : ObservableObject, ITransientServ
             GB.IsIndeterminate = false;
 
             //같은 기록 처리 — 건너뛰기는 빼고, 바꾸기는 옛 기록을 같은 트랜잭션 안에서 먼저 지운다(2026-10-21 문제 2·3)
-            DuplicateDecision? DecisionOf(Bird m) => decisions.TryGetValue(ObservationGroupKey.Of(m.YearChsu, m.River, m.Site, m.SurveyDate), out var d) ? d : null;
+            DuplicateDecision? DecisionOf(Bird m) => decisions.TryGetValue(ObservationGroupKey.Of(_isEcology, m.YearChsu, m.Site, m.River, m.SurveyDate), out var d) ? d : null;
 
             var all = ConvertedCollection.ToList();
             var entities = all.Where(m => DecisionOf(m)?.Action != DuplicateAction.Skip).ToList();

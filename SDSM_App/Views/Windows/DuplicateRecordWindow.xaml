@@ -25,6 +25,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 0 0 12">
@@ -48,11 +49,20 @@
             </StackPanel>
         </Border>
 
-        <TextBlock Grid.Row="3" TextWrapping="Wrap" Margin="0 0 0 12"
+        <!-- 하천 표기 차이 등 알림(있을 때만 · 2026-10-21 N4) — 하천은 같은 기록 기준이 아니다 -->
+        <Border x:Name="NoteBorder" Grid.Row="3" Style="{StaticResource ContentBoxStyle}" Padding="14 8" Margin="0 0 0 12" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal">
+                <icon:PackIconMaterial Kind="InformationOutline" Width="16" Height="16" VerticalAlignment="Center"
+                                       Foreground="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
+                <TextBlock x:Name="NoteTextBlock" Margin="8 0 0 0" VerticalAlignment="Center" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+
+        <TextBlock Grid.Row="4" TextWrapping="Wrap" Margin="0 0 0 12"
                    Foreground="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"
                    Text="건너뛰기: 새 기록을 저장하지 않음 · 바꾸기: DB의 같은 기록을 지우고 새로 저장 · 추가: 둘 다 남김"/>
 
-        <Grid Grid.Row="4">
+        <Grid Grid.Row="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>

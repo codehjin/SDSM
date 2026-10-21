@@ -226,15 +226,20 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
 
             foreach (var model in speciess)
             {
+                //멸종위기 I·II급·한국고유종도 함께 저장한다(일괄등록과 같은 칸) — 빠져 있어 [저장]하면 그 칸이 비었다 · 2026-10-20 (3) 결정 3
                 string strSql = $"INSERT INTO BenthosSpecies" +
-                                 $"(SaprobicValue, IndicatorWeight, PhylumKo, ClassKo, OrderKo, FamilyKo, SpeciesKo, SpeciesEn, IndividualCount, BenthosId)  " +
+                                 $"(SaprobicValue, IndicatorWeight, Endangered1, Endangered2, Endemic, PhylumKo, ClassKo, OrderKo, FamilyKo, SpeciesKo, SpeciesEn, IndividualCount, BenthosId)  " +
                                  $"VALUES " +
-                                 $"(@SaprobicValue, @IndicatorWeight, @PhylumKo, @ClassKo, @OrderKo, @FamilyKo, @SpeciesKo, @SpeciesEn, @IndividualCount, @BenthosId)";
+                                 $"(@SaprobicValue, @IndicatorWeight, @Endangered1, @Endangered2, @Endemic, @PhylumKo, @ClassKo, @OrderKo, @FamilyKo, @SpeciesKo, @SpeciesEn, @IndividualCount, @BenthosId)";
 
                 using var command = new SQLiteCommand(strSql, conn);
 
                 command.Parameters.AddWithValue("@SaprobicValue", model.SaprobicValue ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("@IndicatorWeight", model.IndicatorWeight ?? (object)DBNull.Value);
+                //빈 값은 일괄등록처럼 NULL(종목록에는 빈 글자로 들어 있다)
+                command.Parameters.AddWithValue("@Endangered1", string.IsNullOrWhiteSpace(model.Endangered1) ? DBNull.Value : model.Endangered1);
+                command.Parameters.AddWithValue("@Endangered2", string.IsNullOrWhiteSpace(model.Endangered2) ? DBNull.Value : model.Endangered2);
+                command.Parameters.AddWithValue("@Endemic", string.IsNullOrWhiteSpace(model.Endemic) ? DBNull.Value : model.Endemic);
                 command.Parameters.AddWithValue("@PhylumKo", model.PhylumKo ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("@ClassKo", model.ClassKo ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("@OrderKo", model.OrderKo ?? (object)DBNull.Value);
@@ -460,13 +465,36 @@ public partial class BenthosEditorControlViewModel : ObservableObject, ITransien
         foreach (var sub in EditModel.Subs.ToList())
         {
             var speciesKoEn = $"{sub.SpeciesKo} {sub.SpeciesEn}";
+            bool isListed = false;
             foreach (var item in AddSpeciesCollection)
             {
                 if (item.SearchText == speciesKoEn)
                 {
                     item.IndividualCount = sub.IndividualCount;
+                    isListed = true;
                     break;
                 }
+            }
+
+            //종목록에 없는 종 행(일괄등록으로 들어온 목록 밖 종)은 그 행 값 그대로 목록 끝에 붙인다
+            //→ 화면에 보이고 개체수·지수·[저장]에 그대로 들어간다(지워지지 않게) · 2026-10-20 (3) 결정 3
+            if (!isListed)
+            {
+                AddSpeciesCollection.Add(new BenthosSpeciesList
+                {
+                    SaprobicValue = sub.SaprobicValue,
+                    IndicatorWeight = sub.IndicatorWeight,
+                    Endangered1 = sub.Endangered1,
+                    Endangered2 = sub.Endangered2,
+                    Endemic = sub.Endemic,
+                    PhylumKo = sub.PhylumKo,
+                    ClassKo = sub.ClassKo,
+                    OrderKo = sub.OrderKo,
+                    FamilyKo = sub.FamilyKo,
+                    SpeciesKo = sub.SpeciesKo,
+                    SpeciesEn = sub.SpeciesEn,
+                    IndividualCount = sub.IndividualCount,
+                });
             }
         }
 

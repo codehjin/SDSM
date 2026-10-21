@@ -508,8 +508,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -522,8 +521,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -534,8 +532,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -546,8 +543,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
@@ -555,13 +551,13 @@
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
                                             <TextBlock Text="기온" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
+                                        <!-- 영하 기온 허용(최솟값 -30) · 2026-10-20 (3) 결정 4 -->
                                         <telerik:RadNumericUpDown Value="{Binding Path=Temperature, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                                                   UpdateValueEvent="PropertyChanged"
-                                                                  Minimum="0"
+                                                                  Minimum="-30"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -572,8 +568,7 @@
                                                                   Minimum="0"
                                                                   Width="{StaticResource FormControlWidth}"
                                                                   Height="{StaticResource FormControlHeight}"
-                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                                  LostFocus="DoubleValueToRound_LostFocus"/>
+                                                                  Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
@@ -664,7 +659,7 @@
                                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SpeciesEn}" MinWidth="80" Width="400" MaxWidth="400" TextWrapping="Wrap"
                                                                             CellStyle="{StaticResource GridViewCellLeftStyle}" IsFilterable="False" IsReadOnly="True">
                                                 </telerik:GridViewDataColumn>
-                                                <telerik:GridViewDataColumn Header="개체수(작성)" DataMemberBinding="{Binding Path=IndividualCount}" MinWidth="80" Width="139" MaxWidth="139">
+                                                <telerik:GridViewDataColumn Header="개체수(작성)" DataMemberBinding="{Binding Path=IndividualCount}" DataFormatString="{}{0:F1}" MinWidth="80" Width="139" MaxWidth="139">
                                                     <telerik:GridViewDataColumn.CellEditTemplate>
                                                         <DataTemplate>
                                                             <Grid>
@@ -677,8 +672,7 @@
                                                                                           Minimum="0"
                                                                                           Width="130"
                                                                                           Height="{StaticResource FormControlHeight}"
-                                                                                          Style="{StaticResource FormDoubleNoMouseWheelNumericUpDownStyle}"
-                                                                                          LostFocus="DoubleValueToRound_LostFocus">
+                                                                                          Style="{StaticResource FormDoubleNoMouseWheelNumericUpDownStyle}">
                                                                     <telerik:EventToCommandBehavior.EventBindings>
                                                                         <telerik:EventBinding EventName="ValueChanged" Command="{Binding Path=DataContext.IndividualCountValueChangedExecutedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
                                                                     </telerik:EventToCommandBehavior.EventBindings>

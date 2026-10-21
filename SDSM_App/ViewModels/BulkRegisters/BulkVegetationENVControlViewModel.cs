@@ -806,13 +806,13 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
                         || prop.Name == "T1Height" || prop.Name == "T1CoverDegree" || prop.Name == "T2Height" || prop.Name == "T2CoverDegree"
                         || prop.Name == "SHeight" || prop.Name == "SCoverDegree" || prop.Name == "HHeight" || prop.Name == "HCoverDegree")
                     {
-                        //실수
+                        //실수 — 측정값(각도·거리·경사·수심·높이·피도)은 원값 저장(반올림하지 않음) · 2026-10-20 (3) 결정 2
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             if (double.TryParse(value.ToString(), out double d))
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 1, MidpointRounding.AwayFromZero));
+                                insertPropertyInfo?.SetValue(insertModel, d);
                             }
                             else
                             {
@@ -896,13 +896,13 @@ public partial class BulkVegetationENVControlViewModel : ObservableObject, ITran
 
                     if (prop.Name == "CoverDegree")
                     {
-                        //실수
+                        //실수 — 출현종 피도는 원값 저장(반올림하지 않음) · 2026-10-20 (3) 결정 2
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             if (double.TryParse(value.ToString(), out double d))
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 1, MidpointRounding.AwayFromZero));
+                                insertPropertyInfo?.SetValue(insertModel, d);
                             }
                             else
                             {

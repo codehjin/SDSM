@@ -19,11 +19,15 @@ public partial class DuplicateRecordWindow : Window, ITransientService
 
     public bool ApplyToRest => ApplyToRestCheckBox.IsChecked == true;
 
-    public void SetContent(string header, string newText, string existingText)
+    public void SetContent(string header, string newText, string existingText, string? note = null)
     {
         HeaderTextBlock.Text = header;
         NewTextBlock.Text = newText;
         ExistingTextBlock.Text = existingText;
+
+        //하천 표기 차이 등 — 있을 때만 보인다(2026-10-21 N4)
+        NoteTextBlock.Text = note ?? string.Empty;
+        NoteBorder.Visibility = string.IsNullOrWhiteSpace(note) ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void SkipButton_Click(object sender, RoutedEventArgs e) => Close(DuplicateAction.Skip);

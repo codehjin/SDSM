@@ -546,13 +546,13 @@ public partial class BulkVegetationControlViewModel : ObservableObject, ITransie
                     }
                     else if (prop.Name == "Area")
                     {
-                        //실수(면적 소수점 4자리)
+                        //실수 — 군락 면적은 원값 저장(반올림하지 않음). 4자리는 화면 서식으로만 보인다 · 2026-10-20 (3) 결정 2
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             if (double.TryParse(value.ToString(), out double d))
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 4, MidpointRounding.AwayFromZero));
+                                insertPropertyInfo?.SetValue(insertModel, d);
                             }
                             else
                             {

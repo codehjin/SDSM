@@ -263,7 +263,8 @@ public partial class BulkWaterQualityControlViewModel : ObservableObject, ITrans
                 }
             }
 
-            var toast = (GB.SaveMessage, true);
+            //저장·바꿈·건너뜀 건수에 맞는 알림(2026-10-21 N5)
+            var toast = DuplicateImportHelper.SaveToast(saveResult);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
 
             if (decisions.Count > 0)

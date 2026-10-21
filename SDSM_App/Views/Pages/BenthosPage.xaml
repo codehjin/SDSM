@@ -188,12 +188,12 @@
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=SmallStone}" MinWidth="80" MaxWidth="200"  ColumnGroupName="riverded"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=BigStone}" MinWidth="80" MaxWidth="160"  ColumnGroupName="riverded"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=HabitatRiverType}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat2"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RiverWidth}" MinWidth="80" MaxWidth="200"  ColumnGroupName="habitat2"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WaterWidth}" MinWidth="80" MaxWidth="200"  ColumnGroupName="habitat2"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=AverageDepth}" MinWidth="80" MaxWidth="200"  ColumnGroupName="habitat2"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=AverageVelocity}" MinWidth="80" MaxWidth="200"  ColumnGroupName="habitat2"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Temperature}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat2"/>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WaterTemperature}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat2"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=RiverWidth}" DataFormatString="{}{0:F1}" MinWidth="80" MaxWidth="200"  ColumnGroupName="habitat2"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WaterWidth}" DataFormatString="{}{0:F1}" MinWidth="80" MaxWidth="200"  ColumnGroupName="habitat2"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=AverageDepth}" DataFormatString="{}{0:F1}" MinWidth="80" MaxWidth="200"  ColumnGroupName="habitat2"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=AverageVelocity}" DataFormatString="{}{0:F1}" MinWidth="80" MaxWidth="200"  ColumnGroupName="habitat2"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Temperature}" DataFormatString="{}{0:F1}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat2"/>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=WaterTemperature}" DataFormatString="{}{0:F1}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat2"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=FlowState}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat2"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Transparency}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat2"/>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Path=Smell}" MinWidth="80" MaxWidth="160"  ColumnGroupName="habitat2"/>

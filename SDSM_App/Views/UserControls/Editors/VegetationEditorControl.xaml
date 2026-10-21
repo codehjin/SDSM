@@ -178,8 +178,7 @@
                                                       NumberDecimalDigits="4"
                                                       Width="{StaticResource FormControlBigWidth}"
                                                       Height="{StaticResource FormControlHeight}"
-                                                      Style="{StaticResource FormDoubleNumericUpDownStyle}"
-                                                      LostFocus="DoubleValueToRound_LostFocus"/>
+                                                      Style="{StaticResource FormDoubleNumericUpDownStyle}"/>
                         </StackPanel>
 
                     </StackPanel>

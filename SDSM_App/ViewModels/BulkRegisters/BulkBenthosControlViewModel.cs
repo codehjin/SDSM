@@ -306,7 +306,8 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                 }
             }
 
-            var toast = (GB.SaveMessage, true);
+            //저장·바꿈·건너뜀 건수에 맞는 알림(2026-10-21 N5)
+            var toast = DuplicateImportHelper.SaveToast(saveResult);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
 
             if (decisions.Count > 0)
@@ -407,12 +408,13 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                         SmallStone = ((ICellValue)(worksheet.Cells[29, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[29, columnIndex].GetFormat().Value),
                         BigStone = ((ICellValue)(worksheet.Cells[30, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[30, columnIndex].GetFormat().Value),
                         HabitatRiverType = ((ICellValue)(worksheet.Cells[32, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[32, columnIndex].GetFormat().Value),
-                        RiverWidth = ((ICellValue)(worksheet.Cells[33, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[33, columnIndex].GetFormat().Value),
-                        WaterWidth = ((ICellValue)(worksheet.Cells[34, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[34, columnIndex].GetFormat().Value),
-                        AverageDepth = ((ICellValue)(worksheet.Cells[35, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[35, columnIndex].GetFormat().Value),
-                        AverageVelocity = ((ICellValue)(worksheet.Cells[36, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[36, columnIndex].GetFormat().Value),
-                        Temperature = ((ICellValue)(worksheet.Cells[37, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[37, columnIndex].GetFormat().Value),
-                        WaterTemperature = ((ICellValue)(worksheet.Cells[38, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[38, columnIndex].GetFormat().Value),
+                        //환경 측정값(34~39행)은 셀 표시 형식(양식 '0.0')이 아니라 일반 형식으로 읽는다 — 0.45 가 '0.5' 로 읽히지 않게(원값 저장) · 2026-10-21 문제 4(저서)
+                        RiverWidth = ((ICellValue)(worksheet.Cells[33, columnIndex].GetValue().Value)).GetResultValueAsString(CellValueFormat.GeneralFormat),
+                        WaterWidth = ((ICellValue)(worksheet.Cells[34, columnIndex].GetValue().Value)).GetResultValueAsString(CellValueFormat.GeneralFormat),
+                        AverageDepth = ((ICellValue)(worksheet.Cells[35, columnIndex].GetValue().Value)).GetResultValueAsString(CellValueFormat.GeneralFormat),
+                        AverageVelocity = ((ICellValue)(worksheet.Cells[36, columnIndex].GetValue().Value)).GetResultValueAsString(CellValueFormat.GeneralFormat),
+                        Temperature = ((ICellValue)(worksheet.Cells[37, columnIndex].GetValue().Value)).GetResultValueAsString(CellValueFormat.GeneralFormat),
+                        WaterTemperature = ((ICellValue)(worksheet.Cells[38, columnIndex].GetValue().Value)).GetResultValueAsString(CellValueFormat.GeneralFormat),
                         FlowState = ((ICellValue)(worksheet.Cells[39, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[39, columnIndex].GetFormat().Value),
                         Transparency = ((ICellValue)(worksheet.Cells[40, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[40, columnIndex].GetFormat().Value),
                         Smell = ((ICellValue)(worksheet.Cells[41, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[41, columnIndex].GetFormat().Value),
@@ -787,13 +789,13 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                     else if (prop.Name == "RiverWidth" || prop.Name == "WaterWidth" || prop.Name == "AverageDepth"
                         || prop.Name == "AverageVelocity" || prop.Name == "Temperature" || prop.Name == "WaterTemperature")
                     {
-                        //실수
+                        //실수 — 환경 측정값은 원값 저장(반올림하지 않음). 1자리는 목록·편집 화면 서식으로만 보인다 — 2026-10-21 문제 4(저서)
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             if (double.TryParse(value.ToString(), out double d))
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 1, MidpointRounding.AwayFromZero));
+                                insertPropertyInfo?.SetValue(insertModel, d);
                             }
                             else
                             {
@@ -998,13 +1000,14 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                     }
                     else if (prop.Name == "IndividualCount" || prop.Name == "SaprobicValue")
                     {
-                        //실수
+                        //실수 — 반올림하지 않고 읽은 값 그대로 저장. 지수(DI·H′·R1·J′·BMI)는 GetSpeciesData 에서 읽은 이 값으로 계산하므로
+                        //종 행도 같은 값으로 둔다(읽는 방식은 그대로). 1자리는 목록 화면 서식으로만 보인다 — 2026-10-21 문제 4(저서)
                         if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
                         {
                             if (double.TryParse(value.ToString(), out double d))
                             {
                                 PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
-                                insertPropertyInfo?.SetValue(insertModel, Math.Round(d, 1, MidpointRounding.AwayFromZero));
+                                insertPropertyInfo?.SetValue(insertModel, d);
                             }
                             else
                             {
@@ -1364,8 +1367,9 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         var usedRange = worksheet.UsedCellRange;
         for (int rowIndex = speciesFirstRowNumber - 1; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
         {
-            // 개체수는 실수
-            var cellValue = ((ICellValue)(worksheet.Cells[rowIndex, columnIndex].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, columnIndex].GetFormat().Value);
+            // 개체수는 실수 — 셀 표시 형식(양식 '#,##0.0'·'0.0'·'#,##0')이 아니라 일반 형식으로 읽는다.
+            // 3.75 가 '3.8', 2.5 가 '3'(#,##0) 으로 읽히지 않게 — 지수(BMI·DI·H′·R1·J′)도 이 원값으로 계산된다 · 2026-10-21 §19-5
+            var cellValue = ((ICellValue)(worksheet.Cells[rowIndex, columnIndex].GetValue().Value)).GetResultValueAsString(CellValueFormat.GeneralFormat);
             if (!string.IsNullOrWhiteSpace(cellValue) && double.TryParse(cellValue, out double d))
             {
                 var species = new ImportBenthosSpecies
