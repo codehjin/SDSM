@@ -770,8 +770,14 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                             insertPropertyInfo?.SetValue(insertModel, null);
                         }
                     }
-                    else if (prop.Name == "Surbernet30" || prop.Name == "Surbernet50" || prop.Name == "Dredge" || prop.Name == "Ekman" || prop.Name == "Bedrock"
-                           || prop.Name == "Concrete" || prop.Name == "Mud" || prop.Name == "Sand" || prop.Name == "FineGravel" || prop.Name == "Gravel"
+                    else if (prop.Name == "Bedrock" || prop.Name == "Concrete")
+                    {
+                        //지침 저서 하상 6칸 밖 — 검수하지 않고 칸은 NULL. 원문 값은 아래에서 특이사항으로 옮긴다(2026-10-21 §20)
+                        PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
+                        insertPropertyInfo?.SetValue(insertModel, null);
+                    }
+                    else if (prop.Name == "Surbernet30" || prop.Name == "Surbernet50" || prop.Name == "Dredge" || prop.Name == "Ekman"
+                           || prop.Name == "Mud" || prop.Name == "Sand" || prop.Name == "FineGravel" || prop.Name == "Gravel"
                            || prop.Name == "SmallStone" || prop.Name == "BigStone" || prop.Name == "Transparency" || prop.Name == "Smell")
                     {
                         //정수
@@ -957,11 +963,10 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                     }
                 }
 
-                //저서 하상은 지침 6칸 — 암반·콘크리트(0보다 큼)는 특이사항 끝으로 옮기고 두 칸은 NULL(0·빈칸도 NULL) · 2026-10-21 §20
-                var movedText = BenthosSubstrateNote.MovedText(insertModel.Bedrock, insertModel.Concrete);
+                //저서 하상은 지침 6칸 — 암반·콘크리트 파일 값은 특이사항 끝으로 옮기고 두 칸은 NULL · 2026-10-21 §20
+                //숫자 0보다 큼 → 'n%' · 숫자 아닌 글자 → 「원문」 · 0 · 빈칸 · 빈 표시('-' · 'N/A' 등)는 버림. 변환 오류로 막지 않는다
+                var movedText = BenthosSubstrateNote.MovedText(model.Bedrock, model.Concrete);
                 insertModel.Note = BenthosSubstrateNote.AppendTo(insertModel.Note, movedText);
-                insertModel.Bedrock = null;
-                insertModel.Concrete = null;
                 if (movedText != null) substrateMoved++;
 
                 if (sb.Length > 0)

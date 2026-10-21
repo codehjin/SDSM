@@ -9,20 +9,51 @@ namespace SDSM_App.Helpers;
 /// </summary>
 public static class BenthosSubstrateNote
 {
-    /// <summary>'하상 암반 n% · 콘크리트 n%(지침 저서 하상 6칸 밖 · 옮김)' — 0보다 큰 칸만 적는다. 둘 다 없으면 null.</summary>
-    public static string? MovedText(int? bedrock, int? concrete)
-    {
-        var parts = new List<string>();
-        if (bedrock > 0) parts.Add($"암반 {bedrock}%");
-        if (concrete > 0) parts.Add($"콘크리트 {concrete}%");
+    //빈 표시로 보고 버리는 글자(공백만 · 대시 · N/A)
+    private static readonly string[] BlankMarks = ["-", "–", "—", "N/A", "NA"];
 
-        return parts.Count == 0 ? null : $"하상 {string.Join(" · ", parts)}(지침 저서 하상 6칸 밖 · 옮김)";
-    }
+    /// <summary>'하상 암반 n% · 콘크리트 n%(지침 저서 하상 6칸 밖 · 옮김)' — 0보다 큰 칸만 적는다. 둘 다 없으면 null.</summary>
+    public static string? MovedText(int? bedrock, int? concrete) =>
+        Compose(bedrock > 0 ? $"{bedrock}%" : null, concrete > 0 ? $"{concrete}%" : null);
+
+    /// <summary>
+    /// 일괄등록 파일의 원문 값으로 — 숫자는 정수(소수점 아래 버림)로 보고 0보다 크면 'n%',
+    /// 빈 표시('-' · '–' · 공백뿐 · 'N/A')는 버리고, 그 밖의 글자는 원문 그대로 '「원문」'(2026-10-21 §20 · 변환 오류로 막지 않는다).
+    /// </summary>
+    public static string? MovedText(string? bedrock, string? concrete) => Compose(Part(bedrock), Part(concrete));
 
     /// <summary>특이사항 끝에 덧붙인다 — 특이사항이 비어 있으면 옮긴 문구만, 있으면 ' / ' 로 잇는다.</summary>
     public static string? AppendTo(string? note, string? movedText)
     {
         if (movedText == null) return note;
         return string.IsNullOrWhiteSpace(note) ? movedText : $"{note} / {movedText}";
+    }
+
+    private static string? Part(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw)) return null;
+
+        var text = raw.Trim();
+        if (BlankMarks.Any(m => string.Equals(m, text, StringComparison.OrdinalIgnoreCase))) return null;
+
+        //정수 칸 검수와 같게 — 정수, 아니면 실수의 소수점 아래 버림
+        if (int.TryParse(text, out int i))
+            return i > 0 ? $"{i}%" : null;
+        if (double.TryParse(text, out double d))
+        {
+            var n = (int)Math.Truncate(d);
+            return n > 0 ? $"{n}%" : null;
+        }
+
+        return $"「{text}」";
+    }
+
+    private static string? Compose(string? bedrock, string? concrete)
+    {
+        var parts = new List<string>();
+        if (bedrock != null) parts.Add($"암반 {bedrock}");
+        if (concrete != null) parts.Add($"콘크리트 {concrete}");
+
+        return parts.Count == 0 ? null : $"하상 {string.Join(" · ", parts)}(지침 저서 하상 6칸 밖 · 옮김)";
     }
 }
