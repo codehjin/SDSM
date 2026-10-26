@@ -7,7 +7,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>m.ico</ApplicationIcon>
     <!-- 판 — 프로그램 정보 창(Commons\AppInfo)에 보인다. 제품 버전 뒤 +커밋 해시는 빌드 때 SDK 가 붙인다(2026-10-22 §21-5) -->
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
   </PropertyGroup>
   <ItemGroup>
     <!-- 빌드 날짜 — 프로그램 정보 창 -->
