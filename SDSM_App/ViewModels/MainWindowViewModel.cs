@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
+using SDSM_App.Commons;
+using SDSM_App.Helpers;
 using SDSM_App.InjectableServices;
 using SDSM_App.Models;
 using SDSM_App.Views.Windows;
@@ -56,23 +58,23 @@ public partial class MainWindowViewModel : ObservableObject, ISingletonService
 
     //메뉴얼
     [RelayCommand]
-    public void ManualWindowOpen()
+    public void ManualWindowOpen() => ManualWindowHelper.Open(AppInfo.ManualPdfUri, AppInfo.ManualPdfCaption);
+
+    //프로그램 정보(지침 · 판 · 개발사) — 2026-10-22 §21-5
+    [RelayCommand]
+    public void AppInfoWindowOpen()
     {
-        var window = App.Current.Windows.OfType<ManualWindow>().FirstOrDefault();
+        var window = App.Current.Windows.OfType<AppInfoWindow>().FirstOrDefault();
         if (window != null)
         {
-            if (window.WindowState == WindowState.Minimized)
-            {
-                window.WindowState = WindowState.Normal;
-            }
-            window.Topmost = true;
-            window.Topmost = false;
+            window.Activate();
+            return;
         }
-        else
-        {
-            Window win = App.Current.Services.GetRequiredService<ManualWindow>();
-            win.Show();
-        }
+
+        var win = App.Current.Services.GetRequiredService<AppInfoWindow>();
+        if (Application.Current.MainWindow is { IsVisible: true } owner && !ReferenceEquals(owner, win))
+            win.Owner = owner;
+        win.Show();
     }
 
     #endregion

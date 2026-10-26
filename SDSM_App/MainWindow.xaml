@@ -982,6 +982,9 @@
                                                             <icon:PackIconFeatherIcons Grid.Column="1" Kind="ArrowUpRight"  VerticalAlignment="Center" Foreground="{telerik:Windows11Resource ResourceKey=IconBrush}" Width="12" Height="12"/>
                                                         </Grid>
                                                     </telerik:RadButton>
+                                                    <telerik:RadButton Grid.Column="10" Grid.Row="5" Command="{Binding Path=AppInfoWindowOpenCommand}">
+                                                        <TextBlock Text="프로그램 정보" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                                    </telerik:RadButton>
 
                                                 </Grid>
                                             </ScrollViewer>
@@ -1489,6 +1492,13 @@
                                                     <icon:PackIconVaadinIcons Kind="InfoCircleOutline" Style="{StaticResource InfoIconStyle}" Foreground="{StaticResource MenuForegroundBrush}"/>
                                                     <TextBlock Text="사용 설명서" VerticalAlignment="Center" Foreground="{StaticResource MenuForegroundBrush}"/>
                                                     <icon:PackIconFeatherIcons Kind="ArrowUpRight" HorizontalAlignment="Right" Width="12" Height="12"/>
+                                                </DockPanel>
+                                            </telerik:RadButton>
+                                            <!--프로그램 정보(지침 · 판 · 개발사) — 2026-10-22 §21-5-->
+                                            <telerik:RadButton Command="{Binding Path=AppInfoWindowOpenCommand}">
+                                                <DockPanel>
+                                                    <icon:PackIconVaadinIcons Kind="Book" Style="{StaticResource InfoIconStyle}" Foreground="{StaticResource MenuForegroundBrush}"/>
+                                                    <TextBlock Text="프로그램 정보" VerticalAlignment="Center" Foreground="{StaticResource MenuForegroundBrush}"/>
                                                 </DockPanel>
                                             </telerik:RadButton>
                                         </StackPanel>

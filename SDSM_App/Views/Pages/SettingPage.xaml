@@ -183,6 +183,13 @@
                             <telerik:RadButton Content="기준자료 내보내기 (JSON)"
                                                Command="{Binding ExportReferenceCommand}"
                                                HorizontalAlignment="Left" MinWidth="200" MinHeight="36"/>
+                            <!--조사자 앱 반영용 종목록 — 2026-10-22 §22-3 ②-->
+                            <TextBlock TextWrapping="Wrap" Margin="5 16 0 8"
+                                       Foreground="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"
+                                       Text="어류 · 저서 종목록(지침 정비판)을 조사자 앱 형식(species.json)으로 내보냅니다. 조사자 쪽에서 조류 · 포유류 · 양서파충류와 합쳐 새 판으로 넣습니다."/>
+                            <telerik:RadButton Content="종목록 내보내기 (species.json)"
+                                               Command="{Binding ExportSpeciesCatalogCommand}"
+                                               HorizontalAlignment="Left" MinWidth="200" MinHeight="36"/>
                         </StackPanel>
                     </Border>
 

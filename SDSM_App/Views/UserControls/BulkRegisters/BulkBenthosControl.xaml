@@ -110,6 +110,29 @@
                     <TextBlock Text="오류" Margin="10 0 5 0"/>
                     <TextBlock Text="{Binding Path=ErrorSpeciesCount, StringFormat={}{0:N0}}" Foreground="{telerik:Windows11Resource ResourceKey=ValidationBrush}"/>
                     <TextBlock Text="건"/>
+                    <!--지표값 출처 = 종목록 · 목록 밖 종(2026-10-22 §22-2 · §22-3) — 0이면 숨김 · 값 다른 종은 풍선 글로-->
+                    <TextBlock Margin="10 0 0 0" Text="{Binding Path=ListValueDiffCount, StringFormat='· {0:N0}종 값 다름 → 종목록 값 사용'}" ToolTip="{Binding Path=ListValueDiffText}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=ListValueDiffCount}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock Margin="10 0 0 0" Text="{Binding Path=OutOfListCount, StringFormat='· 목록 밖 종 {0:N0}종'}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource PrimaryTextBlcokStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=OutOfListCount}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </StackPanel>
 
                 <telerik:RadButton Content="종 목록 보기" Height="44" Margin="20 0 0 0" Click="SpeciesVisibleRadButton_Click"/>

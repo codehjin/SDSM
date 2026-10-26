@@ -6,7 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>m.ico</ApplicationIcon>
+    <!-- 판 — 프로그램 정보 창(Commons\AppInfo)에 보인다. 제품 버전 뒤 +커밋 해시는 빌드 때 SDK 가 붙인다(2026-10-22 §21-5) -->
+    <Version>1.1.0</Version>
   </PropertyGroup>
+  <ItemGroup>
+    <!-- 빌드 날짜 — 프로그램 정보 창 -->
+    <AssemblyMetadata Include="BuildDate" Value="$([System.DateTime]::Now.ToString('yyyy-MM-dd'))" />
+  </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\Fonts\high1 Wonchuri Title B.ttf" />
     <None Remove="Assets\Fonts\high1 Wonchuri Title L.ttf" />
@@ -26,6 +32,7 @@
     <None Remove="Assets\Images\samsung_blue.png" />
     <None Remove="Assets\Images\samsung_white.png" />
     <None Remove="Assets\MBTiles\os_1-6.mbtiles" />
+    <None Remove="Assets\Pdfs\guideline_2026-30.pdf" />
     <None Remove="Assets\Pdfs\manual.pdf" />
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +125,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\Pdfs\manual.pdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <!-- 지침 원본(국립환경과학원고시 제2026-30호) — 프로그램 정보 창 [지침 원본 보기](2026-10-22 §21-5) -->
+    <Resource Include="Assets\Pdfs\guideline_2026-30.pdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

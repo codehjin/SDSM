@@ -11,8 +11,10 @@
 |---|---|---|---|
 | 1 | `mammal_observation_site_restore_261016.sql` | 포유류 관찰지유형(`Mammal.ObservationSite`) 838행 채움 | 결과 1107 · 838 · 0 · 빈칸 |
 | 2 | `benthos_bedrock_concrete_to_note_261021.sql` | 저서 하상 암반 · 콘크리트(0보다 큼) → 특이사항(`Note`) 끝, 두 칸 NULL | 저서 188 · 옮김 0 · 비움 0 (바뀌는 행 없음) |
+| 3 | `species_list_jichim2026_261022.sql` | 종목록 지침(제2026-30호) 정비 — 어류 4종 추가 · 학명 3건(목록 + 기존 기록 `FishSpecies` 18행) · 저서 Babronia 2.8/4 · 가는점물땡땡이 추가 · 꼬마점물땡땡이 지표값 비움 | 어류 목록 253 → 257 · 저서 목록 821 → 823(지표값 446 → 447) · 옛 학명 기록 18 → 0 |
 
-- 2 는 1 다음에 돌린다(1 이 끝난 DB 를 기준으로 시험했다). 둘은 서로 다른 표만 바꾼다.
-- 1 에는 `BEGIN`/`COMMIT` 이 없다(DB Browser 의 [변경사항 저장하기]로 확정). 2 는 파일 안에 `BEGIN TRANSACTION` · `COMMIT` 이 있다 — 머리 주석의 실행 방법을 따른다.
-- 두 파일 모두 다시 돌려도 바뀌는 행이 0 이다.
+- 2 는 1 다음, 3 은 2 다음에 돌린다(앞 단계가 끝난 DB 를 기준으로 시험했다). 셋은 서로 다른 표만 바꾼다(1 `Mammal` · 2 `Benthos` · 3 종목록 2개 + `FishSpecies` · `BenthosSpecies`).
+- 1 에는 `BEGIN`/`COMMIT` 이 없다(DB Browser 의 [변경사항 저장하기]로 확정). 2 · 3 은 파일 안에 `BEGIN TRANSACTION` · `COMMIT` 이 있다 — 머리 주석의 실행 방법을 따른다.
+- 세 파일 모두 다시 돌려도 바뀌는 행이 0 이다.
+- 새로 설치하는 곳(삼성 2026-10)에는 1 ~ 3 을 미리 돌린 **정리본 DB** 를 넣는다(`tools\publish.ps1 -Full` · 작업로그_ADMIN_261022).
 - 되돌리기는 백업 파일로 바꿔 놓는다.

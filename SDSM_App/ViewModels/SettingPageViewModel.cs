@@ -39,6 +39,10 @@ public partial class SettingPageViewModel : ObservableObject, ITransientService
     [RelayCommand]
     private void ExportReference() => Commons.ReferenceDataExporter.Export();
 
+    // 조사자 앱 반영용 종목록(species.json · 어류 · 저서) 내보내기 — 2026-10-22 §22-3 ②
+    [RelayCommand]
+    private void ExportSpeciesCatalog() => Commons.SpeciesCatalogExporter.Export();
+
     #endregion
 
     #region 조사지점 관리 (ADMIN_TASKS §2-4)

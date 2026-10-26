@@ -2,6 +2,11 @@
   SDSM(관리자) 게시 스크립트
     .\publish.ps1              배포본 만들기(0 커밋 확인 → 1 빌드 → 2 게시 → 3 내용 확인 → 4 압축)
     .\publish.ps1 -CheckOnly   1~3단계 검사만(압축·배포 폴더를 만들지 않음)
+    .\publish.ps1 -Full        압축 + 새로 설치용 전체 설치본 폴더(7_보낸파일\yyyy-MM-dd\DB통합SW_yyMMdd_전체\)
+                               = 게시본 + 정리본 SDSMDB.sqlite + 03-05 배포본의 mbtiles\(지도)  (2026-10-22 §21-4)
+    .\publish.ps1 -CheckOnly -Full   1~3단계 검사 + 전체 설치본의 이름 · 경로 · 원본만 확인(복사하지 않음)
+      -CleanDb <경로>   정리본 DB(기본: 7_보낸파일\2026-10-22\SDSMDB_261022\SDSMDB.sqlite · 옆의 .sha256 과 맞아야 함)
+      -MapSource <경로> 지도 폴더(기본: 03-05 배포본 DB통합SW_260305\mbtiles · 읽기만)
 
   조사자 앱 ..\SDSM_Surveyor\tools\publish.ps1 과 같은 구조다(2026-10-19 신설).
   게시 설정은 VS 게시 프로필 FolderProfile.pubxml 과 같다(Release · win-x64 · 단독 실행형 · 단일 파일 아님).
@@ -21,7 +26,12 @@
   ⚠ 이 파일은 UTF-8 with BOM 으로 저장한다. BOM 이 없으면 Windows PowerShell 5.1 이
      한글을 CP949 로 읽어 깨진다.
 #>
-param([switch]$CheckOnly)
+param(
+    [switch]$CheckOnly,
+    [switch]$Full,
+    [string]$CleanDb = '',
+    [string]$MapSource = 'F:\17_한국환경지리연구소\2_삼성DS\2026년\5_보낸파일\20260305\DB통합SW_260305\mbtiles'
+)
 
 $ErrorActionPreference = 'Stop'
 # 콘솔을 UTF-8 로. 없거나 실패해도 진행한다(출력 글자만 영향).
@@ -56,6 +66,7 @@ $logDir  = Join-Path $tools '_publish_log'    # 빌드 경고·오류 기록(.gi
 $exeName = '삼성DS모니터링DB통합관리프로그램.exe'   # 03-05 배포본과 같은 이름(바로가기 유지)
 
 $kind = if ($CheckOnly) { '검사만(-CheckOnly)' } else { '배포본 만들기' }
+if ($Full) { $kind += ' + 전체 설치본(-Full)' }
 Write-Host "=== SDSM 관리자 앱 $kind ===" -ForegroundColor Cyan
 
 # ── 0 커밋 확인 ────────────────────────────────────────────────────────────
@@ -188,15 +199,7 @@ $all = @(Get-ChildItem $stage -Recurse -File)
 $mbAll = '{0:N0} MB' -f (($all | Measure-Object Length -Sum).Sum / 1MB)
 Write-Host "    파일 $($all.Count)개 · $mbAll"
 
-if ($CheckOnly) {
-    Write-Host ''
-    Write-Host '=== 1~3단계 통과 (-CheckOnly : 4단계 압축은 하지 않음) ===' -ForegroundColor Green
-    exit 0
-}
-
-# ── 4/4 압축 ───────────────────────────────────────────────────────────────
-Write-Host ''
-Write-Host '=== 4/4  압축 ==='
+# ── 보낼 곳(압축 · 전체 설치본) ─────────────────────────────────────────────
 # 보낼 폴더 — 조사자 앱과 같은 ...\samsung\7_보낸파일\yyyy-MM-dd\
 #   worktree 에서 실행해도 같은 곳으로 가도록 본 저장소 위치(git 공통 폴더의 부모)에서 찾는다.
 $eap = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
@@ -207,14 +210,51 @@ $mainRoot = Split-Path -Parent $gitCommon     # ...\1_program\SDSM
 $outRoot  = Join-Path $mainRoot '..\..\7_보낸파일'
 if (-not (Test-Path $outRoot)) { Fail "보낼 폴더를 찾지 못했습니다 : $outRoot" 4 }
 $outRoot = (Resolve-Path $outRoot).Path
-
 $dest = Join-Path $outRoot (Get-Date -Format 'yyyy-MM-dd')
-if (-not (Test-Path $dest)) { New-Item -ItemType Directory -Path $dest | Out-Null }
-
 # 이름 — 03-05 배포본(DB통합SW_260305)과 같은 꼴. 압축 안 맨 위 폴더도 같은 이름이다.
-#   압축을 풀면 이 폴더 하나가 생기고 그 안에 실행 파일이 있다(맨 위 폴더가 없으면 파일 400여 개가 흩어진다).
 $top = 'DB통합SW_' + (Get-Date -Format 'yyMMdd')
 $zip = Join-Path $dest ($top + '.zip')
+
+# 전체 설치본(-Full) — 원본 확인. 정리본 DB 는 옆의 .sha256 과 해시가 같아야 하고, 지도 폴더는 읽기만 한다.
+if ($Full) {
+    Write-Host ''
+    Write-Host '=== 전체 설치본 원본 확인(-Full) ==='
+    if (-not $CleanDb) { $CleanDb = Join-Path $outRoot '2026-10-22\SDSMDB_261022\SDSMDB.sqlite' }
+    if (-not (Test-Path $CleanDb)) { Fail "정리본 DB 가 없습니다 : $CleanDb" 6 }
+    $shaFile = "$CleanDb.sha256"
+    if (-not (Test-Path $shaFile)) { Fail "정리본 DB 해시 파일이 없습니다 : $shaFile" 6 }
+    $dbHash = (Get-FileHash $CleanDb -Algorithm SHA256).Hash.ToLower()
+    $dbHashExpected = ((Get-Content $shaFile -Raw -Encoding UTF8).Trim() -split '\s+')[0].ToLower()
+    if ($dbHash -ne $dbHashExpected) { Fail "정리본 DB 해시가 .sha256 과 다릅니다 — $dbHash ≠ $dbHashExpected" 6 }
+    Write-Host "    정리본 DB : $CleanDb"
+    Write-Host "      SHA256 $dbHash (.sha256 과 같음) · $('{0:N0}' -f (Get-Item $CleanDb).Length) 바이트"
+
+    if (-not (Test-Path $MapSource)) { Fail "지도 폴더가 없습니다 : $MapSource" 6 }
+    $maps = @(Get-ChildItem $MapSource -Recurse -File)
+    if ($maps.Count -eq 0) { Fail "지도 폴더가 비었습니다 : $MapSource" 6 }
+    $mapGb = '{0:N2} GB' -f (($maps | Measure-Object Length -Sum).Sum / 1GB)
+    Write-Host "    지도(mbtiles) : $MapSource · 파일 $($maps.Count)개 · $mapGb (읽기만)"
+
+    $fullDir = Join-Path $dest ($top + '_전체')
+    Write-Host "    만들 폴더 : $fullDir"
+    Write-Host "      = 게시본 $($all.Count)개 + SDSMDB.sqlite + mbtiles\ $($maps.Count)개"
+    if (Test-Path $fullDir) { Fail "전체 설치본 폴더가 이미 있습니다 — 지우거나 옮긴 뒤 다시 실행하세요 : $fullDir" 6 }
+}
+
+if ($CheckOnly) {
+    Write-Host ''
+    Write-Host "    (압축은 만들지 않음 · 만들 이름 : $zip)"
+    Write-Host ''
+    Write-Host '=== 1~3단계 통과 (-CheckOnly : 4단계 압축은 하지 않음) ===' -ForegroundColor Green
+    exit 0
+}
+
+# ── 4/4 압축 ───────────────────────────────────────────────────────────────
+Write-Host ''
+Write-Host '=== 4/4  압축 ==='
+# 보낼 곳($dest · $top · $zip)은 3단계 뒤에 정했다.
+#   압축을 풀면 맨 위 폴더 하나가 생기고 그 안에 실행 파일이 있다(맨 위 폴더가 없으면 파일 400여 개가 흩어진다).
+if (-not (Test-Path $dest)) { New-Item -ItemType Directory -Path $dest | Out-Null }
 if (Test-Path $zip) { Remove-Item $zip -Force }
 
 # 게시 폴더를 '맨 위 폴더 이름'으로 잠시 옮겨 그 폴더째 압축한다(includeBaseDirectory = $true).
@@ -234,6 +274,29 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
     [System.Text.Encoding]::UTF8)
 if (-not (Test-Path $zip)) { Fail '압축 실패' 4 }
 
+# ── 전체 설치본(-Full) — 게시본 + 정리본 DB + 지도 ─────────────────────────────
+#   삼성은 기존 앱을 지우고 새로 설치한다(2026-10-22 §21-4). 압축과 같은 게시본을 쓴다.
+if ($Full) {
+    Write-Host ''
+    Write-Host '=== 전체 설치본(-Full) ==='
+    New-Item -ItemType Directory -Path $fullDir | Out-Null
+    Copy-Item (Join-Path $topDir '*') $fullDir -Recurse
+    Copy-Item $CleanDb (Join-Path $fullDir 'SDSMDB.sqlite')
+    Write-Host "    지도 복사 중 ($mapGb) ..."
+    Copy-Item $MapSource (Join-Path $fullDir 'mbtiles') -Recurse
+
+    $fullDb = Join-Path $fullDir 'SDSMDB.sqlite'
+    $fullDbHash = (Get-FileHash $fullDb -Algorithm SHA256).Hash.ToLower()
+    if ($fullDbHash -ne $dbHash) { Fail "전체 설치본의 DB 해시가 정리본과 다릅니다 — $fullDbHash" 7 }
+    $fullMaps = @(Get-ChildItem (Join-Path $fullDir 'mbtiles') -Recurse -File)
+    if ($fullMaps.Count -ne $maps.Count) { Fail "지도 파일 수가 다릅니다 — 원본 $($maps.Count) · 복사 $($fullMaps.Count)" 7 }
+    $fullAll = @(Get-ChildItem $fullDir -Recurse -File)
+    $fullGb = '{0:N2} GB' -f (($fullAll | Measure-Object Length -Sum).Sum / 1GB)
+    Write-Host "    폴더 : $fullDir"
+    Write-Host "    파일 $($fullAll.Count)개 · $fullGb (게시본 $($all.Count) + DB 1 + 지도 $($fullMaps.Count))"
+    Write-Host "    SDSMDB.sqlite SHA256 $fullDbHash (정리본과 같음)"
+}
+
 Remove-Item $wrap -Recurse -Force
 Write-Host "    압축 안 맨 위 폴더 : $top\"
 
@@ -242,5 +305,8 @@ Write-Host ''
 Write-Host "완료 : $zip  ($mb)" -ForegroundColor Green
 Write-Host '    설치는 기존 설치 폴더에 덮어쓰기 — SDSMDB.sqlite · mbtiles\ 는 압축에 없으므로 그대로 남는다.' -ForegroundColor Yellow
 Write-Host '    덮어쓰기 전에 설치 폴더를 백업한다(특히 SDSMDB.sqlite · sites.json).' -ForegroundColor Yellow
+if ($Full) {
+    Write-Host "완료 : $fullDir (새로 설치용 — 기존 앱을 지우고 이 폴더를 통째로 설치 위치에 둔다)" -ForegroundColor Green
+}
 Start-Process explorer.exe -ArgumentList "/select,`"$zip`""
 Wait-Enter '끝났습니다. Enter 를 누르면 창이 닫힙니다'

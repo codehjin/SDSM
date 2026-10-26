@@ -1,0 +1,58 @@
+<Window x:Class="SDSM_App.Views.Windows.OutOfListSpeciesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        mc:Ignorable="d"
+        Background="{telerik:Windows11Resource ResourceKey=PrimaryBackgroundBrush}"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="NoResize"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Width="760"
+        FontFamily="{StaticResource DefaultFontFamily}"
+        FontSize="{StaticResource DefaultFontSize}"
+        Title="종목록에 없는 종이 있습니다">
+
+    <!-- 일괄등록 목록 밖 종 확인(2026-10-22 §22-3) — [목록에 추가(지표값 없음)] / [목록에 넣지 않고 저장] / [취소] -->
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 0 0 12">
+            <icon:PackIconMaterial Kind="AlertCircleOutline" Width="22" Height="22" VerticalAlignment="Center"
+                                   Foreground="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
+            <TextBlock x:Name="HeaderTextBlock" Style="{StaticResource PrimaryTitleTextBlcokStyle}" Margin="10 0 0 0"
+                       VerticalAlignment="Center" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <telerik:RadGridView x:Name="SpeciesGridView" Grid.Row="1" MaxHeight="320" Margin="0 0 0 12"
+                             AutoGenerateColumns="False" IsReadOnly="True" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed"
+                             IsFilteringAllowed="False" CanUserFreezeColumns="False">
+            <telerik:RadGridView.Columns>
+                <telerik:GridViewDataColumn Header="국명" DataMemberBinding="{Binding Path=SpeciesKo}" Width="140"/>
+                <telerik:GridViewDataColumn Header="학명" DataMemberBinding="{Binding Path=SpeciesEn}" Width="230"/>
+                <telerik:GridViewDataColumn Header="파일의 지표값" DataMemberBinding="{Binding Path=FileValues}" Width="*"/>
+                <telerik:GridViewDataColumn Header="행 수" DataMemberBinding="{Binding Path=Rows}" Width="70"/>
+            </telerik:RadGridView.Columns>
+        </telerik:RadGridView>
+
+        <TextBlock Grid.Row="2" TextWrapping="Wrap" Margin="0 0 0 12"
+                   Foreground="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"
+                   Text="지침: 별표에 없는 종은 지수 계산에서 빠지고 출현 목록에만 오른다. 어느 쪽을 골라도 이 종 행의 지표값 · 길드는 비워 저장하고, 파일의 지표값은 종목록에 넣지 않는다."/>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <telerik:RadButton x:Name="AddButton" Content="목록에 추가(지표값 없음)" MinWidth="96" Margin="0 0 6 0"
+                               Style="{StaticResource AccentButtonStyle}" Click="AddButton_Click"/>
+            <telerik:RadButton x:Name="SaveOnlyButton" Content="목록에 넣지 않고 저장" MinWidth="96" Margin="0 0 6 0" Click="SaveOnlyButton_Click"/>
+            <telerik:RadButton x:Name="CancelButton" Content="취소" MinWidth="96" IsCancel="True" Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

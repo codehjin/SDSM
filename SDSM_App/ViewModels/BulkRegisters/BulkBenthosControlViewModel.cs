@@ -11,6 +11,7 @@ using SDSM_App.InjectableServices;
 using SDSM_App.Messengers;
 using SDSM_App.Models;
 using SDSM_App.Models.Repositories.Interfases;
+using SDSM_App.Views.Windows;
 using SDSM_Models;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Data.SQLite;
@@ -105,11 +106,25 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
     #region 종목록 속성
 
-    //기존 종목록
-    public List<BenthosSpeciesList> SpeciesListData { get; set; } = [];
+    //종 행 점검 결과 — 종목록 값과 다른 종 · 목록 밖 종(2026-10-22 §22-2 · §22-3)
+    private SpeciesValueCheck _speciesCheck = new();
 
-    // 엑셀에서 가져온 종목록
-    public List<BenthosSpeciesList> ImportSpeciesListData { get; set; } = [];
+    //목록 밖 종을 종목록에 더할지(저장 때 확인 창에서 고름)
+    private bool _addOutOfListToList;
+
+    //파일 값이 종목록 값과 달라 종목록 값을 쓴 종 수
+    [ObservableProperty] private int _listValueDiffCount;
+
+    //종목록에 없는 종 수
+    [ObservableProperty] private int _outOfListCount;
+
+    /// <summary>종목록 값과 다른 종 — '국명 학명: 파일 … → 종목록 …'(결과 줄 풍선 · 작업로그용).</summary>
+    public IReadOnlyList<string> ListValueDiffDetails => [.. _speciesCheck.Differences.Select(kv => $"{kv.Key}: {kv.Value}")];
+
+    /// <summary>목록 밖 종(확인 창 · 작업로그용).</summary>
+    public IReadOnlyList<OutOfListSpecies> OutOfListSpecies => [.. _speciesCheck.OutOfList.Values];
+
+    public string ListValueDiffText => string.Join(Environment.NewLine, ListValueDiffDetails);
 
     #endregion
 
@@ -209,7 +224,15 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
             //엑셀 -> 모델
             if (worksheet != null && worksheet.Rows.Count > 0)
             {
-                var (models, species) = await Task.Run(() => DataTableToModels(worksheet));
+                //지표값 출처 = 관리자 종목록 — 종 행을 읽자마자 종목록 값으로 바꾸고(목록 밖 종은 비움) 그 값으로 지수를 계산한다(2026-10-22 §22-2)
+                var check = new SpeciesValueCheck();
+                var listIndex = await Task.Run(() =>
+                {
+                    using var listContext = new SDSMDbContext();
+                    return SpeciesListValues.BenthosIndex(listContext.BenthosSpeciesLists.AsNoTracking().ToList());
+                });
+
+                var (models, species) = await Task.Run(() => DataTableToModels(worksheet, listIndex, check));
                 if (models.Count != 0)
                 {
                     if (GB.IsBusy == false)
@@ -238,14 +261,14 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                     ConvertedSpeciesCount = SpeciesCollection.Count;
                     ErrorSpeciesCount = ConvertedSpeciesCollection.Count(m => m.ErrorContent.Length > 0);
 
-                    //기존 종목록, 엑셀시트 종목록 가져오기
-                    if (ErrorCount == 0 && ErrorSpeciesCount == 0)
-                    {
-                        using var context = new SDSMDbContext();
-
-                        SpeciesListData = await context.BenthosSpeciesLists.ToListAsync();
-                        ImportSpeciesListData = await Task.Run(() => GetImportSpeciesData(worksheet, SpeciesFirstRowNumber));
-                    }
+                    //종목록 값과 다른 종 · 목록 밖 종 — 결과 줄 · 알림(2026-10-22 §22-2 · §22-3)
+                    _speciesCheck = check;
+                    ListValueDiffCount = check.Differences.Count;
+                    OutOfListCount = check.OutOfList.Count;
+                    OnPropertyChanged(nameof(ListValueDiffText));
+                    var speciesNotice = SpeciesNotice();
+                    if (speciesNotice.Length > 0)
+                        WeakReferenceMessenger.Default.Send(new NotifyMessage((speciesNotice, true)));
                 }
             }
 
@@ -285,6 +308,16 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         if (MessageBox.Show(message, "자료 일괄 저장", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
             return;
 
+        //종목록에 없는 종 — [목록에 추가(지표값 없음)] / [목록에 넣지 않고 저장] / [취소] (2026-10-22 §22-3)
+        _addOutOfListToList = false;
+        if (_speciesCheck.OutOfList.Count > 0)
+        {
+            var action = OutOfListSpeciesWindow.Ask("저서동물", OutOfListSpecies);
+            if (action == OutOfListAction.Cancel)
+                return;
+            _addOutOfListToList = action == OutOfListAction.AddToList;
+        }
+
         //DB에 같은 기록이 있는지 — 있으면 [건너뛰기(기본)/바꾸기/추가]를 묻는다(2026-10-21 문제 2·3)
         var decisions = FindDuplicates();
         if (decisions == null)
@@ -318,6 +351,9 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
             //저장·바꿈·건너뜀 건수에 맞는 알림(2026-10-21 N5)
             var toast = DuplicateImportHelper.SaveToast(saveResult);
+            var speciesNotice = SpeciesNotice();
+            if (speciesNotice.Length > 0 && saveResult.Saved + saveResult.Replaced > 0)
+                toast = ($"{toast.Item1} · {speciesNotice}", toast.Item2);
             if (SubstrateMovedCount > 0 && saveResult.Saved + saveResult.Replaced > 0)
                 toast = ($"{toast.Item1} · 하상 암반·콘크리트 → 특이사항 {SubstrateMovedCount:N0}건", toast.Item2);
             WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
@@ -344,7 +380,7 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
     }
 
     //엑셀->모델
-    private (List<ImportBenthos>, List<ImportBenthosSpecies>) DataTableToModels(Worksheet worksheet)
+    private (List<ImportBenthos>, List<ImportBenthosSpecies>) DataTableToModels(Worksheet worksheet, IReadOnlyDictionary<string, BenthosSpeciesList> listIndex, SpeciesValueCheck check)
     {
         var importModels = new List<ImportBenthos>();
         var importSpeciesModels = new List<ImportBenthosSpecies>();
@@ -363,6 +399,9 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
 
                     //종목록
                     var speciesData = GetSpeciesData(worksheet, columnIndex, matchNumber, SpeciesFirstRowNumber);
+
+                    //지표값 · 길드 = 종목록 값(목록 밖 종은 비움) — 아래 지수 계산 전에(2026-10-22 §22-2)
+                    SpeciesListValues.ApplyBenthos(speciesData, listIndex, check);
 
                     // 1. IndividualCount 값만 추출 (null은 0으로 처리)
                     int[] individualCounts = [.. speciesData.Select(x => x.IndividualCount.HasValue ? (int)x.IndividualCount.Value : 0)];
@@ -1205,13 +1244,20 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                 }
             }
 
-            //기존 종목록에 없는 종목록 추가
-            var newSpecies = GetNewSpeciesData();
-            if (newSpecies.Count != 0)
+            //목록 밖 종 — [목록에 추가]를 골랐을 때만 지표값 · 길드 없이(출현 목록) 더한다. 파일의 지표값은 넣지 않는다(2026-10-22 §22-3)
+            if (_addOutOfListToList && saved + replaced > 0 && _speciesCheck.OutOfList.Count > 0)
             {
                 using var context = new SDSMDbContext();
-                context.BenthosSpeciesLists.AddRange(newSpecies);
-                await context.SaveChangesAsync();
+                var existing = SpeciesListValues.BenthosIndex(context.BenthosSpeciesLists.AsNoTracking().ToList());
+                var newSpecies = _speciesCheck.OutOfList
+                    .Where(kv => !existing.ContainsKey(kv.Key))
+                    .Select(kv => SpeciesListValues.NewBenthosListRow(kv.Value))
+                    .ToList();
+                if (newSpecies.Count != 0)
+                {
+                    context.BenthosSpeciesLists.AddRange(newSpecies);
+                    await context.SaveChangesAsync();
+                }
             }
 
             return new BulkSaveResult(true, saved, replaced, skipped, duplicateAdded);
@@ -1328,8 +1374,20 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         ErrorSpeciesCount = 0;
         SubstrateMovedCount = 0;
 
-        SpeciesListData.Clear();
-        ImportSpeciesListData.Clear();
+        _speciesCheck = new();
+        _addOutOfListToList = false;
+        ListValueDiffCount = 0;
+        OutOfListCount = 0;
+        OnPropertyChanged(nameof(ListValueDiffText));
+    }
+
+    //종 행 점검 알림 — 'n종 값 다름 → 종목록 값 사용' · '목록 밖 종 n종'(2026-10-22 §22-2 · §22-3)
+    private string SpeciesNotice()
+    {
+        var parts = new List<string>();
+        if (_speciesCheck.Differences.Count > 0) parts.Add($"{_speciesCheck.Differences.Count:N0}종 값 다름 → 종목록 값 사용");
+        if (_speciesCheck.OutOfList.Count > 0) parts.Add($"목록 밖 종 {_speciesCheck.OutOfList.Count:N0}종(지표값 · 길드 비움)");
+        return string.Join(" · ", parts);
     }
 
     private void GetColumnNumbers()
@@ -1410,7 +1468,8 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
                     ClassKo = ((ICellValue)(worksheet.Cells[rowIndex, 6].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 6].GetFormat().Value),
                     OrderKo = ((ICellValue)(worksheet.Cells[rowIndex, 7].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 7].GetFormat().Value),
                     FamilyKo = ((ICellValue)(worksheet.Cells[rowIndex, 8].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 8].GetFormat().Value),
-                    SpeciesEn = ((ICellValue)(worksheet.Cells[rowIndex, 9].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 9].GetFormat().Value),
+                    //옛 학명은 지침 표기로 읽는다(2026-10-22 §22-1 · SpeciesNameMap)
+                    SpeciesEn = SpeciesNameMap.Benthos(((ICellValue)(worksheet.Cells[rowIndex, 9].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 9].GetFormat().Value)),
                     SpeciesKo = ((ICellValue)(worksheet.Cells[rowIndex, 10].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 10].GetFormat().Value),
                     IndividualCount = d,
                 };
@@ -1426,70 +1485,6 @@ public partial class BulkBenthosControlViewModel : ObservableObject, ITransientS
         using var context = new SDSMDbContext();
 
         SavedFileInfos = [.. context.SavedFileInfos.Where(m => m.Division == "저서동물").OrderBy(m => m.SavedFileInfoId)];
-    }
-
-    #endregion
-
-    #region 엑셀시트에서 가져온 종목록
-
-    private List<BenthosSpeciesList> GetImportSpeciesData(Worksheet worksheet, int speciesFirstRowNumber)
-    {
-        var data = new List<BenthosSpeciesList>();
-
-        try
-        {
-            var usedRange = worksheet.UsedCellRange;
-            for (int rowIndex = speciesFirstRowNumber - 1; rowIndex <= usedRange.ToIndex.RowIndex; rowIndex++)
-            {
-                double? saprobicValue = double.TryParse(((ICellValue)(worksheet.Cells[rowIndex, 0].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 0].GetFormat().Value), out double saprobicValueResult) ? saprobicValueResult : null;
-                int? indicatorWeight = int.TryParse(((ICellValue)(worksheet.Cells[rowIndex, 1].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 1].GetFormat().Value), out int indicatorWeightResult) ? indicatorWeightResult : null;
-                string? speciesEn = ((ICellValue)(worksheet.Cells[rowIndex, 9].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 9].GetFormat().Value);
-                string? speciesKo = ((ICellValue)(worksheet.Cells[rowIndex, 10].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 10].GetFormat().Value);
-
-                if (!string.IsNullOrWhiteSpace(speciesEn) && !string.IsNullOrWhiteSpace(speciesKo))
-                {
-                    var species = new BenthosSpeciesList
-                    {
-                        SaprobicValue = saprobicValue,
-                        IndicatorWeight = indicatorWeight,
-                        Endangered1 = ((ICellValue)(worksheet.Cells[rowIndex, 2].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 2].GetFormat().Value),
-                        Endangered2 = ((ICellValue)(worksheet.Cells[rowIndex, 3].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 3].GetFormat().Value),
-                        Endemic = ((ICellValue)(worksheet.Cells[rowIndex, 4].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 4].GetFormat().Value),
-                        PhylumKo = ((ICellValue)(worksheet.Cells[rowIndex, 5].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 5].GetFormat().Value),
-                        ClassKo = ((ICellValue)(worksheet.Cells[rowIndex, 6].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 6].GetFormat().Value),
-                        OrderKo = ((ICellValue)(worksheet.Cells[rowIndex, 7].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 7].GetFormat().Value),
-                        FamilyKo = ((ICellValue)(worksheet.Cells[rowIndex, 8].GetValue().Value)).GetResultValueAsString(worksheet.Cells[rowIndex, 8].GetFormat().Value),
-                        SpeciesEn = speciesEn,
-                        SpeciesKo = speciesKo,
-                    };
-
-                    data.Add(species);
-                }
-            }
-
-            return data;
-        }
-        catch (Exception ex)
-        {
-            GB.LogWrite(GetType().Name, nameof(GetImportSpeciesData), ex.Message);
-            return data;
-        }
-    }
-
-    //기존 종목록과 비교하여 새로 추가된 종
-    private List<BenthosSpeciesList> GetNewSpeciesData()
-    {
-        // SpeciesKo, SpeciesEn 기준으로 직접 비교
-        var newSpecies = ImportSpeciesListData
-            .Where(import =>
-                !SpeciesListData.Any(existing =>
-                    import.SpeciesKo?.Replace(" ", "").ToLower() == existing.SpeciesKo?.Replace(" ", "").ToLower() &&
-                    import.SpeciesEn?.Replace(" ", "").ToLower() == existing.SpeciesEn?.Replace(" ", "").ToLower()
-                )
-            )
-            .ToList();
-
-        return newSpecies;
     }
 
     #endregion

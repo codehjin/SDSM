@@ -330,6 +330,10 @@
                                                 <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="29">
                                                     <Setter Property="Text" Value="테이블명세서-수질"/>
                                                 </DataTrigger>
+                                                <!--위 쪽 제목은 사용 설명서 것 — 다른 PDF(지침 원본 등)를 여는 창은 Tag="NoPageCaption" 이라 숨긴다(2026-10-22 §21-5 · 마지막 트리거가 이긴다)-->
+                                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=Window}}" Value="NoPageCaption">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>

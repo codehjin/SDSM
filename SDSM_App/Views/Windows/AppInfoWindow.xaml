@@ -1,0 +1,122 @@
+<Window x:Class="SDSM_App.Views.Windows.AppInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:viewmodel="clr-namespace:SDSM_App.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type={x:Type viewmodel:AppInfoWindowViewModel}}"
+        Background="{telerik:Windows11Resource ResourceKey=PrimaryBackgroundBrush}"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="NoResize"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Width="640"
+        FontFamily="{StaticResource DefaultFontFamily}"
+        FontSize="{StaticResource DefaultFontSize}"
+        Title="프로그램 정보">
+
+    <!-- 프로그램 정보(2026-10-22 §21-5) — 글은 Commons\AppInfo 한 곳에서 온다 -->
+    <Grid Margin="20">
+        <Grid.Resources>
+            <Style x:Key="InfoLabelStyle" TargetType="TextBlock">
+                <Setter Property="Width" Value="110"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="Foreground" Value="{telerik:Windows11Resource ResourceKey=SecondaryForegroundBrush}"/>
+            </Style>
+            <Style x:Key="InfoValueStyle" TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 0 0 14">
+            <icon:PackIconVaadinIcons Kind="InfoCircleOutline" Width="22" Height="22" VerticalAlignment="Center"
+                                      Foreground="{telerik:Windows11Resource ResourceKey=AccentBrush}"/>
+            <TextBlock Text="{Binding Path=ProgramName}" Style="{StaticResource PrimaryTitleTextBlcokStyle}" Margin="10 0 0 0"
+                       VerticalAlignment="Center" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- 판 -->
+        <Border Grid.Row="1" Style="{StaticResource ContentBoxStyle}" Padding="14 10" Margin="0 0 0 8">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 4">
+                    <TextBlock Text="판(버전)" Style="{StaticResource InfoLabelStyle}"/>
+                    <TextBlock Text="{Binding Path=VersionText}" Style="{StaticResource InfoValueStyle}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="빌드 날짜" Style="{StaticResource InfoLabelStyle}"/>
+                    <TextBlock Text="{Binding Path=BuildDate}" Style="{StaticResource InfoValueStyle}"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- 적용 지침 -->
+        <Border Grid.Row="2" Style="{StaticResource ContentBoxStyle}" Padding="14 10" Margin="0 0 0 8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="적용 지침" Style="{StaticResource InfoLabelStyle}"/>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding Path=GuidelineTitle}" Style="{StaticResource InfoValueStyle}"/>
+                    <TextBlock Text="{Binding Path=GuidelineNotice}" Style="{StaticResource InfoValueStyle}" Margin="0 2 0 8"/>
+                    <telerik:RadButton Command="{Binding Path=GuidelineOpenExecutedCommand}" HorizontalAlignment="Left" Padding="12 4">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="지침 원본 보기" VerticalAlignment="Center"/>
+                            <icon:PackIconFeatherIcons Kind="ArrowUpRight" VerticalAlignment="Center" Margin="6 0 0 0" Width="12" Height="12"/>
+                        </StackPanel>
+                    </telerik:RadButton>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 종목록 기준 -->
+        <Border Grid.Row="3" Style="{StaticResource ContentBoxStyle}" Padding="14 10" Margin="0 0 0 8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="종목록 기준" Style="{StaticResource InfoLabelStyle}"/>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding Path=SpeciesListBasis}" Style="{StaticResource InfoValueStyle}"/>
+                    <TextBlock Text="{Binding Path=SpeciesCountText}" Style="{StaticResource InfoValueStyle}" Margin="0 2 0 8"/>
+                    <telerik:RadButton Command="{Binding Path=SpeciesCatalogExportExecutedCommand}" HorizontalAlignment="Left" Padding="12 4"
+                                       ToolTip="어류 · 저서 종목록을 조사자 앱 형식(species.json)으로 저장">
+                        <TextBlock Text="종목록 내보내기(species.json)" VerticalAlignment="Center"/>
+                    </telerik:RadButton>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 개발 -->
+        <Border Grid.Row="4" Style="{StaticResource ContentBoxStyle}" Padding="14 10" Margin="0 0 0 14">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 4">
+                    <TextBlock Text="개발" Style="{StaticResource InfoLabelStyle}"/>
+                    <TextBlock Text="{Binding Path=Developer}" Style="{StaticResource InfoValueStyle}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="연락처" Style="{StaticResource InfoLabelStyle}"/>
+                    <TextBlock Text="{Binding Path=Contact}" Style="{StaticResource InfoValueStyle}"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <telerik:RadButton Grid.Row="5" Content="닫기" MinWidth="96" HorizontalAlignment="Right" IsCancel="True" IsDefault="True"
+                           Style="{StaticResource AccentButtonStyle}" Click="Close_Click"/>
+    </Grid>
+</Window>

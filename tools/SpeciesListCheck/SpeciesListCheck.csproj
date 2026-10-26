@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>SpeciesListCheck</AssemblyName>
+    <RootNamespace>SpeciesListCheck</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- CalcParity 와 같게 관리자 앱을 참조한다 — SDSM_Core(계산) · SDSM_Models · Microsoft.Data.Sqlite 를 그대로 쓴다(새 패키지 없음) -->
+    <ProjectReference Include="..\..\SDSM_App\SDSM_App.csproj" />
+  </ItemGroup>
+
+</Project>

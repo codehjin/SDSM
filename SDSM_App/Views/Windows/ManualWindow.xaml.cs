@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using Telerik.Windows.Documents.Fixed;
+using SDSM_App.Commons;
 using SDSM_App.InjectableServices;
 using System.Windows.Media.Animation;
 using Telerik.Windows.Controls;
@@ -8,7 +9,7 @@ using Telerik.Windows.Controls;
 namespace SDSM_App.Views.Windows;
 
 /// <summary>
-/// 사용자 메뉴얼
+/// 사용자 메뉴얼 · PDF 보기 — 사용 설명서와 지침 원본이 같은 창을 쓴다(열기는 Helpers\ManualWindowHelper · 2026-10-22 §21-5)
 /// </summary>
 public partial class ManualWindow : Window, ITransientService
 {
@@ -21,11 +22,22 @@ public partial class ManualWindow : Window, ITransientService
         Loaded += Window_Loaded;
     }
 
+    /// <summary>보여 줄 PDF(앱 리소스 경로) — 기본은 사용 설명서. Show 전에 정한다.</summary>
+    public string PdfUri { get; set; } = AppInfo.ManualPdfUri;
+
+    /// <summary>창 제목줄 글.</summary>
+    public string Caption { get; set; } = AppInfo.ManualPdfCaption;
+
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
+        CaptionTextBlock.Text = Caption;
+        Title = Caption;
+        //쪽 목록의 쪽 제목(Styles\PdfResources.xaml PageNavigationStyle)은 사용 설명서 것이라 다른 PDF 에서는 숨긴다
+        Tag = PdfUri == AppInfo.ManualPdfUri ? null : "NoPageCaption";
+
         try
         {
-            Stream stream = App.GetResourceStream(new Uri("/SDSM_App;component/Assets/Pdfs/manual.pdf", UriKind.Relative)).Stream;
+            Stream stream = App.GetResourceStream(new Uri(PdfUri, UriKind.Relative)).Stream;
             pdfViewer.DocumentSource = new PdfDocumentSource(stream);
             pdfViewer.DocumentSource.Loaded += DocumentSource_Loaded;
         }
