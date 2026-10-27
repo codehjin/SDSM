@@ -1,0 +1,1392 @@
+{
+ "about": "관리자 사용설명서 v2.0 그림 목록(설명서 계획 §4 · 지시서 §30-4) — 그림 번호 = 장-순번(manual_pdf.py 가 원고 순서로 매김) · 파일 = docs/manual/img/<file>.jpg · 강조 번호(marks) = 원고 그림 아래 '번호 | 설명' 표 줄. find = 하네스가 요소 위치를 재는 법(name: · text: · tip: · type: · rect: · + 는 합침 · @이름 은 그 안에서 · #n 은 n번째). 원본 PNG · 잰 좌표는 docs/manual/_png(커밋 제외).",
+ "figures": [
+  {
+   "id": "1-1",
+   "file": "1-1_login",
+   "title": "로그인 화면",
+   "scene": "login",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:PasswordTextBox",
+     "text": "비밀번호 칸"
+    },
+    {
+     "n": 2,
+     "find": "text:로그인@LoginContentControl",
+     "text": "[로그인]"
+    },
+    {
+     "n": 3,
+     "find": "tip:프로그램 닫기",
+     "text": "[프로그램 닫기]"
+    },
+    {
+     "n": 4,
+     "find": "starts:버전@LoginContentControl",
+     "text": "판(버전)"
+    }
+   ]
+  },
+  {
+   "id": "1-2",
+   "file": "1-2_main",
+   "title": "주 화면(홈)과 주 메뉴",
+   "scene": "main_menu",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:MenuScrollViewer",
+     "text": "주 메뉴"
+    },
+    {
+     "n": 2,
+     "find": "name:ContentFrame",
+     "text": "페이지 영역"
+    },
+    {
+     "n": 3,
+     "find": "name:UserDropDownButton",
+     "text": "[관리자]"
+    },
+    {
+     "n": 4,
+     "find": "text:사용 설명서",
+     "text": "[사용 설명서]"
+    },
+    {
+     "n": 5,
+     "find": "text:프로그램 정보",
+     "text": "[프로그램 정보]"
+    }
+   ],
+   "jpeg": {
+    "q": 70
+   }
+  },
+  {
+   "id": "1-3",
+   "file": "1-3_titlebar",
+   "title": "위쪽 막대",
+   "scene": "main_menu",
+   "crop": "rect:0,0,1600,56",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:ShowHideMenuButton",
+     "text": "주 메뉴 보이기 · 숨기기"
+    },
+    {
+     "n": 2,
+     "find": "text:삼성DS 모니터링DB 통합관리 프로그램",
+     "text": "프로그램 이름"
+    },
+    {
+     "n": 3,
+     "find": "fullmenubutton",
+     "text": "[전체 메뉴]"
+    },
+    {
+     "n": 4,
+     "find": "tip:최소화+tip:최대화+tip:닫기",
+     "text": "창 단추(최소화 · 최대화 · 닫기)"
+    }
+   ]
+  },
+  {
+   "id": "1-4",
+   "file": "1-4_full-menu",
+   "title": "전체 메뉴",
+   "scene": "full_menu",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:관리자@DropDownPopupContent",
+     "text": "관리자"
+    },
+    {
+     "n": 2,
+     "find": "text:홈@DropDownPopupContent+text:통계@DropDownPopupContent",
+     "text": "홈 · 통계"
+    },
+    {
+     "n": 3,
+     "find": "text:생물조사@DropDownPopupContent",
+     "text": "생물조사"
+    },
+    {
+     "n": 4,
+     "find": "text:환경자료@DropDownPopupContent",
+     "text": "환경자료"
+    },
+    {
+     "n": 5,
+     "find": "text:기타@DropDownPopupContent",
+     "text": "기타"
+    }
+   ],
+   "jpeg": {
+    "q": 70
+   }
+  },
+  {
+   "id": "1-5",
+   "file": "1-5_admin-menu",
+   "title": "관리자 메뉴와 비밀번호 변경",
+   "scene": "admin_menu",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:로그아웃@UserDropDownButton",
+     "text": "[로그아웃]"
+    },
+    {
+     "n": 2,
+     "find": "text:화면잠금@UserDropDownButton",
+     "text": "[화면잠금]"
+    },
+    {
+     "n": 3,
+     "find": "name:CurrentPasswordBox+name:NewCheckPasswordBox",
+     "text": "비밀번호 변경 칸(현재 · 새 · 새 확인)"
+    },
+    {
+     "n": 4,
+     "find": "name:SaveButton",
+     "text": "[확인]"
+    }
+   ],
+   "jpeg": {
+    "q": 70
+   }
+  },
+  {
+   "id": "1-6",
+   "file": "1-6_screen-lock",
+   "title": "화면잠금",
+   "scene": "screen_lock",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:ScreenLockRadPasswordBox",
+     "text": "비밀번호 칸"
+    }
+   ]
+  },
+  {
+   "id": "1-7",
+   "file": "1-7_list-buttons",
+   "title": "목록 화면의 단추 줄(어류)",
+   "scene": "list_buttons",
+   "crop": "rect:250,60,1350,250",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:신규",
+     "text": "[신규]"
+    },
+    {
+     "n": 2,
+     "find": "text:수정",
+     "text": "[수정]"
+    },
+    {
+     "n": 3,
+     "find": "text:삭제#1",
+     "text": "[삭제] — [선택 자료 삭제] · [페이지 자료 삭제]"
+    },
+    {
+     "n": 4,
+     "find": "text:출현종 보기",
+     "text": "[출현종 보기]"
+    },
+    {
+     "n": 5,
+     "find": "type:RadComboBox@SearchLayout",
+     "text": "검색 방식(포함 · 일치 · 시작문자 · 끝문자)"
+    },
+    {
+     "n": 6,
+     "find": "type:RadAutoSuggestBox@SearchLayout",
+     "text": "검색 칸"
+    },
+    {
+     "n": 7,
+     "find": "type:RadButton@SearchLayout#1",
+     "text": "[초기화]"
+    },
+    {
+     "n": 8,
+     "find": "type:RadButton@SearchLayout#2",
+     "text": "[페이지 출력]"
+    }
+   ]
+  },
+  {
+   "id": "1-8",
+   "file": "1-8_list-grid",
+   "title": "목록 표 — 필터 · 페이지 크기 · 쪽 이동",
+   "scene": "list_grid",
+   "marks": [
+    {
+     "n": 1,
+     "find": "filterpopup",
+     "text": "열 필터"
+    },
+    {
+     "n": 2,
+     "find": "text:조사개황@DataRadGridView",
+     "text": "열 묶음 머리글"
+    },
+    {
+     "n": 3,
+     "find": "type:PageSizeCommandControl",
+     "text": "페이지 크기 [최소] · [기본] · [최대]"
+    },
+    {
+     "n": 4,
+     "find": "name:DataRadDataPager",
+     "text": "쪽 이동 · 쪽 번호"
+    }
+   ]
+  },
+  {
+   "id": "1-9",
+   "file": "1-9_delete-confirm",
+   "title": "삭제 확인",
+   "scene": "delete_form",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:삭제된 자료는 복구하실 수 없습니다.",
+     "text": "안내 「삭제된 자료는 복구하실 수 없습니다.」"
+    },
+    {
+     "n": 2,
+     "find": "type:RadMaskedNumericInput@DeleteFormControl+type:RadNumericUpDown@DeleteFormControl+type:RadWatermarkTextBox@DeleteFormControl",
+     "text": "선택 건수 입력 칸"
+    },
+    {
+     "n": 3,
+     "find": "text:삭제@DeleteFormControl#2",
+     "text": "[삭제]"
+    },
+    {
+     "n": 4,
+     "find": "text:취소@DeleteFormControl",
+     "text": "[취소]"
+    }
+   ]
+  },
+  {
+   "id": "1-10",
+   "file": "1-10_editor",
+   "title": "편집기(어류 신규)",
+   "scene": "editor_new",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:필수 항목",
+     "text": "필수 항목 표시(*)"
+    },
+    {
+     "n": 2,
+     "find": "text:방류하천@EditorContentControl+text:생태현황@EditorContentControl",
+     "text": "프로젝트명(방류하천 · 생태현황)"
+    },
+    {
+     "n": 3,
+     "find": "tabs",
+     "text": "구역 이름(조사 개황 · 채집 방법 · 서식처 …)"
+    },
+    {
+     "n": 4,
+     "find": "text:저장@EditorContentControl",
+     "text": "[저장]"
+    },
+    {
+     "n": 5,
+     "find": "text:닫기@EditorContentControl",
+     "text": "[닫기]"
+    }
+   ]
+  },
+  {
+   "id": "2-1",
+   "file": "2-1_home-panel",
+   "title": "홈 — 조사자료 · 주제도",
+   "scene": "home",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:SurveyDataVisibleCheckBox",
+     "text": "조사자료"
+    },
+    {
+     "n": 2,
+     "find": "starts:분류군",
+     "text": "분류군(자료 개수 / 포인트 개수)"
+    },
+    {
+     "n": 3,
+     "find": "name:SearchRadToggleButton",
+     "text": "[국명 검색]"
+    },
+    {
+     "n": 4,
+     "find": "text:자료 및 기능 초기화",
+     "text": "[자료 및 기능 초기화]"
+    },
+    {
+     "n": 5,
+     "find": "name:ThemeMapVisibleCheckBox",
+     "text": "주제도"
+    },
+    {
+     "n": 6,
+     "find": "text:일반+text:영상",
+     "text": "일반 지도 · 영상 지도"
+    },
+    {
+     "n": 7,
+     "find": "tip:확대+tip:축소",
+     "text": "확대 · 축소"
+    }
+   ],
+   "jpeg": {
+    "q": 70
+   }
+  },
+  {
+   "id": "2-2",
+   "file": "2-2_site-info",
+   "title": "홈 — 지점 정보",
+   "scene": "home_point",
+   "marks": [
+    {
+     "n": 1,
+     "find": "point",
+     "text": "지점(누르면 정보 창)"
+    },
+    {
+     "n": 2,
+     "find": "callout",
+     "text": "지점 정보 — 그 지점의 자료 목록"
+    },
+    {
+     "n": 3,
+     "find": "text:위경도 변경@callout",
+     "text": "[위경도 변경]"
+    },
+    {
+     "n": 4,
+     "find": "text:목록 복사@callout",
+     "text": "[목록 복사]"
+    }
+   ],
+   "jpeg": {
+    "q": 70
+   }
+  },
+  {
+   "id": "2-3",
+   "file": "2-3_species-search",
+   "title": "홈 — 국명 검색",
+   "scene": "home_search",
+   "marks": [
+    {
+     "n": 1,
+     "find": "type:RadAutoCompleteBox",
+     "text": "국명 칸(여러 개)"
+    },
+    {
+     "n": 2,
+     "find": "searchlist",
+     "text": "제시 목록"
+    }
+   ],
+   "jpeg": {
+    "q": 70
+   }
+  },
+  {
+   "id": "2-4",
+   "file": "2-4_latlng",
+   "title": "위경도 변경",
+   "scene": "home_latlng",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:배경 지도에서 우측 버튼을 클릭하면 좌표를 취득 및 복사할 수 있습니다.",
+     "text": "안내 — 지도에서 오른쪽 단추로 좌표 얻기"
+    },
+    {
+     "n": 2,
+     "find": "text:위도@latlng+text:경도@latlng",
+     "text": "위도 · 경도"
+    },
+    {
+     "n": 3,
+     "find": "name:LatLngChangeRadGridView",
+     "text": "바꿀 자료 고르기"
+    },
+    {
+     "n": 4,
+     "find": "text:일괄 변경 후 자료 및 기능 초기화",
+     "text": "[일괄 변경 후 자료 및 기능 초기화]"
+    }
+   ],
+   "jpeg": {
+    "q": 70
+   }
+  },
+  {
+   "id": "2-5",
+   "file": "2-5_color",
+   "title": "홈 — 지점 색 바꾸기",
+   "scene": "home_color",
+   "marks": [
+    {
+     "n": 1,
+     "find": "colorbutton",
+     "text": "색 단추"
+    },
+    {
+     "n": 2,
+     "find": "colorpopup",
+     "text": "색 고르기"
+    }
+   ],
+   "jpeg": {
+    "q": 70
+   }
+  },
+  {
+   "id": "2-6",
+   "file": "2-6_label",
+   "title": "홈 — 지점 이름표",
+   "scene": "home_labels",
+   "marks": [
+    {
+     "n": 1,
+     "find": "pointlabel",
+     "text": "지점 이름표 「방_어(24)」"
+    }
+   ],
+   "jpeg": {
+    "q": 70
+   }
+  },
+  {
+   "id": "2-7",
+   "file": "2-7_theme-map",
+   "title": "홈 — 주제도와 범례",
+   "scene": "home_theme",
+   "marks": [
+    {
+     "n": 1,
+     "find": "themecheck",
+     "text": "주제도 고르기"
+    },
+    {
+     "n": 2,
+     "find": "name:TransparencyRadSlider",
+     "text": "불투명도"
+    },
+    {
+     "n": 3,
+     "find": "legend",
+     "text": "범례"
+    }
+   ],
+   "jpeg": {
+    "q": 70
+   }
+  },
+  {
+   "id": "3-1",
+   "file": "3-1_fish-list",
+   "title": "어류 목록",
+   "scene": "page:FishPage",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:조사개황@DataRadGridView",
+     "text": "열 묶음 머리글(조사개황 …)"
+    },
+    {
+     "n": 2,
+     "find": "selrow",
+     "text": "고른 행 — [수정] · [출현종 보기] 의 대상"
+    },
+    {
+     "n": 3,
+     "find": "hscroll",
+     "text": "가로 스크롤 — 오른쪽 묶음(채집방법 · 서식처 · 군집정보 · 건강성 · 출현종)"
+    }
+   ]
+  },
+  {
+   "id": "3-2",
+   "file": "3-2_fish-species",
+   "title": "어류 출현종 보기",
+   "scene": "species:FishPage",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:출현종@SpeciesDataRadGridView",
+     "text": "출현종 — 종마다 한 줄"
+    },
+    {
+     "n": 2,
+     "find": "text:페이지 출력@speciesview",
+     "text": "[페이지 출력]"
+    }
+   ]
+  },
+  {
+   "id": "3-3",
+   "file": "3-3_fish-editor",
+   "title": "어류 편집기 — 조사개황 · 채집방법",
+   "scene": "editor:FishPage",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:연도차수@EditorContentControl",
+     "text": "조사개황"
+    },
+    {
+     "n": 2,
+     "find": "text:채집소요시간(분)",
+     "text": "채집방법"
+    },
+    {
+     "n": 3,
+     "find": "text:하천차수",
+     "text": "하천차수(*)"
+    }
+   ]
+  },
+  {
+   "id": "3-4",
+   "file": "3-4_fish-editor-species",
+   "title": "어류 편집기 — 비정상종 · 생물종",
+   "scene": "editor_tab:FishPage:^비정상",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:기형(deformity) DE 종명(개체수)",
+     "text": "비정상종 4칸"
+    },
+    {
+     "n": 2,
+     "find": "name:SpeciesRadGridView",
+     "text": "생물종 — 종목록의 종마다 개체수"
+    },
+    {
+     "n": 3,
+     "find": "text:작성 : ",
+     "text": "작성한 종 수 · 개체수"
+    }
+   ]
+  },
+  {
+   "id": "3-5",
+   "file": "3-5_benthos-list",
+   "title": "저서동물 목록 — 서식처 하상구성",
+   "scene": "page_scroll:BenthosPage:BigStone",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:서식처 하상구성@DataRadGridView",
+     "text": "서식처 하상구성 6칸"
+    }
+   ]
+  },
+  {
+   "id": "3-6",
+   "file": "3-6_benthos-species",
+   "title": "저서동물 출현종 보기",
+   "scene": "species:BenthosPage",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:출현종@SpeciesDataRadGridView",
+     "text": "출현종 — 오탁치 · 지표가중치 · 개체수"
+    }
+   ]
+  },
+  {
+   "id": "3-7",
+   "file": "3-7_benthos-substrate",
+   "title": "저서동물 편집기 — 서식처 하상구성",
+   "scene": "editor_benthos_substrate",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:진흙 이하(<0.063mm)+text:큰돌 이상(>256mm)",
+     "text": "하상 6칸(지침 서식 2)"
+    },
+    {
+     "n": 2,
+     "find": "substratenotice",
+     "text": "안내 — 암반 · 콘크리트 값을 특이사항으로 옮김"
+    }
+   ]
+  },
+  {
+   "id": "3-8",
+   "file": "3-8_bird-list",
+   "title": "조류 목록",
+   "scene": "page_scroll:BirdPage:HabitatType",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:출현종@DataRadGridView",
+     "text": "출현종"
+    },
+    {
+     "n": 2,
+     "find": "text:서식지 유형@DataRadGridView",
+     "text": "서식지 유형"
+    }
+   ]
+  },
+  {
+   "id": "3-9",
+   "file": "3-9_bird-editor",
+   "title": "조류 편집기",
+   "scene": "editor:BirdPage",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:일반명@EditorContentControl",
+     "text": "출현종"
+    },
+    {
+     "n": 2,
+     "find": "text:도래유형",
+     "text": "도래유형"
+    },
+    {
+     "n": 3,
+     "find": "text:대항목+text:서식유형",
+     "text": "서식지 유형(대항목 · 세부항목 · 서식유형)"
+    }
+   ]
+  },
+  {
+   "id": "3-10",
+   "file": "3-10_mammal-list",
+   "title": "포유류 목록",
+   "scene": "page_scroll:MammalPage:Trace6",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:출현종@DataRadGridView",
+     "text": "출현종"
+    },
+    {
+     "n": 2,
+     "find": "text:확인/흔적 유형@DataRadGridView",
+     "text": "확인/흔적 유형"
+    }
+   ]
+  },
+  {
+   "id": "3-11",
+   "file": "3-11_mammal-editor",
+   "title": "포유류 편집기",
+   "scene": "editor:MammalPage",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:관찰지 유형",
+     "text": "관찰지 유형"
+    },
+    {
+     "n": 2,
+     "find": "text:포획+text:기타(탐문 등)",
+     "text": "확인 및 흔적 12칸"
+    }
+   ]
+  },
+  {
+   "id": "3-12",
+   "file": "3-12_amphibian-list",
+   "title": "양서파충류 목록",
+   "scene": "page_scroll:AmphibianReptilePage:MajorCategory",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:출현종@DataRadGridView",
+     "text": "출현종"
+    },
+    {
+     "n": 2,
+     "find": "text:출현종 관찰내용@DataRadGridView",
+     "text": "출현종 관찰내용"
+    },
+    {
+     "n": 3,
+     "find": "text:서식지 유형@DataRadGridView",
+     "text": "서식지 유형"
+    }
+   ]
+  },
+  {
+   "id": "3-13",
+   "file": "3-13_amphibian-editor",
+   "title": "양서파충류 편집기",
+   "scene": "editor:AmphibianReptilePage",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:성체+text:기타@EditorContentControl#2",
+     "text": "관찰내용 6칸"
+    },
+    {
+     "n": 2,
+     "find": "text:대분류+text:중분류",
+     "text": "서식지 유형(대분류 · 중분류)"
+    }
+   ]
+  },
+  {
+   "id": "4-1",
+   "file": "4-1_habitat-list",
+   "title": "서식수변 목록",
+   "scene": "page:HabitatWaterEdgePage",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:조사개황@DataRadGridView",
+     "text": "조사개황"
+    },
+    {
+     "n": 2,
+     "find": "selrow",
+     "text": "고른 행"
+    },
+    {
+     "n": 3,
+     "find": "hscroll",
+     "text": "가로 스크롤 — 조사불가시 · 평가항목 · 평가점수 · 평가등급"
+    }
+   ]
+  },
+  {
+   "id": "4-2",
+   "file": "4-2_habitat-editor",
+   "title": "서식수변 편집기 — 평가항목",
+   "scene": "editor_tab:HabitatWaterEdgePage:평가",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:자연적 종횡사주+text:제내지 토지 이용",
+     "text": "평가항목 10"
+    },
+    {
+     "n": 2,
+     "find": "text:조사불가시@EditorContentControl#2",
+     "text": "조사불가시"
+    }
+   ]
+  },
+  {
+   "id": "4-3",
+   "file": "4-3_water-list",
+   "title": "수질 목록",
+   "scene": "page_scroll:WaterQualityPage:TN",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:측정항목@DataRadGridView",
+     "text": "측정항목"
+    },
+    {
+     "n": 2,
+     "find": "text:추가항목@DataRadGridView",
+     "text": "추가항목"
+    },
+    {
+     "n": 3,
+     "find": "hscroll",
+     "text": "가로 스크롤 — 수질등급"
+    }
+   ]
+  },
+  {
+   "id": "4-4",
+   "file": "4-4_water-editor",
+   "title": "수질 편집기 — 측정항목 · 추가항목",
+   "scene": "editor:WaterQualityPage",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:pH@EditorContentControl+text:대장균군(군수/100mL)",
+     "text": "측정항목"
+    },
+    {
+     "n": 2,
+     "find": "text:T-N(mg/L)+text:일당유량(m3/day)",
+     "text": "추가항목"
+    }
+   ]
+  },
+  {
+   "id": "5-1",
+   "file": "5-1_bulk",
+   "title": "일괄등록 화면",
+   "scene": "bulk_page",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:※ 일괄 등록 전 확인사항",
+     "text": "일괄 등록 전 확인사항"
+    },
+    {
+     "n": 2,
+     "find": "text:생물조사@ContentFrame",
+     "text": "생물조사 5"
+    },
+    {
+     "n": 3,
+     "find": "text:환경자료@ContentFrame",
+     "text": "환경자료 2"
+    }
+   ]
+  },
+  {
+   "id": "5-2",
+   "file": "5-2_bulk-fish",
+   "title": "일괄등록 창(어류) — 가져온 자료",
+   "scene": "bulk_fish_import",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:시트명",
+     "text": "시트명"
+    },
+    {
+     "n": 2,
+     "find": "text:입력자료 시작 위치 : 엑셀",
+     "text": "입력자료 시작 위치 · 생물종 행"
+    },
+    {
+     "n": 3,
+     "find": "text:항목 행 위치",
+     "text": "[항목 행 위치]"
+    },
+    {
+     "n": 4,
+     "find": "text:엑셀자료 가져오기",
+     "text": "[엑셀자료 가져오기]"
+    },
+    {
+     "n": 5,
+     "find": "name:ImportRadToggleButton+name:ConvertedRadToggleButton",
+     "text": "[가져온 자료] · [변환된 자료]"
+    },
+    {
+     "n": 6,
+     "find": "text:종 목록 보기",
+     "text": "[종 목록 보기]"
+    }
+   ]
+  },
+  {
+   "id": "5-3",
+   "file": "5-3_bulk-errors",
+   "title": "일괄등록 창 — 변환된 자료 · 오류 내용",
+   "scene": "bulk_fish_error",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:오류 내용@ConvertedDataRadGridView",
+     "text": "오류 내용"
+    },
+    {
+     "n": 2,
+     "find": "converted_counts",
+     "text": "총 · 오류 건수"
+    },
+    {
+     "n": 3,
+     "find": "text:변환된 자료 일괄 저장",
+     "text": "[변환된 자료 일괄 저장] — 오류가 있으면 꺼짐"
+    }
+   ]
+  },
+  {
+   "id": "5-4",
+   "file": "5-4_bulk-species",
+   "title": "일괄등록 창 — 종 목록",
+   "scene": "bulk_fish_species",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:SpeciesDataRadGridView",
+     "text": "가져온 종 목록"
+    },
+    {
+     "n": 2,
+     "find": "name:ConvertedSpeciesDataRadGridView",
+     "text": "변환된 종 목록(지표값 = 종목록)"
+    }
+   ]
+  },
+  {
+   "id": "5-5",
+   "file": "5-5_same-record",
+   "title": "같은 기록 창",
+   "scene": "bulk_duplicate",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:NewTextBlock",
+     "text": "새로 저장할 기록"
+    },
+    {
+     "n": 2,
+     "find": "name:ExistingTextBlock",
+     "text": "DB에 이미 있는 기록"
+    },
+    {
+     "n": 3,
+     "find": "name:ApplyToRestCheckBox",
+     "text": "「나머지 같은 기록에도 같게 적용」"
+    },
+    {
+     "n": 4,
+     "find": "name:SkipButton+name:AddButton",
+     "text": "[건너뛰기] · [바꾸기] · [추가]"
+    }
+   ]
+  },
+  {
+   "id": "5-6",
+   "file": "5-6_unlisted-species",
+   "title": "종목록에 없는 종이 있을 때",
+   "scene": "bulk_outoflist",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:SpeciesGridView",
+     "text": "목록 밖 종 · 파일의 지표값 · 행 수"
+    },
+    {
+     "n": 2,
+     "find": "text:지침: 별표에 없는 종은 지수 계산에서 빠지고 출현 목록에만 오른다. 어느 쪽을 골라도 이 종 행의 지표값 · 길드는 비워 저장하고, 파일의 지표값은 종목록에 넣지 않는다.",
+     "text": "지침 안내"
+    },
+    {
+     "n": 3,
+     "find": "name:AddButton",
+     "text": "[목록에 추가(지표값 없음)]"
+    },
+    {
+     "n": 4,
+     "find": "name:SaveOnlyButton",
+     "text": "[목록에 넣지 않고 저장]"
+    },
+    {
+     "n": 5,
+     "find": "name:CancelButton",
+     "text": "[취소]"
+    }
+   ]
+  },
+  {
+   "id": "5-7",
+   "file": "5-7_save-result",
+   "title": "저장 알림",
+   "scene": "bulk_saved",
+   "marks": [
+    {
+     "n": 1,
+     "find": "rect:0,0,0,0",
+     "text": "저장 · 바꿈 · 건너뜀 건수와 확인할 것"
+    }
+   ]
+  },
+  {
+   "id": "5-8",
+   "file": "5-8_bulk-water",
+   "title": "일괄등록 창(수질)",
+   "scene": "bulk_open:수질",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:추가항목 : 엑셀",
+     "text": "추가항목 엑셀 행"
+    },
+    {
+     "n": 2,
+     "find": "text:항목 행 위치",
+     "text": "[항목 행 위치]"
+    }
+   ]
+  },
+  {
+   "id": "5-9",
+   "file": "5-9_bulk-bird",
+   "title": "일괄등록 창(조류) — 항목 열 위치",
+   "scene": "bulk_open_cols:조류",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:항목 열 위치",
+     "text": "[항목 열 위치]"
+    },
+    {
+     "n": 2,
+     "find": "colpopup",
+     "text": "항목명 · 열 위치"
+    }
+   ]
+  },
+  {
+   "id": "6-1",
+   "file": "6-1_settings",
+   "title": "설정",
+   "scene": "setting_scroll:end",
+   "marks": [
+    {
+     "n": 1,
+     "find": "rect:317,113,1198,240",
+     "text": "프로젝트 사업장 지점(목록 — 위로 스크롤하면 입력 칸)"
+    },
+    {
+     "n": 2,
+     "find": "text:조사지점 관리@ContentFrame",
+     "text": "조사지점 관리"
+    },
+    {
+     "n": 3,
+     "find": "text:조사자 기준자료",
+     "text": "조사자 기준자료"
+    }
+   ]
+  },
+  {
+   "id": "6-2",
+   "file": "6-2_site-division-edit",
+   "title": "프로젝트 사업장 지점 — 수정",
+   "scene": "setting_edit",
+   "marks": [
+    {
+     "n": 1,
+     "find": "editpencil",
+     "text": "수정(연필)"
+    },
+    {
+     "n": 2,
+     "find": "text:사업장@ContentFrame+text:지점명@ContentFrame",
+     "text": "사업장 · 과업 대표하천 · 지점명"
+    },
+    {
+     "n": 3,
+     "find": "text:저장@ContentFrame+text:초기화@ContentFrame",
+     "text": "[저장] · [초기화]"
+    }
+   ]
+  },
+  {
+   "id": "6-3",
+   "file": "6-3_site-master",
+   "title": "조사지점 관리 창",
+   "scene": "sitemaster",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:SiteTree",
+     "text": "대분류 · 사업장 · 과업대표하천 · 지점 트리"
+    },
+    {
+     "n": 2,
+     "find": "text:지점 상세",
+     "text": "지점 상세"
+    },
+    {
+     "n": 3,
+     "find": "text:좌표 (십진 · DMS 모두 입력 가능 · 저장은 십진으로 통일)",
+     "text": "좌표(십진 · DMS)"
+    },
+    {
+     "n": 4,
+     "find": "text:마스터 저장",
+     "text": "[마스터 저장]"
+    },
+    {
+     "n": 5,
+     "find": "text:내보내기 (JSON)",
+     "text": "[내보내기 (JSON)]"
+    },
+    {
+     "n": 6,
+     "find": "text:유효 연도 구간 — 같은 지점명이 연도별로 다른 장소를 가리킬 때만 채운다",
+     "text": "유효 연도 구간"
+    }
+   ]
+  },
+  {
+   "id": "6-4",
+   "file": "6-4_site-master-lower",
+   "title": "조사지점 관리 — 아래쪽",
+   "scene": "sitemaster_bottom",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:연도별 지점명 이력 (연도구간 → 표기)",
+     "text": "연도별 지점명 이력"
+    },
+    {
+     "n": 2,
+     "find": "text:연도별 지도 번호 (연도구간 → 번호)",
+     "text": "연도별 지도 번호"
+    },
+    {
+     "n": 3,
+     "find": "text:지점 사진 (사진 루트로 복사되고 상대경로만 저장)",
+     "text": "지점 사진"
+    },
+    {
+     "n": 4,
+     "find": "text:병합 — 고른 지점을 현재 지점에 합치고 목록에서 지운다",
+     "text": "병합"
+    }
+   ]
+  },
+  {
+   "id": "6-5",
+   "file": "6-5_species-export",
+   "title": "종목록 내보내기 알림",
+   "scene": "species_export",
+   "marks": [
+    {
+     "n": 1,
+     "find": "rect:0,0,0,0",
+     "text": "판 · 종 수 · 조사자 앱 안내"
+    }
+   ]
+  },
+  {
+   "id": "7-1",
+   "file": "7-1_stats-fish",
+   "title": "통계 — 어류",
+   "scene": "stats:Fish",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:MenuUniformGrid",
+     "text": "분류군"
+    },
+    {
+     "n": 2,
+     "find": "text:연도 선택+text:검색@SubContentControl",
+     "text": "연도 선택 · [검색]"
+    },
+    {
+     "n": 3,
+     "find": "text:전체 출력 (  ",
+     "text": "전체 출력"
+    },
+    {
+     "n": 4,
+     "find": "name:YearChart",
+     "text": "연도별 자료"
+    },
+    {
+     "n": 5,
+     "find": "name:YearRadGridView",
+     "text": "통계표"
+    }
+   ]
+  },
+  {
+   "id": "7-2",
+   "file": "7-2_stats-project-species",
+   "title": "통계 — 사업장 출현종 · 자세히 보기",
+   "scene": "stats_project:Fish",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:ProjectRadGridView",
+     "text": "사업장 · 과업 대표하천"
+    },
+    {
+     "n": 2,
+     "find": "text:출현종 자세히 보기",
+     "text": "[출현종 자세히 보기]"
+    },
+    {
+     "n": 3,
+     "find": "name:ProjectSpeciesRadGridView",
+     "text": "출현종"
+    }
+   ]
+  },
+  {
+   "id": "7-3",
+   "file": "7-3_stats-bird",
+   "title": "통계 — 조류 특징",
+   "scene": "stats_feature:Bird",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:FeatureChart",
+     "text": "특징 비율(%)"
+    },
+    {
+     "n": 2,
+     "find": "name:FeatureRadGridView",
+     "text": "통계표"
+    }
+   ]
+  },
+  {
+   "id": "7-4",
+   "file": "7-4_stats-water",
+   "title": "통계 — 수질등급(점수)",
+   "scene": "stats_grade:WaterQuality",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:GradeRadGridView",
+     "text": "수질등급(점수) — 방류수 합류부 지점"
+    }
+   ]
+  },
+  {
+   "id": "7-5",
+   "file": "7-5_stats-amphibian",
+   "title": "통계 — 양서파충류(생태현황 안내)",
+   "scene": "stats:AmphibianReptile",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:생태현황 자료는 통계 대상이 아닙니다.",
+     "text": "안내 「생태현황 자료는 통계 대상이 아닙니다.」"
+    }
+   ]
+  },
+  {
+   "id": "8-1",
+   "file": "8-1_manual-window",
+   "title": "사용설명서 창",
+   "scene": "manual",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:lbThumbnails",
+     "text": "쪽 목록(장 · 절 제목 · 쪽 번호)"
+    },
+    {
+     "n": 2,
+     "find": "type:RadPdfViewerToolBar",
+     "text": "도구 모음"
+    },
+    {
+     "n": 3,
+     "find": "searchbtn",
+     "text": "[찾기]"
+    },
+    {
+     "n": 4,
+     "find": "name:ThumbnailRadToggleButton",
+     "text": "쪽 목록 접기 · 펴기"
+    }
+   ]
+  },
+  {
+   "id": "8-2",
+   "file": "8-2_manual-toolbar",
+   "title": "PDF 도구 모음",
+   "scene": "manual",
+   "crop": "el:type:RadPdfViewerToolBar",
+   "marks": [
+    {
+     "n": 1,
+     "find": "toolbar:0-1",
+     "text": "저장 · 인쇄"
+    },
+    {
+     "n": 2,
+     "find": "toolbar:2-3",
+     "text": "왼쪽 · 오른쪽으로 돌리기"
+    },
+    {
+     "n": 3,
+     "find": "toolbar:4-6",
+     "text": "앞쪽 · 뒤쪽 · 쪽 번호"
+    },
+    {
+     "n": 4,
+     "find": "toolbar:7-10",
+     "text": "확대 · 축소 · 배율"
+    },
+    {
+     "n": 5,
+     "find": "toolbar:11-12",
+     "text": "화면 이동 · 글자 고르기"
+    }
+   ]
+  },
+  {
+   "id": "8-3",
+   "file": "8-3_manual-context",
+   "title": "사용설명서 창 — 오른쪽 단추 메뉴",
+   "scene": "manual_context",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:menu",
+     "text": "복사 · 확대 · 축소 · 화면 이동 · 텍스트 선택 · 찾기 · 인쇄 · 다른이름으로 저장"
+    }
+   ]
+  },
+  {
+   "id": "8-4",
+   "file": "8-4_app-info",
+   "title": "프로그램 정보 창",
+   "scene": "appinfo",
+   "marks": [
+    {
+     "n": 1,
+     "find": "text:판(버전)+text:화면 그리기",
+     "text": "판 · 빌드 날짜 · 화면 그리기"
+    },
+    {
+     "n": 2,
+     "find": "text:지침 원본 보기",
+     "text": "[지침 원본 보기]"
+    },
+    {
+     "n": 3,
+     "find": "text:종목록 내보내기(species.json)",
+     "text": "[종목록 내보내기(species.json)]"
+    },
+    {
+     "n": 4,
+     "find": "text:연락처",
+     "text": "개발 · 연락처"
+    }
+   ]
+  },
+  {
+   "id": "8-5",
+   "file": "8-5_guideline",
+   "title": "지침 원본 보기",
+   "scene": "guideline",
+   "marks": [
+    {
+     "n": 1,
+     "find": "name:CaptionTextBlock",
+     "text": "창 제목 「지침 원본 — 국립환경과학원고시 제2026-30호」"
+    }
+   ]
+  }
+ ]
+}

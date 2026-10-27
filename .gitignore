@@ -374,3 +374,6 @@ FodyWeavers.xsd
 tools/_publish/
 tools/_publish_zip/
 tools/_publish_log/
+
+# 사용설명서 그림 원본(PNG) — git 에는 docs/manual/img 의 JPEG 만(관리자 설명서 계획 D9)
+docs/manual/_png/

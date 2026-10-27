@@ -1,0 +1,70 @@
+표,열,항목명,비고
+Fish,Site,,방류하천 자료는 필수(생태현황은 비워도 됨)
+Fish,SurveyDate,,2000-01-01 ~ 오늘
+Fish,AutoRiverChasu,,일괄등록 필수(조사불가 사유가 있거나 0종이면 빼도 됨)
+Fish,SurveyUnavailableReason,,조사불가 사유 — 공백을 뺀 글이 접근불가 · 건천화 · 준설 · 공사중이면 FAI 등급 「-」
+Fish,SiteDivisionId,지점 구분 ID,저장할 때 지점명으로 맞춤
+Fish,TotalIndividualCount,,자동계산
+Fish,TotalSpeciesCount,,자동계산
+Fish,M1Value,,자동계산(M1)
+Fish,M2Value,,자동계산(M2)
+Fish,M3Value,,자동계산(M3)
+Fish,M4Value,,자동계산(M4)
+Fish,M5Value,,자동계산(M5)
+Fish,M6Value,,자동계산(M6)
+Fish,M7Value,,자동계산(M7)
+Fish,FAIScore,,자동계산
+Fish,FAIGrade,,자동계산 · A~E 또는 「-」
+FishSpecies,FishId,어류 ID,
+FishSpecies,FishTrait,,종목록 값
+FishSpecies,ToleranceGuild,,종목록 값
+FishSpecies,FeedingGuild,,종목록 값
+FishSpecies,HabitatGuild,,종목록 값
+FishSpecies,Exotic,,종목록 값
+FishSpecies,IndividualCount,,정수
+Benthos,Site,,방류하천 자료는 필수(생태현황은 비워도 됨)
+Benthos,SurveyDate,,2000-01-01 ~ 오늘
+Benthos,Bedrock,,지침 6칸 밖 · 2026-10 부터 비움(값은 특이사항으로 옮김)
+Benthos,Concrete,,지침 6칸 밖 · 2026-10 부터 비움(값은 특이사항으로 옮김)
+Benthos,Mud,진흙 이하(<0.063mm),
+Benthos,FineGravel,왕모래(2~16mm),
+Benthos,BigStone,큰돌 이상(>256mm),
+Benthos,SurveyUnavailableReason,채집불가시(조사불가 사유),공백을 뺀 글이 접근불가 · 건천화 · 준설 · 공사중이면 BMI 등급 「-」
+Benthos,SiteDivisionId,지점 구분 ID,저장할 때 지점명으로 맞춤
+Benthos,IndexDI,,자동계산
+Benthos,IndexH,,자동계산
+Benthos,IndexR1,,자동계산
+Benthos,IndexJ,,자동계산
+Benthos,BMIScore,,자동계산
+Benthos,BMIGrade,,자동계산 · A~E 또는 「-」
+BenthosSpecies,BenthosId,저서동물 ID,
+BenthosSpecies,SaprobicValue,,종목록 값
+BenthosSpecies,IndicatorWeight,,종목록 값
+Bird,Site,,방류하천 자료는 필수(생태현황은 비워도 됨)
+Bird,SiteDivisionId,지점 구분 ID,저장할 때 지점명으로 맞춤
+Bird,HabitatType,,일괄등록 번호 1~6 은 이름으로 바꿔 저장
+Mammal,Site,,방류하천 자료는 필수(생태현황은 비워도 됨)
+Mammal,SiteDivisionId,지점 구분 ID,저장할 때 지점명으로 맞춤
+AmphibianReptile,Site,,방류하천 자료는 필수(생태현황은 비워도 됨)
+AmphibianReptile,SiteDivisionId,지점 구분 ID,저장할 때 지점명으로 맞춤
+HabitatWaterEdge,Site,,방류하천 자료는 필수(생태현황은 비워도 됨)
+HabitatWaterEdge,SurveyDate,,2000-01-01 ~ 오늘
+HabitatWaterEdge,SurveyUnavailableReason,,접근불가가 들어 있으면 평가등급 「-」
+HabitatWaterEdge,SiteDivisionId,지점 구분 ID,저장할 때 지점명으로 맞춤
+HabitatWaterEdge,EvaluationScore,,자동계산(10항목 합계 ÷ 2 · 하나도 안 골랐으면 빈칸)
+HabitatWaterEdge,EvaluationGrade,,자동계산 · A~E 또는 「-」
+WaterQuality,Site,,방류하천 자료는 필수(생태현황은 비워도 됨)
+WaterQuality,SurveyDate,,2000-01-01 ~ 오늘
+WaterQuality,SiteDivisionId,지점 구분 ID,저장할 때 지점명으로 맞춤
+WaterQuality,PHGrade,,자동계산
+WaterQuality,BODGrade,,자동계산
+WaterQuality,CODGrade,,자동계산
+WaterQuality,TOCGrade,,자동계산
+WaterQuality,SSGrade,,자동계산
+WaterQuality,DOGrade,,자동계산
+WaterQuality,TPGrade,,자동계산
+WaterQuality,EColiGrade,,자동계산
+SiteDivision,Project,,방류하천 · 생태현황
+SiteDivision,WorkplaceRiver,과업 대표하천,
+BenthosSpeciesList,SaprobicValue,,지표종만 값이 있음
+BenthosSpeciesList,IndicatorWeight,,지표종만 값이 있음
