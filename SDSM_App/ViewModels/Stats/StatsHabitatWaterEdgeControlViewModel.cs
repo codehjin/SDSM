@@ -223,14 +223,14 @@ public partial class StatsHabitatWaterEdgeControlViewModel : ObservableObject, I
                     foreach (var river in rivers)
                     {
                         var riverName = string.IsNullOrEmpty(river) ? "기타" : river;
-                        var data = SearchData.Where(m => m.SurveyYear == year && m.River == river).ToList();
+                        //평가점수가 있는 기록만 평균 — 빈 점수(조사불가 · 미입력)는 합 · 나누는 수 모두 제외(CLAUDE.md §7.2 · 2026-10-28 A4)
+                        var scores = SearchData.Where(m => m.SurveyYear == year && m.River == river && m.EvaluationScore.HasValue)
+                                               .Select(m => m.EvaluationScore!.Value).ToList();
 
-                        if (data.Count != 0)
+                        if (scores.Count != 0)
                         {
                             var grade = string.Empty;
-                            var scoreSum = data.Sum(m => m.EvaluationScore) ?? 0;
-
-                            var score = Math.Round((double)scoreSum / data.Count, 1, MidpointRounding.AwayFromZero);
+                            var score = Math.Round(scores.Sum() / scores.Count, 1, MidpointRounding.AwayFromZero);
 
                             if (score >= 80) grade = "A";
                             else if (score >= 60) grade = "B";

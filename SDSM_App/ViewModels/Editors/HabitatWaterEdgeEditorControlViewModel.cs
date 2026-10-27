@@ -44,7 +44,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
     [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private DateTime? _surveyDate;
     [ObservableProperty] private string? _majorRegion;
     [ObservableProperty] private string? _middleRegion;
-    [ObservableProperty] private string? _river;
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveExecutedCommand))] private string? _river;
     [ObservableProperty] private string? _riverType;
     [ObservableProperty] private double? _lat;
     [ObservableProperty] private double? _lng;
@@ -75,6 +75,7 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
     {
         return !string.IsNullOrWhiteSpace(YearChsu)
             && SurveyDate != null
+            && !string.IsNullOrWhiteSpace(River)   // 필수 표시(*)와 같게(2026-10-28 A4)
             && (Project != "방류하천" || !string.IsNullOrWhiteSpace(Site));
     }
 
@@ -275,6 +276,13 @@ public partial class HabitatWaterEdgeEditorControlViewModel : ObservableObject, 
         EvaluationScore = EditModel.EvaluationScore;
         EvaluationGrade = EditModel.EvaluationGrade;
         SiteDivisionId = EditModel.SiteDivisionId;
+
+        //옛 기록에 하천명이 비어 있으면 저장 전에 알림 — [저장]은 하천명이 있어야 켜짐(2026-10-28 A4)
+        if (string.IsNullOrWhiteSpace(River))
+        {
+            var toast = ("하천명이 비어 있습니다. 하천명을 넣어야 저장할 수 있습니다.", false);
+            WeakReferenceMessenger.Default.Send(new NotifyMessage(toast));
+        }
     }
 
     //항목초기화

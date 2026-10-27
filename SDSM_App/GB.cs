@@ -387,6 +387,14 @@ public static class GB
         return (cluster, r.Score, r.Grade);
     }
 
+    /// <summary>
+    /// 어류 조사불가 사유인가 — 공백(" ") 제거 후 접근불가 · 건천화 · 준설 · 공사중 과 완전 일치.
+    /// 판정은 SDSM_Core FAI 계산(조사불가 → 등급 "-")을 그대로 쓴다. 이 넷일 때만 하천차수를 비워도 된다
+    /// (특이사항에 다른 글이 있으면 FAI 를 계산하므로 차수가 필요 — 2026-10-28 A4).
+    /// </summary>
+    public static bool IsFishSurveyUnavailable(string? surveyUnavailableReason)
+        => EcologyCalculator.CalculateFaiDetail([], surveyUnavailableReason, 0, 0).Unavailable;
+
     #endregion
 
     #region 수질등급
@@ -437,7 +445,8 @@ public static class GB
     public static int MinPageSize { get; set; } = 10;
     public static int AvgPageSize { get; set; } = 10_000;
     public static int MaxPageSize { get; set; } = 1_000_000;
-    public static string UserPassword { get; set; } = "0000";
+    //화면 잠금 풀기 비밀번호 — 잠글 때 DB 관리자 비밀번호(SelfUser)로 채움 · 비밀번호 변경 때도 갱신
+    public static string UserPassword { get; set; } = string.Empty;
 
     //페이징 개수
     private static int _currentPageSize = 10_000;

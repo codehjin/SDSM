@@ -552,9 +552,10 @@ public partial class BulkFishControlViewModel : ObservableObject, ITransientServ
                                 sb.Append(GB.GetImportErrorText(prop, ErrorType.Conversion));
                             }
                         }
-                        else if (!string.IsNullOrWhiteSpace(model.SurveyUnavailableReason) || model.IndividualCount == 0)
+                        else if (GB.IsFishSurveyUnavailable(model.SurveyUnavailableReason) || model.IndividualCount == 0)
                         {
-                            //조사불가 사유가 있거나 출현종 0종이면 하천차수 없이 저장(FAI 는 '-' 또는 0·E 라 차수를 쓰지 않음) — 2026-10-21 문제 7
+                            //조사불가 사유(접근불가 · 건천화 · 준설 · 공사중)거나 출현종 0종이면 하천차수 없이 저장(FAI 는 '-' 또는 0·E 라 차수를 쓰지 않음)
+                            // — 2026-10-21 문제 7 · 특이사항의 다른 글로는 풀리지 않음(2026-10-28 A4)
                             PropertyInfo? insertPropertyInfo = insertModel.GetType().GetProperty(prop.Name);
                             insertPropertyInfo?.SetValue(insertModel, null);
                         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SDSM_App.InjectableServices;
+using SDSM_App.Models;
 using SDSM_App.ViewModels;
 using SDSM_App.Views.UserControls;
 using System.Windows;
@@ -192,10 +193,10 @@ public partial class MainWindow : Window, ISingletonService
         ContentFrame.NavigationService.RemoveBackEntry();
     }
 
-    //화면잠금 패스워드
+    //화면잠금 패스워드(잠글 때 DB 에서 읽은 관리자 비밀번호와 비교 · 빈 값이면 풀지 않음)
     private void ScreenLockRadPasswordBox_TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (ScreenLockRadPasswordBox.Password == GB.UserPassword)
+        if (!string.IsNullOrEmpty(GB.UserPassword) && ScreenLockRadPasswordBox.Password == GB.UserPassword)
         {
             ScreenLockLayout.Visibility = Visibility.Collapsed;
             ScreenLockRadPasswordBox.Password = string.Empty;
@@ -208,6 +209,16 @@ public partial class MainWindow : Window, ISingletonService
     //화면 잠금
     private void ScreenLockRadButton_Click(object sender, RoutedEventArgs e)
     {
+        //잠금 풀기 비밀번호 = DB 의 관리자 비밀번호(SelfUser · 로그인 창과 같은 계정) — 잠글 때마다 다시 읽음
+        var password = GetAdminPassword();
+        if (string.IsNullOrEmpty(password))
+        {
+            UserDropDownButton.IsOpen = false;
+            MessageBox.Show("관리자 계정을 찾을 수 없어 화면을 잠그지 않았습니다.", "화면 잠금", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        GB.UserPassword = password;
+
         ScreenLockRadPasswordBox.Password = string.Empty;
         ScreenLockLayout.Visibility = Visibility.Visible;
 
@@ -287,6 +298,21 @@ public partial class MainWindow : Window, ISingletonService
     #endregion
 
     #region 메서드
+
+    //관리자 비밀번호(DB SelfUser · 로그인 창과 같은 계정) — 못 읽으면 null
+    private string? GetAdminPassword()
+    {
+        try
+        {
+            using var context = new SDSMDbContext();
+            return context.SelfUsers.Where(m => m.UserName == "관리자").Select(m => m.UserPassword).FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            GB.LogWrite(GetType().Name, nameof(GetAdminPassword), ex.Message);
+            return null;
+        }
+    }
 
     //로그인창 보기
     private void LoginControlLoad()

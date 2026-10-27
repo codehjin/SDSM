@@ -115,7 +115,7 @@ public partial class FishEditorControlViewModel : ObservableObject, ITransientSe
     {
         return !string.IsNullOrWhiteSpace(YearChsu)
             && SurveyDate != null
-            && (AutoRiverChasu != null || !string.IsNullOrWhiteSpace(SurveyUnavailableReason) || AddSpeciesCount == 0)   // 조사불가·0종이면 하천차수 없이(2026-10-21 문제 7)
+            && (AutoRiverChasu != null || GB.IsFishSurveyUnavailable(SurveyUnavailableReason) || AddSpeciesCount == 0)   // 조사불가(4낱말)·0종이면 하천차수 없이(2026-10-21 문제 7 · 2026-10-28 A4)
             && (Project != "방류하천" || !string.IsNullOrWhiteSpace(Site));
     }
 
