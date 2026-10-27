@@ -1017,7 +1017,7 @@ public partial class BulkAmphibianReptileControlViewModel : ObservableObject, IT
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도_초", ValueString = "U" });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "위도", ValueString = "V" });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "경도", ValueString = "W" });
-        ColumnNumbers.Add(new ColumnNumber { ColumnName = "대뷴류", ValueString = "Y" });
+        ColumnNumbers.Add(new ColumnNumber { ColumnName = "대분류", ValueString = "Y" });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "중분류", ValueString = "Z" });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "조사자", ValueString = "AA" });
         ColumnNumbers.Add(new ColumnNumber { ColumnName = "특이사항", ValueString = "AB" });

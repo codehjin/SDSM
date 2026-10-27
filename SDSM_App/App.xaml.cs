@@ -21,6 +21,9 @@ public partial class App : Application
 
     public App()
     {
+        //흰 화면 대비 — 실행 폴더에 software_render 파일이 있으면 소프트웨어 그리기(§25). 테마 · 창보다 먼저
+        RenderModeSwitch.Apply();
+
         StyleManager.ApplicationTheme = new Windows11Theme();
         LocalizationManager.Manager = new CustomLocalizationManaber();
         AutomationManager.AutomationMode = AutomationMode.Disabled;

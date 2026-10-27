@@ -47,7 +47,7 @@ public class FishView
     [DisplayName("총 개체수")] public int? TotalIndividualCount { get; set; }
     [DisplayName("총 종수")] public int? TotalSpeciesCount { get; set; }
     [DisplayName("국내종\n 총 종수")] public int? M1Value { get; set; }
-    [DisplayName("어울성\n 저서 종수")] public int? M2Value { get; set; }
+    [DisplayName("여울성\n 저서 종수")] public int? M2Value { get; set; }
     [DisplayName("민감 종수")] public int? M3Value { get; set; }
     [DisplayName("내성종\n 개체수 비율(%)")] public double? M4Value { get; set; }
     [DisplayName("잡식종\n 개체수 비율(%)")] public double? M5Value { get; set; }

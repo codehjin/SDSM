@@ -55,9 +55,14 @@
                     <TextBlock Text="판(버전)" Style="{StaticResource InfoLabelStyle}"/>
                     <TextBlock Text="{Binding Path=VersionText}" Style="{StaticResource InfoValueStyle}"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 4">
                     <TextBlock Text="빌드 날짜" Style="{StaticResource InfoLabelStyle}"/>
                     <TextBlock Text="{Binding Path=BuildDate}" Style="{StaticResource InfoValueStyle}"/>
+                </StackPanel>
+                <!-- 흰 화면 대비 스위치(§25) — 실행 폴더 software_render 파일 -->
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="화면 그리기" Style="{StaticResource InfoLabelStyle}"/>
+                    <TextBlock Text="{Binding Path=RenderText}" Style="{StaticResource InfoValueStyle}"/>
                 </StackPanel>
             </StackPanel>
         </Border>

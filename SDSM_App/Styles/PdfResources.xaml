@@ -1,6 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation">
+                    xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+                    xmlns:converter="clr-namespace:SDSM_App.Converters">
+
+    <converter:PdfPageTitleConverter x:Key="PdfPageTitleConverter"/>
 
     <SolidColorBrush x:Key="ThumbnailsAccentBrush" Color="#FF000000" />
     <SolidColorBrush x:Key="ThumbnailsAccentBrushAlpha25" Color="#11000000" />
@@ -250,87 +253,17 @@
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 10 0 0">
 
-                                <TextBlock TextTrimming="CharacterEllipsis">
+                                <!--쪽 제목 = PDF 책갈피(장 · 절)에서 읽음(계획_관리자설명서v2 D6 · Converters\PdfPageTitleConverter).
+                                    책갈피가 없는 PDF(v1.0)와 첫 책갈피 앞쪽은 빈 글이라 줄을 접고 쪽 번호만 보인다-->
+                                <TextBlock TextTrimming="CharacterEllipsis" MaxWidth="200" Text="{Binding Path=Page, Converter={StaticResource PdfPageTitleConverter}}"
+                                           ToolTip="{Binding Path=Text, RelativeSource={RelativeSource Self}}">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="Text" Value="프로그램 화면 구성 및 주요 기능"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="1">
-                                                    <Setter Property="Text" Value="통합관리 프로그램"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="2">
-                                                    <Setter Property="Text" Value="목차"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="7">
-                                                    <Setter Property="Text" Value="홈"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="8">
-                                                    <Setter Property="Text" Value="홈"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="9">
-                                                    <Setter Property="Text" Value="생물조사-어류"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="10">
-                                                    <Setter Property="Text" Value="생물조사-저서동물"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="11">
-                                                    <Setter Property="Text" Value="생물조사-조류"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="12">
-                                                    <Setter Property="Text" Value="생물조사-포유류"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="13">
-                                                    <Setter Property="Text" Value="환경자료-서식수변"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="14">
-                                                    <Setter Property="Text" Value="환경자료-수질"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="15">
-                                                    <Setter Property="Text" Value="일괄등록"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="16">
-                                                    <Setter Property="Text" Value="일괄등록"/>
-                                                </DataTrigger>                                              
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="17">
-                                                    <Setter Property="Text" Value="사용설명서"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="18">
-                                                    <Setter Property="Text" Value="프로그램 개발정보"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="19">
-                                                    <Setter Property="Text" Value="테이블명세서-양서파충류"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="20">
-                                                    <Setter Property="Text" Value="테이블명세서-어류"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="21">
-                                                    <Setter Property="Text" Value="테이블명세서-어류"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="22">
-                                                    <Setter Property="Text" Value="테이블명세서-어류"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="23">
-                                                    <Setter Property="Text" Value="테이블명세서-저서동물"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="24">
-                                                    <Setter Property="Text" Value="테이블명세서-저서동물"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="25">
-                                                    <Setter Property="Text" Value="테이블명세서-저서동물"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="26">
-                                                    <Setter Property="Text" Value="테이블명세서-조류"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="27">
-                                                    <Setter Property="Text" Value="테이블명세서-서식수변"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="28">
-                                                    <Setter Property="Text" Value="테이블명세서-수질"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Page.PageNo}" Value="29">
-                                                    <Setter Property="Text" Value="테이블명세서-수질"/>
-                                                </DataTrigger>
-                                                <!--위 쪽 제목은 사용 설명서 것 — 다른 PDF(지침 원본 등)를 여는 창은 Tag="NoPageCaption" 이라 숨긴다(2026-10-22 §21-5 · 마지막 트리거가 이긴다)-->
+                                                <Trigger Property="Text" Value="">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </Trigger>
+                                                <!--쪽 제목은 사용 설명서만 — 다른 PDF(지침 원본 등)를 여는 창은 Tag="NoPageCaption" 이라 숨긴다(2026-10-22 §21-5)-->
                                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=Window}}" Value="NoPageCaption">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
                                                 </DataTrigger>

@@ -9,7 +9,7 @@ using SDSM_App.Models;
 namespace SDSM_App.ViewModels;
 
 /// <summary>
-/// 프로그램 정보 창 — 이름 · 판 · 빌드 날짜 · 적용 지침 · 종목록 기준 · 개발사(2026-10-22 §21-5).
+/// 프로그램 정보 창 — 이름 · 판 · 빌드 날짜 · 화면 그리기(§25) · 적용 지침 · 종목록 기준 · 개발사(2026-10-22 §21-5).
 /// 글은 모두 <see cref="AppInfo"/> 한 곳에서 온다. 종 수만 DB 에서 센다(읽기만).
 /// </summary>
 public partial class AppInfoWindowViewModel : ObservableObject, ITransientService
@@ -22,6 +22,7 @@ public partial class AppInfoWindowViewModel : ObservableObject, ITransientServic
     public string ProgramName => AppInfo.ProgramName;
     public string VersionText => $"{AppInfo.Version} (커밋 {AppInfo.Commit})";
     public string BuildDate => AppInfo.BuildDate;
+    public string RenderText => RenderModeSwitch.Description;
     public string GuidelineTitle => AppInfo.GuidelineTitle;
     public string GuidelineNotice => AppInfo.GuidelineNotice;
     public string SpeciesListBasis => AppInfo.SpeciesListBasis;

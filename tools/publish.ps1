@@ -16,6 +16,8 @@
      발주처 설치 폴더에 '덮어쓰기'로 설치해 기존 DB·지도를 그대로 쓴다(작업로그_ADMIN_261020 §7).
   ⚠ 게시본의 sites.json(조사지점 마스터)은 설치 폴더의 sites.json 을 덮는다.
      발주처가 [조사지점 관리]로 마스터를 고쳤다면 덮어쓰기 전에 백업한다.
+  게시본(압축 · 전체 설치본 모두)에는 tools\읽어주세요.txt(흰 화면 · 사용 설명서 · 백업 · 연락처)를 exe 옆에 넣는다(§28-5).
+  흰 화면 스위치 파일(software_render*)이 섞이면 멈춘다(§25).
 
   ⚠ 압축(4단계)까지 가는 실행은 커밋하지 않은 변경이 있으면 시작하자마자 멈춘다.
      게시한 exe 의 제품 버전에 커밋 해시가 박히므로 압축 내용과 같아야 한다. -CheckOnly 는 경고만 하고 계속한다.
@@ -136,6 +138,13 @@ if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
     -o $stage -v minimal -nologo
 if ($LASTEXITCODE -ne 0) { Fail 'dotnet publish 실패' 2 }
 
+# 설치 폴더 안내(흰 화면 · 사용 설명서 · 백업 · 연락처 — §28-5) — 압축 · 전체 설치본 모두 이 게시 폴더에서 나간다.
+#   사용 설명서는 앱 안(리소스)에 있어 흰 화면이면 열 수 없으므로 exe 옆에 글 파일로 둔다.
+#   ⚠ tools\읽어주세요.txt 는 UTF-8 with BOM 으로 둔다(BOM 이 없으면 옛 메모장이 CP949 로 읽어 한글이 깨진다).
+$readmeSrc = Join-Path $tools '읽어주세요.txt'
+if (-not (Test-Path $readmeSrc)) { Fail "설치 폴더 안내 파일이 없습니다 : $readmeSrc" 2 }
+Copy-Item $readmeSrc (Join-Path $stage '읽어주세요.txt') -Force
+
 # ── 3/4 내용 확인 ──────────────────────────────────────────────────────────
 Write-Host ''
 Write-Host '=== 3/4  내용 확인 ==='
@@ -156,7 +165,8 @@ $must = @(
     'SDSM_App.dll.config',
     'SDSM_App.runtimeconfig.json',   # 이름 바꾼 exe 가 실행에 쓴다
     'SDSM_App.deps.json',
-    'sites.json'                     # 조사지점 마스터 초기본(CLAUDE.md §8-1)
+    'sites.json',                    # 조사지점 마스터 초기본(CLAUDE.md §8-1)
+    '읽어주세요.txt'                 # 설치 폴더 안내(흰 화면 · 백업 · 연락처 — §28-5)
 )
 foreach ($f in $must) {
     if (-not (Test-Path (Join-Path $stage $f))) { Fail "필수 파일 누락 : $f" 3 }
@@ -171,7 +181,25 @@ if ($dbFiles.Count -gt 0) {
     Fail "게시본에 DB 파일이 섞였습니다($($dbFiles.Count)개) — SDSMDB.sqlite 는 배포본에 넣지 않습니다" 3
 }
 if (Test-Path (Join-Path $stage 'mbtiles')) { Fail '게시본에 mbtiles\ 폴더가 섞였습니다 — 지도는 설치 폴더의 것을 그대로 씁니다' 3 }
-Write-Host '    SDSMDB.sqlite · mbtiles\ 없음 확인'
+# 흰 화면 스위치 파일(§25 · Commons\RenderModeSwitch) — 실려 나가면 받는 PC 가 늘 소프트웨어로 그린다.
+#   앱 판정(확장자를 뗀 이름)보다 넓게 'software_render 로 시작하는 이름'이면 모두 막는다.
+$swFiles = @(Get-ChildItem $stage -Recurse -Force | Where-Object { $_.Name -like 'software_render*' })
+if ($swFiles.Count -gt 0) {
+    foreach ($s in $swFiles) { Write-Host "      $($s.FullName.Substring($stage.Length + 1))" -ForegroundColor Red }
+    Fail "게시본에 software_render 파일이 섞였습니다($($swFiles.Count)개) — 흰 화면 대비 스위치는 받는 쪽에서만 만듭니다" 3
+}
+Write-Host '    SDSMDB.sqlite · mbtiles\ · software_render 없음 확인'
+
+# 읽어주세요.txt — tools\ 의 것과 같은 파일인지, BOM 이 있는지(메모장 한글)
+$readmeOut = Join-Path $stage '읽어주세요.txt'
+if ((Get-FileHash $readmeSrc -Algorithm SHA256).Hash -ne (Get-FileHash $readmeOut -Algorithm SHA256).Hash) {
+    Fail '읽어주세요.txt 가 tools\읽어주세요.txt 와 다릅니다' 3
+}
+$readmeHead = [System.IO.File]::ReadAllBytes($readmeOut)[0..2]
+if (-not ($readmeHead[0] -eq 0xEF -and $readmeHead[1] -eq 0xBB -and $readmeHead[2] -eq 0xBF)) {
+    Fail '읽어주세요.txt 가 UTF-8 with BOM 이 아닙니다 — 메모장에서 한글이 깨질 수 있습니다' 3
+}
+Write-Host "    읽어주세요.txt : $('{0:N0}' -f (Get-Item $readmeOut).Length) 바이트 · UTF-8 BOM"
 
 # sites.json — 프로젝트의 SDSM_App\sites.json 과 같은 파일인지, 읽히는지
 $siteSrc = Join-Path $root 'SDSM_App\sites.json'

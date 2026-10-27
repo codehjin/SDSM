@@ -32,7 +32,7 @@ public partial class ManualWindow : Window, ITransientService
     {
         CaptionTextBlock.Text = Caption;
         Title = Caption;
-        //쪽 목록의 쪽 제목(Styles\PdfResources.xaml PageNavigationStyle)은 사용 설명서 것이라 다른 PDF 에서는 숨긴다
+        //쪽 목록의 쪽 제목(Styles\PdfResources.xaml PageNavigationStyle · PDF 책갈피에서 읽음)은 사용 설명서만 — 다른 PDF 에서는 숨긴다
         Tag = PdfUri == AppInfo.ManualPdfUri ? null : "NoPageCaption";
 
         try

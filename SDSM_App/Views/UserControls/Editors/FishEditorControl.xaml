@@ -428,7 +428,7 @@
                                 <StackPanel Style="{StaticResource FormStackPanelStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <Border Style="{StaticResource FormLabelBorderStyle}">
-                                            <TextBlock Text="하천헝태" Style="{StaticResource FormLabelStyle}" />
+                                            <TextBlock Text="하천형태" Style="{StaticResource FormLabelStyle}" />
                                         </Border>
                                         <telerik:RadWatermarkTextBox Text="{Binding Path=HabitatRiverType}"
                                                                      Width="{StaticResource FormControlLargeWidth}"

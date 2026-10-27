@@ -47,7 +47,7 @@ public class ImportFish
     //자동계산
     [DisplayName("국내종\n 총 종수")] public int? M1Value { get; set; }
     //자동계산
-    [DisplayName("어울성\n 저서 종수")] public int? M2Value { get; set; }
+    [DisplayName("여울성\n 저서 종수")] public int? M2Value { get; set; }
     //자동계산
     [DisplayName("민감 종수")] public int? M3Value { get; set; }
     //자동계산
